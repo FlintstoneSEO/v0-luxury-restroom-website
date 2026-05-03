@@ -1,0 +1,154 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Signature Luxe Brand Colors */
+  --navy: #2d3a47;
+  --gold: #ded2c4;
+  --cream: #f8f5f1;
+  --white: #ffffff;
+  --charcoal: #1f2933;
+  --gray: #6b7280;
+
+  /* Semantic Tokens */
+  --background: var(--cream);
+  --foreground: var(--charcoal);
+  --card: var(--white);
+  --card-foreground: var(--charcoal);
+  --popover: var(--white);
+  --popover-foreground: var(--charcoal);
+  --primary: var(--navy);
+  --primary-foreground: var(--white);
+  --secondary: var(--gold);
+  --secondary-foreground: var(--charcoal);
+  --muted: var(--cream);
+  --muted-foreground: var(--gray);
+  --accent: var(--gold);
+  --accent-foreground: var(--charcoal);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: var(--white);
+  --border: #e5e0db;
+  --input: #e5e0db;
+  --ring: var(--navy);
+  --chart-1: var(--navy);
+  --chart-2: var(--gold);
+  --chart-3: var(--gray);
+  --chart-4: var(--cream);
+  --chart-5: var(--charcoal);
+  --radius: 0.5rem;
+  --sidebar: var(--white);
+  --sidebar-foreground: var(--charcoal);
+  --sidebar-primary: var(--navy);
+  --sidebar-primary-foreground: var(--white);
+  --sidebar-accent: var(--cream);
+  --sidebar-accent-foreground: var(--charcoal);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--navy);
+}
+
+.dark {
+  --background: var(--charcoal);
+  --foreground: var(--cream);
+  --card: var(--navy);
+  --card-foreground: var(--cream);
+  --popover: var(--navy);
+  --popover-foreground: var(--cream);
+  --primary: var(--gold);
+  --primary-foreground: var(--charcoal);
+  --secondary: var(--navy);
+  --secondary-foreground: var(--cream);
+  --muted: var(--navy);
+  --muted-foreground: var(--gray);
+  --accent: var(--gold);
+  --accent-foreground: var(--charcoal);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: var(--cream);
+  --border: #3d4a57;
+  --input: #3d4a57;
+  --ring: var(--gold);
+  --sidebar: var(--navy);
+  --sidebar-foreground: var(--cream);
+  --sidebar-primary: var(--gold);
+  --sidebar-primary-foreground: var(--charcoal);
+  --sidebar-accent: var(--charcoal);
+  --sidebar-accent-foreground: var(--cream);
+  --sidebar-border: #3d4a57;
+  --sidebar-ring: var(--gold);
+}
+
+@theme inline {
+  --font-sans: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-serif: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Custom colors for the brand */
+  --color-navy: var(--navy);
+  --color-gold: var(--gold);
+  --color-cream: var(--cream);
+  --color-charcoal: var(--charcoal);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--navy);
+}

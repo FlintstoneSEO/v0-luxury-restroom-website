@@ -1,0 +1,285 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+import {
+  Thermometer,
+  DoorOpen,
+  Sparkles,
+  Droplets,
+  Zap,
+  CheckCircle,
+  Users,
+  ArrowRight,
+} from "lucide-react"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import { HeroSection } from "@/components/hero-section"
+import { SectionHeader } from "@/components/section-header"
+import { FeatureGrid } from "@/components/feature-grid"
+import { CTASection } from "@/components/cta-section"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+export const metadata: Metadata = {
+  title: "Luxury Restroom Trailers in Lansing MI | Features & Options",
+  description:
+    "View luxury restroom trailer features, setup requirements, and 2-station, 3-station, and 4-station restroom trailer options for events in Michigan.",
+}
+
+const features = [
+  {
+    title: "Temperature Controlled",
+    description:
+      "Heating and air conditioning keep guests comfortable in any weather.",
+    icon: Thermometer,
+  },
+  {
+    title: "Private Flushing Stalls",
+    description:
+      "Full-size private stalls with real flushing toilets, not porta-potty style.",
+    icon: DoorOpen,
+  },
+  {
+    title: "Stylish Finishes",
+    description:
+      "Modern vanity stations with mirrors, countertops, and quality fixtures.",
+    icon: Sparkles,
+  },
+  {
+    title: "Fresh Water System",
+    description:
+      "Running water for hand washing with soap dispensers and paper products.",
+    icon: Droplets,
+  },
+  {
+    title: "Power Ready",
+    description:
+      "Interior lighting and climate control powered by standard 20 amp connection.",
+    icon: Zap,
+  },
+  {
+    title: "Practical Layouts",
+    description:
+      "Thoughtfully designed interiors for efficient guest flow and comfort.",
+    icon: Users,
+  },
+]
+
+const trailerOptions = [
+  {
+    name: "2-Station Trailer",
+    capacity: "Up to 150 guests",
+    description:
+      "Compact option for events and job sites where space is limited. Recommended for gatherings with an expected guest count of up to 150 people.",
+    features: [
+      "2 private restroom stalls",
+      "Climate controlled interior",
+      "Hand washing stations",
+      "Compact footprint",
+      "Ideal for smaller venues",
+    ],
+  },
+  {
+    name: "3-Station Trailer",
+    capacity: "Up to 225 guests",
+    description:
+      "Compact and flexible option for events and job sites where space is important. Recommended for events expecting up to 225 guests.",
+    features: [
+      "3 private restroom stalls",
+      "Climate controlled interior",
+      "Expanded vanity area",
+      "Flexible configuration",
+      "Great for medium events",
+    ],
+    popular: true,
+  },
+  {
+    name: "4-Station Trailer",
+    capacity: "250+ guests",
+    description:
+      "A popular option for larger events. Compact enough for many event spaces while offering increased capacity. Recommended for events with 250+ guests.",
+    features: [
+      "4 private restroom stalls",
+      "Climate controlled interior",
+      "Dual vanity stations",
+      "Maximum capacity",
+      "Perfect for large gatherings",
+    ],
+  },
+]
+
+const setupRequirements = [
+  "20 amp power source within 100 feet",
+  "Water connection within 100 feet",
+  "Generator options available when power is not nearby",
+  "Fresh water tank options available when water is not nearby",
+  "Reasonably flat, level ground for placement",
+  "Adequate access for delivery vehicle",
+]
+
+const amenities = [
+  "Fully stocked with hand soap and paper essentials",
+  "Heating and air conditioning",
+  "Power access support within 100 feet",
+  "Fresh water hookup within 100 feet",
+  "Generator options available when needed",
+  "Fresh water tank options available when needed",
+]
+
+export default function OurRestroomsPage() {
+  return (
+    <>
+      <Header />
+      <main>
+        {/* Hero */}
+        <HeroSection
+          variant="page"
+          eyebrow="Our Restrooms"
+          title="Luxury Restroom Trailers"
+          description="Modern, climate-controlled restroom trailers designed to provide a clean, comfortable experience for your guests, crew, or community."
+          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          secondaryCta={{ text: "View Gallery", href: "/gallery" }}
+        />
+
+        {/* Features */}
+        <section className="py-20 md:py-28 bg-white">
+          <div className="container mx-auto px-4 lg:px-8">
+            <SectionHeader
+              eyebrow="Features"
+              title="Premium Features & Finishes"
+              description="Every detail is designed for comfort, cleanliness, and a premium guest experience."
+            />
+            <div className="mt-12">
+              <FeatureGrid features={features} columns={3} variant="card" />
+            </div>
+          </div>
+        </section>
+
+        {/* Trailer Options */}
+        <section className="py-20 md:py-28 bg-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <SectionHeader
+              eyebrow="Trailer Options"
+              title="Choose the Right Size for Your Event"
+              description="We offer multiple trailer configurations to match your guest count and space requirements."
+            />
+            <div className="mt-12 grid gap-8 lg:grid-cols-3">
+              {trailerOptions.map((trailer) => (
+                <Card
+                  key={trailer.name}
+                  className={`relative overflow-hidden ${
+                    trailer.popular ? "border-navy border-2" : ""
+                  }`}
+                >
+                  {trailer.popular && (
+                    <div className="absolute top-0 right-0 bg-navy text-white text-xs font-medium px-3 py-1 rounded-bl-lg">
+                      Most Popular
+                    </div>
+                  )}
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center">
+                        <Users className="w-6 h-6 text-navy" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl text-navy">
+                          {trailer.name}
+                        </CardTitle>
+                        <p className="text-sm text-gold font-medium">
+                          {trailer.capacity}
+                        </p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
+                      {trailer.description}
+                    </p>
+                    <ul className="space-y-3">
+                      {trailer.features.map((feature, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-navy mt-0.5 shrink-0" />
+                          <span className="text-sm text-charcoal">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      asChild
+                      className={`w-full mt-6 ${
+                        trailer.popular
+                          ? "bg-navy hover:bg-navy/90 text-white"
+                          : "bg-gold/20 text-navy hover:bg-gold/30"
+                      }`}
+                    >
+                      <Link href="/request-availability">
+                        Check Availability
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Setup Requirements */}
+        <section className="py-20 md:py-28 bg-navy">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="grid gap-12 lg:grid-cols-2">
+              <div>
+                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                  Setup Requirements
+                </span>
+                <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl text-balance">
+                  What Your Site Needs
+                </h2>
+                <p className="mt-6 text-lg text-white/80 leading-relaxed">
+                  Our restroom trailers are designed for easy setup with minimal 
+                  site requirements. Here&apos;s what we need for a successful installation.
+                </p>
+                <ul className="mt-8 space-y-4">
+                  {setupRequirements.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-gold mt-0.5 shrink-0" />
+                      <span className="text-white/90">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                  Included Amenities
+                </span>
+                <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl text-balance">
+                  Everything You Need for a Comfortable Experience
+                </h2>
+                <p className="mt-6 text-lg text-white/80 leading-relaxed">
+                  Our trailers come fully stocked and ready for your event. 
+                  All essential supplies are included.
+                </p>
+                <ul className="mt-8 space-y-4">
+                  {amenities.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-gold mt-0.5 shrink-0" />
+                      <span className="text-white/90">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <CTASection
+          title="Ready to Reserve Your Trailer?"
+          description="Request availability for your event date and receive a custom proposal."
+          ctaText="Request Availability"
+          ctaHref="/request-availability"
+          variant="cream"
+        />
+      </main>
+      <Footer />
+    </>
+  )
+}

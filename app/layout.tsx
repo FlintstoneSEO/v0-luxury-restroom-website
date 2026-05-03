@@ -1,0 +1,67 @@
+import type { Metadata, Viewport } from 'next'
+import { Cormorant_Garamond, Montserrat } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import './globals.css'
+
+const cormorant = Cormorant_Garamond({ 
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-serif',
+  display: 'swap',
+})
+
+const montserrat = Montserrat({ 
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+export const metadata: Metadata = {
+  title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
+  description: 'Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, festivals, construction sites, and long-term use throughout Mid-Michigan.',
+  keywords: [
+    'luxury restroom trailer rental Lansing MI',
+    'restroom trailer rental Lansing MI',
+    'wedding restroom trailer rental Lansing MI',
+    'luxury portable restroom rental Michigan',
+    'mobile restroom trailer rental Michigan',
+    'event restroom trailer rental Lansing',
+    'restroom trailer rentals Mid-Michigan',
+  ],
+  authors: [{ name: 'Signature Luxe Events & Amenities' }],
+  creator: 'Signature Luxe Events & Amenities',
+  openGraph: {
+    title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
+    description: 'Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, festivals, construction sites, and long-term use throughout Mid-Michigan.',
+    url: 'https://www.signatureluxeevents.com',
+    siteName: 'Signature Luxe Events & Amenities',
+    locale: 'en_US',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#2d3a47',
+  width: 'device-width',
+  initialScale: 1,
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className={`${cormorant.variable} ${montserrat.variable} bg-background`}>
+      <body className="font-sans antialiased">
+        {children}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
+      </body>
+    </html>
+  )
+}
