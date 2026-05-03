@@ -237,7 +237,7 @@ export function RequestAvailabilityForm() {
         )}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-base text-muted-foreground">
         By submitting this form, you agree to be contacted regarding your inquiry.
       </p>
     </form>
