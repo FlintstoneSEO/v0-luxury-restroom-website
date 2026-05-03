@@ -33,7 +33,7 @@ export function ProcessSteps({
             <div className="pb-6">
               <h3 className="text-lg font-semibold text-navy">{step.title}</h3>
               {step.description && (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-base text-muted-foreground">
                   {step.description}
                 </p>
               )}
@@ -66,7 +66,7 @@ export function ProcessSteps({
               {step.title}
             </h3>
             {step.description && (
-              <p className="mt-2 text-sm text-muted-foreground max-w-[200px]">
+              <p className="mt-2 text-base text-muted-foreground max-w-[200px]">
                 {step.description}
               </p>
             )}

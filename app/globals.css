@@ -6,11 +6,12 @@
 :root {
   /* Signature Luxe Brand Colors */
   --navy: #2d3a47;
-  --gold: #ded2c4;
+  --gold: #d2c2ae;
+  --gold-text: #8c6e4d;
   --cream: #f8f5f1;
   --white: #ffffff;
   --charcoal: #1f2933;
-  --gray: #6b7280;
+  --gray: #4b5563;
 
   /* Semantic Tokens */
   --background: var(--cream);
@@ -122,6 +123,7 @@
   /* Custom colors for the brand */
   --color-navy: var(--navy);
   --color-gold: var(--gold);
+  --color-gold-text: var(--gold-text);
   --color-cream: var(--cream);
   --color-charcoal: var(--charcoal);
 }

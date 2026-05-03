@@ -62,7 +62,7 @@ export function HeroSection({
               <span
                 className={cn(
                   "inline-block text-sm font-medium uppercase tracking-widest mb-4",
-                  isPageHero ? "text-gold" : "text-navy"
+                  isPageHero ? "text-gold" : "text-gold-text"
                 )}
               >
                 {eyebrow}

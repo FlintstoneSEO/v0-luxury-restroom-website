@@ -57,7 +57,7 @@ export function FeatureGrid({
             </div>
             <h3 className="text-lg font-semibold text-navy">{feature.title}</h3>
             {feature.description && (
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+              <p className="mt-2 text-base text-muted-foreground leading-relaxed">
                 {feature.description}
               </p>
             )}
@@ -76,7 +76,7 @@ export function FeatureGrid({
           </div>
           <h3 className="text-lg font-semibold text-navy">{feature.title}</h3>
           {feature.description && (
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            <p className="mt-2 text-base text-muted-foreground leading-relaxed">
               {feature.description}
             </p>
           )}
