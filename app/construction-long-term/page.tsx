@@ -116,7 +116,7 @@ export default function ConstructionLongTermPage() {
                 />
               </div>
               <div>
-                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   Job Site Solutions
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
@@ -196,7 +196,7 @@ export default function ConstructionLongTermPage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div>
-                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   Flexible Terms
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl text-balance">

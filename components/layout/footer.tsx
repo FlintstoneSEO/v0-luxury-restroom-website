@@ -43,9 +43,9 @@ export function Footer() {
             <Image
               src="/images/logo.png"
               alt="Signature Luxe Events & Amenities"
-              width={180}
-              height={54}
-              className="h-12 w-auto mb-6 brightness-0 invert"
+              width={220}
+              height={72}
+              className="h-14 w-auto mb-6 bg-transparent"
             />
             <p className="text-white/80 text-sm leading-relaxed mb-6">
               Luxury restroom trailer rentals for weddings, private parties, corporate events, 
@@ -174,9 +174,22 @@ export function Footer() {
       {/* Copyright */}
       <div className="border-t border-white/10 bg-charcoal">
         <div className="container mx-auto px-4 lg:px-8 py-4">
-          <p className="text-center text-white/60 text-sm">
-            &copy; {currentYear} Signature Luxe Events & Amenities. All rights reserved.
-          </p>
+          <div className="text-center text-white/60 text-sm space-y-2">
+            <p>
+              &copy; {currentYear} Signature Luxe Events & Amenities. All rights reserved.
+            </p>
+            <p>
+              Designed by{' '}
+              <a
+                href="https://www.flintstoneseo.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gold hover:text-gold/80 transition-colors"
+              >
+                Flintstone SEO
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

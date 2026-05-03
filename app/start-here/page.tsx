@@ -139,7 +139,7 @@ export default function StartHerePage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div>
-                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   Setup Requirements
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl text-balance">

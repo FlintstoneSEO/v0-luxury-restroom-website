@@ -153,7 +153,7 @@ export default function GalleryPage() {
         <section className="py-20 md:py-28 bg-cream">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                 Exterior Views
               </span>
               <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
@@ -175,7 +175,7 @@ export default function GalleryPage() {
         <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                 Interior Details
               </span>
               <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
@@ -197,7 +197,7 @@ export default function GalleryPage() {
         <section className="py-20 md:py-28 bg-cream">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                 3 Station Pro
               </span>
               <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">

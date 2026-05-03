@@ -169,7 +169,7 @@ export default function WeddingsPage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 items-start">
               <div>
-                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   Benefits
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">

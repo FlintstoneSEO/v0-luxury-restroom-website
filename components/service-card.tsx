@@ -31,7 +31,7 @@ export function ServiceCard({
       <div className="relative aspect-[16/10] bg-gradient-to-br from-gold/20 to-navy/10 overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-16 h-16 rounded-full bg-white/80 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-            <Icon className="w-8 h-8 text-navy" />
+            <Icon className="w-10 h-10 text-navy" />
           </div>
         </div>
         {imagePlaceholder && (

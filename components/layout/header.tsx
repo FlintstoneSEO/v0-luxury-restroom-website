@@ -38,15 +38,19 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 lg:px-8">
+      <div className="container mx-auto flex h-20 items-center justify-between px-4 lg:px-8 relative">
+        <div className="lg:hidden w-10" />
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link
+          href="/"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0 lg:top-auto flex items-center"
+        >
           <Image
             src="/images/logo.png"
             alt="Signature Luxe Events & Amenities - Luxury Restroom Trailer Rentals in Lansing, MI"
-            width={200}
-            height={60}
-            className="h-14 w-auto"
+            width={220}
+            height={72}
+            className="h-16 w-auto max-w-[240px]"
             priority
           />
         </Link>
@@ -93,11 +97,13 @@ export function Header() {
 
         {/* Mobile Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild className="lg:hidden">
-            <Button variant="ghost" size="icon" aria-label="Open menu">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
+          <div className="lg:hidden">
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+          </div>
           <SheetContent side="right" className="w-full max-w-sm bg-white p-0">
             <div className="flex flex-col h-full">
               <div className="flex items-center justify-between p-4 border-b">

@@ -126,7 +126,7 @@ export default function SpecialEventsPage() {
         <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl mx-auto text-center">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                 Premium Solutions
               </span>
               <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
@@ -216,7 +216,7 @@ export default function SpecialEventsPage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div>
-                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   The Experience
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl text-balance">

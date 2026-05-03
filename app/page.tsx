@@ -201,7 +201,7 @@ export default function HomePage() {
                   asChild 
                   size="lg" 
                   variant="outline" 
-                  className="border-white/40 text-white hover:bg-white/10 backdrop-blur-sm"
+                  className="border-white/40 text-white hover:bg-white/10 hover:text-gold backdrop-blur-sm transition-colors"
                 >
                   <Link href="/our-restrooms">View Our Restrooms</Link>
                 </Button>
@@ -209,7 +209,7 @@ export default function HomePage() {
 
               {/* Trust Line */}
               <p className="mt-8 flex items-center gap-2 text-white/70 text-sm">
-                <MapPin className="h-4 w-4 text-gold" />
+                <MapPin className="h-5 w-5 text-gold" />
                 Based in Lansing, MI. Serving Mid-Michigan within a 2-hour radius.
               </p>
             </div>
@@ -227,7 +227,7 @@ export default function HomePage() {
         <section className="py-16 bg-white border-b border-cream">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="text-center mb-10">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                 Perfect For Any Occasion
               </span>
               <h2 className="mt-2 text-2xl font-serif font-semibold text-navy">
@@ -277,7 +277,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div>
-                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   Take a Tour
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl lg:text-5xl text-balance">
@@ -387,7 +387,7 @@ export default function HomePage() {
                 </div>
                 <div className="order-2 lg:order-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
-                    <Users className="h-4 w-4 text-navy" />
+                    <Users className="h-5 w-5 text-navy" />
                     <span className="text-sm font-medium text-navy">Perfect for 50-100 guests</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
@@ -400,19 +400,19 @@ export default function HomePage() {
                   </p>
                   <ul className="mt-6 grid grid-cols-2 gap-3">
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       1 Women&apos;s Room
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       1 Men&apos;s Room
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Climate Controlled
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Fresh Water System
                     </li>
                   </ul>
@@ -430,7 +430,7 @@ export default function HomePage() {
               <div className="grid gap-8 lg:grid-cols-2 items-center">
                 <div className="order-2 lg:order-1">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
-                    <Users className="h-4 w-4 text-navy" />
+                    <Users className="h-5 w-5 text-navy" />
                     <span className="text-sm font-medium text-navy">Perfect for 75-150 guests</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
@@ -443,19 +443,19 @@ export default function HomePage() {
                   </p>
                   <ul className="mt-6 grid grid-cols-2 gap-3">
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       1 Women&apos;s Room
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       2 Men&apos;s Rooms
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Climate Controlled
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Premium Amenities
                     </li>
                   </ul>
@@ -549,7 +549,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
-                    <Users className="h-4 w-4 text-navy" />
+                    <Users className="h-5 w-5 text-navy" />
                     <span className="text-sm font-medium text-navy">Perfect for 100-200+ guests</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
@@ -562,19 +562,19 @@ export default function HomePage() {
                   </p>
                   <ul className="mt-6 grid grid-cols-2 gap-3">
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       2 Women&apos;s Rooms
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       2 Men&apos;s Rooms
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Climate Controlled
                     </li>
                     <li className="flex items-center gap-2 text-sm text-charcoal">
-                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       High Capacity Events
                     </li>
                   </ul>
@@ -594,7 +594,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
               <div>
-                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   The Signature Luxe Difference
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl lg:text-5xl text-balance">
@@ -626,7 +626,7 @@ export default function HomePage() {
         <section className="py-20 md:py-28 bg-navy">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl mx-auto text-center">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                 Service Areas
               </span>
               <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl lg:text-5xl text-balance">
@@ -644,7 +644,7 @@ export default function HomePage() {
                   key={area}
                   className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
                 >
-                  <MapPin className="h-4 w-4 text-gold" />
+                  <MapPin className="h-5 w-5 text-gold" />
                   <span className="text-white text-sm">{area}, MI</span>
                 </div>
               ))}
@@ -654,7 +654,7 @@ export default function HomePage() {
               <Button
                 asChild
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
+                className="border-white/30 text-white hover:bg-navy/95 hover:text-gold transition-colors"
               >
                 <Link href="/service-areas">View All Service Areas</Link>
               </Button>
