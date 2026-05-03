@@ -341,13 +341,51 @@ export default function HomePage() {
             <SectionHeader
               eyebrow="Our Fleet"
               title="Choose the Perfect Trailer for Your Event"
-              description="We offer 2-station and 4-station configurations to accommodate events of all sizes."
+              description="We offer 2-station, 3-station, and 4-station configurations to accommodate events of all sizes."
             />
             
             {/* 2-Station Trailer */}
             <div className="mt-16">
               <div className="grid gap-8 lg:grid-cols-2 items-center">
-                <div className="order-2 lg:order-1">
+                <div className="order-1 lg:order-1 grid grid-cols-2 gap-4">
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion-ZzVBLsh7CDCrCrvb4zy74VpKu6WLfM.jpg"
+                      alt="2-Station trailer exterior"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion4-CFlX5FxXUKJ43DEnRyhr5BWnmbQ0p2.jpg"
+                      alt="2-Station interior with vanity and stall"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion2-XnFvvRp9dg0l3UMsQjxxTXQ6sRYgSI.jpg"
+                      alt="2-Station vanity with succulent decor"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion1-4GfdXllyd7ETnO32bWZUfthPIJilPs.jpg"
+                      alt="2-Station private stall with artwork"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                </div>
+                <div className="order-2 lg:order-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
                     <Users className="h-4 w-4 text-navy" />
                     <span className="text-sm font-medium text-navy">Perfect for 50-100 guests</span>
@@ -384,11 +422,54 @@ export default function HomePage() {
                     </Button>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* 3-Station Trailer */}
+            <div className="mt-20">
+              <div className="grid gap-8 lg:grid-cols-2 items-center">
+                <div className="order-2 lg:order-1">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
+                    <Users className="h-4 w-4 text-navy" />
+                    <span className="text-sm font-medium text-navy">Perfect for 75-150 guests</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
+                    3-Station Trailer
+                  </h3>
+                  <p className="mt-4 text-charcoal/80 leading-relaxed">
+                    Our versatile 3-station trailer offers the perfect balance of capacity and luxury,
+                    featuring one women&apos;s room and two men&apos;s rooms, or customizable configurations.
+                    Ideal for mid-sized weddings, corporate events, and community gatherings.
+                  </p>
+                  <ul className="mt-6 grid grid-cols-2 gap-3">
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      1 Women&apos;s Room
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      2 Men&apos;s Rooms
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      Climate Controlled
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      Premium Amenities
+                    </li>
+                  </ul>
+                  <div className="mt-8">
+                    <Button asChild className="bg-navy hover:bg-navy/90 text-white">
+                      <Link href="/our-restrooms#3-station">View Details</Link>
+                    </Button>
+                  </div>
+                </div>
                 <div className="order-1 lg:order-2 grid grid-cols-2 gap-4">
                   <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
                     <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion-ZzVBLsh7CDCrCrvb4zy74VpKu6WLfM.jpg"
-                      alt="2-Station trailer exterior"
+                      src="/images/3 Station Pro/3Station.jpg"
+                      alt="3-Station trailer exterior"
                       fill
                       className="object-cover"
                       sizes="(max-width: 1024px) 50vw, 25vw"
@@ -396,8 +477,8 @@ export default function HomePage() {
                   </div>
                   <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
                     <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion4-CFlX5FxXUKJ43DEnRyhr5BWnmbQ0p2.jpg"
-                      alt="2-Station interior with vanity and stall"
+                      src="/images/3 Station Pro/3Station1.jpg"
+                      alt="3-Station interior overview"
                       fill
                       className="object-cover"
                       sizes="(max-width: 1024px) 50vw, 25vw"
@@ -405,8 +486,8 @@ export default function HomePage() {
                   </div>
                   <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
                     <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion2-XnFvvRp9dg0l3UMsQjxxTXQ6sRYgSI.jpg"
-                      alt="2-Station vanity with succulent decor"
+                      src="/images/3 Station Pro/3Station2.jpg"
+                      alt="3-Station vanity with modern amenities"
                       fill
                       className="object-cover"
                       sizes="(max-width: 1024px) 50vw, 25vw"
@@ -414,8 +495,8 @@ export default function HomePage() {
                   </div>
                   <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
                     <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion1-4GfdXllyd7ETnO32bWZUfthPIJilPs.jpg"
-                      alt="2-Station private stall with artwork"
+                      src="/images/3 Station Pro/3Station3.jpg"
+                      alt="3-Station private stall"
                       fill
                       className="object-cover"
                       sizes="(max-width: 1024px) 50vw, 25vw"

@@ -84,6 +84,48 @@ const galleryImages = [
     alt: "Climate controlled restroom trailer evening event",
     category: "Exterior",
   },
+  {
+    id: "13",
+    src: "/images/3 Station Pro/3Station.jpg",
+    alt: "3 Station Pro luxury restroom trailer exterior view",
+    category: "3 Station",
+  },
+  {
+    id: "14",
+    src: "/images/3 Station Pro/3Station1.jpg",
+    alt: "3 Station Pro restroom interior with modern fixtures",
+    category: "3 Station",
+  },
+  {
+    id: "15",
+    src: "/images/3 Station Pro/3Station2.jpg",
+    alt: "3 Station Pro vanity station and amenities",
+    category: "3 Station",
+  },
+  {
+    id: "16",
+    src: "/images/3 Station Pro/3Station3.jpg",
+    alt: "3 Station Pro private flushing stalls",
+    category: "3 Station",
+  },
+  {
+    id: "17",
+    src: "/images/3 Station Pro/3Station4.jpg",
+    alt: "3 Station Pro climate control and lighting",
+    category: "3 Station",
+  },
+  {
+    id: "18",
+    src: "/images/3 Station Pro/3Station5.jpg",
+    alt: "3 Station Pro restroom trailer setup",
+    category: "3 Station",
+  },
+  {
+    id: "19",
+    src: "/images/3 Station Pro/3Station5.webp",
+    alt: "3 Station Pro luxury restroom features",
+    category: "3 Station",
+  },
 ]
 
 export default function GalleryPage() {
@@ -147,6 +189,28 @@ export default function GalleryPage() {
             <GalleryGrid
               images={galleryImages.filter((img) => img.category === "Interior")}
               columns={4}
+            />
+          </div>
+        </section>
+
+        {/* 3 Station Pro Section */}
+        <section className="py-20 md:py-28 bg-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="max-w-3xl mx-auto text-center mb-12">
+              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                3 Station Pro
+              </span>
+              <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
+                Premium 3-Station Restroom Trailer
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Our flagship 3-station restroom trailer offers the ultimate in luxury and convenience,
+                featuring climate control, modern fixtures, and spacious interiors perfect for larger events.
+              </p>
+            </div>
+            <GalleryGrid
+              images={galleryImages.filter((img) => img.category === "3 Station")}
+              columns={3}
             />
           </div>
         </section>
