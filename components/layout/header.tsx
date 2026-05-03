@@ -33,69 +33,93 @@ const navigation = [
   { name: "Contact", href: "/contact" },
 ]
 
+const leftNavigation = navigation.slice(0, 4)
+const rightNavigation = navigation.slice(4)
+
+function DesktopNavItems({ items }: { items: typeof navigation }) {
+  return (
+    <>
+      {items.map((item) =>
+        item.children ? (
+          <DropdownMenu key={item.name}>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors">
+                {item.name}
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="w-56">
+              {item.children.map((child) => (
+                <DropdownMenuItem key={child.name} asChild>
+                  <Link href={child.href} className="w-full cursor-pointer">
+                    {child.name}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Link
+            key={item.name}
+            href={item.href}
+            className="px-3 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors"
+          >
+            {item.name}
+          </Link>
+        )
+      )}
+    </>
+  )
+}
+
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 lg:px-8 relative">
+      <div className="container mx-auto flex h-24 items-center justify-between px-4 lg:px-8 relative">
         <div className="lg:hidden w-10" />
-        {/* Logo */}
+
+        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:w-full lg:gap-4">
+          <nav className="flex items-center justify-start gap-1">
+            <DesktopNavItems items={leftNavigation} />
+          </nav>
+
+          <Link href="/" className="flex items-center justify-center px-4">
+            <Image
+              src="/images/logo.png"
+              alt="Signature Luxe Events & Amenities - Luxury Restroom Trailer Rentals in Lansing, MI"
+              width={300}
+              height={98}
+              className="h-20 w-auto max-w-[320px]"
+              priority
+            />
+          </Link>
+
+          <div className="flex items-center justify-end gap-2">
+            <nav className="flex items-center gap-1">
+              <DesktopNavItems items={rightNavigation} />
+            </nav>
+            <Button asChild className="ml-2 bg-navy hover:bg-navy/90 text-white">
+              <Link href="/request-availability">Request Availability</Link>
+            </Button>
+          </div>
+        </div>
+
         <Link
           href="/"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0 lg:top-auto flex items-center"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:hidden flex items-center"
         >
           <Image
             src="/images/logo.png"
             alt="Signature Luxe Events & Amenities - Luxury Restroom Trailer Rentals in Lansing, MI"
-            width={220}
-            height={72}
-            className="h-16 w-auto max-w-[240px]"
+            width={260}
+            height={85}
+            className="h-[4.5rem] w-auto max-w-[260px]"
             priority
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1">
-          {navigation.map((item) =>
-            item.children ? (
-              <DropdownMenu key={item.name}>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors">
-                    {item.name}
-                    <ChevronDown className="h-4 w-4" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="w-56">
-                  {item.children.map((child) => (
-                    <DropdownMenuItem key={child.name} asChild>
-                      <Link href={child.href} className="w-full cursor-pointer">
-                        {child.name}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="px-4 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors"
-              >
-                {item.name}
-              </Link>
-            )
-          )}
-        </nav>
-
-        {/* CTA Button - Desktop */}
-        <div className="hidden lg:flex items-center gap-4">
-          <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-            <Link href="/request-availability">Request Availability</Link>
-          </Button>
-        </div>
-
-        {/* Mobile Menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <div className="lg:hidden">
             <SheetTrigger asChild>
@@ -110,9 +134,9 @@ export function Header() {
                 <Image
                   src="/images/logo.png"
                   alt="Signature Luxe Events & Amenities"
-                  width={150}
-                  height={45}
-                  className="h-10 w-auto"
+                  width={170}
+                  height={52}
+                  className="h-12 w-auto"
                 />
                 <SheetClose asChild>
                   <Button variant="ghost" size="icon" aria-label="Close menu">
