@@ -1,10 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
 import {
-  Heart,
-  PartyPopper,
-  HardHat,
-  ShieldCheck,
   Thermometer,
   DoorOpen,
   Sparkles,
@@ -33,28 +29,32 @@ const services = [
     description:
       "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.",
     href: "/weddings",
-    icon: Heart,
+    imageSrc: "/images/Wedding Trailer.png",
+    imageAlt: "Wedding restroom trailer setup",
   },
   {
     title: "Special Events",
     description:
       "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.",
     href: "/special-events",
-    icon: PartyPopper,
+    imageSrc: "/images/Special Event Trailer.png",
+    imageAlt: "Special event restroom trailer",
   },
   {
     title: "Construction / Long-Term",
     description:
       "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.",
     href: "/construction-long-term",
-    icon: HardHat,
+    imageSrc: "/images/Construction Site Trailer.png",
+    imageAlt: "Construction site restroom trailer",
   },
   {
     title: "Disaster Relief / Government",
     description:
       "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.",
     href: "/disaster-relief-government",
-    icon: ShieldCheck,
+    imageSrc: "/images/Disaster Relief Trailer.png",
+    imageAlt: "Disaster relief and government restroom trailer",
   },
 ]
 
@@ -201,7 +201,7 @@ export default function HomePage() {
                   asChild 
                   size="lg" 
                   variant="outline" 
-                  className="border-white/40 text-white hover:bg-white/10 hover:text-gold backdrop-blur-sm transition-colors"
+                  className="border-white/40 bg-white/95 text-navy hover:bg-white hover:text-navy backdrop-blur-sm transition-colors"
                 >
                   <Link href="/our-restrooms">View Our Restrooms</Link>
                 </Button>
@@ -227,7 +227,7 @@ export default function HomePage() {
         <section className="py-16 bg-white border-b border-cream">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="text-center mb-10">
-              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-navy">
                 Perfect For Any Occasion
               </span>
               <h2 className="mt-2 text-2xl font-serif font-semibold text-navy">
@@ -252,6 +252,22 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
+
+            <div className="mt-6 max-w-md mx-auto">
+              <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-gold/30 shadow-md">
+                <Image
+                  src="/images/MSU Tailgate Rental Restroom.png"
+                  alt="MSU tailgate restroom trailer rental"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 448px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent" />
+                <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-gold text-navy text-xs font-semibold uppercase tracking-wide">
+                  MSU Tailgates
+                </span>
+              </div>
+            </div>
             </div>
           </div>
         </section>
@@ -277,7 +293,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div>
-                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-navy">
                   Take a Tour
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl lg:text-5xl text-balance">
@@ -594,7 +610,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
               <div>
-                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
+                <span className="text-sm font-semibold uppercase tracking-widest text-navy">
                   The Signature Luxe Difference
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl lg:text-5xl text-balance">
@@ -626,13 +642,13 @@ export default function HomePage() {
         <section className="py-20 md:py-28 bg-navy">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl mx-auto text-center">
-              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
+              <span className="text-sm font-semibold uppercase tracking-widest text-navy">
                 Service Areas
               </span>
               <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl lg:text-5xl text-balance">
                 Proudly Serving Lansing and Mid-Michigan
               </h2>
-              <p className="mt-4 text-lg text-white/80 leading-relaxed">
+              <p className="mt-4 text-lg text-white/85 leading-relaxed">
                 Based in Lansing, we deliver luxury restroom trailers throughout Mid-Michigan 
                 and surrounding communities within approximately a 2-hour radius.
               </p>
