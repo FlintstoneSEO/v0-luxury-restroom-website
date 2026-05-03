@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import {
   Heart,
   PartyPopper,
@@ -12,10 +13,12 @@ import {
   Zap,
   MapPin,
   ArrowRight,
+  Play,
+  Users,
+  CheckCircle,
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { HeroSection } from "@/components/hero-section"
 import { SectionHeader } from "@/components/section-header"
 import { ServiceCard } from "@/components/service-card"
 import { FeatureGrid } from "@/components/feature-grid"
@@ -31,7 +34,6 @@ const services = [
       "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.",
     href: "/weddings",
     icon: Heart,
-    imagePlaceholder: "Wedding trailer setup",
   },
   {
     title: "Special Events",
@@ -39,7 +41,6 @@ const services = [
       "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.",
     href: "/special-events",
     icon: PartyPopper,
-    imagePlaceholder: "Event trailer exterior",
   },
   {
     title: "Construction / Long-Term",
@@ -47,7 +48,6 @@ const services = [
       "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.",
     href: "/construction-long-term",
     icon: HardHat,
-    imagePlaceholder: "Job site setup",
   },
   {
     title: "Disaster Relief / Government",
@@ -55,7 +55,6 @@ const services = [
       "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.",
     href: "/disaster-relief-government",
     icon: ShieldCheck,
-    imagePlaceholder: "Emergency deployment",
   },
 ]
 
@@ -84,8 +83,8 @@ const galleryImages = [
   },
   { 
     id: "2", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
-    alt: "Modern vanity station inside restroom trailer", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion2-XnFvvRp9dg0l3UMsQjxxTXQ6sRYgSI.jpg",
+    alt: "Modern vanity station with succulent decor", 
     category: "Interior" 
   },
   { 
@@ -96,8 +95,8 @@ const galleryImages = [
   },
   { 
     id: "4", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg",
-    alt: "Climate controlled restroom trailer interior", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion2-TjkXrrTaVwy3CswhDQSAdCK80Grr59.jpg",
+    alt: "4-Station vanity with succulent artwork", 
     category: "Interior" 
   },
   { 
@@ -108,9 +107,9 @@ const galleryImages = [
   },
   { 
     id: "6", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
-    alt: "Restroom trailer setup at Michigan event venue", 
-    category: "Events" 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion4-CFlX5FxXUKJ43DEnRyhr5BWnmbQ0p2.jpg",
+    alt: "2-Station interior with tree ring artwork", 
+    category: "Interior" 
   },
 ]
 
@@ -130,22 +129,132 @@ const serviceAreas = [
   "Ann Arbor",
 ]
 
+// Event scenario images for hero showcase
+const eventScenarios = [
+  {
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
+    alt: "Wedding reception with luxury trailer",
+    label: "Weddings"
+  },
+  {
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
+    alt: "Backyard party event",
+    label: "Parties"
+  },
+  {
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_08_15%20PM-V96pFxXSvB2cRlUNAjQtbfMvGB7ejF.png",
+    alt: "Construction site setup",
+    label: "Construction"
+  },
+  {
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png",
+    alt: "Corporate gala event",
+    label: "Events"
+  },
+]
+
 export default function HomePage() {
   return (
     <>
       <Header />
       <main>
-        {/* Hero Section */}
-        <HeroSection
-          eyebrow="Luxury Restroom Trailer Rentals"
-          title="Luxury Restroom Trailer Rentals in Lansing, MI"
-          description="Clean, modern, climate-controlled restroom trailers for weddings, private parties, corporate events, festivals, construction sites, long-term rentals, and government needs throughout Lansing and Mid-Michigan."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
-          secondaryCta={{ text: "View Our Restrooms", href: "/our-restrooms" }}
-          trustLine="Based in Lansing, MI. Serving Mid-Michigan and surrounding communities within a 2-hour radius."
-          imageSrc="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_57_05%20PM-andQKOFMNL27uuWQLGIkidESuYaaAs.png"
-          imageAlt="Luxury restroom trailer at elegant outdoor wedding reception"
-        />
+        {/* Full-Screen Hero with Background Image */}
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_57_05%20PM-andQKOFMNL27uuWQLGIkidESuYaaAs.png"
+              alt="Luxury restroom trailer at elegant outdoor wedding reception with string lights"
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+            {/* Semi-transparent overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-navy/50" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-navy/30" />
+          </div>
+
+          {/* Hero Content */}
+          <div className="relative z-10 container mx-auto px-4 lg:px-8 py-32">
+            <div className="max-w-3xl">
+              <span className="inline-block px-4 py-1.5 bg-gold/20 backdrop-blur-sm border border-gold/30 rounded-full text-sm font-medium text-gold mb-6">
+                Luxury Restroom Trailer Rentals
+              </span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-white leading-tight text-balance">
+                Elevate Your Event with Premium Restroom Trailers
+              </h1>
+              <p className="mt-6 text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl text-pretty">
+                Clean, modern, climate-controlled restroom trailers for weddings, private parties, 
+                corporate events, construction sites, and more throughout Lansing and Mid-Michigan.
+              </p>
+              
+              {/* CTA Buttons */}
+              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <Button asChild size="lg" className="bg-gold hover:bg-gold/90 text-navy font-semibold px-8">
+                  <Link href="/request-availability">
+                    Request Availability
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button 
+                  asChild 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-white/40 text-white hover:bg-white/10 backdrop-blur-sm"
+                >
+                  <Link href="/our-restrooms">View Our Restrooms</Link>
+                </Button>
+              </div>
+
+              {/* Trust Line */}
+              <p className="mt-8 flex items-center gap-2 text-white/70 text-sm">
+                <MapPin className="h-4 w-4 text-gold" />
+                Based in Lansing, MI. Serving Mid-Michigan within a 2-hour radius.
+              </p>
+            </div>
+          </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <div className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center pt-2">
+              <div className="w-1.5 h-3 bg-gold rounded-full" />
+            </div>
+          </div>
+        </section>
+
+        {/* Event Scenarios Showcase */}
+        <section className="py-16 bg-white border-b border-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="text-center mb-10">
+              <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                Perfect For Any Occasion
+              </span>
+              <h2 className="mt-2 text-2xl font-serif font-semibold text-navy">
+                From Elegant Weddings to Job Sites
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {eventScenarios.map((scenario, index) => (
+                <div key={index} className="group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer">
+                  <Image
+                    src={scenario.src}
+                    alt={scenario.alt}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4">
+                    <span className="px-3 py-1 bg-gold/90 text-navy text-sm font-medium rounded-full">
+                      {scenario.label}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Services Section */}
         <section className="py-20 md:py-28 bg-white">
@@ -163,8 +272,244 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* The Signature Luxe Difference */}
+        {/* Video Walkthrough Section */}
+        <section className="py-20 md:py-28 bg-navy">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="grid gap-12 lg:grid-cols-2 items-center">
+              <div>
+                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                  Take a Tour
+                </span>
+                <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl lg:text-5xl text-balance">
+                  See Inside Our 3-Station Trailer
+                </h2>
+                <p className="mt-6 text-lg text-white/80 leading-relaxed">
+                  Watch a complete walkthrough of our most popular 3-station luxury restroom trailer. 
+                  See the modern finishes, private stalls, climate control system, and all the 
+                  amenities that make our trailers stand out.
+                </p>
+                <ul className="mt-8 space-y-4">
+                  <li className="flex items-center gap-3 text-white/90">
+                    <CheckCircle className="h-5 w-5 text-gold shrink-0" />
+                    <span>2 Women&apos;s rooms + 1 Men&apos;s room</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-white/90">
+                    <CheckCircle className="h-5 w-5 text-gold shrink-0" />
+                    <span>Private flushing toilets in each stall</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-white/90">
+                    <CheckCircle className="h-5 w-5 text-gold shrink-0" />
+                    <span>Modern vanities with stainless sinks</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-white/90">
+                    <CheckCircle className="h-5 w-5 text-gold shrink-0" />
+                    <span>Climate controlled for year-round comfort</span>
+                  </li>
+                </ul>
+                <div className="mt-8">
+                  <Button asChild className="bg-gold hover:bg-gold/90 text-navy font-semibold">
+                    <Link href="/our-restrooms">
+                      Explore All Trailer Options
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+              
+              {/* YouTube Video Embed */}
+              <div className="relative">
+                <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-charcoal">
+                  <iframe
+                    src="https://www.youtube.com/embed/hLe4XRdC8Po?si=N-55fBuo4om40kYX"
+                    title="3-Station Luxury Restroom Trailer Walkthrough"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                </div>
+                {/* Decorative elements */}
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gold/20 rounded-full blur-2xl" />
+                <div className="absolute -top-4 -left-4 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Trailer Options Showcase */}
         <section className="py-20 md:py-28 bg-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <SectionHeader
+              eyebrow="Our Fleet"
+              title="Choose the Perfect Trailer for Your Event"
+              description="We offer 2-station and 4-station configurations to accommodate events of all sizes."
+            />
+            
+            {/* 2-Station Trailer */}
+            <div className="mt-16">
+              <div className="grid gap-8 lg:grid-cols-2 items-center">
+                <div className="order-2 lg:order-1">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
+                    <Users className="h-4 w-4 text-navy" />
+                    <span className="text-sm font-medium text-navy">Perfect for 50-100 guests</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
+                    2-Station Trailer
+                  </h3>
+                  <p className="mt-4 text-charcoal/80 leading-relaxed">
+                    Our compact 2-station trailer features one women&apos;s room and one men&apos;s room, 
+                    each with private stalls, modern vanities, and climate control. Ideal for 
+                    intimate weddings, small parties, and residential events.
+                  </p>
+                  <ul className="mt-6 grid grid-cols-2 gap-3">
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      1 Women&apos;s Room
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      1 Men&apos;s Room
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      Climate Controlled
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      Fresh Water System
+                    </li>
+                  </ul>
+                  <div className="mt-8">
+                    <Button asChild className="bg-navy hover:bg-navy/90 text-white">
+                      <Link href="/our-restrooms#2-station">View Details</Link>
+                    </Button>
+                  </div>
+                </div>
+                <div className="order-1 lg:order-2 grid grid-cols-2 gap-4">
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion-ZzVBLsh7CDCrCrvb4zy74VpKu6WLfM.jpg"
+                      alt="2-Station trailer exterior"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion4-CFlX5FxXUKJ43DEnRyhr5BWnmbQ0p2.jpg"
+                      alt="2-Station interior with vanity and stall"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion2-XnFvvRp9dg0l3UMsQjxxTXQ6sRYgSI.jpg"
+                      alt="2-Station vanity with succulent decor"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion1-4GfdXllyd7ETnO32bWZUfthPIJilPs.jpg"
+                      alt="2-Station private stall with artwork"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 4-Station Trailer */}
+            <div className="mt-20">
+              <div className="grid gap-8 lg:grid-cols-2 items-center">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion-reeAizT4CMrw1A2cNJMJrJzkCyVzvD.jpg"
+                      alt="4-Station trailer exterior"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion1-Vgb2lLAmjazOrZaf0jRCtPD6XnwkZr.jpg"
+                      alt="4-Station interior overview"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion2-TjkXrrTaVwy3CswhDQSAdCK80Grr59.jpg"
+                      alt="4-Station vanity with succulent artwork"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion3-2zdfq5PwGMaOVIZemEogYgoK88AZVC.jpg"
+                      alt="4-Station private stall"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
+                    <Users className="h-4 w-4 text-navy" />
+                    <span className="text-sm font-medium text-navy">Perfect for 100-200+ guests</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
+                    4-Station Trailer
+                  </h3>
+                  <p className="mt-4 text-charcoal/80 leading-relaxed">
+                    Our larger 4-station trailer features two women&apos;s rooms and two men&apos;s rooms, 
+                    providing ample capacity for larger events. Each station includes private stalls, 
+                    modern vanities with succulent artwork, and full climate control.
+                  </p>
+                  <ul className="mt-6 grid grid-cols-2 gap-3">
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      2 Women&apos;s Rooms
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      2 Men&apos;s Rooms
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      Climate Controlled
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                      <CheckCircle className="h-4 w-4 text-navy shrink-0" />
+                      High Capacity Events
+                    </li>
+                  </ul>
+                  <div className="mt-8">
+                    <Button asChild className="bg-navy hover:bg-navy/90 text-white">
+                      <Link href="/our-restrooms#4-station">View Details</Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* The Signature Luxe Difference */}
+        <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
               <div>
@@ -189,7 +534,7 @@ export default function HomePage() {
                   </Button>
                 </div>
               </div>
-              <div className="bg-white rounded-2xl p-8 shadow-sm">
+              <div className="bg-cream rounded-2xl p-8 shadow-sm">
                 <FeatureGrid features={features} columns={2} variant="compact" />
               </div>
             </div>
