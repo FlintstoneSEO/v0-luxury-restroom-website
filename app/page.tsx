@@ -670,7 +670,7 @@ export default function HomePage() {
               <Button
                 asChild
                 variant="outline"
-                className="border-white/30 text-white hover:bg-navy/95 hover:text-gold transition-colors"
+                className="border-white/30 bg-transparent text-white hover:bg-navy/95 hover:text-gold transition-colors"
               >
                 <Link href="/service-areas">View All Service Areas</Link>
               </Button>
