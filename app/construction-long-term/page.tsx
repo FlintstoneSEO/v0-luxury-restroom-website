@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import {
   HardHat,
   Building2,
@@ -101,24 +102,61 @@ export default function ConstructionLongTermPage() {
           primaryCta={{ text: "Request Availability", href: "/request-availability" }}
         />
 
-        {/* Practical Solutions */}
+        {/* Practical Solutions with Image */}
         <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
-            <div className="max-w-3xl mx-auto text-center">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
-                Job Site Solutions
-              </span>
-              <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
-                Practical Restroom Solutions for Job Sites
-              </h2>
-              <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                When your project needs more than standard portable restrooms, our 
-                trailers provide a clean, comfortable, and professional solution that 
-                keeps your crew happy and your site running smoothly.
-              </p>
+            <div className="grid gap-12 lg:grid-cols-2 items-center">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_58_08%20PM-FAtMzJ1Zh8G59v1YcrSx4668yP3wxb.png"
+                  alt="Restroom trailer at construction site with workers"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <div>
+                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                  Job Site Solutions
+                </span>
+                <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
+                  Practical Restroom Solutions for Job Sites
+                </h2>
+                <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+                  When your project needs more than standard portable restrooms, our 
+                  trailers provide a clean, comfortable, and professional solution that 
+                  keeps your crew happy and your site running smoothly.
+                </p>
+                <div className="mt-8">
+                  <FeatureGrid features={features} columns={1} variant="compact" />
+                </div>
+              </div>
             </div>
-            <div className="mt-12">
-              <FeatureGrid features={features} columns={3} variant="card" />
+          </div>
+        </section>
+
+        {/* Additional Construction Image */}
+        <section className="py-20 md:py-28 bg-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="grid gap-8 md:grid-cols-2">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_16_57%20PM-VpBHEub4XY4h723FyEp7D51P1xr0DC.png"
+                  alt="Restroom trailer at active construction site"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_08_15%20PM-V96pFxXSvB2cRlUNAjQtbfMvGB7ejF.png"
+                  alt="Restroom trailer at construction site with flowers"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
             </div>
           </div>
         </section>

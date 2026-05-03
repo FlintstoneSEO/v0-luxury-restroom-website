@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import {
   PartyPopper,
   Building2,
@@ -143,8 +144,43 @@ export default function SpecialEventsPage() {
           </div>
         </section>
 
-        {/* Event Types */}
+        {/* Event Image Gallery */}
         <section className="py-20 md:py-28 bg-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png"
+                  alt="Restroom trailer at benefit gala event"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png"
+                  alt="Restroom trailer at backyard party"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_56_46%20PM-H2xCmMMND6AksTZG4HA9OHuDL07tY3.png"
+                  alt="Restroom trailer at outdoor festival"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Event Types */}
+        <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
             <SectionHeader
               eyebrow="Ideal For"

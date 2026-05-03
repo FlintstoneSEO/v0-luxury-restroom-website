@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -12,6 +13,7 @@ import {
 
 interface GalleryImage {
   id: string
+  src: string
   alt: string
   category?: string
 }
@@ -38,32 +40,19 @@ export function GalleryGrid({
   return (
     <>
       <div className={cn("grid gap-4", columnClasses[columns], className)}>
-        {images.map((image, index) => (
+        {images.map((image) => (
           <button
             key={image.id}
             onClick={() => setSelectedImage(image)}
-            className="group relative aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-gold/20 to-navy/10 shadow-sm hover:shadow-lg transition-all duration-300"
+            className="group relative aspect-[4/3] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
           >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center p-4">
-                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-white/80 flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-navy"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-xs text-navy/60">{image.alt}</p>
-              </div>
-            </div>
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
             {image.category && (
               <span className="absolute top-3 left-3 text-xs bg-white/90 text-navy px-2 py-1 rounded-full">
                 {image.category}
@@ -87,26 +76,17 @@ export function GalleryGrid({
                 <X className="h-5 w-5" />
               </Button>
             </DialogClose>
-            <div className="aspect-[4/3] bg-gradient-to-br from-gold/20 to-navy/10 flex items-center justify-center">
-              <div className="text-center p-8">
-                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/80 flex items-center justify-center">
-                  <svg
-                    className="w-10 h-10 text-navy"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-navy">{selectedImage?.alt}</p>
+            {selectedImage && (
+              <div className="relative aspect-[4/3]">
+                <Image
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 80vw"
+                />
               </div>
-            </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

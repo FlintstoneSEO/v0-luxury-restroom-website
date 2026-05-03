@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -15,7 +16,8 @@ interface HeroSectionProps {
     href: string
   }
   trustLine?: string
-  imagePlaceholder?: string
+  imageSrc?: string
+  imageAlt?: string
   variant?: "default" | "page"
   className?: string
 }
@@ -27,7 +29,8 @@ export function HeroSection({
   primaryCta,
   secondaryCta,
   trustLine,
-  imagePlaceholder,
+  imageSrc,
+  imageAlt = "Luxury restroom trailer",
   variant = "default",
   className,
 }: HeroSectionProps) {
@@ -133,29 +136,17 @@ export function HeroSection({
             )}
           </div>
 
-          {/* Image Placeholder */}
-          {!isPageHero && imagePlaceholder && (
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-navy/5 shadow-2xl">
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gold/20 to-navy/10">
-                <div className="text-center p-8">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gold/20 flex items-center justify-center">
-                    <svg
-                      className="w-8 h-8 text-navy"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <p className="text-sm text-navy/60">{imagePlaceholder}</p>
-                </div>
-              </div>
+          {/* Image */}
+          {!isPageHero && imageSrc && (
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                src={imageSrc}
+                alt={imageAlt}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
           )}
         </div>

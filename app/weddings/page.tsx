@@ -86,10 +86,30 @@ const weddingBenefits = [
 ]
 
 const weddingGallery = [
-  { id: "w1", alt: "Wedding restroom trailer rental Lansing Michigan", category: "Weddings" },
-  { id: "w2", alt: "Luxury restroom trailer at barn wedding Mid-Michigan", category: "Weddings" },
-  { id: "w3", alt: "Climate controlled restroom trailer interior wedding", category: "Interior" },
-  { id: "w4", alt: "Modern vanity station wedding restroom trailer", category: "Interior" },
+  { 
+    id: "w1", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
+    alt: "Wedding restroom trailer rental Lansing Michigan", 
+    category: "Weddings" 
+  },
+  { 
+    id: "w2", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_57_05%20PM-andQKOFMNL27uuWQLGIkidESuYaaAs.png",
+    alt: "Luxury restroom trailer at elegant wedding reception", 
+    category: "Weddings" 
+  },
+  { 
+    id: "w3", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f8c856e0-44a2-4c9a-990c-09e671fee136-VkgBsnTDKck69SOzLmlIYiSb3zZeAS.png",
+    alt: "Restroom trailer at garden estate wedding", 
+    category: "Weddings" 
+  },
+  { 
+    id: "w4", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
+    alt: "Modern vanity station wedding restroom trailer", 
+    category: "Interior" 
+  },
 ]
 
 const weddingFaqs = [

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import {
   ShieldCheck,
   Building,
@@ -113,24 +114,35 @@ export default function DisasterReliefGovernmentPage() {
           primaryCta={{ text: "Request Availability", href: "/request-availability" }}
         />
 
-        {/* Reliable Support */}
+        {/* Reliable Support with Image */}
         <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
-            <div className="max-w-3xl mx-auto text-center">
-              <span className="text-sm font-medium uppercase tracking-widest text-gold">
-                Dependable Solutions
-              </span>
-              <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
-                Reliable Restroom Support When It Matters Most
-              </h2>
-              <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                When communities face emergencies or governments need temporary 
-                infrastructure, our restroom trailers provide clean, comfortable, 
-                and professional facilities that serve the public with dignity.
-              </p>
-            </div>
-            <div className="mt-12">
-              <FeatureGrid features={features} columns={3} variant="card" />
+            <div className="grid gap-12 lg:grid-cols-2 items-center">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_58_47%20PM-aeanHamx6Bc8VgDx2TG32Sq4iDkyVF.png"
+                  alt="Restroom trailer at FEMA emergency response site"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <div>
+                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                  Dependable Solutions
+                </span>
+                <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
+                  Reliable Restroom Support When It Matters Most
+                </h2>
+                <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+                  When communities face emergencies or governments need temporary 
+                  infrastructure, our restroom trailers provide clean, comfortable, 
+                  and professional facilities that serve the public with dignity.
+                </p>
+                <div className="mt-8">
+                  <FeatureGrid features={features} columns={1} variant="compact" />
+                </div>
+              </div>
             </div>
           </div>
         </section>

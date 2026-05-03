@@ -76,12 +76,42 @@ const processSteps = [
 ]
 
 const galleryImages = [
-  { id: "1", alt: "Luxury restroom trailer exterior in Lansing Michigan", category: "Exterior" },
-  { id: "2", alt: "Climate controlled restroom trailer interior", category: "Interior" },
-  { id: "3", alt: "Wedding restroom trailer rental in Mid-Michigan", category: "Weddings" },
-  { id: "4", alt: "Modern vanity station inside restroom trailer", category: "Interior" },
-  { id: "5", alt: "Mobile restroom trailer for outdoor events", category: "Exterior" },
-  { id: "6", alt: "Restroom trailer setup at Michigan event venue", category: "Events" },
+  { 
+    id: "1", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg",
+    alt: "Luxury restroom trailer exterior in Lansing Michigan", 
+    category: "Exterior" 
+  },
+  { 
+    id: "2", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
+    alt: "Modern vanity station inside restroom trailer", 
+    category: "Interior" 
+  },
+  { 
+    id: "3", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
+    alt: "Wedding restroom trailer rental in Mid-Michigan", 
+    category: "Weddings" 
+  },
+  { 
+    id: "4", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg",
+    alt: "Climate controlled restroom trailer interior", 
+    category: "Interior" 
+  },
+  { 
+    id: "5", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_19_19%20PM-flItPBW2CyM2JXe8YJpcXdcdJRxIOb.png",
+    alt: "Mobile restroom trailer for outdoor events", 
+    category: "Events" 
+  },
+  { 
+    id: "6", 
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
+    alt: "Restroom trailer setup at Michigan event venue", 
+    category: "Events" 
+  },
 ]
 
 const serviceAreas = [
@@ -113,7 +143,8 @@ export default function HomePage() {
           primaryCta={{ text: "Request Availability", href: "/request-availability" }}
           secondaryCta={{ text: "View Our Restrooms", href: "/our-restrooms" }}
           trustLine="Based in Lansing, MI. Serving Mid-Michigan and surrounding communities within a 2-hour radius."
-          imagePlaceholder="Luxury restroom trailer exterior"
+          imageSrc="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_57_05%20PM-andQKOFMNL27uuWQLGIkidESuYaaAs.png"
+          imageAlt="Luxury restroom trailer at elegant outdoor wedding reception"
         />
 
         {/* Services Section */}

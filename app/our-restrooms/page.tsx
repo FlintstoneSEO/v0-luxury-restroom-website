@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import {
   Thermometer,
   DoorOpen,
@@ -15,6 +16,7 @@ import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/hero-section"
 import { SectionHeader } from "@/components/section-header"
 import { FeatureGrid } from "@/components/feature-grid"
+import { GalleryGrid } from "@/components/gallery-grid"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -125,6 +127,33 @@ const amenities = [
   "Fresh water tank options available when needed",
 ]
 
+const interiorGallery = [
+  {
+    id: "int1",
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
+    alt: "Modern vanity station with mirror and succulent decor",
+    category: "Vanity"
+  },
+  {
+    id: "int2",
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg",
+    alt: "Bright vanity area with tree ring artwork",
+    category: "Vanity"
+  },
+  {
+    id: "int3",
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03520-SllxtiCxRUBTroLepm40y033UcPvDf.jpg",
+    alt: "Private restroom stall with flushing toilet",
+    category: "Stall"
+  },
+  {
+    id: "int4",
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03401-zJLPWwUHkUivbGQTOGaiePJW9U8rli.jpg",
+    alt: "Men's room with urinal and toilet",
+    category: "Interior"
+  },
+]
+
 export default function OurRestroomsPage() {
   return (
     <>
@@ -218,6 +247,104 @@ export default function OurRestroomsPage() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Interior Gallery */}
+        <section className="py-20 md:py-28 bg-white">
+          <div className="container mx-auto px-4 lg:px-8">
+            <SectionHeader
+              eyebrow="Interior Details"
+              title="Step Inside Our Trailers"
+              description="Modern finishes, private stalls, and thoughtful details create a comfortable guest experience."
+            />
+            <div className="mt-12">
+              <GalleryGrid images={interiorGallery} columns={4} />
+            </div>
+          </div>
+        </section>
+
+        {/* Floor Plan Section */}
+        <section className="py-20 md:py-28 bg-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="grid gap-12 lg:grid-cols-2 items-center">
+              <div>
+                <span className="text-sm font-medium uppercase tracking-widest text-gold">
+                  Floor Plan
+                </span>
+                <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl text-balance">
+                  3-Station Trailer Layout
+                </h2>
+                <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+                  Our most popular configuration features two women&apos;s rooms and one men&apos;s room, 
+                  each with a private stall, vanity area, and flushing toilet. The mechanical room 
+                  houses the fresh water tank and electrical systems.
+                </p>
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-navy shrink-0" />
+                    <span className="text-charcoal">2 Women&apos;s private restrooms</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-navy shrink-0" />
+                    <span className="text-charcoal">1 Men&apos;s private restroom with urinal</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-navy shrink-0" />
+                    <span className="text-charcoal">Built-in fresh water tank</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-navy shrink-0" />
+                    <span className="text-charcoal">Climate control system</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="relative bg-white rounded-2xl p-6 shadow-sm">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Floor-Plan-12--3-ECO-E8LdGCh5vDiR48gqS3HfZ3hU9CWEff.png"
+                  alt="3-Station restroom trailer floor plan showing layout"
+                  width={800}
+                  height={500}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Exterior Gallery */}
+        <section className="py-20 md:py-28 bg-white">
+          <div className="container mx-auto px-4 lg:px-8">
+            <SectionHeader
+              eyebrow="Exterior"
+              title="Professional Appearance for Any Event"
+              description="Our trailers feature a clean, modern exterior that complements any event setting."
+            />
+            <div className="mt-12">
+              <GalleryGrid 
+                images={[
+                  {
+                    id: "ext1",
+                    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg",
+                    alt: "Professional exterior view of restroom trailer",
+                    category: "Exterior"
+                  },
+                  {
+                    id: "ext2",
+                    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_19_19%20PM-flItPBW2CyM2JXe8YJpcXdcdJRxIOb.png",
+                    alt: "Restroom trailer at evening event with string lights",
+                    category: "Events"
+                  },
+                  {
+                    id: "ext3",
+                    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
+                    alt: "Restroom trailer at backyard party",
+                    category: "Events"
+                  },
+                ]} 
+                columns={3} 
+              />
             </div>
           </div>
         </section>
