@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { Resend } from 'resend';
 import { calculateQuotePrice, formatCurrency } from '@/lib/pricing-engine';
+import { calculateDistance } from '@/lib/distance-calculator';
 
 export interface RequestAvailabilityState {
   success: boolean;
@@ -13,25 +14,6 @@ export interface RequestAvailabilityState {
 
 // Initialize Resend (will gracefully fail if API key not set)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-
-// Base location for distance calculation (Signature Luxe headquarters)
-const BASE_LOCATION = {
-  lat: 42.4855,  // Example: Somewhere in Michigan
-  lng: -83.3753,
-};
-
-// Simple distance estimation based on ZIP code (rough Michigan ZIP zones)
-function estimateDistanceFromZip(zipCode: string): number {
-  const zip = parseInt(zipCode?.slice(0, 3) || '0', 10);
-  
-  // Michigan ZIP code ranges and approximate distances from base
-  if (zip >= 480 && zip <= 489) return 25;  // Detroit metro area
-  if (zip >= 490 && zip <= 499) return 60;  // Western Michigan
-  if (zip >= 486 && zip <= 487) return 80;  // Northern Lower Michigan
-  if (zip >= 496 && zip <= 499) return 120; // Upper Peninsula
-  
-  return 40; // Default for unknown/out of state
-}
 
 // Parse address to extract city, state, zip
 function parseAddress(address: string): { city: string; state: string; zipCode: string } {
@@ -92,9 +74,21 @@ export async function submitRequestAvailability(
     // Parse location for city, state, zip
     const { city, state, zipCode } = parseAddress(location);
     
+    // Calculate actual distance using Google Maps Distance Matrix API
+    const originAddress = process.env.BUSINESS_ORIGIN_ADDRESS || '4463 Helmsway Dr, Lansing, MI 48911';
+    let distanceMiles = 30; // Default fallback
+    
+    try {
+      distanceMiles = await calculateDistance(originAddress, location);
+      console.log(`[v0] Calculated distance from ${originAddress} to ${location}: ${distanceMiles} miles`);
+    } catch (distanceError) {
+      console.error('[v0] Distance calculation error:', distanceError);
+      // Fallback to default 30 miles if API fails
+      console.log('[v0] Using default distance of 30 miles');
+    }
+    
     // Estimate distance and calculate pricing
     const guestCount = guestCountStr ? parseInt(guestCountStr, 10) : 100; // Default to 100 guests
-    const distanceMiles = estimateDistanceFromZip(zipCode);
     const hasPower = powerAvailable === 'yes';
     const hasWater = waterAvailable === 'yes';
     const eventEndTime = endTime || '22:00'; // Default to 10 PM if not specified

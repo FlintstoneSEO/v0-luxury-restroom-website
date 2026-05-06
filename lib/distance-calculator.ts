@@ -2,16 +2,16 @@
 
 /**
  * Calculate distance between origin and destination using Google Maps Distance Matrix API
+ * @param origin - Starting address (from BUSINESS_ORIGIN_ADDRESS)
  * @param destination - Customer's event address
  * @returns Distance in miles
  */
-export async function calculateDistance(destination: string): Promise<number> {
-  const origin = process.env.BUSINESS_ORIGIN_ADDRESS || '4463 Helmsway Dr, Lansing, MI 48911'
+export async function calculateDistance(origin: string, destination: string): Promise<number> {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
   if (!apiKey) {
     console.error('[v0] Google Maps API key not found, using fallback distance estimation')
-    return 0
+    return 30 // Default fallback
   }
 
   try {
@@ -31,12 +31,12 @@ export async function calculateDistance(destination: string): Promise<number> {
 
     if (data.status !== 'OK') {
       console.error('[v0] Distance Matrix API error:', data.error_message || data.status)
-      return 0
+      return 30 // Default fallback
     }
 
     if (data.rows?.[0]?.elements?.[0]?.status !== 'OK') {
       console.error('[v0] No route found between addresses')
-      return 0
+      return 30 // Default fallback
     }
 
     const distanceInMeters = data.rows[0].elements[0].distance.value
@@ -51,6 +51,6 @@ export async function calculateDistance(destination: string): Promise<number> {
     return parseFloat(distanceInMiles.toFixed(2))
   } catch (error) {
     console.error('[v0] Distance calculation error:', error)
-    return 0
+    return 30 // Default fallback
   }
 }
