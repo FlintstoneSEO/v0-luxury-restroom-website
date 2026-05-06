@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -15,6 +15,9 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { CheckCircle } from "lucide-react"
 import { submitRequestAvailability, RequestAvailabilityState } from "@/app/actions/request-availability"
+import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from "@reach/combobox"
+import usePlacesAutocomplete, { getGeoDetails } from "use-places-autocomplete"
+import "@reach/combobox/styles.css"
 
 const eventTypes = [
   { value: "wedding", label: "Wedding" },
@@ -37,8 +40,69 @@ const initialState: RequestAvailabilityState = {
   message: '',
 }
 
+function AddressAutocomplete({
+  onAddressSelect,
+  error,
+}: {
+  onAddressSelect: (address: string) => void
+  error?: string[]
+}) {
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    requestOptions: {
+      componentRestrictions: { country: "us" },
+    },
+    debounce: 300,
+  })
+
+  const handleSelect = async (description: string) => {
+    setValue(description, false)
+    clearSuggestions()
+    onAddressSelect(description)
+  }
+
+  return (
+    <div className="relative">
+      <Combobox onSelect={handleSelect}>
+        <ComboboxInput
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          disabled={!ready}
+          placeholder="Search for your event address..."
+          className={`w-full px-3 py-2 border rounded-md bg-background text-base md:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+            error ? "border-red-500" : "border-input"
+          }`}
+        />
+        {status === "OK" && (
+          <ComboboxPopover>
+            <ComboboxList>
+              {data.map(({ place_id, description }) => (
+                <ComboboxOption key={place_id} value={description}>
+                  {description}
+                </ComboboxOption>
+              ))}
+            </ComboboxList>
+          </ComboboxPopover>
+        )}
+      </Combobox>
+      {error && <p className="text-sm text-red-600 mt-1">{error[0]}</p>}
+    </div>
+  )
+}
+
 export function RequestAvailabilityForm() {
   const [state, formAction, isPending] = useActionState(submitRequestAvailability, initialState)
+  const [locationValue, setLocationValue] = useState("")
+
+  const handleSubmit = async (formData: FormData) => {
+    formData.set("location", locationValue)
+    formAction(formData)
+  }
 
   if (state.success) {
     return (
@@ -58,7 +122,7 @@ export function RequestAvailabilityForm() {
   }
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form action={handleSubmit} className="space-y-6">
       {state.message && !state.success && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-800 font-medium">{state.message}</p>
@@ -152,18 +216,13 @@ export function RequestAvailabilityForm() {
         </Field>
       </div>
 
-      {/* Location */}
+      {/* Location with Address Autocomplete */}
       <Field>
         <FieldLabel htmlFor="location">Event Location / Address *</FieldLabel>
-        <Input
-          id="location"
-          name="location"
-          required
-          placeholder="Full address or venue name"
+        <AddressAutocomplete
+          onAddressSelect={setLocationValue}
+          error={state.errors?.location}
         />
-        {state.errors?.location && (
-          <p className="text-sm text-red-600 mt-1">{state.errors.location[0]}</p>
-        )}
       </Field>
 
       {/* Guest Count and Times */}
