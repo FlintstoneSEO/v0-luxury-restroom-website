@@ -113,9 +113,15 @@ export function RequestAvailabilityForm() {
         <h3 className="text-2xl font-serif font-semibold text-navy mb-2">
           Request Received!
         </h3>
+        {state.quoteNumber && (
+          <p className="text-amber-600 font-semibold mb-4">
+            Quote Number: {state.quoteNumber}
+          </p>
+        )}
         <p className="text-muted-foreground max-w-md mx-auto">
-          Thank you for your interest. We&apos;ll review your event details and send
-          you a custom proposal within 1-2 business days.
+          Thank you for your interest! Your custom quote has been generated. We&apos;ll 
+          review your event details and contact you within 1-2 business days to finalize 
+          your reservation.
         </p>
       </div>
     )
