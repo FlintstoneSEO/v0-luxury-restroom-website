@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState, useState } from "react"
+import type { ChangeEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -16,7 +17,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { CheckCircle } from "lucide-react"
 import { submitRequestAvailability, RequestAvailabilityState } from "@/app/actions/request-availability"
 import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from "@reach/combobox"
-import usePlacesAutocomplete, { getGeoDetails } from "use-places-autocomplete"
+import usePlacesAutocomplete from "use-places-autocomplete"
 import "@reach/combobox/styles.css"
 
 const eventTypes = [
@@ -41,15 +42,16 @@ const initialState: RequestAvailabilityState = {
 }
 
 function AddressAutocomplete({
+  value,
   onAddressSelect,
   error,
 }: {
+  value: string
   onAddressSelect: (address: string) => void
   error?: string[]
 }) {
   const {
     ready,
-    value,
     suggestions: { status, data },
     setValue,
     clearSuggestions,
@@ -66,12 +68,18 @@ function AddressAutocomplete({
     onAddressSelect(description)
   }
 
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value
+    setValue(nextValue)
+    onAddressSelect(nextValue)
+  }
+
   return (
     <div className="relative">
       <Combobox onSelect={handleSelect}>
         <ComboboxInput
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={handleChange}
           disabled={!ready}
           placeholder="Search for your event address..."
           className={`w-full px-3 py-2 border rounded-md bg-background text-base md:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50 ${
@@ -226,6 +234,7 @@ export function RequestAvailabilityForm() {
       <Field>
         <FieldLabel htmlFor="location">Event Location / Address *</FieldLabel>
         <AddressAutocomplete
+          value={locationValue}
           onAddressSelect={setLocationValue}
           error={state.errors?.location}
         />

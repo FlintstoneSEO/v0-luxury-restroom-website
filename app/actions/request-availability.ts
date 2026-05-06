@@ -102,14 +102,56 @@ export async function submitRequestAvailability(
       eventEndTime
     );
 
-    // Insert into availability_requests table (without .select() to avoid RLS issues)
+    const quotePayload = {
+      customer_name: `${firstName.trim()} ${lastName.trim()}`,
+      phone: phone.trim(),
+      email: email.trim().toLowerCase(),
+      event_date: eventDate,
+      event_type: eventType,
+      guest_count: guestCount,
+      event_address: location.trim(),
+      city: city,
+      state: state,
+      zip_code: zipCode,
+      event_start_time: startTime || '12:00',
+      event_end_time: eventEndTime,
+      has_power: hasPower,
+      has_water: hasWater,
+      additional_notes: details?.trim() || null,
+      distance_miles: distanceMiles,
+      base_price: priceBreakdown.base_price,
+      travel_fee: priceBreakdown.travel_fee,
+      utility_fee: priceBreakdown.utility_fee,
+      after_hours_fee: priceBreakdown.after_hours_fee,
+      total_price: priceBreakdown.total_price,
+      deposit_amount: priceBreakdown.deposit_amount,
+      final_balance: priceBreakdown.final_balance,
+      calculated_breakdown: priceBreakdown,
+    };
+
+    // Create the quote first. This table is the source of truth used by the quote flow.
+    const { data: insertedQuote, error: quoteError } = await supabase
+      .from('quote_requests')
+      .insert([quotePayload])
+      .select('quote_number')
+      .single();
+
+    if (quoteError) {
+      console.error('[v0] Quote creation error:', quoteError);
+      return {
+        success: false,
+        message: 'Failed to submit request. Please try again.',
+      };
+    }
+
+    // Keep the legacy availability table in sync when it exists, but do not block customers on it.
     const { error: availabilityError } = await supabase
       .from('availability_requests')
-      .insert({
+      .insert([{
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         phone: phone.trim(),
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         event_date: eventDate,
         event_type: eventType,
         location: location.trim(),
@@ -119,54 +161,13 @@ export async function submitRequestAvailability(
         power_available: powerAvailable || null,
         water_available: waterAvailable || null,
         details: details?.trim() || null,
-      });
+      }]);
 
     if (availabilityError) {
-      console.error('[v0] Availability request error:', availabilityError);
-      return {
-        success: false,
-        message: 'Failed to submit request. Please try again.',
-      };
+      console.error('[v0] Availability request sync error:', availabilityError);
     }
 
-    // Now create the quote in quote_requests table
-    const { error: quoteError } = await supabase
-      .from('quote_requests')
-      .insert({
-        customer_name: `${firstName.trim()} ${lastName.trim()}`,
-        phone: phone.trim(),
-        email: email.trim(),
-        event_date: eventDate,
-        event_type: eventType,
-        guest_count: guestCount,
-        event_address: location.trim(),
-        city: city,
-        state: state,
-        zip_code: zipCode,
-        event_start_time: startTime || '12:00',
-        event_end_time: eventEndTime,
-        has_power: hasPower,
-        has_water: hasWater,
-        additional_notes: details?.trim() || null,
-        distance_miles: distanceMiles,
-        base_price: priceBreakdown.base_price,
-        travel_fee: priceBreakdown.travel_fee,
-        utility_fee: priceBreakdown.utility_fee,
-        after_hours_fee: priceBreakdown.after_hours_fee,
-        total_price: priceBreakdown.total_price,
-        deposit_amount: priceBreakdown.deposit_amount,
-        final_balance: priceBreakdown.final_balance,
-        calculated_breakdown: priceBreakdown,
-        status: 'pending',
-      });
-
-    if (quoteError) {
-      console.error('[v0] Quote creation error:', quoteError);
-      // Don't fail the whole request - availability was saved
-    }
-
-    // Generate a temporary quote number (the actual one is created by trigger)
-    const quoteNumber = `SL-${new Date().getFullYear()}-PENDING`;
+    const quoteNumber = insertedQuote?.quote_number || `SL-${new Date().getFullYear()}-PENDING`;
 
     // Send email notification with quote details
     if (resend) {
