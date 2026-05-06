@@ -1,4 +1,4 @@
-import Header from '@/components/layout/header';
+import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import QuoteRequestForm from '@/components/quote-request-form';
 import { Phone, Clock, Shield } from 'lucide-react';

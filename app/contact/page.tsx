@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useActionState } from "react"
 import Link from "next/link"
 import { Mail, MapPin, Clock, ArrowRight, CheckCircle } from "lucide-react"
 import { Header } from "@/components/layout/header"
@@ -12,21 +12,15 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
+import { submitContactForm, ContactFormState } from "@/app/actions/contact"
+
+const initialState: ContactFormState = {
+  success: false,
+  message: '',
+}
 
 export default function ContactPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // TODO: Connect to email service or Supabase
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-  }
+  const [state, formAction, isPending] = useActionState(submitContactForm, initialState)
 
   return (
     <>
@@ -126,7 +120,7 @@ export default function ContactPage() {
                   Send Us a Message
                 </h2>
 
-                {isSubmitted ? (
+                {state.success ? (
                   <div className="text-center py-12">
                     <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
                       <CheckCircle className="w-8 h-8 text-green-600" />
@@ -140,7 +134,13 @@ export default function ContactPage() {
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form action={formAction} className="space-y-6">
+                    {state.message && !state.success && (
+                      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-red-800 font-medium">{state.message}</p>
+                      </div>
+                    )}
+
                     <div className="grid gap-6 sm:grid-cols-2">
                       <Field>
                         <FieldLabel htmlFor="name">Name *</FieldLabel>
@@ -150,6 +150,9 @@ export default function ContactPage() {
                           required
                           placeholder="Your name"
                         />
+                        {state.errors?.name && (
+                          <p className="text-sm text-red-600 mt-1">{state.errors.name[0]}</p>
+                        )}
                       </Field>
                       <Field>
                         <FieldLabel htmlFor="email">Email *</FieldLabel>
@@ -160,6 +163,9 @@ export default function ContactPage() {
                           required
                           placeholder="you@example.com"
                         />
+                        {state.errors?.email && (
+                          <p className="text-sm text-red-600 mt-1">{state.errors.email[0]}</p>
+                        )}
                       </Field>
                     </div>
 
@@ -181,6 +187,9 @@ export default function ContactPage() {
                         required
                         placeholder="How can we help?"
                       />
+                      {state.errors?.subject && (
+                        <p className="text-sm text-red-600 mt-1">{state.errors.subject[0]}</p>
+                      )}
                     </Field>
 
                     <Field>
@@ -192,15 +201,18 @@ export default function ContactPage() {
                         rows={5}
                         placeholder="Tell us more about your question or inquiry..."
                       />
+                      {state.errors?.message && (
+                        <p className="text-sm text-red-600 mt-1">{state.errors.message[0]}</p>
+                      )}
                     </Field>
 
                     <Button
                       type="submit"
                       size="lg"
                       className="w-full bg-navy hover:bg-navy/90 text-white"
-                      disabled={isSubmitting}
+                      disabled={isPending}
                     >
-                      {isSubmitting ? (
+                      {isPending ? (
                         <>
                           <Spinner className="mr-2" />
                           Sending...

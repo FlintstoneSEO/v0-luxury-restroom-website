@@ -3,6 +3,10 @@
 import { createClient } from "@/lib/supabase/server"
 import { QuoteFormData, PricingSettings } from "@/lib/types/quote"
 import { calculateQuotePrice } from "@/lib/pricing-engine"
+import { Resend } from 'resend'
+
+// Initialize Resend (will gracefully fail if API key not set)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export type QuoteRequestFormState = {
   success: boolean
@@ -208,6 +212,54 @@ export async function submitQuoteRequest(
       return {
         success: false,
         message: "Something went wrong. Please try again or contact us directly.",
+      }
+    }
+
+    // Send email notification
+    if (resend) {
+      try {
+        await resend.emails.send({
+          from: 'Signature Luxe <noreply@signatureluxeevents.com>',
+          to: 'info@signatureluxeevents.com',
+          subject: `New Quote Request: ${insertedQuote?.quote_number} - ${data.customer_name}`,
+          html: `
+            <h2>New Quote Request Received</h2>
+            <p><strong>Quote Number:</strong> ${insertedQuote?.quote_number}</p>
+            <hr />
+            <h3>Customer Information</h3>
+            <p><strong>Name:</strong> ${data.customer_name}</p>
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Phone:</strong> ${data.phone}</p>
+            <hr />
+            <h3>Event Details</h3>
+            <p><strong>Date:</strong> ${data.event_date}</p>
+            <p><strong>Type:</strong> ${data.event_type}</p>
+            <p><strong>Guest Count:</strong> ${data.guest_count}</p>
+            <p><strong>Time:</strong> ${data.event_start_time} - ${data.event_end_time}</p>
+            <hr />
+            <h3>Location</h3>
+            <p><strong>Address:</strong> ${data.event_address}</p>
+            <p><strong>City:</strong> ${data.city}, ${data.state} ${data.zip_code}</p>
+            <p><strong>Estimated Distance:</strong> ${distanceMiles} miles</p>
+            <hr />
+            <h3>Site Utilities</h3>
+            <p><strong>Power Available:</strong> ${data.has_power ? 'Yes' : 'No'}</p>
+            <p><strong>Water Available:</strong> ${data.has_water ? 'Yes' : 'No'}</p>
+            ${data.additional_notes ? `<p><strong>Additional Notes:</strong> ${data.additional_notes}</p>` : ''}
+            <hr />
+            <h3>Calculated Pricing</h3>
+            <p><strong>Base Price:</strong> $${priceBreakdown.base_price.toFixed(2)}</p>
+            ${priceBreakdown.travel_fee > 0 ? `<p><strong>Travel Fee:</strong> $${priceBreakdown.travel_fee.toFixed(2)}</p>` : ''}
+            ${priceBreakdown.utility_fee > 0 ? `<p><strong>Utility Fee:</strong> $${priceBreakdown.utility_fee.toFixed(2)}</p>` : ''}
+            ${priceBreakdown.after_hours_fee > 0 ? `<p><strong>After Hours Fee:</strong> $${priceBreakdown.after_hours_fee.toFixed(2)}</p>` : ''}
+            <p><strong>Total Price:</strong> $${priceBreakdown.total_price.toFixed(2)}</p>
+            <p><strong>Deposit (25%):</strong> $${priceBreakdown.deposit_amount.toFixed(2)}</p>
+            <p><strong>Final Balance:</strong> $${priceBreakdown.final_balance.toFixed(2)}</p>
+          `,
+        })
+      } catch (emailError) {
+        console.error('[v0] Email error (non-fatal):', emailError)
+        // Don't fail the whole request if email fails
       }
     }
 

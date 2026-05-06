@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useActionState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,10 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { CheckCircle } from "lucide-react"
+import { submitRequestAvailability, RequestAvailabilityState } from "@/app/actions/request-availability"
 
 const eventTypes = [
   { value: "wedding", label: "Wedding" },
@@ -32,24 +32,15 @@ const yesNoOptions = [
   { value: "not-sure", label: "Not Sure" },
 ]
 
+const initialState: RequestAvailabilityState = {
+  success: false,
+  message: '',
+}
+
 export function RequestAvailabilityForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [state, formAction, isPending] = useActionState(submitRequestAvailability, initialState)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // TODO: Connect to Supabase database
-    // TODO: Send email notification
-    // TODO: Trigger admin dashboard update
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-  }
-
-  if (isSubmitted) {
+  if (state.success) {
     return (
       <div className="text-center py-12">
         <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
@@ -67,7 +58,13 @@ export function RequestAvailabilityForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form action={formAction} className="space-y-6">
+      {state.message && !state.success && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-800 font-medium">{state.message}</p>
+        </div>
+      )}
+
       {/* Name Fields */}
       <div className="grid gap-6 sm:grid-cols-2">
         <Field>
@@ -78,6 +75,9 @@ export function RequestAvailabilityForm() {
             required
             placeholder="Your first name"
           />
+          {state.errors?.firstName && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.firstName[0]}</p>
+          )}
         </Field>
         <Field>
           <FieldLabel htmlFor="lastName">Last Name *</FieldLabel>
@@ -87,6 +87,9 @@ export function RequestAvailabilityForm() {
             required
             placeholder="Your last name"
           />
+          {state.errors?.lastName && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.lastName[0]}</p>
+          )}
         </Field>
       </div>
 
@@ -101,6 +104,9 @@ export function RequestAvailabilityForm() {
             required
             placeholder="(555) 555-5555"
           />
+          {state.errors?.phone && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.phone[0]}</p>
+          )}
         </Field>
         <Field>
           <FieldLabel htmlFor="email">Email Address *</FieldLabel>
@@ -111,6 +117,9 @@ export function RequestAvailabilityForm() {
             required
             placeholder="you@example.com"
           />
+          {state.errors?.email && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.email[0]}</p>
+          )}
         </Field>
       </div>
 
@@ -119,6 +128,9 @@ export function RequestAvailabilityForm() {
         <Field>
           <FieldLabel htmlFor="eventDate">Event Date *</FieldLabel>
           <Input id="eventDate" name="eventDate" type="date" required />
+          {state.errors?.eventDate && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.eventDate[0]}</p>
+          )}
         </Field>
         <Field>
           <FieldLabel htmlFor="eventType">Event Type *</FieldLabel>
@@ -134,6 +146,9 @@ export function RequestAvailabilityForm() {
               ))}
             </SelectContent>
           </Select>
+          {state.errors?.eventType && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.eventType[0]}</p>
+          )}
         </Field>
       </div>
 
@@ -146,6 +161,9 @@ export function RequestAvailabilityForm() {
           required
           placeholder="Full address or venue name"
         />
+        {state.errors?.location && (
+          <p className="text-sm text-red-600 mt-1">{state.errors.location[0]}</p>
+        )}
       </Field>
 
       {/* Guest Count and Times */}
@@ -225,9 +243,9 @@ export function RequestAvailabilityForm() {
         type="submit"
         size="lg"
         className="w-full bg-navy hover:bg-navy/90 text-white"
-        disabled={isSubmitting}
+        disabled={isPending}
       >
-        {isSubmitting ? (
+        {isPending ? (
           <>
             <Spinner className="mr-2" />
             Submitting...
