@@ -1,152 +1,363 @@
 'use client';
 
-import { useState } from 'react';
-import { submitQuoteRequest } from '@/app/actions/quote-request';
+import { useActionState, useState, useEffect } from 'react';
+import { submitQuoteRequest, QuoteRequestFormState } from '@/app/actions/quote-request';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Spinner } from '@/components/ui/spinner';
+import { CheckCircle, User, Calendar, MapPin, Clock, Zap } from 'lucide-react';
+import { EVENT_TYPES } from '@/lib/types/quote';
 
-export default function QuoteRequestForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-  });
+const initialState: QuoteRequestFormState = {
+  success: false,
+  message: '',
+};
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+interface QuoteRequestFormProps {
+  onSuccess?: (quoteNumber: string) => void;
+}
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitError('');
-    setSubmitSuccess(false);
+export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
+  const [state, formAction, isPending] = useActionState(submitQuoteRequest, initialState);
+  const [hasPower, setHasPower] = useState<string>('');
+  const [hasWater, setHasWater] = useState<string>('');
+  const [eventType, setEventType] = useState<string>('');
 
-    try {
-      const result = await submitQuoteRequest(formData);
-      if (result.success) {
-        setSubmitSuccess(true);
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          message: '',
-        });
-      } else {
-        setSubmitError(result.error || 'Failed to submit quote request');
-      }
-    } catch (error) {
-      setSubmitError('An unexpected error occurred. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+  useEffect(() => {
+    if (state.success && state.quoteNumber && onSuccess) {
+      onSuccess(state.quoteNumber);
     }
-  };
+  }, [state.success, state.quoteNumber, onSuccess]);
+
+  if (state.success) {
+    return (
+      <div className="text-center py-12">
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+          <CheckCircle className="w-8 h-8 text-green-600" />
+        </div>
+        <h3 className="text-2xl font-serif font-semibold text-navy mb-2">
+          Quote Request Received!
+        </h3>
+        {state.quoteNumber && (
+          <p className="text-lg font-medium text-amber-600 mb-4">
+            Quote Number: {state.quoteNumber}
+          </p>
+        )}
+        <p className="text-muted-foreground max-w-md mx-auto">
+          Thank you for your interest in Signature Luxe. We&apos;ll review your event details and send
+          you a custom proposal within 1-2 business days.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {submitSuccess && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-green-800 font-medium">
-            Thank you! We&apos;ve received your quote request. Our team will get back to you soon.
-          </p>
+    <form action={formAction} className="space-y-8">
+      {state.message && !state.success && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-800 font-medium">{state.message}</p>
         </div>
       )}
 
-      {submitError && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800 font-medium">{submitError}</p>
+      {/* Section 1: Contact Information */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+          <User className="w-5 h-5 text-amber-600" />
+          <h3 className="text-lg font-semibold text-navy">Contact Information</h3>
         </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name Field */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-            Full Name *
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            placeholder="Your full name"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-          />
+        
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="customer_name">Full Name *</FieldLabel>
+            <Input
+              id="customer_name"
+              name="customer_name"
+              required
+              placeholder="John Smith"
+            />
+            {state.errors?.customer_name && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.customer_name[0]}</p>
+            )}
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="phone">Phone Number *</FieldLabel>
+            <Input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              placeholder="(555) 555-5555"
+            />
+            {state.errors?.phone && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.phone[0]}</p>
+            )}
+          </Field>
         </div>
 
-        {/* Email Field */}
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-            Email Address *
-          </label>
-          <input
-            type="email"
+        <Field>
+          <FieldLabel htmlFor="email">Email Address *</FieldLabel>
+          <Input
             id="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
+            type="email"
             required
-            placeholder="your@email.com"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            placeholder="you@example.com"
           />
+          {state.errors?.email && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.email[0]}</p>
+          )}
+        </Field>
+      </div>
+
+      {/* Section 2: Event Details */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+          <Calendar className="w-5 h-5 text-amber-600" />
+          <h3 className="text-lg font-semibold text-navy">Event Details</h3>
+        </div>
+        
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="event_date">Event Date *</FieldLabel>
+            <Input 
+              id="event_date" 
+              name="event_date" 
+              type="date" 
+              required 
+            />
+            {state.errors?.event_date && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.event_date[0]}</p>
+            )}
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="event_type">Event Type *</FieldLabel>
+            <Select name="event_type" required value={eventType} onValueChange={setEventType}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select event type" />
+              </SelectTrigger>
+              <SelectContent>
+                {EVENT_TYPES.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {state.errors?.event_type && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.event_type[0]}</p>
+            )}
+          </Field>
         </div>
 
-        {/* Phone Field */}
-        <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="(555) 123-4567"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-          />
-        </div>
-
-        {/* Message Field */}
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-            Project Details *
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
+        <Field>
+          <FieldLabel htmlFor="guest_count">Expected Number of Guests *</FieldLabel>
+          <Input
+            id="guest_count"
+            name="guest_count"
+            type="number"
             required
-            placeholder="Tell us about your luxury restroom project..."
-            rows={6}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+            min="1"
+            placeholder="e.g., 150"
           />
+          {state.errors?.guest_count && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.guest_count[0]}</p>
+          )}
+        </Field>
+      </div>
+
+      {/* Section 3: Event Location */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+          <MapPin className="w-5 h-5 text-amber-600" />
+          <h3 className="text-lg font-semibold text-navy">Event Location</h3>
         </div>
+        
+        <Field>
+          <FieldLabel htmlFor="event_address">Street Address *</FieldLabel>
+          <Input
+            id="event_address"
+            name="event_address"
+            required
+            placeholder="123 Main Street"
+          />
+          {state.errors?.event_address && (
+            <p className="text-sm text-red-600 mt-1">{state.errors.event_address[0]}</p>
+          )}
+        </Field>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
-        >
-          {isSubmitting ? 'Submitting...' : 'Request Quote'}
-        </button>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field>
+            <FieldLabel htmlFor="city">City *</FieldLabel>
+            <Input
+              id="city"
+              name="city"
+              required
+              placeholder="e.g., Detroit"
+            />
+            {state.errors?.city && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.city[0]}</p>
+            )}
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="state">State</FieldLabel>
+            <Input
+              id="state"
+              name="state"
+              defaultValue="MI"
+              placeholder="MI"
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="zip_code">ZIP Code *</FieldLabel>
+            <Input
+              id="zip_code"
+              name="zip_code"
+              required
+              placeholder="48000"
+            />
+            {state.errors?.zip_code && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.zip_code[0]}</p>
+            )}
+          </Field>
+        </div>
+      </div>
 
-        <p className="text-xs text-gray-500 text-center">
-          * Required fields
+      {/* Section 4: Event Timing */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+          <Clock className="w-5 h-5 text-amber-600" />
+          <h3 className="text-lg font-semibold text-navy">Event Timing</h3>
+        </div>
+        
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="event_start_time">Start Time *</FieldLabel>
+            <Input 
+              id="event_start_time" 
+              name="event_start_time" 
+              type="time" 
+              required 
+            />
+            {state.errors?.event_start_time && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.event_start_time[0]}</p>
+            )}
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="event_end_time">End Time *</FieldLabel>
+            <Input 
+              id="event_end_time" 
+              name="event_end_time" 
+              type="time" 
+              required 
+            />
+            {state.errors?.event_end_time && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.event_end_time[0]}</p>
+            )}
+          </Field>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Note: Events extending past 10:00 PM may incur after-hours fees.
         </p>
-      </form>
-    </div>
+      </div>
+
+      {/* Section 5: Site Utilities */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+          <Zap className="w-5 h-5 text-amber-600" />
+          <h3 className="text-lg font-semibold text-navy">Site Utilities</h3>
+        </div>
+        
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="has_power">
+              Is power available within 100 feet? *
+            </FieldLabel>
+            <Select 
+              name="has_power" 
+              required 
+              value={hasPower} 
+              onValueChange={setHasPower}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Yes</SelectItem>
+                <SelectItem value="false">No (generator required)</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="has_water">
+              Is water available within 100 feet? *
+            </FieldLabel>
+            <Select 
+              name="has_water" 
+              required 
+              value={hasWater} 
+              onValueChange={setHasWater}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Yes</SelectItem>
+                <SelectItem value="false">No (water service required)</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          If utilities are not available on-site, additional fees may apply for generator and/or water service.
+        </p>
+      </div>
+
+      {/* Section 6: Additional Notes */}
+      <div className="space-y-4">
+        <Field>
+          <FieldLabel htmlFor="additional_notes">
+            Additional Notes or Special Requests
+          </FieldLabel>
+          <Textarea
+            id="additional_notes"
+            name="additional_notes"
+            rows={4}
+            placeholder="Share any additional details about your event, venue access, special requirements..."
+          />
+        </Field>
+      </div>
+
+      {/* Submit Button */}
+      <Button
+        type="submit"
+        size="lg"
+        className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+        disabled={isPending}
+      >
+        {isPending ? (
+          <>
+            <Spinner className="mr-2" />
+            Submitting Request...
+          </>
+        ) : (
+          'Request Quote'
+        )}
+      </Button>
+
+      <p className="text-center text-sm text-muted-foreground">
+        By submitting this form, you agree to be contacted regarding your inquiry.
+        <br />
+        <span className="text-xs">* Required fields</span>
+      </p>
+    </form>
   );
 }
