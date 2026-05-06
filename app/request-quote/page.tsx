@@ -1,5 +1,5 @@
 import Header from '@/components/layout/header';
-import Footer from '@/components/layout/footer';
+import { Footer } from '@/components/layout/footer';
 import QuoteRequestForm from '@/components/quote-request-form';
 
 export const metadata = {
