@@ -165,7 +165,7 @@ export default function OurRestroomsPage() {
           eyebrow="Our Restrooms"
           title="Luxury Restroom Trailers"
           description="Modern, climate-controlled restroom trailers designed to provide a clean, comfortable experience for your guests, crew, or community."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
           secondaryCta={{ text: "View Gallery", href: "/gallery" }}
         />
 
@@ -239,7 +239,7 @@ export default function OurRestroomsPage() {
                           : "bg-gold/20 text-navy hover:bg-gold/30"
                       }`}
                     >
-                      <Link href="/request-availability">
+                      <Link href="/request-quote">
                         Check Availability
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
@@ -402,7 +402,7 @@ export default function OurRestroomsPage() {
           title="Ready to Reserve Your Trailer?"
           description="Request availability for your event date and receive a custom proposal."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="cream"
         />
       </main>

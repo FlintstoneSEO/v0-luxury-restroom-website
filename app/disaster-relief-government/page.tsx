@@ -111,7 +111,7 @@ export default function DisasterReliefGovernmentPage() {
           eyebrow="Disaster Relief & Government"
           title="Disaster Relief and Government Restroom Trailer Rentals in Michigan"
           description="Dependable restroom trailer solutions for emergency response, municipal projects, government use, disaster relief, and temporary infrastructure needs across Michigan."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
         />
 
         {/* Reliable Support with Image */}
@@ -247,7 +247,7 @@ export default function DisasterReliefGovernmentPage() {
                   asChild
                   className="mt-8 bg-navy hover:bg-navy/90 text-white"
                 >
-                  <Link href="/request-availability">
+                  <Link href="/request-quote">
                     Contact Us for Government Inquiries
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -275,7 +275,7 @@ export default function DisasterReliefGovernmentPage() {
           title="Need Government or Emergency Support?"
           description="Contact us to discuss your government or disaster relief restroom needs."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="navy"
         />
       </main>

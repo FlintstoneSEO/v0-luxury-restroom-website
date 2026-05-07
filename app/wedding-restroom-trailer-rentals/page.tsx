@@ -20,5 +20,5 @@ export default function Page() {
     { q: 'How do you size trailers for reception flow?', a: 'We estimate based on guest count, event duration, and traffic peaks during cocktail hour, dinner, and dancing transitions.' },
     { q: 'Can we place the trailer away from ceremony photos?', a: 'Absolutely. We help identify practical placement that supports guest convenience while protecting key photo and décor sightlines.' },
     { q: 'Do you serve outside Lansing?', a: 'Yes. We serve Mid-Michigan and nearby regional markets including East Lansing, Okemos, Haslett, Jackson, Howell, Flint, Ann Arbor, and Grand Rapids.' },
-  ]} />
+  ]} resourceImageSrc='/images/Wedding Trailer.png' resourceImageAlt='Wedding restroom trailer setup near outdoor reception venue' resourceEyebrow='Wedding Planning' resourceTitle='Helpful Wedding Restroom Planning Resources' resourceDescription='Use these pages to map coverage, compare options, and build a smooth wedding weekend guest experience.' />
 }

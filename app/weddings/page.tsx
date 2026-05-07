@@ -146,7 +146,7 @@ export default function WeddingsPage() {
           eyebrow="Weddings"
           title="Wedding Restroom Trailer Rentals in Lansing, MI"
           description="Give your guests a clean, comfortable, and upscale restroom experience for your outdoor wedding, private estate celebration, barn wedding, or venue event in Lansing and Mid-Michigan."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
           secondaryCta={{ text: "View Gallery", href: "/gallery" }}
         />
 
@@ -207,7 +207,7 @@ export default function WeddingsPage() {
                   asChild
                   className="w-full mt-8 bg-navy hover:bg-navy/90 text-white"
                 >
-                  <Link href="/request-availability">
+                  <Link href="/request-quote">
                     Check Wedding Date Availability
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -254,7 +254,7 @@ export default function WeddingsPage() {
           title="Make Your Wedding Day Perfect"
           description="Request availability for your wedding date and receive a custom proposal."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="navy"
         />
       </main>

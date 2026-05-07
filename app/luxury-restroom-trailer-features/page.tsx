@@ -18,5 +18,5 @@ export default function Page() {
     { q: 'Do you provide service outside Lansing?', a: 'Yes. We serve Mid-Michigan and many surrounding communities, with routing based on schedule and site logistics.' },
     { q: 'Can you help with site planning?', a: 'Absolutely. We review access, placement, and utility details so delivery and setup stay on schedule.' },
     { q: 'Where can I compare related services?', a: 'You can review wedding, luxury rental, and long-term pages, plus city service-area pages, FAQs, and our image gallery for planning context.' },
-  ]} />
+  ]} resourceImageSrc='/images/3 Station Pro/3Station2.jpg' resourceImageAlt='Luxury restroom trailer interior with modern finishes and guest amenities' resourceEyebrow='Feature Planning' resourceTitle='Helpful Resources for Comparing Trailer Features' resourceDescription='Review related pages and service information while evaluating trailer amenities and fit.' />
 }

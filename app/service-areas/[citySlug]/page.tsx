@@ -50,7 +50,7 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
     <div className='container mx-auto px-4 lg:px-8'>
       <h2 className='text-2xl font-semibold text-navy mb-5'>Common Use Cases in {data.city}</h2>
       <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-        {data.useCases.map((u) => <div key={u} className='rounded-xl border border-gold/20 bg-white p-5'><Tent className='h-5 w-5 text-navy mb-3' /><p className='capitalize text-charcoal'>{u}</p></div>)}
+        {data.useCases.map((u) => <div key={u} className='rounded-xl border border-gold/20 bg-white p-5'><div className='mb-3 inline-flex rounded-xl bg-gold/25 p-3'><Tent className='h-8 w-8 text-navy' /></div><p className='capitalize text-charcoal'>{u}</p></div>)}
       </div>
       <p className='mt-6 text-charcoal'>Coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p>
     </div>
@@ -69,7 +69,7 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
     <div className='container mx-auto px-4 lg:px-8'>
       <h2 className='text-2xl font-semibold text-navy mb-5'>Explore More Services</h2>
       <div className='grid sm:grid-cols-2 lg:grid-cols-5 gap-4'>
-        {[{ href: '/request-quote', label: 'Request a Quote' }, { href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailers' }, { href: '/luxury-restroom-trailer-rentals', label: 'Luxury Rental Options' }, { href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction & Long-Term Rentals' }, { href: '/service-areas', label: 'All Service Areas' }].map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-5 hover:border-gold/40'><MapPin className='h-5 w-5 text-navy mb-2' /><p className='text-navy font-medium'>{item.label}</p></Link>)}
+        {[{ href: '/request-quote', label: 'Request a Quote' }, { href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailers' }, { href: '/luxury-restroom-trailer-rentals', label: 'Luxury Rental Options' }, { href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction & Long-Term Rentals' }, { href: '/service-areas', label: 'All Service Areas' }].map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-5 hover:border-gold/40'><div className='mb-3 inline-flex rounded-xl bg-gold/25 p-3'><MapPin className='h-7 w-7 text-navy' /></div><p className='text-navy font-medium'>{item.label}</p></Link>)}
       </div>
     </div>
   </section>

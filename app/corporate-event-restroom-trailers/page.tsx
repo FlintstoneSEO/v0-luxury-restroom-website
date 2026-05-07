@@ -18,5 +18,5 @@ export default function Page() {
     { q: 'Can you support nonprofit fundraisers and donor events?', a: 'Absolutely. We help nonprofits plan capacity and logistics for donor receptions, galas, and outdoor fundraising events.' },
     { q: 'What details are needed for a corporate quote?', a: 'Share your event date, venue address, estimated attendance, and schedule so we can recommend sizing and logistics clearly.' },
     { q: 'Do you deliver outside Lansing?', a: 'Yes. We serve Mid-Michigan and key surrounding markets including Ann Arbor, Grand Rapids, Flint, Jackson, and Howell.' },
-  ]} />
+  ]} resourceImageSrc='/images/Special Event Trailer.png' resourceImageAlt='Premium restroom trailer presentation for corporate and VIP event guests' resourceEyebrow='Corporate Event Planning' resourceTitle='Helpful Resources for Corporate Event Teams' resourceDescription='Find coverage, logistics guidance, and quote resources for polished sponsor, donor, and VIP events.' />
 }

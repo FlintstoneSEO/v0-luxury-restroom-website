@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState, useEffect } from 'react';
+import { useActionState, useState, useEffect, useRef } from 'react';
 import { submitQuoteRequest, QuoteRequestFormState } from '@/app/actions/quote-request';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import {
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Spinner } from '@/components/ui/spinner';
 import { CheckCircle, User, Calendar, MapPin, Clock, Zap } from 'lucide-react';
+import { Autocomplete, useJsApiLoader } from '@react-google-maps/api';
 import { EVENT_TYPES } from '@/lib/types/quote';
 
 const initialState: QuoteRequestFormState = {
@@ -31,6 +32,17 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
   const [hasPower, setHasPower] = useState<string>('');
   const [hasWater, setHasWater] = useState<string>('');
   const [eventType, setEventType] = useState<string>('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [stateCode, setStateCode] = useState('MI');
+  const [zipCode, setZipCode] = useState('');
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const mapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+  const { isLoaded: mapsLoaded, loadError: mapsLoadError } = useJsApiLoader({
+    id: 'google-places-script',
+    googleMapsApiKey: mapsApiKey,
+    libraries: ['places'],
+  });
 
   useEffect(() => {
     if (state.success && state.quoteNumber && onSuccess) {
@@ -38,17 +50,43 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
     }
   }, [state.success, state.quoteNumber, onSuccess]);
 
+  const handlePlaceChanged = () => {
+    const place = autocompleteRef.current?.getPlace();
+    if (!place?.address_components) return;
+
+    let streetNumber = '';
+    let route = '';
+    let locality = '';
+    let region = '';
+    let postal = '';
+
+    place.address_components.forEach((component) => {
+      const types = component.types;
+      if (types.includes('street_number')) streetNumber = component.long_name;
+      if (types.includes('route')) route = component.long_name;
+      if (types.includes('locality')) locality = component.long_name;
+      if (types.includes('administrative_area_level_1')) region = component.short_name;
+      if (types.includes('postal_code')) postal = component.long_name;
+    });
+
+    const streetAddress = [streetNumber, route].filter(Boolean).join(' ').trim();
+    if (streetAddress) setAddress(streetAddress);
+    if (locality) setCity(locality);
+    if (region) setStateCode(region);
+    if (postal) setZipCode(postal);
+  };
+
   if (state.success) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-100 ring-4 ring-gold/20 flex items-center justify-center">
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
         <h3 className="text-2xl font-serif font-semibold text-navy mb-2">
           Quote Request Received!
         </h3>
         {state.quoteNumber && (
-          <p className="text-lg font-medium text-amber-600 mb-4">
+          <p className="text-lg font-medium text-gold-text mb-4">
             Quote Number: {state.quoteNumber}
           </p>
         )}
@@ -70,8 +108,8 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
 
       {/* Section 1: Contact Information */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
-          <User className="w-5 h-5 text-amber-600" />
+        <div className="flex items-center gap-3 pb-3 border-b border-gold/30">
+          <span className='rounded-full bg-gold/30 p-2'><User className="h-7 w-7 text-gold-text" /></span>
           <h3 className="text-lg font-semibold text-navy">Contact Information</h3>
         </div>
         
@@ -120,8 +158,8 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
 
       {/* Section 2: Event Details */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
-          <Calendar className="w-5 h-5 text-amber-600" />
+        <div className="flex items-center gap-3 pb-3 border-b border-gold/30">
+          <span className='rounded-full bg-gold/30 p-2'><Calendar className="h-7 w-7 text-gold-text" /></span>
           <h3 className="text-lg font-semibold text-navy">Event Details</h3>
         </div>
         
@@ -176,19 +214,42 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
 
       {/* Section 3: Event Location */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
-          <MapPin className="w-5 h-5 text-amber-600" />
+        <div className="flex items-center gap-3 pb-3 border-b border-gold/30">
+          <span className='rounded-full bg-gold/30 p-2'><MapPin className="h-7 w-7 text-gold-text" /></span>
           <h3 className="text-lg font-semibold text-navy">Event Location</h3>
         </div>
         
         <Field>
           <FieldLabel htmlFor="event_address">Street Address *</FieldLabel>
+          {mapsApiKey && mapsLoaded && !mapsLoadError ? (
+          // TODO: Migrate to Google's PlaceAutocompleteElement once the preferred React integration is finalized.
+          <Autocomplete
+            onLoad={(autocomplete) => { autocompleteRef.current = autocomplete; }}
+            onPlaceChanged={handlePlaceChanged}
+            options={{ componentRestrictions: { country: 'us' }, fields: ['address_components'], types: ['address'] }}
+          >
+            <Input
+            id="event_address"
+            name="event_address"
+            required
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="123 Main Street"
+          />
+          </Autocomplete>
+        ) : (
           <Input
             id="event_address"
             name="event_address"
             required
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             placeholder="123 Main Street"
           />
+        )}
+        {(!mapsApiKey || mapsLoadError) && (
+          <p className='mt-2 text-xs text-charcoal/70'>Address autocomplete is unavailable right now. Please enter address details manually.</p>
+        )}
           {state.errors?.event_address && (
             <p className="text-sm text-red-600 mt-1">{state.errors.event_address[0]}</p>
           )}
@@ -201,6 +262,8 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
               id="city"
               name="city"
               required
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
               placeholder="e.g., Detroit"
             />
             {state.errors?.city && (
@@ -212,7 +275,8 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
             <Input
               id="state"
               name="state"
-              defaultValue="MI"
+              value={stateCode}
+              onChange={(e) => setStateCode(e.target.value)}
               placeholder="MI"
             />
           </Field>
@@ -222,6 +286,8 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
               id="zip_code"
               name="zip_code"
               required
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
               placeholder="48000"
             />
             {state.errors?.zip_code && (
@@ -233,8 +299,8 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
 
       {/* Section 4: Event Timing */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
-          <Clock className="w-5 h-5 text-amber-600" />
+        <div className="flex items-center gap-3 pb-3 border-b border-gold/30">
+          <span className='rounded-full bg-gold/30 p-2'><Clock className="h-7 w-7 text-gold-text" /></span>
           <h3 className="text-lg font-semibold text-navy">Event Timing</h3>
         </div>
         
@@ -271,8 +337,8 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
 
       {/* Section 5: Site Utilities */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
-          <Zap className="w-5 h-5 text-amber-600" />
+        <div className="flex items-center gap-3 pb-3 border-b border-gold/30">
+          <span className='rounded-full bg-gold/30 p-2'><Zap className="h-7 w-7 text-gold-text" /></span>
           <h3 className="text-lg font-semibold text-navy">Site Utilities</h3>
         </div>
         
@@ -340,7 +406,7 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
       <Button
         type="submit"
         size="lg"
-        className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+        className="w-full bg-navy hover:bg-navy/90 text-white border border-gold/30 shadow-sm text-base font-semibold"
         disabled={isPending}
       >
         {isPending ? (

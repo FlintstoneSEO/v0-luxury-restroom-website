@@ -20,5 +20,5 @@ export default function Page() {
     { q: 'Can this be used during a building renovation or restroom outage?', a: 'Absolutely. Temporary restroom trailers are commonly used when permanent facilities are under renovation, offline, or otherwise unavailable.' },
     { q: 'What site requirements should contractors confirm before delivery?', a: 'Please confirm access routes, placement area, and available utilities. We review those details during planning to help avoid setup delays.' },
     { q: 'Do you provide construction restroom trailer rental outside Lansing?', a: 'Yes. We serve Lansing and broader Mid-Michigan communities, with scheduling based on route and project logistics.' },
-  ]} />
+  ]} resourceImageSrc='/images/Construction Site Trailer.png' resourceImageAlt='Long-term restroom trailer positioned for active construction job site use' resourceEyebrow='Project Planning' resourceTitle='Helpful Resources for Long-Term Site Support' resourceDescription='Use these resources for long-term scheduling, service area coverage, and practical setup planning.' />
 }

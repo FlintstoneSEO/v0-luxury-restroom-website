@@ -88,7 +88,7 @@ export default function FAQPage() {
           eyebrow="FAQ"
           title="Frequently Asked Questions"
           description="Find answers to common questions about our luxury restroom trailer rentals, setup requirements, and booking process."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
         />
 
         {/* FAQ Section */}
@@ -131,7 +131,7 @@ export default function FAQPage() {
           title="Ready to Book?"
           description="Check availability for your date and receive a custom proposal."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="navy"
         />
       </main>
