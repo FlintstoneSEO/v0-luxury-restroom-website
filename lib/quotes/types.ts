@@ -1,5 +1,6 @@
 // Quote statuses for the workflow
 export const QUOTE_STATUSES = [
+  'pending',
   'pending_review',
   'new',
   'under_review',
