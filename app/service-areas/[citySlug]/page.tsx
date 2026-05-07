@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MapPin, Tent } from 'lucide-react'
+import { ArrowRight, BriefcaseBusiness, Building2, CalendarCheck, ClipboardCheck, GraduationCap, HardHat, Heart, MapPin, PartyPopper, Sparkles, Tent, type LucideIcon } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { breadcrumbJsonLd, localBusinessJsonLd } from '@/lib/seo-schema'
@@ -27,6 +28,48 @@ const cityContent: Record<string, CityExtra> = {
   'kalamazoo-mi': { intro: 'Kalamazoo events range from weddings to regional gatherings where premium guest amenities and practical logistics are both important.', nearby: 'Portage, Battle Creek, Mattawan, and Plainwell', venueNote: 'We support venue and private-property setups with planning for access, utilities, and service windows.', useCases: ['weddings', 'corporate events', 'community festivals', 'project-based rentals'], faqs: [{ q: 'Do you provide restroom trailers in Kalamazoo?', a: 'Yes, Kalamazoo is part of our extended service area.' }, { q: 'Can you support upscale wedding and donor events?', a: 'Yes, luxury trailers are ideal for polished guest-facing events.' }, { q: 'Are weekend and multi-day rentals available?', a: 'Yes, based on availability and event timing.' }, { q: 'Do you coordinate setup with venue schedules?', a: 'Yes, we plan around venue access and timeline requirements.' }] },
 }
 
+
+
+const galleryVisuals = {
+  exterior: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg', alt: 'Luxury restroom trailer exterior setup in Michigan' },
+  interior: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg', alt: 'Interior vanity in luxury restroom trailer' },
+  wedding: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f8c856e0-44a2-4c9a-990c-09e671fee136-VkgBsnTDKck69SOzLmlIYiSb3zZeAS.png', alt: 'Wedding restroom trailer setup at a private estate' },
+  corporate: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png', alt: 'Corporate event restroom trailer rental setup' },
+  festival: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_56_46%20PM-H2xCmMMND6AksTZG4HA9OHuDL07tY3.png', alt: 'Festival restroom trailer setup in Michigan' },
+  station3: { src: '/images/3 Station Pro/3Station.jpg', alt: '3 Station Pro restroom trailer exterior' },
+}
+
+type VisualCard = {
+  title: string
+  description: string
+  href?: string
+  icon: LucideIcon
+  image: { src: string; alt: string }
+}
+
+const matchesAnyKeyword = (text: string, keywords: string[]) => keywords.some((keyword) => text.includes(keyword))
+
+const getUseCaseCard = (useCase: string): VisualCard => {
+  const normalized = useCase.toLowerCase()
+
+  if (matchesAnyKeyword(normalized, ['wedding', 'reception', 'wedding weekend'])) return { title: useCase, description: 'Elegant guest restroom support for ceremonies, receptions, and full wedding weekends.', icon: Heart, image: galleryVisuals.wedding }
+  if (matchesAnyKeyword(normalized, ['graduation', 'alumni'])) return { title: useCase, description: 'Comfortable amenities for graduation parties, alumni events, and school celebrations.', icon: GraduationCap, image: galleryVisuals.corporate }
+  if (matchesAnyKeyword(normalized, ['corporate', 'company', 'nonprofit', 'donor'])) return { title: useCase, description: 'Polished trailer presentation for company gatherings, galas, and donor-focused events.', icon: BriefcaseBusiness, image: galleryVisuals.corporate }
+  if (matchesAnyKeyword(normalized, ['construction', 'contractor', 'project support', 'public works'])) return { title: useCase, description: 'Reliable trailer placement for active work sites and project-based operations.', icon: HardHat, image: galleryVisuals.station3 }
+  if (matchesAnyKeyword(normalized, ['festival', 'community event'])) return { title: useCase, description: 'Guest-ready facilities for public festivals and neighborhood celebrations.', icon: Tent, image: galleryVisuals.festival }
+  if (matchesAnyKeyword(normalized, ['private party', 'birthday', 'holiday', 'reunion'])) return { title: useCase, description: 'Refined restroom options for private celebrations and family-hosted gatherings.', icon: PartyPopper, image: galleryVisuals.wedding }
+  if (matchesAnyKeyword(normalized, ['temporary facility', 'outage', 'long-term support'])) return { title: useCase, description: 'Dependable restroom access during outages and extended temporary operations.', icon: Building2, image: galleryVisuals.exterior }
+
+  return { title: useCase, description: 'Luxury restroom trailer support tailored to your timeline, guests, and site logistics.', icon: CalendarCheck, image: galleryVisuals.exterior }
+}
+
+const exploreServiceCards: VisualCard[] = [
+  { href: '/request-quote', title: 'Request a Quote', description: 'Share your event details and get a fast, tailored rental plan.', icon: ClipboardCheck, image: galleryVisuals.exterior },
+  { href: '/wedding-restroom-trailer-rentals', title: 'Wedding Restroom Trailers', description: 'Explore premium trailers designed for wedding weekends and receptions.', icon: Heart, image: galleryVisuals.wedding },
+  { href: '/luxury-restroom-trailer-rentals', title: 'Luxury Rental Options', description: 'Compare luxury restroom layouts, finishes, and guest-facing amenities.', icon: Sparkles, image: galleryVisuals.interior },
+  { href: '/construction-long-term-restroom-trailer-rentals', title: 'Construction & Long-Term Rentals', description: 'Flexible solutions for project sites, multi-week schedules, and recurring service.', icon: HardHat, image: galleryVisuals.station3 },
+  { href: '/service-areas', title: 'All Service Areas', description: 'See the Mid-Michigan regions we cover with delivery, setup, and pickup.', icon: MapPin, image: galleryVisuals.exterior },
+]
 const getCityData = (slug: string) => { const base = cityPages.find((c) => c.slug === slug); return base ? { ...base, ...cityContent[slug] } : null }
 export function generateStaticParams() { return cityPages.map((c) => ({ citySlug: c.slug })) }
 export async function generateMetadata({ params }: { params: Promise<{ citySlug: string }> }): Promise<Metadata> { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) return {}; const title = `Restroom Trailer Rentals ${data.city}, MI`; const description = `Luxury restroom trailer rentals for weddings, events, and project sites in ${data.city}, Michigan with delivery, setup, and service planning.`; const canonical = `https://www.signatureluxeevents.com/service-areas/${data.slug}`; return { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, images: [{ url: '/images/Wedding Trailer.png', alt: `Luxury restroom trailer rental service in ${data.city}, Michigan` }] }, twitter: { card: 'summary_large_image', title, description, images: ['/images/Wedding Trailer.png'] } } }
@@ -55,7 +98,24 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
     <div className='container mx-auto px-4 lg:px-8'>
       <h2 className='text-2xl font-semibold text-navy mb-2'>Restroom Trailer Rentals for Weddings, Events, and Projects in {data.city}</h2><p className='text-charcoal mb-5'>Popular rental scenarios we support throughout {data.city}, MI and surrounding communities.</p>
       <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-        {data.useCases.map((u) => <div key={u} className='rounded-xl border border-gold/20 bg-white p-5'><div className='mb-3 inline-flex rounded-xl bg-gold/25 p-3'><Tent className='h-8 w-8 text-navy' /></div><p className='capitalize text-charcoal'>{u}</p></div>)}
+        {data.useCases.map((useCase) => {
+          const card = getUseCaseCard(useCase)
+          return (
+            <article key={useCase} className='overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm'>
+              <div className='relative h-36'>
+                <Image src={card.image.src} alt={card.image.alt} fill className='object-cover' sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw' />
+                <div className='absolute inset-0 bg-gradient-to-t from-navy/55 via-navy/10 to-transparent' />
+                <div className='absolute left-4 top-4 inline-flex rounded-xl bg-white p-2.5 shadow-sm'>
+                  <card.icon className='h-5 w-5 text-navy' />
+                </div>
+              </div>
+              <div className='p-4'>
+                <p className='capitalize font-semibold text-navy'>{card.title}</p>
+                <p className='mt-1 text-sm leading-relaxed text-charcoal/85'>{card.description}</p>
+              </div>
+            </article>
+          )
+        })}
       </div>
       <p className='mt-6 text-charcoal'>Coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p>
     </div>
@@ -74,7 +134,22 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
     <div className='container mx-auto px-4 lg:px-8'>
       <h2 className='text-2xl font-semibold text-navy mb-5'>Explore More Services</h2>
       <div className='grid sm:grid-cols-2 lg:grid-cols-5 gap-4'>
-        {[{ href: '/request-quote', label: 'Request a Quote' }, { href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailers' }, { href: '/luxury-restroom-trailer-rentals', label: 'Luxury Rental Options' }, { href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction & Long-Term Rentals' }, { href: '/service-areas', label: 'All Service Areas' }].map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-5 hover:border-gold/40'><div className='mb-3 inline-flex rounded-xl bg-gold/25 p-3'><MapPin className='h-7 w-7 text-navy' /></div><p className='text-navy font-medium'>{item.label}</p></Link>)}
+        {exploreServiceCards.map((item) => (
+          <Link key={item.href} href={item.href ?? '/'} className='group overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-gold/45 hover:shadow-md'>
+            <div className='relative h-32'>
+              <Image src={item.image.src} alt={item.image.alt} fill className='object-cover transition duration-300 group-hover:scale-[1.02]' sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw' />
+              <div className='absolute inset-0 bg-gradient-to-t from-navy/50 via-navy/10 to-transparent' />
+              <div className='absolute left-4 top-4 inline-flex rounded-lg bg-white p-2 shadow-sm'>
+                <item.icon className='h-5 w-5 text-navy' />
+              </div>
+            </div>
+            <div className='p-4'>
+              <p className='font-semibold text-navy'>{item.title}</p>
+              <p className='mt-1 text-sm leading-relaxed text-charcoal/85'>{item.description}</p>
+              <p className='mt-3 inline-flex items-center text-sm font-medium text-navy'>View page <ArrowRight className='ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5' /></p>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   </section>
