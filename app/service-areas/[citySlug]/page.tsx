@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { MapPin, Tent } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { Button } from '@/components/ui/button'
 import { breadcrumbJsonLd, localBusinessJsonLd } from '@/lib/seo-schema'
 import { cityPages } from '@/lib/seo'
 
@@ -26,7 +26,52 @@ const getCityData = (slug: string) => { const base = cityPages.find((c) => c.slu
 export function generateStaticParams() { return cityPages.map((c) => ({ citySlug: c.slug })) }
 export async function generateMetadata({ params }: { params: Promise<{ citySlug: string }> }): Promise<Metadata> { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) return {}; const title = `Luxury Restroom Trailer Rentals in ${data.city}, MI`; const description = `Luxury restroom trailer rentals in ${data.city}, MI for weddings, private parties, corporate events, festivals, and temporary project needs.`; const canonical = `https://www.signatureluxeevents.com/service-areas/${data.slug}`; return { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical } } }
 
-export default async function CityPage({ params }: { params: Promise<{ citySlug: string }> }) { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) notFound(); const business = localBusinessJsonLd(data.city); const breadcrumbs = breadcrumbJsonLd([{ name: 'Home', item: '/' }, { name: 'Service Areas', item: '/service-areas' }, { name: `${data.city}, MI`, item: `/service-areas/${data.slug}` }]); const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: data.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
-return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /><Header /><main className='container mx-auto px-4 lg:px-8 py-16 space-y-8'><h1 className='text-4xl font-serif font-semibold text-navy'>Luxury Restroom Trailer Rentals in {data.city}, MI</h1><p className='text-lg text-muted-foreground'>{data.intro} We also serve {data.nearby}.</p><div><Button asChild><Link href='/request-quote'>Check Availability in {data.city}</Link></Button></div><h2 className='text-2xl font-semibold text-navy'>Restroom Trailer Rentals for {data.city} Events</h2><p>{data.venueNote}</p><h2 className='text-2xl font-semibold text-navy'>Weddings, Private Parties, and Outdoor Venues</h2><p>From elegant wedding weekends to backyard celebrations, we help hosts match trailer size and placement to guest flow and site constraints.</p><h2 className='text-2xl font-semibold text-navy'>Corporate, Festival, and Community Event Support</h2><p>We support corporate functions, nonprofit events, and public gatherings where crowd flow, cleanliness, and polished presentation all matter.</p><h2 className='text-2xl font-semibold text-navy'>Construction, Long-Term, and Temporary Restroom Needs</h2><p>Our team also supports project-based and temporary infrastructure needs with dependable delivery, pickup, and recurring service planning.</p><h2 className='text-2xl font-semibold text-navy'>Planning Delivery, Power, Water, and Placement</h2><p>Before delivery, we confirm access paths, surface suitability, and utility planning so setup stays smooth and timeline-friendly.</p><h2 className='text-2xl font-semibold text-navy'>Nearby Communities We Serve</h2><p>{data.city} service coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p><ul className='list-disc pl-6 space-y-1'>{data.useCases.map((u) => <li key={u}>{u}</li>)}</ul><h2 className='text-2xl font-semibold text-navy'>FAQs for {data.city}, MI</h2><div className='space-y-4'>{data.faqs.map((f) => <div key={f.q}><h3 className='font-semibold'>{f.q}</h3><p>{f.a}</p></div>)}</div></main><Footer /></>
-}
+export default async function CityPage({ params }: { params: Promise<{ citySlug: string }> }) { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) notFound(); const business = localBusinessJsonLd(data.city); const breadcrumbs = breadcrumbJsonLd([{ name: 'Home', item: '/' }, { name: 'Service Areas', item: '/service-areas' }, { name: `${data.city}, MI`, item: `/service-areas/${data.slug}` }]); const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: data.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
+return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /><Header />
+<main>
+  <section className='bg-navy py-20 md:py-24'>
+    <div className='container mx-auto px-4 lg:px-8 text-center max-w-4xl'>
+      <p className='text-gold uppercase tracking-[0.2em] text-xs mb-4'>Service Area</p>
+      <h1 className='text-4xl md:text-5xl font-serif font-semibold text-white'>Luxury Restroom Trailer Rentals in {data.city}, MI</h1>
+      <p className='mt-5 text-white/80 text-lg'>{data.intro} We also serve {data.nearby}.</p>
+      <Link href='/request-quote' className='inline-block mt-7 bg-gold text-charcoal px-7 py-3 rounded-md font-medium'>Check Availability in {data.city}</Link>
+    </div>
+  </section>
 
+  <section className='bg-white py-12'>
+    <div className='container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-6'>
+      {[{ title: `Restroom Trailer Rentals for ${data.city} Events`, text: data.venueNote }, { title: 'Planning Delivery, Power, Water, and Placement', text: 'Before delivery, we confirm access paths, surface suitability, and utility planning so setup stays smooth and timeline-friendly.' }].map((card) => (
+        <div key={card.title} className='rounded-2xl border border-gold/20 bg-cream p-6 shadow-sm'><h2 className='text-2xl font-semibold text-navy mb-3'>{card.title}</h2><p className='text-charcoal'>{card.text}</p></div>
+      ))}
+    </div>
+  </section>
+
+  <section className='bg-cream py-12'>
+    <div className='container mx-auto px-4 lg:px-8'>
+      <h2 className='text-2xl font-semibold text-navy mb-5'>Common Use Cases in {data.city}</h2>
+      <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+        {data.useCases.map((u) => <div key={u} className='rounded-xl border border-gold/20 bg-white p-5'><Tent className='h-5 w-5 text-navy mb-3' /><p className='capitalize text-charcoal'>{u}</p></div>)}
+      </div>
+      <p className='mt-6 text-charcoal'>Coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p>
+    </div>
+  </section>
+
+  <section className='bg-white py-12'>
+    <div className='container mx-auto px-4 lg:px-8'>
+      <h2 className='text-2xl font-semibold text-navy mb-6'>FAQs for {data.city}, MI</h2>
+      <div className='grid md:grid-cols-2 gap-4'>
+        {data.faqs.map((f) => <div key={f.q} className='rounded-xl border border-gold/20 bg-cream p-6'><h3 className='font-semibold text-navy'>{f.q}</h3><p className='mt-2 text-charcoal'>{f.a}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section className='bg-cream py-12'>
+    <div className='container mx-auto px-4 lg:px-8'>
+      <h2 className='text-2xl font-semibold text-navy mb-5'>Explore More Services</h2>
+      <div className='grid sm:grid-cols-2 lg:grid-cols-5 gap-4'>
+        {[{ href: '/request-quote', label: 'Request a Quote' }, { href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailers' }, { href: '/luxury-restroom-trailer-rentals', label: 'Luxury Rental Options' }, { href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction & Long-Term Rentals' }, { href: '/service-areas', label: 'All Service Areas' }].map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-5 hover:border-gold/40'><MapPin className='h-5 w-5 text-navy mb-2' /><p className='text-navy font-medium'>{item.label}</p></Link>)}
+      </div>
+    </div>
+  </section>
+</main><Footer /></>
+}
