@@ -9,9 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES } from '@/lib/quotes/types';
-import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, ChevronRight } from 'lucide-react';
+import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
+import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, ChevronRight, Calendar, Users, MapPin, DollarSign, Eye } from 'lucide-react';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
@@ -19,20 +20,29 @@ interface QuoteRequestsDashboardProps {
   error?: string;
 }
 
-type SortBy = 'newest' | 'created' | 'final_price' | 'status';
+type SortBy = 'newest' | 'oldest' | 'event_soonest' | 'event_latest' | 'total_highest' | 'total_lowest' | 'status';
 
 function getStatusColor(status: string) {
   const colors: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
+    pending_review: { bg: 'bg-amber-50', text: 'text-amber-700', icon: <Clock className="w-4 h-4" /> },
     new: { bg: 'bg-blue-50', text: 'text-blue-700', icon: <Clock className="w-4 h-4" /> },
     under_review: { bg: 'bg-yellow-50', text: 'text-yellow-700', icon: <Clock className="w-4 h-4" /> },
+    draft_quote: { bg: 'bg-slate-50', text: 'text-slate-700', icon: <FileCheck className="w-4 h-4" /> },
     quote_sent: { bg: 'bg-purple-50', text: 'text-purple-700', icon: <FileCheck className="w-4 h-4" /> },
+    sent_to_customer: { bg: 'bg-purple-50', text: 'text-purple-700', icon: <FileCheck className="w-4 h-4" /> },
     customer_approved: { bg: 'bg-green-50', text: 'text-green-700', icon: <CheckCircle2 className="w-4 h-4" /> },
+    change_requested: { bg: 'bg-orange-50', text: 'text-orange-700', icon: <AlertCircle className="w-4 h-4" /> },
     agreement_pending: { bg: 'bg-indigo-50', text: 'text-indigo-700', icon: <FileCheck className="w-4 h-4" /> },
+    agreement_sent: { bg: 'bg-indigo-50', text: 'text-indigo-700', icon: <FileCheck className="w-4 h-4" /> },
+    agreement_signed: { bg: 'bg-teal-50', text: 'text-teal-700', icon: <CheckCircle2 className="w-4 h-4" /> },
     deposit_pending: { bg: 'bg-orange-50', text: 'text-orange-700', icon: <CreditCard className="w-4 h-4" /> },
+    deposit_paid: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <CreditCard className="w-4 h-4" /> },
     booked: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <CheckCircle2 className="w-4 h-4" /> },
+    confirmed: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <CheckCircle2 className="w-4 h-4" /> },
     completed: { bg: 'bg-slate-50', text: 'text-slate-700', icon: <CheckCircle2 className="w-4 h-4" /> },
     cancelled: { bg: 'bg-red-50', text: 'text-red-700', icon: <AlertCircle className="w-4 h-4" /> },
     declined: { bg: 'bg-red-50', text: 'text-red-700', icon: <AlertCircle className="w-4 h-4" /> },
+    expired: { bg: 'bg-gray-50', text: 'text-gray-700', icon: <Clock className="w-4 h-4" /> },
   };
   return colors[status] || { bg: 'bg-gray-50', text: 'text-gray-700', icon: <Clock className="w-4 h-4" /> };
 }
@@ -44,6 +54,18 @@ function formatStatus(status: string) {
     .join(' ');
 }
 
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+}
+
 export default function QuoteRequestsDashboard({
   initialQuotes,
   source,
@@ -51,66 +73,121 @@ export default function QuoteRequestsDashboard({
 }: QuoteRequestsDashboardProps) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [eventTypeFilter, setEventTypeFilter] = useState('all');
   const [agreementFilter, setAgreementFilter] = useState('all');
   const [depositFilter, setDepositFilter] = useState('all');
   const [sortBy, setSortBy] = useState<SortBy>('newest');
 
-  const statuses = useMemo(
-    () => Array.from(new Set(initialQuotes.map((q) => q.status))).sort(),
-    [initialQuotes]
-  );
+  // Summary card counts
+  const summaryCounts = useMemo(() => {
+    const pending = initialQuotes.filter((q) => q.status === 'pending_review').length;
+    const underReview = initialQuotes.filter((q) => q.status === 'under_review').length;
+    const quoteSent = initialQuotes.filter((q) => q.status === 'quote_sent' || q.status === 'sent_to_customer').length;
+    const approved = initialQuotes.filter((q) => q.status === 'customer_approved').length;
+    const upcoming = initialQuotes.filter((q) => {
+      const eventDate = new Date(q.event_date);
+      const now = new Date();
+      const thirtyDaysOut = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      return eventDate >= now && eventDate <= thirtyDaysOut && ['booked', 'confirmed', 'deposit_paid'].includes(q.status);
+    }).length;
+    return { pending, underReview, quoteSent, approved, upcoming };
+  }, [initialQuotes]);
 
   const filteredQuotes = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
     const filtered = initialQuotes.filter((quote) => {
       if (statusFilter !== 'all' && quote.status !== statusFilter) return false;
+      if (eventTypeFilter !== 'all' && quote.event_type !== eventTypeFilter) return false;
       if (agreementFilter !== 'all' && quote.agreement_status !== agreementFilter) return false;
       if (depositFilter !== 'all' && quote.deposit_status !== depositFilter) return false;
 
       if (!normalizedSearch) return true;
 
-      return [quote.name, quote.email, quote.room_type, quote.city, quote.status]
+      return [
+        quote.customer_name,
+        quote.email,
+        quote.phone,
+        quote.event_address,
+        quote.city,
+        quote.event_type,
+        quote.status,
+      ]
         .join(' ')
         .toLowerCase()
         .includes(normalizedSearch);
     });
 
     return filtered.sort((a, b) => {
-      if (sortBy === 'final_price')
-        return (b.final_price || 0) - (a.final_price || 0);
-      if (sortBy === 'created')
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      if (sortBy === 'status') return a.status.localeCompare(b.status);
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      switch (sortBy) {
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'event_soonest':
+          return new Date(a.event_date).getTime() - new Date(b.event_date).getTime();
+        case 'event_latest':
+          return new Date(b.event_date).getTime() - new Date(a.event_date).getTime();
+        case 'total_highest':
+          return (b.total_price || 0) - (a.total_price || 0);
+        case 'total_lowest':
+          return (a.total_price || 0) - (b.total_price || 0);
+        case 'status':
+          return a.status.localeCompare(b.status);
+        case 'newest':
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
     });
-  }, [initialQuotes, search, statusFilter, agreementFilter, depositFilter, sortBy]);
+  }, [initialQuotes, search, statusFilter, eventTypeFilter, agreementFilter, depositFilter, sortBy]);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-serif font-bold text-navy mb-2">Quote Dashboard</h1>
+        <h1 className="text-4xl font-serif font-bold text-[#2d3a47] mb-2">Quote Dashboard</h1>
         <p className="text-muted-foreground mb-4">
-          Manage restroom rental quote requests and track customer responses.
+          Manage luxury restroom rental quote requests and track customer responses.
         </p>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Data source: {source === 'supabase' ? 'Supabase' : 'Mock data'}</span>
-          <span>•</span>
-          <span>{filteredQuotes.length} quotes</span>
-        </div>
+        {source === 'mock' && (
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700 mb-4">
+            Using demo quote data because Supabase is not configured.
+          </div>
+        )}
         {error && (
-          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 mb-4">
             {error}
           </div>
         )}
       </div>
 
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-4">
+          <div className="text-sm text-muted-foreground">Pending Review</div>
+          <div className="text-2xl font-bold text-[#2d3a47]">{summaryCounts.pending}</div>
+        </div>
+        <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-4">
+          <div className="text-sm text-muted-foreground">Under Review</div>
+          <div className="text-2xl font-bold text-[#2d3a47]">{summaryCounts.underReview}</div>
+        </div>
+        <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-4">
+          <div className="text-sm text-muted-foreground">Quote Sent</div>
+          <div className="text-2xl font-bold text-[#2d3a47]">{summaryCounts.quoteSent}</div>
+        </div>
+        <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-4">
+          <div className="text-sm text-muted-foreground">Customer Approved</div>
+          <div className="text-2xl font-bold text-[#2d3a47]">{summaryCounts.approved}</div>
+        </div>
+        <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-4">
+          <div className="text-sm text-muted-foreground">Upcoming Events</div>
+          <div className="text-2xl font-bold text-[#2d3a47]">{summaryCounts.upcoming}</div>
+        </div>
+      </div>
+
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-gold/20 p-4 space-y-4">
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-4 space-y-4">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-6">
           <Input
-            placeholder="Search by name, email, or city..."
+            placeholder="Search name, email, phone, address, city..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="lg:col-span-2"
@@ -128,9 +205,22 @@ export default function QuoteRequestsDashboard({
               ))}
             </SelectContent>
           </Select>
+          <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}>
+            <SelectTrigger>
+              <SelectValue placeholder="Event Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Event Types</SelectItem>
+              {EVENT_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={agreementFilter} onValueChange={setAgreementFilter}>
             <SelectTrigger>
-              <SelectValue placeholder="Agreement Status" />
+              <SelectValue placeholder="Agreement" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Agreements</SelectItem>
@@ -143,7 +233,7 @@ export default function QuoteRequestsDashboard({
           </Select>
           <Select value={depositFilter} onValueChange={setDepositFilter}>
             <SelectTrigger>
-              <SelectValue placeholder="Deposit Status" />
+              <SelectValue placeholder="Deposit" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Deposits</SelectItem>
@@ -156,42 +246,53 @@ export default function QuoteRequestsDashboard({
           </Select>
         </div>
 
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-muted-foreground">Sort by:</label>
-          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
-            <SelectTrigger className="w-auto">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="final_price">Highest Price</SelectItem>
-              <SelectItem value="status">Status</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-muted-foreground">Sort by:</label>
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
+              <SelectTrigger className="w-auto">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="event_soonest">Event Date (Soonest)</SelectItem>
+                <SelectItem value="event_latest">Event Date (Latest)</SelectItem>
+                <SelectItem value="total_highest">Highest Total</SelectItem>
+                <SelectItem value="total_lowest">Lowest Total</SelectItem>
+                <SelectItem value="status">Status A-Z</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <span className="text-sm text-muted-foreground">{filteredQuotes.length} quotes</span>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-gold/20 overflow-hidden">
+      {/* Desktop Table */}
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 overflow-hidden hidden lg:block">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-navy/5 border-b border-gold/20">
+            <thead className="bg-[#2d3a47]/5 border-b border-[#ded2c4]/30">
               <tr>
-                <th className="px-6 py-4 text-left font-semibold text-navy">Status</th>
-                <th className="px-6 py-4 text-left font-semibold text-navy">Customer</th>
-                <th className="px-6 py-4 text-left font-semibold text-navy">Restroom</th>
-                <th className="px-6 py-4 text-left font-semibold text-navy">Location</th>
-                <th className="px-6 py-4 text-left font-semibold text-navy">Agreement</th>
-                <th className="px-6 py-4 text-left font-semibold text-navy">Deposit</th>
-                <th className="px-6 py-4 text-right font-semibold text-navy">Amount</th>
-                <th className="px-6 py-4 text-left font-semibold text-navy">Created</th>
-                <th className="px-6 py-4 text-center font-semibold text-navy"></th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Status</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Customer</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Email</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Phone</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Event Date</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Event Type</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Location</th>
+                <th className="px-4 py-3 text-center font-semibold text-[#2d3a47]">Guests</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Agreement</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Deposit</th>
+                <th className="px-4 py-3 text-right font-semibold text-[#2d3a47]">Total</th>
+                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Created</th>
+                <th className="px-4 py-3 text-center font-semibold text-[#2d3a47]">Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredQuotes.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center text-muted-foreground">
+                  <td colSpan={13} className="px-6 py-12 text-center text-muted-foreground">
                     No quotes found matching your filters.
                   </td>
                 </tr>
@@ -201,44 +302,47 @@ export default function QuoteRequestsDashboard({
                   return (
                     <tr
                       key={quote.id}
-                      className="border-b border-gold/10 hover:bg-navy/2 transition-colors"
+                      className="border-b border-[#ded2c4]/20 hover:bg-[#2d3a47]/[0.02] transition-colors"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         <div
-                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusColor.bg} ${statusColor.text}`}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusColor.bg} ${statusColor.text}`}
                         >
                           {statusColor.icon}
                           {formatStatus(quote.status)}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="font-medium text-navy">{quote.name}</div>
-                        <div className="text-xs text-muted-foreground">{quote.email}</div>
+                      <td className="px-4 py-3 font-medium text-[#2d3a47]">{quote.customer_name}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{quote.email}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{quote.phone}</td>
+                      <td className="px-4 py-3">{formatDate(quote.event_date)}</td>
+                      <td className="px-4 py-3">{quote.event_type}</td>
+                      <td className="px-4 py-3 text-muted-foreground max-w-[180px] truncate">
+                        {quote.event_address}, {quote.city}, {quote.state} {quote.zip_code}
                       </td>
-                      <td className="px-6 py-4 text-sm">{quote.room_type}</td>
-                      <td className="px-6 py-4 text-sm">{quote.city}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3 text-center">{quote.guest_count}</td>
+                      <td className="px-4 py-3">
                         <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
                           {formatStatus(quote.agreement_status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
                           {formatStatus(quote.deposit_status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right font-semibold text-navy">
-                        ${(quote.final_price || quote.total_price || 0).toFixed(2)}
+                      <td className="px-4 py-3 text-right font-semibold text-[#2d3a47]">
+                        {formatCurrency(quote.total_price || 0)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-muted-foreground">
-                        {new Date(quote.created_at).toLocaleDateString()}
+                      <td className="px-4 py-3 text-sm text-muted-foreground">
+                        {formatDate(quote.created_at)}
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <Link
-                          href={`/admin/quotes/${quote.id}`}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-navy/10 text-navy transition-colors"
-                        >
-                          <ChevronRight className="w-5 h-5" />
+                      <td className="px-4 py-3 text-center">
+                        <Link href={`/admin/quotes/${quote.id}`}>
+                          <Button variant="outline" size="sm" className="gap-1">
+                            <Eye className="w-4 h-4" />
+                            View
+                          </Button>
                         </Link>
                       </td>
                     </tr>
@@ -248,6 +352,71 @@ export default function QuoteRequestsDashboard({
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="lg:hidden space-y-4">
+        {filteredQuotes.length === 0 ? (
+          <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-8 text-center text-muted-foreground">
+            No quotes found matching your filters.
+          </div>
+        ) : (
+          filteredQuotes.map((quote) => {
+            const statusColor = getStatusColor(quote.status);
+            return (
+              <div
+                key={quote.id}
+                className="bg-white rounded-lg border border-[#ded2c4]/30 p-4 space-y-3"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-semibold text-[#2d3a47]">{quote.customer_name}</h3>
+                    <div
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mt-1 ${statusColor.bg} ${statusColor.text}`}
+                    >
+                      {statusColor.icon}
+                      {formatStatus(quote.status)}
+                    </div>
+                  </div>
+                  <Link href={`/admin/quotes/${quote.id}`}>
+                    <Button variant="outline" size="sm" className="gap-1">
+                      <Eye className="w-4 h-4" />
+                      View
+                    </Button>
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    {formatDate(quote.event_date)}
+                  </div>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Users className="w-4 h-4" />
+                    {quote.guest_count} guests
+                  </div>
+                  <div className="flex items-center gap-2 text-muted-foreground col-span-2">
+                    <MapPin className="w-4 h-4" />
+                    {quote.city}, {quote.state}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-[#ded2c4]/20">
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Event: </span>
+                    <span className="font-medium">{quote.event_type}</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-[#2d3a47]">{formatCurrency(quote.total_price || 0)}</div>
+                    <div className="text-xs text-muted-foreground">
+                      Deposit: {formatCurrency(quote.deposit_amount || 0)} ({formatStatus(quote.deposit_status)})
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

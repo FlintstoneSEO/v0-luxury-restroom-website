@@ -1,28 +1,89 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import { quoteRequestUpdateSchema, quoteStatusUpdateSchema } from '@/lib/quotes/schema';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { quoteRequestUpdateSchema } from '@/lib/quotes/schema';
+
+// Valid fields that exist in the quote_requests table
+const ALLOWED_UPDATE_FIELDS = [
+  'customer_name',
+  'phone',
+  'email',
+  'event_date',
+  'event_type',
+  'guest_count',
+  'event_address',
+  'city',
+  'state',
+  'zip_code',
+  'event_start_time',
+  'event_end_time',
+  'has_power',
+  'has_water',
+  'additional_notes',
+  'distance_miles',
+  'base_price',
+  'travel_fee',
+  'utility_fee',
+  'after_hours_fee',
+  'cleaning_fee',
+  'damage_waiver_fee',
+  'rush_booking_fee',
+  'subtotal',
+  'total_price',
+  'deposit_amount',
+  'deposit_status',
+  'deposit_due_date',
+  'deposit_paid_at',
+  'deposit_paid_amount',
+  'deposit_transaction_reference',
+  'deposit_payment_link',
+  'final_balance',
+  'discount_amount',
+  'quote_expires_at',
+  'status',
+  'agreement_status',
+  'agreement_sent_at',
+  'agreement_signed_at',
+  'agreement_document_url',
+  'signed_document_url',
+  'agreement_provider_reference_id',
+  'internal_notes',
+  'customer_notes',
+  'is_manual_override',
+  'customer_response',
+  'customer_response_type',
+  'customer_response_at',
+] as const;
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ quoteId: string }> }
 ) {
   const { quoteId } = await params;
-  const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from('quote_requests')
-    .select('*')
-    .eq('id', quoteId)
-    .single();
+  try {
+    const supabase = createAdminClient();
 
-  if (error || !data) {
+    const { data, error } = await supabase
+      .from('quote_requests')
+      .select('*')
+      .eq('id', quoteId)
+      .single();
+
+    if (error || !data) {
+      return NextResponse.json(
+        { ok: false, error: error?.message || 'Quote not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ ok: true, quote: data });
+  } catch (error) {
+    console.error('[admin/quotes] GET error:', error);
     return NextResponse.json(
-      { ok: false, error: error?.message || 'Quote not found' },
-      { status: 404 }
+      { ok: false, error: 'Internal server error' },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json({ ok: true, quote: data });
 }
 
 export async function PATCH(
@@ -33,9 +94,7 @@ export async function PATCH(
   const payload = await request.json();
 
   // Validate the update schema
-  const validation = quoteRequestUpdateSchema
-    .partial()
-    .safeParse({ id: quoteId, ...payload });
+  const validation = quoteRequestUpdateSchema.safeParse({ id: quoteId, ...payload });
 
   if (!validation.success) {
     return NextResponse.json(
@@ -44,56 +103,96 @@ export async function PATCH(
     );
   }
 
-  const supabase = await createClient();
-  
-  // Only include fields that were actually provided
-  const updateData: Record<string, unknown> = {};
-  if ('name' in payload) updateData.name = payload.name;
-  if ('email' in payload) updateData.email = payload.email;
-  if ('phone' in payload) updateData.phone = payload.phone;
-  if ('address' in payload) updateData.address = payload.address;
-  if ('city' in payload) updateData.city = payload.city;
-  if ('state' in payload) updateData.state = payload.state;
-  if ('zip' in payload) updateData.zip = payload.zip;
-  if ('room_type' in payload) updateData.room_type = payload.room_type;
-  if ('room_condition' in payload) updateData.room_condition = payload.room_condition;
-  if ('features' in payload) updateData.features = payload.features;
-  if ('color_preference' in payload) updateData.color_preference = payload.color_preference;
-  if ('base_price' in payload) updateData.base_price = payload.base_price;
-  if ('labor_cost' in payload) updateData.labor_cost = payload.labor_cost;
-  if ('materials_cost' in payload) updateData.materials_cost = payload.materials_cost;
-  if ('tax_amount' in payload) updateData.tax_amount = payload.tax_amount;
-  if ('total_price' in payload) updateData.total_price = payload.total_price;
-  if ('discount_amount' in payload) updateData.discount_amount = payload.discount_amount;
-  if ('final_price' in payload) updateData.final_price = payload.final_price;
-  if ('price_valid_until' in payload) updateData.price_valid_until = payload.price_valid_until;
-  if ('status' in payload) updateData.status = payload.status;
-  if ('internal_notes' in payload) updateData.internal_notes = payload.internal_notes;
-  if ('customer_notes' in payload) updateData.customer_notes = payload.customer_notes;
-  if ('agreement_status' in payload) updateData.agreement_status = payload.agreement_status;
-  if ('agreement_document_url' in payload) updateData.agreement_document_url = payload.agreement_document_url;
-  if ('agreement_provider_reference_id' in payload) updateData.agreement_provider_reference_id = payload.agreement_provider_reference_id;
-  if ('agreement_sent_at' in payload) updateData.agreement_sent_at = payload.agreement_sent_at;
-  if ('agreement_signed_at' in payload) updateData.agreement_signed_at = payload.agreement_signed_at;
-  if ('deposit_status' in payload) updateData.deposit_status = payload.deposit_status;
-  if ('deposit_payment_link' in payload) updateData.deposit_payment_link = payload.deposit_payment_link;
-  if ('deposit_due_date' in payload) updateData.deposit_due_date = payload.deposit_due_date;
-  if ('deposit_paid_at' in payload) updateData.deposit_paid_at = payload.deposit_paid_at;
-  if ('deposit_paid_amount' in payload) updateData.deposit_paid_amount = payload.deposit_paid_amount;
+  try {
+    const supabase = createAdminClient();
 
-  const { data, error } = await supabase
-    .from('quote_requests')
-    .update(updateData)
-    .eq('id', quoteId)
-    .select('*')
-    .single();
+    // Get the current quote to check for status changes
+    const { data: currentQuote, error: fetchError } = await supabase
+      .from('quote_requests')
+      .select('status')
+      .eq('id', quoteId)
+      .single();
 
-  if (error) {
+    if (fetchError || !currentQuote) {
+      return NextResponse.json(
+        { ok: false, error: 'Quote not found' },
+        { status: 404 }
+      );
+    }
+
+    // Build update object with only allowed fields
+    const updateData: Record<string, unknown> = {};
+
+    for (const field of ALLOWED_UPDATE_FIELDS) {
+      if (field in payload) {
+        const value = payload[field];
+
+        // Validate non-negative money values (except discount can be 0 or positive)
+        if (
+          ['base_price', 'travel_fee', 'utility_fee', 'after_hours_fee', 'cleaning_fee', 
+           'damage_waiver_fee', 'rush_booking_fee', 'subtotal', 'total_price', 
+           'deposit_amount', 'deposit_paid_amount', 'final_balance', 'discount_amount'].includes(field)
+        ) {
+          const numValue = typeof value === 'number' ? value : parseFloat(value);
+          if (numValue < 0) {
+            return NextResponse.json(
+              { ok: false, error: `${field} cannot be negative` },
+              { status: 400 }
+            );
+          }
+        }
+
+        updateData[field] = value;
+      }
+    }
+
+    // Always update the updated_at timestamp
+    updateData.updated_at = new Date().toISOString();
+
+    // Check if status changed for history tracking
+    const statusChanged = 'status' in payload && payload.status !== currentQuote.status;
+
+    // Perform the update
+    const { data, error } = await supabase
+      .from('quote_requests')
+      .update(updateData)
+      .eq('id', quoteId)
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('[admin/quotes] PATCH error:', error);
+      return NextResponse.json(
+        { ok: false, error: error.message },
+        { status: 400 }
+      );
+    }
+
+    // Insert status history if status changed
+    if (statusChanged) {
+      const { error: historyError } = await supabase
+        .from('quote_status_history')
+        .insert({
+          quote_request_id: quoteId,
+          old_status: currentQuote.status,
+          new_status: payload.status,
+          changed_at: new Date().toISOString(),
+          changed_by: 'admin',
+          note: payload.internal_notes || null,
+        });
+
+      if (historyError) {
+        console.error('[admin/quotes] Status history insert error:', historyError);
+        // Don't fail the whole request if history insert fails
+      }
+    }
+
+    return NextResponse.json({ ok: true, quote: data });
+  } catch (error) {
+    console.error('[admin/quotes] PATCH error:', error);
     return NextResponse.json(
-      { ok: false, error: error.message },
-      { status: 400 }
+      { ok: false, error: 'Internal server error' },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json({ ok: true, quote: data });
 }
