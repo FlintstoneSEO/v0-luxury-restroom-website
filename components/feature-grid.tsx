@@ -9,7 +9,7 @@ interface Feature {
 
 interface FeatureGridProps {
   features: Feature[]
-  columns?: 2 | 3 | 4 | 6
+  columns?: 1 | 2 | 3 | 4 | 6
   variant?: "default" | "compact" | "card"
   className?: string
 }
@@ -20,7 +20,8 @@ export function FeatureGrid({
   variant = "default",
   className,
 }: FeatureGridProps) {
-  const columnClasses = {
+  const columnClasses: Record<1 | 2 | 3 | 4 | 6, string> = {
+    1: "grid-cols-1",
     2: "grid-cols-1 sm:grid-cols-2",
     3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
     4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
