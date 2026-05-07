@@ -23,29 +23,30 @@ interface QuoteRequestsDashboardProps {
 type SortBy = 'newest' | 'oldest' | 'event_soonest' | 'event_latest' | 'total_highest' | 'total_lowest' | 'status';
 
 function getStatusColor(status: string) {
-  const colors: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
-    pending_review: { bg: 'bg-amber-50', text: 'text-amber-700', icon: <Clock className="w-4 h-4" /> },
-    new: { bg: 'bg-blue-50', text: 'text-blue-700', icon: <Clock className="w-4 h-4" /> },
-    under_review: { bg: 'bg-yellow-50', text: 'text-yellow-700', icon: <Clock className="w-4 h-4" /> },
-    draft_quote: { bg: 'bg-slate-50', text: 'text-slate-700', icon: <FileCheck className="w-4 h-4" /> },
-    quote_sent: { bg: 'bg-purple-50', text: 'text-purple-700', icon: <FileCheck className="w-4 h-4" /> },
-    sent_to_customer: { bg: 'bg-purple-50', text: 'text-purple-700', icon: <FileCheck className="w-4 h-4" /> },
-    customer_approved: { bg: 'bg-green-50', text: 'text-green-700', icon: <CheckCircle2 className="w-4 h-4" /> },
-    change_requested: { bg: 'bg-orange-50', text: 'text-orange-700', icon: <AlertCircle className="w-4 h-4" /> },
-    agreement_pending: { bg: 'bg-indigo-50', text: 'text-indigo-700', icon: <FileCheck className="w-4 h-4" /> },
-    agreement_sent: { bg: 'bg-indigo-50', text: 'text-indigo-700', icon: <FileCheck className="w-4 h-4" /> },
-    agreement_signed: { bg: 'bg-teal-50', text: 'text-teal-700', icon: <CheckCircle2 className="w-4 h-4" /> },
-    deposit_pending: { bg: 'bg-orange-50', text: 'text-orange-700', icon: <CreditCard className="w-4 h-4" /> },
-    deposit_paid: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <CreditCard className="w-4 h-4" /> },
-    booked: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <CheckCircle2 className="w-4 h-4" /> },
-    confirmed: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <CheckCircle2 className="w-4 h-4" /> },
-    completed: { bg: 'bg-slate-50', text: 'text-slate-700', icon: <CheckCircle2 className="w-4 h-4" /> },
-    cancelled: { bg: 'bg-red-50', text: 'text-red-700', icon: <AlertCircle className="w-4 h-4" /> },
-    declined: { bg: 'bg-red-50', text: 'text-red-700', icon: <AlertCircle className="w-4 h-4" /> },
-    expired: { bg: 'bg-gray-50', text: 'text-gray-700', icon: <Clock className="w-4 h-4" /> },
+  const colors: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
+    pending_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <Clock className="w-4 h-4" /> },
+    new: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <Clock className="w-4 h-4" /> },
+    under_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <Clock className="w-4 h-4" /> },
+    draft_quote: { bg: 'bg-white', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <FileCheck className="w-4 h-4" /> },
+    quote_sent: { bg: 'bg-[#2d3a47]/8', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
+    sent_to_customer: { bg: 'bg-[#2d3a47]/8', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
+    customer_approved: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
+    change_requested: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <AlertCircle className="w-4 h-4" /> },
+    agreement_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <FileCheck className="w-4 h-4" /> },
+    agreement_sent: { bg: 'bg-[#2d3a47]/8', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
+    agreement_signed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
+    deposit_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <CreditCard className="w-4 h-4" /> },
+    deposit_paid: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CreditCard className="w-4 h-4" /> },
+    booked: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
+    confirmed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
+    completed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
+    cancelled: { bg: 'bg-white opacity-70', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/30', icon: <AlertCircle className="w-4 h-4" /> },
+    declined: { bg: 'bg-white opacity-70', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/30', icon: <AlertCircle className="w-4 h-4" /> },
+    expired: { bg: 'bg-white opacity-70', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/30', icon: <Clock className="w-4 h-4" /> },
   };
-  return colors[status] || { bg: 'bg-gray-50', text: 'text-gray-700', icon: <Clock className="w-4 h-4" /> };
+  return colors[status] || { bg: 'bg-white', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <Clock className="w-4 h-4" /> };
 }
+
 
 function formatStatus(status: string) {
   return status
@@ -148,7 +149,7 @@ export default function QuoteRequestsDashboard({
           Manage luxury restroom rental quote requests and track customer responses.
         </p>
         {source === 'mock' && (
-          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700 mb-4">
+          <div className="p-3 bg-[#ded2c4]/20 border border-[#ded2c4]/60 rounded-lg text-sm text-[#2d3a47] mb-4">
             Using demo quote data because Supabase is not configured.
           </div>
         )}
@@ -306,7 +307,7 @@ export default function QuoteRequestsDashboard({
                     >
                       <td className="px-4 py-3">
                         <div
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusColor.bg} ${statusColor.text}`}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusColor.bg} ${statusColor.text} ${statusColor.border}`}
                         >
                           {statusColor.icon}
                           {formatStatus(quote.status)}
@@ -322,12 +323,12 @@ export default function QuoteRequestsDashboard({
                       </td>
                       <td className="px-4 py-3 text-center">{quote.guest_count}</td>
                       <td className="px-4 py-3">
-                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                        <span className="text-xs px-2 py-1 rounded-full bg-[#ded2c4]/20 text-[#2d3a47] border border-[#ded2c4]/60">
                           {formatStatus(quote.agreement_status)}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                        <span className="text-xs px-2 py-1 rounded-full bg-[#ded2c4]/20 text-[#2d3a47] border border-[#ded2c4]/60">
                           {formatStatus(quote.deposit_status)}
                         </span>
                       </td>
@@ -339,7 +340,7 @@ export default function QuoteRequestsDashboard({
                       </td>
                       <td className="px-4 py-3 text-center">
                         <Link href={`/admin/quotes/${quote.id}`}>
-                          <Button variant="outline" size="sm" className="gap-1">
+                          <Button variant="outline" size="sm" className="gap-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
                             <Eye className="w-4 h-4" />
                             View
                           </Button>
@@ -372,14 +373,14 @@ export default function QuoteRequestsDashboard({
                   <div>
                     <h3 className="font-semibold text-[#2d3a47]">{quote.customer_name}</h3>
                     <div
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mt-1 ${statusColor.bg} ${statusColor.text}`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mt-1 ${statusColor.bg} ${statusColor.text} ${statusColor.border}`}
                     >
                       {statusColor.icon}
                       {formatStatus(quote.status)}
                     </div>
                   </div>
                   <Link href={`/admin/quotes/${quote.id}`}>
-                    <Button variant="outline" size="sm" className="gap-1">
+                    <Button variant="outline" size="sm" className="gap-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
                       <Eye className="w-4 h-4" />
                       View
                     </Button>
