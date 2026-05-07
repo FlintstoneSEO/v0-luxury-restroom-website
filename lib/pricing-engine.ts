@@ -1,6 +1,6 @@
-import { PricingSettings, PriceBreakdown } from './types/quote';
+import { PriceBreakdown, PricingSettings, QuoteFormData, QuoteLineItem } from './types/quote';
 
-const DEFAULT_PRICING: PricingSettings = {
+export const DEFAULT_PRICING: PricingSettings = {
   base_price_100_guests: 650,
   base_price_150_guests: 750,
   base_price_200_guests: 900,
@@ -11,8 +11,41 @@ const DEFAULT_PRICING: PricingSettings = {
   water_fee: 100,
   after_hours_hourly_rate: 75,
   after_hours_cutoff_hour: 22,
+  damage_waiver_fee: 75,
+  rush_booking_fee: 250,
+  cleaning_fee: 125,
+  extra_day_fee: 275,
   deposit_percentage: 25,
 };
+
+const RUSH_BOOKING_WINDOW_DAYS = 14;
+const roundMoney = (value: number): number => Math.round(value * 100) / 100;
+
+export function validateQuoteFormData(data: QuoteFormData): Record<string, string[]> {
+  const errors: Record<string, string[]> = {};
+
+  if (!data.customer_name || data.customer_name.trim().length < 2) errors.customer_name = ['Please enter your full name'];
+  if (!data.email || !data.email.includes('@')) errors.email = ['Please enter a valid email address'];
+  if (!data.phone || data.phone.replace(/\D/g, '').length < 10) errors.phone = ['Please enter a valid phone number'];
+  if (!data.event_type) errors.event_type = ['Please select an event type'];
+  if (!data.guest_count || data.guest_count < 1) errors.guest_count = ['Please enter the expected number of guests'];
+  if (!data.event_address) errors.event_address = ['Please enter the event address'];
+  if (!data.city) errors.city = ['Please enter the city'];
+  if (!data.zip_code || data.zip_code.length < 5) errors.zip_code = ['Please enter a valid ZIP code'];
+  if (!data.event_start_time) errors.event_start_time = ['Please select a start time'];
+  if (!data.event_end_time) errors.event_end_time = ['Please select an end time'];
+
+  if (!data.event_date) {
+    errors.event_date = ['Please select an event date'];
+  } else {
+    const eventDate = new Date(data.event_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (eventDate < today) errors.event_date = ['Event date must be in the future'];
+  }
+
+  return errors;
+}
 
 export function getBasePrice(guestCount: number, settings: PricingSettings = DEFAULT_PRICING): number {
   if (guestCount <= 100) return settings.base_price_100_guests;
@@ -28,69 +61,45 @@ export function getGuestTier(guestCount: number): string {
   return '200+ guests';
 }
 
-export function calculateTravelFee(
-  distanceMiles: number,
-  settings: PricingSettings = DEFAULT_PRICING
-): { fee: number; extraMiles: number } {
+export function calculateTravelFee(distanceMiles: number, settings: PricingSettings = DEFAULT_PRICING): { fee: number; extraMiles: number } {
   const extraMiles = Math.max(0, distanceMiles - settings.included_miles);
-  const fee = extraMiles * settings.travel_rate_per_mile;
-  return { fee: Math.round(fee * 100) / 100, extraMiles };
+  return { fee: roundMoney(extraMiles * settings.travel_rate_per_mile), extraMiles };
 }
 
-export function calculateUtilityFee(
-  hasPower: boolean,
-  hasWater: boolean,
-  settings: PricingSettings = DEFAULT_PRICING
-): { fee: number; generatorNeeded: boolean; waterNeeded: boolean } {
-  let fee = 0;
+export function calculateUtilityFee(hasPower: boolean, hasWater: boolean, settings: PricingSettings = DEFAULT_PRICING): { fee: number; generatorNeeded: boolean; waterNeeded: boolean } {
   const generatorNeeded = !hasPower;
   const waterNeeded = !hasWater;
-  
-  if (generatorNeeded) fee += settings.generator_fee;
-  if (waterNeeded) fee += settings.water_fee;
-  
+  const fee = (generatorNeeded ? settings.generator_fee : 0) + (waterNeeded ? settings.water_fee : 0);
   return { fee, generatorNeeded, waterNeeded };
 }
 
 export function parseTime(timeStr: string): number {
-  // Parse time string like "14:00" or "2:00 PM" to hour number
   if (timeStr.includes(':')) {
     const [hours, minutesPart] = timeStr.split(':');
     let hour = parseInt(hours, 10);
-    
-    // Check for AM/PM
     if (minutesPart) {
-      const isPM = minutesPart.toLowerCase().includes('pm');
-      const isAM = minutesPart.toLowerCase().includes('am');
-      
-      if (isPM && hour !== 12) hour += 12;
-      if (isAM && hour === 12) hour = 0;
+      const lower = minutesPart.toLowerCase();
+      if (lower.includes('pm') && hour !== 12) hour += 12;
+      if (lower.includes('am') && hour === 12) hour = 0;
     }
-    
     return hour;
   }
   return parseInt(timeStr, 10);
 }
 
-export function calculateAfterHoursFee(
-  endTime: string,
-  settings: PricingSettings = DEFAULT_PRICING
-): { fee: number; hoursCount: number } {
+export function calculateAfterHoursFee(endTime: string, settings: PricingSettings = DEFAULT_PRICING): { fee: number; hoursCount: number } {
   const endHour = parseTime(endTime);
   const cutoffHour = settings.after_hours_cutoff_hour;
-  
-  if (endHour <= cutoffHour) {
-    return { fee: 0, hoursCount: 0 };
-  }
-  
-  // Calculate hours past cutoff (handle midnight crossing)
-  let hoursCount = endHour > cutoffHour ? endHour - cutoffHour : (24 - cutoffHour) + endHour;
-  
-  // Cap at reasonable max (4 hours)
-  hoursCount = Math.min(hoursCount, 4);
-  
-  const fee = hoursCount * settings.after_hours_hourly_rate;
-  return { fee, hoursCount };
+  if (endHour <= cutoffHour) return { fee: 0, hoursCount: 0 };
+  const hoursCount = Math.min(endHour - cutoffHour, 4);
+  return { fee: hoursCount * settings.after_hours_hourly_rate, hoursCount };
+}
+
+export function calculateRushBookingFee(eventDate: string, now = new Date(), settings: PricingSettings = DEFAULT_PRICING): { fee: number; daysOut: number | null } {
+  const parsed = new Date(eventDate);
+  if (Number.isNaN(parsed.getTime())) return { fee: 0, daysOut: null };
+  const daysOut = Math.ceil((parsed.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  return { fee: daysOut <= RUSH_BOOKING_WINDOW_DAYS ? settings.rush_booking_fee : 0, daysOut };
 }
 
 export function calculateQuotePrice(
@@ -99,25 +108,44 @@ export function calculateQuotePrice(
   hasPower: boolean,
   hasWater: boolean,
   endTime: string,
+  eventDate: string,
   settings: PricingSettings = DEFAULT_PRICING
 ): PriceBreakdown {
   const basePrice = getBasePrice(guestCount, settings);
   const { fee: travelFee, extraMiles } = calculateTravelFee(distanceMiles, settings);
   const { fee: utilityFee, generatorNeeded, waterNeeded } = calculateUtilityFee(hasPower, hasWater, settings);
   const { fee: afterHoursFee, hoursCount: afterHoursCount } = calculateAfterHoursFee(endTime, settings);
-  
-  const totalPrice = basePrice + travelFee + utilityFee + afterHoursFee;
-  const depositAmount = Math.round((totalPrice * settings.deposit_percentage / 100) * 100) / 100;
-  const finalBalance = Math.round((totalPrice - depositAmount) * 100) / 100;
-  
+  const { fee: rushBookingFee, daysOut } = calculateRushBookingFee(eventDate, new Date(), settings);
+  const cleaningFee = settings.cleaning_fee;
+  const damageWaiverFee = settings.damage_waiver_fee;
+
+  const lineItems: QuoteLineItem[] = [
+    { code: 'base_rental', label: `Base rental (${getGuestTier(guestCount)})`, quantity: 1, unit_price: basePrice, total: basePrice },
+    { code: 'travel', label: 'Travel', quantity: extraMiles, unit_price: settings.travel_rate_per_mile, total: travelFee },
+    { code: 'utilities', label: 'Utilities', quantity: 1, unit_price: utilityFee, total: utilityFee },
+    { code: 'after_hours', label: 'After hours', quantity: afterHoursCount, unit_price: settings.after_hours_hourly_rate, total: afterHoursFee },
+    { code: 'cleaning', label: 'Cleaning fee', quantity: 1, unit_price: cleaningFee, total: cleaningFee },
+    { code: 'damage_waiver', label: 'Damage waiver', quantity: 1, unit_price: damageWaiverFee, total: damageWaiverFee },
+    { code: 'rush_booking', label: 'Rush booking', quantity: rushBookingFee > 0 ? 1 : 0, unit_price: rushBookingFee, total: rushBookingFee },
+  ];
+
+  const subtotal = roundMoney(basePrice + travelFee + utilityFee + afterHoursFee + cleaningFee + damageWaiverFee + rushBookingFee);
+  const depositAmount = roundMoney((subtotal * settings.deposit_percentage) / 100);
+  const finalBalance = roundMoney(subtotal - depositAmount);
+
   return {
     base_price: basePrice,
     travel_fee: travelFee,
     utility_fee: utilityFee,
     after_hours_fee: afterHoursFee,
-    total_price: totalPrice,
+    cleaning_fee: cleaningFee,
+    damage_waiver_fee: damageWaiverFee,
+    rush_booking_fee: rushBookingFee,
+    subtotal,
+    total_price: subtotal,
     deposit_amount: depositAmount,
     final_balance: finalBalance,
+    line_items: lineItems,
     details: {
       guest_tier: getGuestTier(guestCount),
       distance_miles: distanceMiles,
@@ -125,13 +153,11 @@ export function calculateQuotePrice(
       generator_needed: generatorNeeded,
       water_needed: waterNeeded,
       after_hours_count: afterHoursCount,
+      rush_days_out: daysOut,
     },
   };
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount);
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }
