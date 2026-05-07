@@ -16,15 +16,15 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/s
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Start Here", href: "/start-here" },
-  { name: "Our Restrooms", href: "/our-restrooms" },
+  { name: "Luxury Restroom Trailers", href: "/luxury-restroom-trailer-rentals" },
   {
     name: "Event Types",
     href: "#",
     children: [
-      { name: "Weddings", href: "/weddings" },
-      { name: "Special Events", href: "/special-events" },
-      { name: "Construction / Long-Term", href: "/construction-long-term" },
-      { name: "Disaster Relief / Government", href: "/disaster-relief-government" },
+      { name: "Weddings", href: "/wedding-restroom-trailer-rentals" },
+      { name: "Private Events", href: "/private-event-restroom-trailers" },
+      { name: "Construction / Long-Term", href: "/construction-long-term-restroom-trailer-rentals" },
+      { name: "Emergency / Disaster Relief", href: "/emergency-disaster-relief-restroom-trailers" },
     ],
   },
   { name: "Service Areas", href: "/service-areas" },
@@ -101,7 +101,7 @@ export function Header() {
               <DesktopNavItems items={rightNavigation} />
             </nav>
             <Button asChild className="ml-2 bg-navy hover:bg-navy/90 text-white">
-              <Link href="/request-availability">Request Availability</Link>
+              <Link href="/request-quote">Check Availability</Link>
             </Button>
           </div>
         </div>
@@ -179,7 +179,7 @@ export function Header() {
               <div className="p-4 border-t">
                 <SheetClose asChild>
                   <Button asChild className="w-full bg-navy hover:bg-navy/90 text-white">
-                    <Link href="/request-availability">Request Availability</Link>
+                    <Link href="/request-quote">Check Availability</Link>
                   </Button>
                 </SheetClose>
               </div>

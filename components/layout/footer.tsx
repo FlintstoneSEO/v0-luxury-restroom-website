@@ -111,10 +111,10 @@ export function Footer() {
               ))}
               <li className="pt-4">
                 <Link 
-                  href="/request-availability"
+                  href="/request-quote"
                   className="inline-flex items-center gap-2 bg-gold text-charcoal px-4 py-2 rounded text-sm font-medium hover:bg-gold/90 transition-colors"
                 >
-                  Request Availability
+                  Check Availability
                 </Link>
               </li>
             </ul>
