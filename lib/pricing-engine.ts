@@ -73,26 +73,34 @@ export function calculateUtilityFee(hasPower: boolean, hasWater: boolean, settin
   return { fee, generatorNeeded, waterNeeded };
 }
 
-export function parseTime(timeStr: string): number {
-  if (timeStr.includes(':')) {
-    const [hours, minutesPart] = timeStr.split(':');
-    let hour = parseInt(hours, 10);
-    if (minutesPart) {
-      const lower = minutesPart.toLowerCase();
-      if (lower.includes('pm') && hour !== 12) hour += 12;
-      if (lower.includes('am') && hour === 12) hour = 0;
-    }
-    return hour;
-  }
-  return parseInt(timeStr, 10);
+export function parseTime(timeStr: string): { hours: number; minutes: number } {
+  const normalized = timeStr.trim().toLowerCase();
+  const match = normalized.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+  if (!match) return { hours: 0, minutes: 0 };
+
+  let hours = Number.parseInt(match[1], 10);
+  const minutes = Number.parseInt(match[2] ?? '0', 10);
+  const meridiem = match[3];
+
+  if (meridiem === 'pm' && hours !== 12) hours += 12;
+  if (meridiem === 'am' && hours === 12) hours = 0;
+
+  return { hours, minutes };
 }
 
 export function calculateAfterHoursFee(endTime: string, settings: PricingSettings = DEFAULT_PRICING): { fee: number; hoursCount: number } {
-  const endHour = parseTime(endTime);
+  const parsed = parseTime(endTime);
   const cutoffHour = settings.after_hours_cutoff_hour;
-  if (endHour <= cutoffHour) return { fee: 0, hoursCount: 0 };
-  const hoursCount = Math.min(endHour - cutoffHour, 4);
-  return { fee: hoursCount * settings.after_hours_hourly_rate, hoursCount };
+  const cutoffMinutes = cutoffHour * 60;
+
+  let endMinutes = (parsed.hours % 24) * 60 + parsed.minutes;
+  if (endMinutes <= cutoffMinutes) endMinutes += 24 * 60;
+
+  const afterHoursMinutes = endMinutes - cutoffMinutes;
+  if (afterHoursMinutes <= 0) return { fee: 0, hoursCount: 0 };
+
+  const hoursCount = Math.min(4, Math.ceil(afterHoursMinutes / 60));
+  return { fee: roundMoney(hoursCount * settings.after_hours_hourly_rate), hoursCount };
 }
 
 export function calculateRushBookingFee(eventDate: string, now = new Date(), settings: PricingSettings = DEFAULT_PRICING): { fee: number; daysOut: number | null } {
