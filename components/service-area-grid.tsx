@@ -34,8 +34,10 @@ export function ServiceAreaGrid({
               "flex items-center gap-3 p-4 rounded-xl border transition-all duration-200",
               area.featured
                 ? "bg-navy text-white border-navy"
-                : "bg-white border-border/50 hover:border-navy/30 hover:shadow-sm",
-              showLinks && "cursor-pointer"
+                : area.href
+                  ? "bg-white border-border/50 hover:border-navy/30 hover:shadow-sm"
+                  : "bg-white border-border/50 opacity-90",
+              showLinks && area.href && "cursor-pointer"
             )}
           >
             <MapPin
@@ -44,11 +46,16 @@ export function ServiceAreaGrid({
                 area.featured ? "text-gold" : "text-navy"
               )}
             />
-            <span className={cn("font-medium", area.featured ? "text-white" : "text-charcoal")}>
-              {area.name}
-              {area.state && `, ${area.state}`}
-            </span>
-            {showLinks && (
+            <div className='flex-1'>
+              <span className={cn("font-medium", area.featured ? "text-white" : "text-charcoal")}>
+                {area.name}
+                {area.state && `, ${area.state}`}
+              </span>
+              {showLinks && !area.href && (
+                <p className='text-xs text-muted-foreground'>Available by request</p>
+              )}
+            </div>
+            {showLinks && area.href && (
               <ArrowRight
                 className={cn(
                   "w-4 h-4 ml-auto shrink-0",

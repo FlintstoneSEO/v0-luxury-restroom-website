@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ClipboardList, Droplets, Sparkles, Thermometer } from 'lucide-react'
+import { ArrowRight, ClipboardCheck, ClipboardList, Droplets, HardHat, Heart, HelpCircle, ImageIcon, MapPin, Sparkles, Thermometer, type LucideIcon } from 'lucide-react'
 import { Header } from './layout/header'
 import { Footer } from './layout/footer'
 import { breadcrumbJsonLd, serviceJsonLd } from '@/lib/seo-schema'
@@ -8,16 +8,22 @@ import { breadcrumbJsonLd, serviceJsonLd } from '@/lib/seo-schema'
 type FAQ = { q: string; a: string }
 type Section = { heading: string; paragraphs: string[] }
 
-const resources = [
-  { href: '/request-quote', title: 'Request a Quote', desc: 'Share your event details and receive a custom proposal.' },
-  { href: '/service-areas/lansing-mi', title: 'Lansing Service Area', desc: 'See Lansing delivery and setup coverage details.' },
-  { href: '/service-areas/east-lansing-mi', title: 'East Lansing Service Area', desc: 'Explore East Lansing rental guidance and logistics.' },
-  { href: '/service-areas/okemos-mi', title: 'Okemos Restroom Trailer Rentals', desc: 'Review options for Okemos events and properties.' },
-  { href: '/wedding-restroom-trailer-rentals', title: 'Wedding Restroom Trailers', desc: 'Luxury guest amenities for wedding weekends.' },
-  { href: '/luxury-restroom-trailer-rentals', title: 'Luxury Restroom Rental Options', desc: 'Compare station sizes and premium features.' },
-  { href: '/construction-long-term-restroom-trailer-rentals', title: 'Construction and Long-Term Rentals', desc: 'Dependable long-term and project-based support.' },
-  { href: '/faq', title: 'FAQ', desc: 'Get answers to common planning and delivery questions.' },
-  { href: '/gallery', title: 'Gallery', desc: 'View restroom trailer photos and event setups.' },
+type VisualResource = {
+  href: string
+  title: string
+  desc: string
+  icon: LucideIcon
+  image: { src: string; alt: string }
+}
+
+const resources: VisualResource[] = [
+  { href: '/request-quote', title: 'Request a Quote', desc: 'Share your event details and receive a custom proposal.', icon: ClipboardCheck, image: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg', alt: 'Luxury restroom trailer exterior setup in Michigan' } },
+  { href: '/service-areas', title: 'Service Areas', desc: 'See delivery and setup coverage details across Mid-Michigan.', icon: MapPin, image: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_56_46%20PM-H2xCmMMND6AksTZG4HA9OHuDL07tY3.png', alt: 'Festival event setup with luxury restroom trailers' } },
+  { href: '/wedding-restroom-trailer-rentals', title: 'Wedding Restroom Trailers', desc: 'Luxury guest amenities for wedding weekends and private estates.', icon: Heart, image: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f8c856e0-44a2-4c9a-990c-09e671fee136-VkgBsnTDKck69SOzLmlIYiSb3zZeAS.png', alt: 'Wedding restroom trailer setup at a private estate' } },
+  { href: '/luxury-restroom-trailer-rentals', title: 'Luxury Rental Options', desc: 'Compare station sizes, premium finishes, and climate comfort.', icon: Sparkles, image: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg', alt: 'Interior vanity in luxury restroom trailer' } },
+  { href: '/construction-long-term-restroom-trailer-rentals', title: 'Construction & Long-Term Rentals', desc: 'Dependable long-term and project-based support for active job sites.', icon: HardHat, image: { src: '/images/3 Station Pro/3Station.jpg', alt: '3 Station Pro restroom trailer exterior' } },
+  { href: '/faq', title: 'FAQ', desc: 'Get answers to common planning, delivery, and setup questions.', icon: HelpCircle, image: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png', alt: 'Corporate event restroom trailer rental setup' } },
+  { href: '/gallery', title: 'Gallery', desc: 'View restroom trailer photos from weddings, events, and projects.', icon: ImageIcon, image: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg', alt: 'Restroom trailer gallery exterior image' } },
 ]
 
 export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, sections, faqs, ctaTitle, resourceImageSrc = '/images/Wedding Trailer.png', resourceImageAlt = 'Luxury restroom trailer exterior setup for Michigan event', resourceEyebrow = 'Planning Support', resourceTitle = 'Helpful Resources While You Plan', resourceDescription = 'Explore service areas, event-specific pages, and planning resources.' }: { pageTitle: string; serviceName: string; urlPath: string; intro: string; sections: Section[]; faqs: FAQ[]; ctaTitle: string; resourceImageSrc?: string; resourceImageAlt?: string; resourceEyebrow?: string; resourceTitle?: string; resourceDescription?: string }) {
@@ -94,7 +100,25 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
             </div>
           </div>
           <div className='mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-            {resources.map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-5 shadow-sm transition hover:border-gold/50'><h3 className='font-semibold text-navy'>{item.title}</h3><p className='text-sm leading-relaxed text-charcoal/85 mt-1'>{item.desc}</p></Link>)}
+            {resources.map((item) => (
+              <Link key={item.href} href={item.href} className='group overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-gold/45 hover:shadow-md'>
+                <div className='relative h-32'>
+                  <Image src={item.image.src} alt={item.image.alt} fill className='object-cover transition duration-300 group-hover:scale-[1.02]' sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw' />
+                  <div className='absolute inset-0 bg-gradient-to-t from-navy/50 via-navy/10 to-transparent' />
+                  <div className='absolute left-4 top-4 inline-flex rounded-lg bg-white p-2 shadow-sm'>
+                    <item.icon className='h-5 w-5 text-navy' />
+                  </div>
+                </div>
+                <div className='p-4'>
+                  <h3 className='font-semibold text-navy'>{item.title}</h3>
+                  <p className='mt-1 text-sm leading-relaxed text-charcoal/85'>{item.desc}</p>
+                  <p className='mt-3 inline-flex items-center text-sm font-medium text-navy'>
+                    View page
+                    <ArrowRight className='ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5' />
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
