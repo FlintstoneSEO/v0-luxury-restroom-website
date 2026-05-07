@@ -68,7 +68,7 @@ const features = [
 ]
 
 const processSteps = [
-  { number: 1, title: "Request Availability" },
+  { number: 1, title: "Check Availability" },
   { number: 2, title: "Share Your Event Details" },
   { number: 3, title: "Receive a Custom Proposal" },
   { number: 4, title: "Approve and Reserve Your Date" },
@@ -182,7 +182,7 @@ export default function HomePage() {
                 Luxury Restroom Trailer Rentals
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-white leading-tight text-balance">
-                Elevate Your Event with Premium Restroom Trailers
+                Luxury Restroom Trailer Rentals in Lansing, MI
               </h1>
               <p className="mt-6 text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl text-pretty">
                 Clean, modern, climate-controlled restroom trailers for weddings, private parties, 
@@ -192,8 +192,8 @@ export default function HomePage() {
               {/* CTA Buttons */}
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <Button asChild size="lg" className="bg-gold hover:bg-gold/90 text-navy font-semibold px-8">
-                  <Link href="/request-availability">
-                    Request Availability
+                  <Link href="/request-quote">
+                    Check Availability
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -203,7 +203,7 @@ export default function HomePage() {
                   variant="outline" 
                   className="border-white/40 bg-white/95 text-navy hover:bg-white hover:text-navy backdrop-blur-sm transition-colors"
                 >
-                  <Link href="/our-restrooms">View Our Restrooms</Link>
+                  <Link href="/our-restrooms">View Trailer Options</Link>
                 </Button>
               </div>
 
@@ -715,8 +715,8 @@ export default function HomePage() {
         <CTASection
           title="Ready to Reserve a Luxury Restroom Trailer?"
           description="Check availability for your date and let us help make your event comfortable, clean, and memorable."
-          ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaText="Check Availability"
+          ctaHref="/request-quote"
           variant="navy"
         />
       </main>
