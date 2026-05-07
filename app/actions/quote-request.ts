@@ -263,7 +263,7 @@ export async function submitQuoteRequest(
     if (resend) {
       try {
         await resend.emails.send({
-          from: 'noreply@resend.dev',
+          from: 'Signature Luxe Events & Amenities <info@signatureluxeevents.com>',
           replyTo: 'info@signatureluxeevents.com',
           to: 'info@signatureluxeevents.com',
           subject: `New Quote Request: ${insertedQuote?.quote_number} - ${data.customer_name}`,
