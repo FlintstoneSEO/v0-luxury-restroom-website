@@ -36,6 +36,18 @@ Cutoff is 22:00. After-hours are rounded **up** to the next whole hour and cappe
 - 00:01–01:00 => 3 hours
 - 01:01–02:00 => 4 hours (cap)
 
+## After-hours expected outcomes (default $75/hour)
+- 18:00 => 0 hours => $0
+- 21:00 => 0 hours => $0
+- 22:00 => 0 hours => $0
+- 22:01 => 1 hour => $75
+- 22:30 => 1 hour => $75
+- 23:00 => 1 hour => $75
+- 23:01 => 2 hours => $150
+- 00:30 => 3 hours => $225
+- 01:30 => 4 hours => $300
+- 02:30 => 4 hours max => $300
+
 ## Rush booking rule
 If event date is within 14 days from quote calculation date, add rush booking fee.
 
