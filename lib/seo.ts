@@ -1,0 +1,32 @@
+export const siteUrl = 'https://www.signatureluxeevents.com'
+
+export const finalRoutes = [
+  '/',
+  '/luxury-restroom-trailer-rentals',
+  '/wedding-restroom-trailer-rentals',
+  '/private-event-restroom-trailers',
+  '/corporate-event-restroom-trailers',
+  '/festival-community-event-restroom-trailers',
+  '/construction-long-term-restroom-trailer-rentals',
+  '/emergency-disaster-relief-restroom-trailers',
+  '/luxury-restroom-trailer-features',
+  '/service-areas',
+  '/faq',
+  '/request-quote',
+  '/gallery',
+  '/contact',
+] as const
+
+export const cityPages = [
+  { slug: 'lansing-mi', city: 'Lansing' },
+  { slug: 'east-lansing-mi', city: 'East Lansing' },
+  { slug: 'okemos-mi', city: 'Okemos' },
+  { slug: 'haslett-mi', city: 'Haslett' },
+  { slug: 'grand-ledge-mi', city: 'Grand Ledge' },
+  { slug: 'dewitt-mi', city: 'DeWitt' },
+  { slug: 'jackson-mi', city: 'Jackson' },
+  { slug: 'howell-mi', city: 'Howell' },
+  { slug: 'flint-mi', city: 'Flint' },
+  { slug: 'grand-rapids-mi', city: 'Grand Rapids' },
+  { slug: 'ann-arbor-mi', city: 'Ann Arbor' },
+] as const

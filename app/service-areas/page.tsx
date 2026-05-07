@@ -16,23 +16,21 @@ export const metadata: Metadata = {
 }
 
 const primaryAreas = [
-  { name: "Lansing", state: "MI", featured: true },
-  { name: "East Lansing", state: "MI", featured: true },
-  { name: "Okemos", state: "MI" },
-  { name: "Haslett", state: "MI" },
-  { name: "Grand Ledge", state: "MI" },
-  { name: "DeWitt", state: "MI" },
-  { name: "Holt", state: "MI" },
-  { name: "Mason", state: "MI" },
+  { name: "Lansing", state: "MI", featured: true, href: "/service-areas/lansing-mi" },
+  { name: "East Lansing", state: "MI", featured: true, href: "/service-areas/east-lansing-mi" },
+  { name: "Okemos", state: "MI", href: "/service-areas/okemos-mi" },
+  { name: "Haslett", state: "MI", href: "/service-areas/haslett-mi" },
+  { name: "Grand Ledge", state: "MI", href: "/service-areas/grand-ledge-mi" },
+  { name: "DeWitt", state: "MI", href: "/service-areas/dewitt-mi" },
+  { name: "Jackson", state: "MI", href: "/service-areas/jackson-mi" },
+  { name: "Howell", state: "MI", href: "/service-areas/howell-mi" },
 ]
 
 const extendedAreas = [
+  { name: "Flint", state: "MI", href: "/service-areas/flint-mi" },
+  { name: "Ann Arbor", state: "MI", href: "/service-areas/ann-arbor-mi" },
+  { name: "Grand Rapids", state: "MI", href: "/service-areas/grand-rapids-mi" },
   { name: "Charlotte", state: "MI" },
-  { name: "Howell", state: "MI" },
-  { name: "Jackson", state: "MI" },
-  { name: "Flint", state: "MI" },
-  { name: "Ann Arbor", state: "MI" },
-  { name: "Grand Rapids", state: "MI" },
   { name: "Battle Creek", state: "MI" },
   { name: "Kalamazoo", state: "MI" },
   { name: "Brighton", state: "MI" },
@@ -52,7 +50,7 @@ export default function ServiceAreasPage() {
           eyebrow="Service Areas"
           title="Luxury Restroom Trailer Rentals Across Lansing and Mid-Michigan"
           description="Based in Lansing, MI, we proudly serve weddings, events, construction sites, and long-term rental needs throughout Mid-Michigan and surrounding communities."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request a Quote", href: "/request-quote" }}
         />
 
         {/* Primary Service Areas */}
@@ -64,7 +62,7 @@ export default function ServiceAreasPage() {
               description="Our home base and primary service area. Quick delivery and excellent availability."
             />
             <div className="mt-12">
-              <ServiceAreaGrid areas={primaryAreas} />
+              <ServiceAreaGrid areas={primaryAreas} showLinks />
             </div>
           </div>
         </section>
@@ -78,7 +76,7 @@ export default function ServiceAreasPage() {
               description="We serve events and projects throughout Mid-Michigan and beyond, typically within a 2-hour radius of Lansing."
             />
             <div className="mt-12">
-              <ServiceAreaGrid areas={extendedAreas} />
+              <ServiceAreaGrid areas={extendedAreas} showLinks />
             </div>
           </div>
         </section>
@@ -120,7 +118,7 @@ export default function ServiceAreasPage() {
                   let you know if we can accommodate your needs.
                 </p>
                 <Button asChild className="bg-gold text-charcoal hover:bg-gold/90">
-                  <Link href="/request-availability">
+                  <Link href="/request-quote">
                     Check Your Location
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -176,8 +174,8 @@ export default function ServiceAreasPage() {
         <CTASection
           title="Ready to Book in Your Area?"
           description="Tell us about your event location and we&apos;ll confirm we can serve you."
-          ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaText="Request a Quote"
+          ctaHref="/request-quote"
           variant="gold"
         />
       </main>
