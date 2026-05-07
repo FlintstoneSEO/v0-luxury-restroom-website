@@ -106,6 +106,15 @@ export async function PATCH(
   const { quoteId } = await params;
   const payload = await request.json();
 
+  console.log('[v0] Raw payload received:', {
+    quoteId,
+    payloadKeys: Object.keys(payload),
+    sampleValues: {
+      guest_count: payload.guest_count,
+      has_power: payload.has_power,
+    },
+  });
+
   // Convert empty strings to null for nullable fields
   for (const field of NULLABLE_FIELDS) {
     if (field in payload && payload[field] === '') {
@@ -117,13 +126,27 @@ export async function PATCH(
   const validation = quoteRequestUpdateSchema.safeParse({ id: quoteId, ...payload });
 
   if (!validation.success) {
-    console.error('[v0] Quote update validation errors:', {
-      errors: validation.error.errors,
-      payloadKeys: Object.keys(payload),
-      firstError: validation.error.errors[0],
-    });
+    const errorDetails = validation.error.errors.map(err => ({
+      path: err.path.join('.'),
+      message: err.message,
+      code: err.code,
+      received: payload[err.path[0] as string],
+    }));
+    
+    console.error('[v0] Validation failed:', JSON.stringify(errorDetails, null, 2));
+    
     return NextResponse.json(
-      { ok: false, error: 'Invalid update payload', details: validation.error.errors },
+      { 
+        ok: false, 
+        error: 'Invalid update payload', 
+        details: errorDetails,
+        received: {
+          guest_count: payload.guest_count,
+          has_power: payload.has_power,
+          status: payload.status,
+          deposit_status: payload.deposit_status,
+        }
+      },
       { status: 400 }
     );
   }

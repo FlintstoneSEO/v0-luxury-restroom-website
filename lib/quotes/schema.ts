@@ -63,7 +63,7 @@ export const quoteRequestUpdateSchema = z.object({
   // Deposit tracking
   deposit_amount: nonNegativeMoney.optional(),
   deposit_status: z.enum(DEPOSIT_TRACKING_STATUSES).optional(),
-  deposit_due_date: z.string().optional(),
+  deposit_due_date: z.union([z.string(), z.literal(''), z.null()]).optional(),
   deposit_paid_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
   deposit_paid_amount: nonNegativeMoney.optional(),
   deposit_transaction_reference: z.string().optional(),
@@ -71,10 +71,10 @@ export const quoteRequestUpdateSchema = z.object({
   
   // Balance and expiration
   final_balance: nonNegativeMoney.optional(),
-  quote_expires_at: z.string().optional(),
+  quote_expires_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
   
   // Workflow status
-  status: z.enum(QUOTE_STATUSES).optional(),
+  status: z.union([z.enum(QUOTE_STATUSES), z.null()]).optional(),
   is_manual_override: z.boolean().optional(),
   
   // Agreement tracking
@@ -93,7 +93,7 @@ export const quoteRequestUpdateSchema = z.object({
   customer_response: z.string().max(5000).optional(),
   customer_response_type: z.enum(CUSTOMER_RESPONSE_TYPES).optional(),
   customer_response_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
-}).passthrough();
+});
 
 // Schema for status updates
 export const quoteStatusUpdateSchema = z.object({
