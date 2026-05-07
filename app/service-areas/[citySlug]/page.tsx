@@ -57,8 +57,8 @@ const getUseCaseCard = (useCase: string): VisualCard => {
   if (matchesAnyKeyword(normalized, ['corporate', 'company', 'nonprofit', 'donor'])) return { title: useCase, description: 'Polished trailer presentation for company gatherings, galas, and donor-focused events.', icon: BriefcaseBusiness, image: galleryVisuals.corporate }
   if (matchesAnyKeyword(normalized, ['construction', 'contractor', 'project support', 'public works'])) return { title: useCase, description: 'Reliable trailer placement for active work sites and project-based operations.', icon: HardHat, image: galleryVisuals.station3 }
   if (matchesAnyKeyword(normalized, ['festival', 'community event'])) return { title: useCase, description: 'Guest-ready facilities for public festivals and neighborhood celebrations.', icon: Tent, image: galleryVisuals.festival }
-  if (matchesAnyKeyword(normalized, ['private party', 'birthday', 'holiday', 'reunion'])) return { title: useCase, description: 'Refined restroom options for private celebrations and family-hosted gatherings.', icon: PartyPopper, image: galleryVisuals.wedding }
-  if (matchesAnyKeyword(normalized, ['temporary facility', 'outage', 'long-term support'])) return { title: useCase, description: 'Dependable restroom access during outages and extended temporary operations.', icon: Building2, image: galleryVisuals.exterior }
+  if (matchesAnyKeyword(normalized, ['private party', 'private celebrations', 'birthday', 'holiday', 'reunion', 'family reunions'])) return { title: useCase, description: 'Refined restroom options for private celebrations and family-hosted gatherings.', icon: PartyPopper, image: galleryVisuals.wedding }
+  if (matchesAnyKeyword(normalized, ['temporary facility', 'temporary facilities', 'outage', 'long-term support', 'long-term'])) return { title: useCase, description: 'Dependable restroom access during outages and extended temporary operations.', icon: Building2, image: galleryVisuals.exterior }
 
   return { title: useCase, description: 'Luxury restroom trailer support tailored to your timeline, guests, and site logistics.', icon: CalendarCheck, image: galleryVisuals.exterior }
 }

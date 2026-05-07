@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { MapPin, ArrowRight } from "lucide-react"
+import { MapPin, ArrowRight, Heart, Sparkles, HardHat, Building2 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/hero-section"
@@ -37,7 +37,7 @@ const extendedAreas = [
   { name: "Novi", state: "MI" },
   { name: "Livonia", state: "MI" },
   { name: "Saginaw", state: "MI" },
-]
+] 
 
 export default function ServiceAreasPage() {
   return (
@@ -142,25 +142,32 @@ export default function ServiceAreasPage() {
                   title: "Weddings",
                   description:
                     "Outdoor weddings, barn venues, private estates, and backyard celebrations.",
+                  icon: Heart,
                 },
                 {
                   title: "Special Events",
                   description:
                     "Private parties, corporate events, festivals, and community gatherings.",
+                  icon: Sparkles,
                 },
                 {
                   title: "Construction",
                   description:
                     "Construction sites, commercial projects, and long-term job site rentals.",
+                  icon: HardHat,
                 },
                 {
                   title: "Government",
                   description:
                     "Municipal projects, disaster relief, and emergency response support.",
+                  icon: Building2,
                 },
               ].map((item, index) => (
                 <div key={index} className="bg-cream rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-navy">{item.title}</h3>
+                  <div className="inline-flex rounded-lg bg-white p-2">
+                    <item.icon className="h-5 w-5 text-navy" />
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-navy">{item.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
                     {item.description}
                   </p>
