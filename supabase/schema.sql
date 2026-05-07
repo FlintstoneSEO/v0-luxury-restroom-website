@@ -129,3 +129,11 @@ create table if not exists pricing_settings (
   description text,
   updated_at timestamptz default now()
 );
+
+create index if not exists idx_quote_requests_status on quote_requests(status);
+create index if not exists idx_quote_requests_event_date on quote_requests(event_date);
+create index if not exists idx_quote_requests_email on quote_requests(email);
+create index if not exists idx_quote_requests_approval_token_hash on quote_requests(approval_token_hash);
+create index if not exists idx_quote_approval_tokens_token_hash on quote_approval_tokens(token_hash);
+create index if not exists idx_quote_approval_tokens_quote_request_id on quote_approval_tokens(quote_request_id);
+create index if not exists idx_quote_status_history_quote_request_id on quote_status_history(quote_request_id);

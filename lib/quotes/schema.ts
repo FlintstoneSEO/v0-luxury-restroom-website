@@ -131,4 +131,13 @@ export const quoteDepositUpdateSchema = z.object({
 export const quoteCustomerResponseSchema = z.object({
   response_type: z.enum(CUSTOMER_RESPONSE_TYPES),
   comments: z.string().max(2000).optional(),
+}).superRefine((data, ctx) => {
+  if (data.response_type === 'change_requested' && !data.comments?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['comments'],
+      message: 'Comments are required when requesting changes',
+    });
+  }
+
 });

@@ -75,6 +75,11 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
   const handleSubmit = async () => {
     if (!response) return;
 
+    if (response === 'changes' && !comments.trim()) {
+      setError('Please provide details for requested changes.');
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
