@@ -4,6 +4,10 @@ import { getQuoteRequests } from '@/lib/quotes/getQuoteRequests';
 export const metadata = {
   title: 'Quote Requests | Admin | Signature Luxe',
   description: 'View and manage quote requests for Signature Luxe Events & Amenities',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function AdminQuoteRequestsPage() {

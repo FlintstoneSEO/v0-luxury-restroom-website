@@ -31,7 +31,7 @@ const services = [
       "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.",
     href: "/wedding-restroom-trailer-rentals",
     imageSrc: "/images/Wedding Trailer.png",
-    imageAlt: "Wedding restroom trailer setup",
+    imageAlt: "Luxury restroom trailer rental for outdoor wedding in Lansing Michigan",
   },
   {
     title: "Special Events",
@@ -39,7 +39,7 @@ const services = [
       "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.",
     href: "/private-event-restroom-trailers",
     imageSrc: "/images/Special Event Trailer.png",
-    imageAlt: "Special event restroom trailer",
+    imageAlt: "Luxury event restroom trailer setup for private celebration in Mid-Michigan",
   },
   {
     title: "Construction / Long-Term",
@@ -47,7 +47,7 @@ const services = [
       "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.",
     href: "/construction-long-term-restroom-trailer-rentals",
     imageSrc: "/images/Construction Site Trailer.png",
-    imageAlt: "Construction site restroom trailer",
+    imageAlt: "Long-term restroom trailer rental at active construction project in Michigan",
   },
   {
     title: "Disaster Relief / Government",
@@ -55,7 +55,7 @@ const services = [
       "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.",
     href: "/emergency-disaster-relief-restroom-trailers",
     imageSrc: "/images/Disaster Relief Trailer.png",
-    imageAlt: "Disaster relief and government restroom trailer",
+    imageAlt: "Emergency restroom trailer support for municipal and relief operations in Michigan",
   },
 ]
 
