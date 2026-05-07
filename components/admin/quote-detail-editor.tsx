@@ -827,7 +827,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           )}
         </Button>
         <Button
-          variant="outline"
+          variant="default"
           onClick={() => setConfirmDialog({
             open: true,
             title: 'Send Quote Email',
@@ -835,7 +835,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
             action: handleSendQuoteEmail,
           })}
           disabled={sendingQuote || !['pending_review', 'new', 'under_review', 'draft_quote', 'change_requested', 'quote_sent'].includes(form.status)}
-          className="flex-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
+          className="flex-1 bg-[#2d3a47] hover:bg-[#2d3a47]/90 text-white"
         >
           {sendingQuote ? (
             <>

@@ -24,25 +24,25 @@ type SortBy = 'newest' | 'oldest' | 'event_soonest' | 'event_latest' | 'total_hi
 
 function getStatusColor(status: string) {
   const colors: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
-    pending_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <Clock className="w-4 h-4" /> },
-    new: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <Clock className="w-4 h-4" /> },
-    under_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <Clock className="w-4 h-4" /> },
-    draft_quote: { bg: 'bg-white', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <FileCheck className="w-4 h-4" /> },
-    quote_sent: { bg: 'bg-[#2d3a47]/8', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
-    sent_to_customer: { bg: 'bg-[#2d3a47]/8', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
+    pending_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <Clock className="w-4 h-4" /> },
+    new: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <Clock className="w-4 h-4" /> },
+    under_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <Clock className="w-4 h-4" /> },
+    draft_quote: { bg: 'bg-white', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <FileCheck className="w-4 h-4" /> },
+    quote_sent: { bg: 'bg-[#2d3a47]/10', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
+    sent_to_customer: { bg: 'bg-[#2d3a47]/10', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
     customer_approved: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    change_requested: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <AlertCircle className="w-4 h-4" /> },
-    agreement_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <FileCheck className="w-4 h-4" /> },
-    agreement_sent: { bg: 'bg-[#2d3a47]/8', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <FileCheck className="w-4 h-4" /> },
+    change_requested: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <AlertCircle className="w-4 h-4" /> },
+    agreement_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <FileCheck className="w-4 h-4" /> },
+    agreement_sent: { bg: 'bg-[#2d3a47]/10', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <FileCheck className="w-4 h-4" /> },
     agreement_signed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    deposit_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/60', icon: <CreditCard className="w-4 h-4" /> },
+    deposit_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#ded2c4]/70', icon: <CreditCard className="w-4 h-4" /> },
     deposit_paid: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CreditCard className="w-4 h-4" /> },
     booked: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
     confirmed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
     completed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    cancelled: { bg: 'bg-white opacity-70', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/30', icon: <AlertCircle className="w-4 h-4" /> },
-    declined: { bg: 'bg-white opacity-70', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/30', icon: <AlertCircle className="w-4 h-4" /> },
-    expired: { bg: 'bg-white opacity-70', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/30', icon: <Clock className="w-4 h-4" /> },
+    cancelled: { bg: 'bg-white', text: 'text-[#2d3a47]/70', border: 'border border-[#2d3a47]/25', icon: <AlertCircle className="w-4 h-4" /> },
+    declined: { bg: 'bg-white', text: 'text-[#2d3a47]/70', border: 'border border-[#2d3a47]/25', icon: <AlertCircle className="w-4 h-4" /> },
+    expired: { bg: 'bg-white', text: 'text-[#2d3a47]/70', border: 'border border-[#2d3a47]/25', icon: <Clock className="w-4 h-4" /> },
   };
   return colors[status] || { bg: 'bg-white', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/20', icon: <Clock className="w-4 h-4" /> };
 }
@@ -149,7 +149,7 @@ export default function QuoteRequestsDashboard({
           Manage luxury restroom rental quote requests and track customer responses.
         </p>
         {source === 'mock' && (
-          <div className="p-3 bg-[#ded2c4]/20 border border-[#ded2c4]/60 rounded-lg text-sm text-[#2d3a47] mb-4">
+          <div className="p-3 bg-[#ded2c4]/20 border border-[#ded2c4]/70 rounded-lg text-sm text-[#2d3a47] mb-4">
             Using demo quote data because Supabase is not configured.
           </div>
         )}
