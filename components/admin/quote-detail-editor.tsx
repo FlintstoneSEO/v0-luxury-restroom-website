@@ -264,16 +264,16 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
         <div
           className={`p-4 rounded-lg flex gap-3 items-start ${
             message.type === 'success'
-              ? 'bg-green-50 border border-green-200'
+              ? 'bg-[#2d3a47]/5 border border-[#2d3a47]/20'
               : 'bg-red-50 border border-red-200'
           }`}
         >
           {message.type === 'success' ? (
-            <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-5 h-5 text-[#2d3a47] flex-shrink-0 mt-0.5" />
           ) : (
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           )}
-          <p className={message.type === 'success' ? 'text-green-800' : 'text-red-800'}>
+          <p className={message.type === 'success' ? 'text-[#2d3a47]' : 'text-red-700'}>
             {message.text}
           </p>
         </div>
@@ -674,6 +674,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
         <div className="flex gap-3 mt-4">
           <Button
             variant="outline"
+            className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
             onClick={() => setConfirmDialog({
               open: true,
               title: 'Mark Agreement as Sent',
@@ -687,6 +688,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           </Button>
           <Button
             variant="outline"
+            className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
             onClick={() => setConfirmDialog({
               open: true,
               title: 'Mark Agreement as Signed',
@@ -752,6 +754,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
         <div className="flex gap-3 mt-4">
           <Button
             variant="outline"
+            className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
             onClick={() => setConfirmDialog({
               open: true,
               title: 'Mark Deposit as Requested',
@@ -765,6 +768,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           </Button>
           <Button
             variant="outline"
+            className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
             onClick={() => setConfirmDialog({
               open: true,
               title: 'Mark Deposit as Paid',
@@ -831,7 +835,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
             action: handleSendQuoteEmail,
           })}
           disabled={sendingQuote || !['pending_review', 'new', 'under_review', 'draft_quote', 'change_requested', 'quote_sent'].includes(form.status)}
-          className="flex-1"
+          className="flex-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
         >
           {sendingQuote ? (
             <>
@@ -846,7 +850,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           )}
         </Button>
         <Link href="/admin" className="flex-1">
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
