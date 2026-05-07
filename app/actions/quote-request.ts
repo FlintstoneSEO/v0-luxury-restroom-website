@@ -8,6 +8,7 @@ import { Resend } from 'resend'
 
 // Initialize Resend (will gracefully fail if API key not set)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+const QUOTE_ACTION_VERSION = "service-role-v2"
 
 export type QuoteRequestFormState = {
   success: boolean
@@ -47,32 +48,48 @@ function estimateDistance(city: string): number {
 }
 
 async function getPricingSettings(): Promise<PricingSettings> {
-  const supabase = await createClient()
-  const { data } = await supabase.from('pricing_settings').select('setting_key, setting_value')
-  
-  if (!data || data.length === 0) {
-    // Return defaults if no settings found
-    return {
-      base_price_100_guests: 650,
-      base_price_150_guests: 750,
-      base_price_200_guests: 900,
-      base_price_200_plus: 1100,
-      included_miles: 30,
-      travel_rate_per_mile: 2.5,
-      generator_fee: 150,
-      water_fee: 100,
-      after_hours_hourly_rate: 75,
-      after_hours_cutoff_hour: 22,
-      deposit_percentage: 25,
-    }
+  const defaultPricing: PricingSettings = {
+    base_price_100_guests: 650,
+    base_price_150_guests: 750,
+    base_price_200_guests: 900,
+    base_price_200_plus: 1100,
+    included_miles: 30,
+    travel_rate_per_mile: 2.5,
+    generator_fee: 150,
+    water_fee: 100,
+    after_hours_hourly_rate: 75,
+    after_hours_cutoff_hour: 22,
+    deposit_percentage: 25,
   }
-  
-  const settings: Record<string, number> = {}
-  data.forEach(row => {
-    settings[row.setting_key] = Number(row.setting_value)
-  })
-  
-  return settings as unknown as PricingSettings
+
+  try {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('pricing_settings').select('setting_key, setting_value')
+
+    if (error) {
+      console.error('[quote-request] pricing_settings read error', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      })
+      return defaultPricing
+    }
+
+    if (!data || data.length === 0) {
+      return defaultPricing
+    }
+
+    const settings: Record<string, number> = {}
+    data.forEach((row) => {
+      settings[row.setting_key] = Number(row.setting_value)
+    })
+
+    return settings as unknown as PricingSettings
+  } catch (error) {
+    console.error('[quote-request] pricing_settings unexpected error', error)
+    return defaultPricing
+  }
 }
 
 export async function submitQuoteRequest(
@@ -161,6 +178,8 @@ export async function submitQuoteRequest(
   }
 
   try {
+    console.log('[quote-request] action version', QUOTE_ACTION_VERSION)
+
     // Get pricing settings and calculate price
     const pricingSettings = await getPricingSettings()
     const distanceMiles = estimateDistance(data.city)
@@ -175,7 +194,22 @@ export async function submitQuoteRequest(
     )
 
     // Insert quote request with server-only service role client (bypasses anon RLS)
-    const supabaseAdmin = createAdminClient()
+    let supabaseAdmin
+
+    try {
+      supabaseAdmin = createAdminClient()
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('SUPABASE_SERVICE_ROLE_KEY')) {
+        console.error('[quote-request] Missing server env var: SUPABASE_SERVICE_ROLE_KEY')
+      } else {
+        console.error('[quote-request] Failed to create admin client', error)
+      }
+
+      return {
+        success: false,
+        message: 'We could not save your quote request right now. Please contact us directly while we resolve this.',
+      }
+    }
 
     const { data: insertedQuote, error } = await supabaseAdmin
       .from("quote_requests")
@@ -215,9 +249,13 @@ export async function submitQuoteRequest(
         details: error.details,
         hint: error.hint,
       })
+
+      if (error.code === '42501') {
+        console.error('[quote-request] RLS blocked insert. Confirm service role key is configured in production.')
+      }
       return {
         success: false,
-        message: "We could not save your quote request. Please contact us directly while we resolve this.",
+        message: "We could not save your quote request right now. Please contact us directly while we resolve this.",
       }
     }
 
@@ -279,7 +317,7 @@ export async function submitQuoteRequest(
     console.error("Submission error:", error)
     return {
       success: false,
-      message: "We could not save your quote request. Please contact us directly while we resolve this.",
+      message: "We could not save your quote request right now. Please contact us directly while we resolve this.",
     }
   }
 }

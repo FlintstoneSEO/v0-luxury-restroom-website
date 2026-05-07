@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 
 export function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -12,15 +12,7 @@ export function createAdminClient() {
     throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY')
   }
 
-  return createServerClient(supabaseUrl, serviceRoleKey, {
-    cookies: {
-      getAll() {
-        return []
-      },
-      setAll() {
-        // Admin client is server-only and does not persist auth sessions.
-      },
-    },
+  return createClient(supabaseUrl, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
