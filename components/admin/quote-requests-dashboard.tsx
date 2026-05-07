@@ -2,12 +2,16 @@
 
 import { useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/pricing-engine';
-import { QuoteRequest, QuoteStatus } from '@/lib/quotes/types';
-import { getQuoteStatusLabel, quoteStatusBadgeStyles } from '@/lib/quotes/status';
+import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES } from '@/lib/quotes/types';
+import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, ChevronRight } from 'lucide-react';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
@@ -15,86 +19,232 @@ interface QuoteRequestsDashboardProps {
   error?: string;
 }
 
-type SortBy = 'newest' | 'event_date' | 'total' | 'status';
+type SortBy = 'newest' | 'created' | 'final_price' | 'status';
 
-function toDateValue(value: string | null | undefined): number {
-  if (!value) return 0;
-  const parsed = new Date(value).getTime();
-  return Number.isNaN(parsed) ? 0 : parsed;
+function getStatusColor(status: string) {
+  const colors: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
+    new: { bg: 'bg-blue-50', text: 'text-blue-700', icon: <Clock className="w-4 h-4" /> },
+    under_review: { bg: 'bg-yellow-50', text: 'text-yellow-700', icon: <Clock className="w-4 h-4" /> },
+    quote_sent: { bg: 'bg-purple-50', text: 'text-purple-700', icon: <FileCheck className="w-4 h-4" /> },
+    customer_approved: { bg: 'bg-green-50', text: 'text-green-700', icon: <CheckCircle2 className="w-4 h-4" /> },
+    agreement_pending: { bg: 'bg-indigo-50', text: 'text-indigo-700', icon: <FileCheck className="w-4 h-4" /> },
+    deposit_pending: { bg: 'bg-orange-50', text: 'text-orange-700', icon: <CreditCard className="w-4 h-4" /> },
+    booked: { bg: 'bg-emerald-50', text: 'text-emerald-700', icon: <CheckCircle2 className="w-4 h-4" /> },
+    completed: { bg: 'bg-slate-50', text: 'text-slate-700', icon: <CheckCircle2 className="w-4 h-4" /> },
+    cancelled: { bg: 'bg-red-50', text: 'text-red-700', icon: <AlertCircle className="w-4 h-4" /> },
+    declined: { bg: 'bg-red-50', text: 'text-red-700', icon: <AlertCircle className="w-4 h-4" /> },
+  };
+  return colors[status] || { bg: 'bg-gray-50', text: 'text-gray-700', icon: <Clock className="w-4 h-4" /> };
 }
 
-export default function QuoteRequestsDashboard({ initialQuotes, source, error }: QuoteRequestsDashboardProps) {
+function formatStatus(status: string) {
+  return status
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+export default function QuoteRequestsDashboard({
+  initialQuotes,
+  source,
+  error,
+}: QuoteRequestsDashboardProps) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [eventTypeFilter, setEventTypeFilter] = useState('all');
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
+  const [agreementFilter, setAgreementFilter] = useState('all');
+  const [depositFilter, setDepositFilter] = useState('all');
   const [sortBy, setSortBy] = useState<SortBy>('newest');
 
-  const statuses = useMemo(() => Array.from(new Set(initialQuotes.map((q) => q.status))).sort(), [initialQuotes]);
-  const eventTypes = useMemo(() => Array.from(new Set(initialQuotes.map((q) => q.eventType))).sort(), [initialQuotes]);
+  const statuses = useMemo(
+    () => Array.from(new Set(initialQuotes.map((q) => q.status))).sort(),
+    [initialQuotes]
+  );
 
   const filteredQuotes = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
     const filtered = initialQuotes.filter((quote) => {
       if (statusFilter !== 'all' && quote.status !== statusFilter) return false;
-      if (eventTypeFilter !== 'all' && quote.eventType !== eventTypeFilter) return false;
-      if (dateFrom && quote.eventDate < dateFrom) return false;
-      if (dateTo && quote.eventDate > dateTo) return false;
+      if (agreementFilter !== 'all' && quote.agreement_status !== agreementFilter) return false;
+      if (depositFilter !== 'all' && quote.deposit_status !== depositFilter) return false;
 
       if (!normalizedSearch) return true;
 
-      return [quote.customerName, quote.eventType, quote.status, quote.eventLocation]
+      return [quote.name, quote.email, quote.room_type, quote.city, quote.status]
         .join(' ')
         .toLowerCase()
         .includes(normalizedSearch);
     });
 
     return filtered.sort((a, b) => {
-      if (sortBy === 'event_date') return toDateValue(b.eventDate) - toDateValue(a.eventDate);
-      if (sortBy === 'total') return b.total - a.total;
+      if (sortBy === 'final_price')
+        return (b.final_price || 0) - (a.final_price || 0);
+      if (sortBy === 'created')
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       if (sortBy === 'status') return a.status.localeCompare(b.status);
-      return toDateValue(b.createdAt) - toDateValue(a.createdAt);
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
-  }, [initialQuotes, search, statusFilter, eventTypeFilter, dateFrom, dateTo, sortBy]);
+  }, [initialQuotes, search, statusFilter, agreementFilter, depositFilter, sortBy]);
 
   return (
-    <div className="min-h-screen bg-[#ded2c4]/20 py-10 px-4">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <div className="rounded-xl border border-[#ded2c4] bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-serif font-bold text-[#2d3a47]">Quote Requests</h1>
-          <p className="mt-2 text-sm text-[#2d3a47]/80">Internal dashboard for viewing and managing incoming quote requests.</p>
-          <p className="mt-1 text-xs text-[#2d3a47]/70">Data source: {source === 'supabase' ? 'Supabase' : 'Mock fallback'}</p>
-          {error ? <p className="mt-2 text-xs text-amber-700">{error}</p> : null}
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-4xl font-serif font-bold text-navy mb-2">Quote Dashboard</h1>
+        <p className="text-muted-foreground mb-4">
+          Manage restroom rental quote requests and track customer responses.
+        </p>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Data source: {source === 'supabase' ? 'Supabase' : 'Mock data'}</span>
+          <span>•</span>
+          <span>{filteredQuotes.length} quotes</span>
         </div>
-
-        <div className="rounded-xl border border-[#ded2c4] bg-white p-4 shadow-sm">
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-6">
-            <Input placeholder="Search customer or location" value={search} onChange={(e) => setSearch(e.target.value)} className="lg:col-span-2" />
-            <Select value={statusFilter} onValueChange={setStatusFilter}><SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger><SelectContent><SelectItem value="all">All Statuses</SelectItem>{statuses.map((status) => <SelectItem key={status} value={status}>{getQuoteStatusLabel(status as QuoteStatus)}</SelectItem>)}</SelectContent></Select>
-            <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}><SelectTrigger><SelectValue placeholder="Event type" /></SelectTrigger><SelectContent><SelectItem value="all">All Event Types</SelectItem>{eventTypes.map((type) => <SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent></Select>
-            <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-            <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+        {error && (
+          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+            {error}
           </div>
+        )}
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white rounded-lg border border-gold/20 p-4 space-y-4">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+          <Input
+            placeholder="Search by name, email, or city..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="lg:col-span-2"
+          />
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger>
+              <SelectValue placeholder="Quote Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              {QUOTE_STATUSES.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {formatStatus(status)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={agreementFilter} onValueChange={setAgreementFilter}>
+            <SelectTrigger>
+              <SelectValue placeholder="Agreement Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Agreements</SelectItem>
+              {AGREEMENT_TRACKING_STATUSES.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {formatStatus(status)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={depositFilter} onValueChange={setDepositFilter}>
+            <SelectTrigger>
+              <SelectValue placeholder="Deposit Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Deposits</SelectItem>
+              {DEPOSIT_TRACKING_STATUSES.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {formatStatus(status)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-[#ded2c4] bg-white shadow-sm">
-          <table className="min-w-full text-sm">
-            <thead className="bg-[#2d3a47] text-[#ded2c4]"><tr>{['Status','Customer','Event Date','Event Type','Location','Guests','Total','Submitted'].map((head) => <th key={head} className="px-4 py-3 text-left font-medium">{head}</th>)}</tr></thead>
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-muted-foreground">Sort by:</label>
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
+            <SelectTrigger className="w-auto">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="final_price">Highest Price</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-lg border border-gold/20 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-navy/5 border-b border-gold/20">
+              <tr>
+                <th className="px-6 py-4 text-left font-semibold text-navy">Status</th>
+                <th className="px-6 py-4 text-left font-semibold text-navy">Customer</th>
+                <th className="px-6 py-4 text-left font-semibold text-navy">Restroom</th>
+                <th className="px-6 py-4 text-left font-semibold text-navy">Location</th>
+                <th className="px-6 py-4 text-left font-semibold text-navy">Agreement</th>
+                <th className="px-6 py-4 text-left font-semibold text-navy">Deposit</th>
+                <th className="px-6 py-4 text-right font-semibold text-navy">Amount</th>
+                <th className="px-6 py-4 text-left font-semibold text-navy">Created</th>
+                <th className="px-6 py-4 text-center font-semibold text-navy"></th>
+              </tr>
+            </thead>
             <tbody>
-              {filteredQuotes.map((quote) => (
-                <tr key={quote.id} className="border-b border-[#ded2c4]/80 last:border-b-0 hover:bg-[#ded2c4]/15">
-                  <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${quoteStatusBadgeStyles[quote.status]}`}>{getQuoteStatusLabel(quote.status)}</span></td>
-                  <td className="px-4 py-3 font-medium text-[#2d3a47]"><Link className="underline" href={`/admin/quotes/${quote.id}`}>{quote.customerName}</Link></td>
-                  <td className="px-4 py-3">{new Date(`${quote.eventDate}T00:00:00`).toLocaleDateString()}</td>
-                  <td className="px-4 py-3">{quote.eventType}</td>
-                  <td className="px-4 py-3">{quote.eventLocation}</td>
-                  <td className="px-4 py-3">{quote.guestCount}</td>
-                  <td className="px-4 py-3">{formatCurrency(quote.total)}</td>
-                  <td className="px-4 py-3">{new Date(quote.createdAt).toLocaleDateString()}</td>
+              {filteredQuotes.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="px-6 py-12 text-center text-muted-foreground">
+                    No quotes found matching your filters.
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                filteredQuotes.map((quote) => {
+                  const statusColor = getStatusColor(quote.status);
+                  return (
+                    <tr
+                      key={quote.id}
+                      className="border-b border-gold/10 hover:bg-navy/2 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div
+                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusColor.bg} ${statusColor.text}`}
+                        >
+                          {statusColor.icon}
+                          {formatStatus(quote.status)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-medium text-navy">{quote.name}</div>
+                        <div className="text-xs text-muted-foreground">{quote.email}</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm">{quote.room_type}</td>
+                      <td className="px-6 py-4 text-sm">{quote.city}</td>
+                      <td className="px-6 py-4">
+                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                          {formatStatus(quote.agreement_status)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                          {formatStatus(quote.deposit_status)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right font-semibold text-navy">
+                        ${(quote.final_price || quote.total_price || 0).toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
+                        {new Date(quote.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <Link
+                          href={`/admin/quotes/${quote.id}`}
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-navy/10 text-navy transition-colors"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

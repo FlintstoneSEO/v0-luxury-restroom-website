@@ -1,13 +1,14 @@
 export const QUOTE_STATUSES = [
   'new',
   'under_review',
-  'draft_quote',
-  'sent_to_customer',
+  'quote_sent',
   'customer_approved',
+  'agreement_pending',
+  'deposit_pending',
+  'booked',
   'completed',
   'cancelled',
   'declined',
-  'expired',
 ] as const;
 
 export type QuoteStatus = (typeof QUOTE_STATUSES)[number];
@@ -15,152 +16,177 @@ export type QuoteStatus = (typeof QUOTE_STATUSES)[number];
 export const AGREEMENT_TRACKING_STATUSES = ['not_sent', 'sent', 'signed', 'voided'] as const;
 export type AgreementTrackingStatus = (typeof AGREEMENT_TRACKING_STATUSES)[number];
 
-export const DEPOSIT_TRACKING_STATUSES = ['not_required', 'due', 'paid', 'overdue', 'refunded'] as const;
+export const DEPOSIT_TRACKING_STATUSES = ['not_required', 'due', 'pending', 'paid', 'overdue', 'refunded'] as const;
 export type DepositTrackingStatus = (typeof DEPOSIT_TRACKING_STATUSES)[number];
 
 export interface QuoteRequest {
-  // Customer
+  // Core identification & timestamps
   id: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
+  created_at: string;
+  updated_at: string;
 
-  // Event
-  eventDate: string;
-  eventType: string;
-  eventLocation: string;
-  guestCount: number;
-  eventStartTime?: string | null;
-  eventEndTime?: string | null;
-  eventNotes?: string | null;
+  // Customer information
+  email: string;
+  phone: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
 
-  // Setup
-  hasElectricalAccess: boolean;
-  hasWaterAccess: boolean;
-  setupNotes?: string | null;
+  // Restroom rental specifics
+  room_type: string; // e.g., "Luxury 1-Stall", "Standard 2-Stall"
+  room_condition: string; // e.g., "Excellent", "Good"
+  features: string[]; // e.g., ["Hands-free soap", "LED lighting"]
+  color_preference: string; // e.g., "White", "Charcoal"
 
   // Pricing
-  basePrice: number;
-  deliveryFee: number;
-  addOnsTotal: number;
-  discount: number;
-  tax: number;
-  total: number;
-  depositAmount: number;
-  remainingBalance: number;
+  base_price?: number;
+  labor_cost?: number;
+  materials_cost?: number;
+  tax_amount?: number;
+  total_price?: number;
+  discount_amount?: number;
+  final_price?: number;
+  price_valid_until?: string;
 
-  // Workflow
+  // Status tracking
   status: QuoteStatus;
-  internalNotes?: string | null;
-  customerNotes?: string | null;
-  approvalToken?: string | null;
-  quoteSentAt?: string | null;
-  customerApprovedAt?: string | null;
+  sent_at?: string;
+  approved_at?: string;
+  rejected_at?: string;
 
   // Agreement tracking
-  agreementStatus: AgreementTrackingStatus;
-  agreementDocumentUrl?: string | null;
-  signedAgreementUrl?: string | null;
-  agreementProviderReferenceId?: string | null;
-  agreementSentAt?: string | null;
-  agreementSignedAt?: string | null;
+  agreement_status: AgreementTrackingStatus;
+  agreement_document_url?: string;
+  agreement_provider_reference_id?: string;
+  agreement_sent_at?: string;
+  agreement_signed_at?: string;
 
   // Deposit tracking
-  depositStatus: DepositTrackingStatus;
-  depositPaymentLink?: string | null;
-  depositDueDate?: string | null;
-  depositPaidAt?: string | null;
+  deposit_status: DepositTrackingStatus;
+  deposit_payment_link?: string;
+  deposit_due_date?: string;
+  deposit_paid_at?: string;
+  deposit_paid_amount?: number;
+  deposit_transaction_reference?: string;
+  stripe_payment_intent_id?: string;
+  stripe_checkout_session_id?: string;
 
-  // Timestamps
-  createdAt: string;
-  updatedAt: string;
+  // Notes
+  internal_notes?: string;
+  customer_notes?: string;
+  notes?: string; // Legacy compatibility
+
+  // Customer responses
+  customer_response?: string;
+  customer_response_type?: 'approval' | 'rejection' | 'inquiry';
+  customer_response_at?: string;
+
+  // Quote management
+  quote_expires_at?: string;
+  is_manual_override?: boolean;
 }
 
 // Supabase-shaped row for clean mapping from snake_case DB columns.
 export interface QuoteRequestRow {
   id: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
-  event_date: string;
-  event_type: string;
-  event_location: string;
-  guest_count: number;
-  event_start_time?: string | null;
-  event_end_time?: string | null;
-  event_notes?: string | null;
-  has_electrical_access: boolean;
-  has_water_access: boolean;
-  setup_notes?: string | null;
-  base_price: number;
-  delivery_fee: number;
-  add_ons_total: number;
-  discount: number;
-  tax: number;
-  total: number;
-  deposit_amount: number;
-  remaining_balance: number;
-  status: QuoteStatus;
-  internal_notes?: string | null;
-  customer_notes?: string | null;
-  approval_token?: string | null;
-  quote_sent_at?: string | null;
-  customer_approved_at?: string | null;
-  agreement_status: AgreementTrackingStatus;
-  agreement_document_url?: string | null;
-  signed_agreement_url?: string | null;
-  agreement_provider_reference_id?: string | null;
-  agreement_sent_at?: string | null;
-  agreement_signed_at?: string | null;
-  deposit_status: DepositTrackingStatus;
-  deposit_payment_link?: string | null;
-  deposit_due_date?: string | null;
-  deposit_paid_at?: string | null;
   created_at: string;
   updated_at: string;
+  email: string;
+  phone: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  room_type: string;
+  room_condition: string;
+  features: string[];
+  color_preference: string;
+  base_price?: number;
+  labor_cost?: number;
+  materials_cost?: number;
+  tax_amount?: number;
+  total_price?: number;
+  discount_amount?: number;
+  final_price?: number;
+  price_valid_until?: string;
+  status: QuoteStatus;
+  sent_at?: string;
+  approved_at?: string;
+  rejected_at?: string;
+  agreement_status: AgreementTrackingStatus;
+  agreement_document_url?: string;
+  agreement_provider_reference_id?: string;
+  agreement_sent_at?: string;
+  agreement_signed_at?: string;
+  deposit_status: DepositTrackingStatus;
+  deposit_payment_link?: string;
+  deposit_due_date?: string;
+  deposit_paid_at?: string;
+  deposit_paid_amount?: number;
+  deposit_transaction_reference?: string;
+  stripe_payment_intent_id?: string;
+  stripe_checkout_session_id?: string;
+  internal_notes?: string;
+  customer_notes?: string;
+  notes?: string;
+  customer_response?: string;
+  customer_response_type?: 'approval' | 'rejection' | 'inquiry';
+  customer_response_at?: string;
+  quote_expires_at?: string;
+  is_manual_override?: boolean;
 }
 
 export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
   return {
     id: row.id,
-    customerName: row.customer_name,
-    customerEmail: row.customer_email,
-    customerPhone: row.customer_phone,
-    eventDate: row.event_date,
-    eventType: row.event_type,
-    eventLocation: row.event_location,
-    guestCount: row.guest_count,
-    eventStartTime: row.event_start_time,
-    eventEndTime: row.event_end_time,
-    eventNotes: row.event_notes,
-    hasElectricalAccess: row.has_electrical_access,
-    hasWaterAccess: row.has_water_access,
-    setupNotes: row.setup_notes,
-    basePrice: row.base_price,
-    deliveryFee: row.delivery_fee,
-    addOnsTotal: row.add_ons_total,
-    discount: row.discount,
-    tax: row.tax,
-    total: row.total,
-    depositAmount: row.deposit_amount,
-    remainingBalance: row.remaining_balance,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    email: row.email,
+    phone: row.phone,
+    name: row.name,
+    address: row.address,
+    city: row.city,
+    state: row.state,
+    zip: row.zip,
+    room_type: row.room_type,
+    room_condition: row.room_condition,
+    features: row.features || [],
+    color_preference: row.color_preference,
+    base_price: row.base_price,
+    labor_cost: row.labor_cost,
+    materials_cost: row.materials_cost,
+    tax_amount: row.tax_amount,
+    total_price: row.total_price,
+    discount_amount: row.discount_amount,
+    final_price: row.final_price,
+    price_valid_until: row.price_valid_until,
     status: row.status,
-    internalNotes: row.internal_notes,
-    customerNotes: row.customer_notes,
-    approvalToken: row.approval_token,
-    quoteSentAt: row.quote_sent_at,
-    customerApprovedAt: row.customer_approved_at,
-    agreementStatus: row.agreement_status,
-    agreementDocumentUrl: row.agreement_document_url,
-    signedAgreementUrl: row.signed_agreement_url,
-    agreementProviderReferenceId: row.agreement_provider_reference_id,
-    agreementSentAt: row.agreement_sent_at,
-    agreementSignedAt: row.agreement_signed_at,
-    depositStatus: row.deposit_status,
-    depositPaymentLink: row.deposit_payment_link,
-    depositDueDate: row.deposit_due_date,
-    depositPaidAt: row.deposit_paid_at,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    sent_at: row.sent_at,
+    approved_at: row.approved_at,
+    rejected_at: row.rejected_at,
+    agreement_status: row.agreement_status,
+    agreement_document_url: row.agreement_document_url,
+    agreement_provider_reference_id: row.agreement_provider_reference_id,
+    agreement_sent_at: row.agreement_sent_at,
+    agreement_signed_at: row.agreement_signed_at,
+    deposit_status: row.deposit_status,
+    deposit_payment_link: row.deposit_payment_link,
+    deposit_due_date: row.deposit_due_date,
+    deposit_paid_at: row.deposit_paid_at,
+    deposit_paid_amount: row.deposit_paid_amount,
+    deposit_transaction_reference: row.deposit_transaction_reference,
+    stripe_payment_intent_id: row.stripe_payment_intent_id,
+    stripe_checkout_session_id: row.stripe_checkout_session_id,
+    internal_notes: row.internal_notes,
+    customer_notes: row.customer_notes,
+    notes: row.notes,
+    customer_response: row.customer_response,
+    customer_response_type: row.customer_response_type,
+    customer_response_at: row.customer_response_at,
+    quote_expires_at: row.quote_expires_at,
+    is_manual_override: row.is_manual_override,
   };
 }
