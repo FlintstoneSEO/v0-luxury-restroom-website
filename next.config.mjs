@@ -22,9 +22,6 @@ const nextConfig = {
       { source: "/ann-arbor-mi", destination: "/service-areas/ann-arbor-mi", permanent: true },
     ]
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     remotePatterns: [
       {
