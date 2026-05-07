@@ -1,8 +1,8 @@
 export const business = {
   name: 'Signature Luxe Events & Amenities',
   url: 'https://www.signatureluxeevents.com',
-  phone: '+1-517-555-0148',
-  areaServed: ['Lansing, MI','East Lansing, MI','Okemos, MI','Haslett, MI','Grand Ledge, MI','DeWitt, MI','Jackson, MI','Mid-Michigan'],
+  phone: process.env.NEXT_PUBLIC_BUSINESS_PHONE,
+  areaServed: ['Lansing, MI','East Lansing, MI','Okemos, MI','Haslett, MI','Grand Ledge, MI','DeWitt, MI','Holt, MI','Mason, MI','Jackson, MI','Howell, MI','Brighton, MI','Ann Arbor, MI','Flint, MI','Grand Rapids, MI','Battle Creek, MI','Kalamazoo, MI','Detroit Suburbs, MI','Mid-Michigan'],
 }
 
 export function localBusinessJsonLd(city = 'Lansing') {
@@ -11,7 +11,7 @@ export function localBusinessJsonLd(city = 'Lansing') {
     '@type': 'LocalBusiness',
     name: business.name,
     url: business.url,
-    telephone: business.phone,
+    ...(business.phone ? { telephone: business.phone } : {}),
     areaServed: business.areaServed,
     address: { '@type': 'PostalAddress', addressLocality: city, addressRegion: 'MI', addressCountry: 'US' },
   }
