@@ -119,7 +119,7 @@ export default function SpecialEventsPage() {
           eyebrow="Special Events"
           title="Special Event Restroom Trailer Rentals in Lansing, MI"
           description="Premium restroom trailer rentals for private parties, corporate events, fundraisers, festivals, community gatherings, reunions, and upscale celebrations throughout Mid-Michigan."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
         />
 
         {/* Built for Events */}
@@ -281,7 +281,7 @@ export default function SpecialEventsPage() {
           title="Plan Your Special Event"
           description="Request availability and receive a custom proposal for your upcoming event."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="gold"
         />
       </main>

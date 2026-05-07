@@ -32,7 +32,7 @@ export default function ContactPage() {
           eyebrow="Contact Us"
           title="Get in Touch"
           description="Have questions about our luxury restroom trailers or want to discuss your event? We&apos;d love to hear from you."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
         />
 
         {/* Contact Section */}
@@ -106,7 +106,7 @@ export default function ContactPage() {
                     and reservations.
                   </p>
                   <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                    <Link href="/request-availability">
+                    <Link href="/request-quote">
                       Request Availability
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
@@ -244,7 +244,7 @@ export default function ContactPage() {
           title="Ready to Reserve a Luxury Restroom Trailer?"
           description="Check availability for your date and receive a custom proposal."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="navy"
         />
       </main>

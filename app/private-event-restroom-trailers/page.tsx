@@ -18,5 +18,5 @@ export default function Page() {
     { q: 'Will this work in a driveway or backyard?', a: 'Usually yes. We confirm access and surface conditions ahead of delivery.' },
     { q: 'How far out should I reserve?', a: 'Peak weekends book sooner, so early booking is recommended. We can still check short-notice availability.' },
     { q: 'Do you serve areas outside Lansing?', a: 'Yes. We deliver across Mid-Michigan and nearby cities including Jackson, Howell, Flint, Ann Arbor, and Grand Rapids.' },
-  ]} />
+  ]} resourceImageSrc='/images/Special Event Trailer.png' resourceImageAlt='Restroom trailer setup suited for private backyard event logistics' resourceEyebrow='Private Event Planning' resourceTitle='Helpful Resources for Private Event Hosts' resourceDescription='Explore city coverage, sizing guidance, and quote tools for private parties and family celebrations.' />
 }

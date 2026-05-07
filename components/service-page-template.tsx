@@ -20,7 +20,7 @@ const resources = [
   { href: '/gallery', title: 'Gallery', desc: 'View restroom trailer photos and event setups.' },
 ]
 
-export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, sections, faqs, ctaTitle }: { pageTitle: string; serviceName: string; urlPath: string; intro: string; sections: Section[]; faqs: FAQ[]; ctaTitle: string }) {
+export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, sections, faqs, ctaTitle, resourceImageSrc = '/images/Wedding Trailer.png', resourceImageAlt = 'Luxury restroom trailer exterior setup for Michigan event', resourceEyebrow = 'Planning Support', resourceTitle = 'Helpful Resources While You Plan', resourceDescription = 'Explore service areas, event-specific pages, and planning resources.' }: { pageTitle: string; serviceName: string; urlPath: string; intro: string; sections: Section[]; faqs: FAQ[]; ctaTitle: string; resourceImageSrc?: string; resourceImageAlt?: string; resourceEyebrow?: string; resourceTitle?: string; resourceDescription?: string }) {
   const service = serviceJsonLd(serviceName, `https://www.signatureluxeevents.com${urlPath}`)
   const breadcrumbs = breadcrumbJsonLd([{ name: 'Home', item: '/' }, { name: pageTitle, item: urlPath }])
   const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
@@ -49,7 +49,7 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
         <div className='container mx-auto px-4 lg:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
           {[{ icon: Thermometer, title: 'Climate Controlled' }, { icon: Droplets, title: 'Private Flushing Stalls' }, { icon: Sparkles, title: 'Modern Vanities' }, { icon: ClipboardList, title: 'Delivery & Setup Planning' }].map((item) => (
             <div key={item.title} className='rounded-2xl border border-gold/30 bg-cream p-5'>
-              <item.icon className='h-6 w-6 text-navy mb-3' />
+              <div className='mb-3 inline-flex rounded-xl bg-gold/25 p-3'><item.icon className='h-8 w-8 text-navy' /></div>
               <p className='font-medium text-navy'>{item.title}</p>
             </div>
           ))}
@@ -72,9 +72,9 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
         <section key={section.heading} className={index % 2 === 0 ? 'bg-white py-10' : 'bg-cream py-10'}>
           <div className='container mx-auto px-4 lg:px-8'>
             <div className='rounded-2xl border border-gold/20 bg-white p-8 shadow-sm'>
-              <p className='text-gold text-xs uppercase tracking-[0.2em] mb-3'>Signature Luxe</p>
+              <p className='text-gold-text text-xs uppercase tracking-[0.2em] mb-3'>Signature Luxe</p>
               <h2 className='text-2xl font-semibold text-navy mb-4'>{section.heading}</h2>
-              <div className='space-y-4 text-charcoal'>
+              <div className='space-y-4 text-base leading-relaxed text-charcoal/90'>
                 {section.paragraphs.map((paragraph) => <p key={paragraph.slice(0, 30)}>{paragraph}</p>)}
               </div>
             </div>
@@ -86,15 +86,15 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
         <div className='container mx-auto px-4 lg:px-8'>
           <div className='grid lg:grid-cols-2 gap-6 items-stretch'>
             <div className='rounded-2xl border border-gold/20 bg-cream p-8'>
-              <h2 className='text-2xl font-semibold text-navy'>Helpful Resources While You Plan</h2>
-              <p className='mt-3 text-charcoal/85'>Explore service areas, event-specific pages, and planning resources.</p>
+              <div className='h-1.5 w-14 rounded-full bg-gold mb-4' /><p className='text-gold-text text-xs uppercase tracking-[0.2em] mb-3'>{resourceEyebrow}</p><h2 className='text-2xl font-semibold text-navy'>{resourceTitle}</h2>
+              <p className='mt-3 text-base leading-relaxed text-charcoal/90'>{resourceDescription}</p>
             </div>
             <div className='relative overflow-hidden rounded-2xl min-h-[220px] border border-gold/20'>
-              <Image src='/images/Wedding Trailer.png' alt='Luxury restroom trailer exterior setup for Michigan event' fill className='object-cover' sizes='(max-width: 1024px) 100vw, 50vw' />
+              <Image src={resourceImageSrc} alt={resourceImageAlt} fill className='object-cover' sizes='(max-width: 1024px) 100vw, 50vw' />
             </div>
           </div>
           <div className='mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-            {resources.map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-4 shadow-sm hover:border-gold/40'><h3 className='font-semibold text-navy'>{item.title}</h3><p className='text-sm text-charcoal/80 mt-1'>{item.desc}</p></Link>)}
+            {resources.map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-5 shadow-sm transition hover:border-gold/50'><h3 className='font-semibold text-navy'>{item.title}</h3><p className='text-sm leading-relaxed text-charcoal/85 mt-1'>{item.desc}</p></Link>)}
           </div>
         </div>
       </section>

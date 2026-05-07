@@ -20,5 +20,5 @@ export default function Page() {
     { q: 'How quickly can an emergency rental be scheduled?', a: 'Scheduling depends on trailer availability, routing, and site readiness. We prioritize clear communication so you understand realistic timing options.' },
     { q: 'Can rentals be extended if recovery or repairs take longer than expected?', a: 'In many cases, yes. If your timeline changes, contact us early so we can review availability and discuss extension options.' },
     { q: 'What information helps you quote an emergency or disaster relief request?', a: 'Please provide location, desired start window, expected number of users, and known access or utility constraints. That helps us recommend the best available setup.' },
-  ]} />
+  ]} resourceImageSrc='/images/Disaster Relief Trailer.png' resourceImageAlt='Temporary restroom trailer support for emergency and relief operations' resourceEyebrow='Emergency Planning' resourceTitle='Helpful Resources for Emergency and Relief Logistics' resourceDescription='Access planning pages and coverage details to coordinate temporary restroom support quickly.' />
 }

@@ -20,5 +20,5 @@ export default function Page() {
     { q: 'Do you coordinate placement for food truck areas, stages, and vendor rows?', a: 'Yes. We plan placement around high-traffic zones such as vendor and performance areas while preserving service access and crowd movement.' },
     { q: 'Do you work with municipal and community event coordinators?', a: 'Absolutely. We regularly coordinate with city staff, parks teams, and local organizing committees to align on access windows and operational logistics.' },
     { q: 'What details should we provide to get a quote for a Lansing or Mid-Michigan event?', a: 'Please include the event date, location, estimated attendance, event hours, and any known access or utility constraints. That helps us provide accurate recommendations and pricing.' },
-  ]} />
+  ]} resourceImageSrc='/images/MSU Tailgate Rental Restroom.png' resourceImageAlt='Outdoor restroom trailer placement for community festival operations' resourceEyebrow='Festival Planning' resourceTitle='Helpful Resources for Community Event Organizers' resourceDescription='Review service areas, capacity planning pages, and event support resources for public gatherings.' />
 }

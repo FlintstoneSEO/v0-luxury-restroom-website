@@ -99,7 +99,7 @@ export default function ConstructionLongTermPage() {
           eyebrow="Construction & Long-Term"
           title="Construction and Long-Term Restroom Trailer Rentals in Michigan"
           description="Reliable restroom trailer rentals for construction sites, commercial projects, remodels, temporary facilities, and long-term restroom needs throughout Lansing and surrounding Michigan communities."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
         />
 
         {/* Practical Solutions with Image */}
@@ -275,7 +275,7 @@ export default function ConstructionLongTermPage() {
                 size="lg"
                 className="mt-8 bg-navy hover:bg-navy/90 text-white"
               >
-                <Link href="/request-availability">
+                <Link href="/request-quote">
                   Request Availability
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -289,7 +289,7 @@ export default function ConstructionLongTermPage() {
           title="Ready to Upgrade Your Job Site?"
           description="Contact us to discuss your construction or long-term rental needs."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="gold"
         />
       </main>

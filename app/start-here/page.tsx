@@ -100,7 +100,7 @@ export default function StartHerePage() {
           eyebrow="Start Here"
           title="Planning Your Restroom Trailer Rental"
           description="Every event is unique. Here&apos;s what we need to know to provide you with the perfect restroom trailer solution for your occasion."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
         />
 
         {/* Introduction */}
@@ -174,7 +174,7 @@ export default function StartHerePage() {
                   best solution for your location.
                 </p>
                 <Button asChild className="bg-gold text-charcoal hover:bg-gold/90">
-                  <Link href="/request-availability">
+                  <Link href="/request-quote">
                     Get Help With Setup
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -203,7 +203,7 @@ export default function StartHerePage() {
           title="Ready to Get Started?"
           description="Tell us about your event and we&apos;ll provide a custom proposal within 1-2 business days."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="gold"
         />
       </main>

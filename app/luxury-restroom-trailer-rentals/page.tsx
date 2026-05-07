@@ -23,5 +23,5 @@ const faqs = [
 ]
 
 export default function Page() {
-  return <ServicePageTemplate pageTitle='Luxury Restroom Trailer Rentals' serviceName='Luxury restroom trailer rental' urlPath='/luxury-restroom-trailer-rentals' intro='If you are planning an event in Lansing or anywhere in Mid-Michigan, luxury restroom trailer rentals provide a cleaner, more comfortable experience than standard portable toilets.' ctaTitle='Reserve Luxury Restroom Trailers for Your Event' sections={sections} faqs={faqs} />
+  return <ServicePageTemplate pageTitle='Luxury Restroom Trailer Rentals' serviceName='Luxury restroom trailer rental' urlPath='/luxury-restroom-trailer-rentals' intro='If you are planning an event in Lansing or anywhere in Mid-Michigan, luxury restroom trailer rentals provide a cleaner, more comfortable experience than standard portable toilets.' ctaTitle='Reserve Luxury Restroom Trailers for Your Event' sections={sections} faqs={faqs} resourceImageSrc='/images/Wedding Trailer.png' resourceImageAlt='Luxury restroom trailer exterior ready for upscale event guests' resourceEyebrow='Luxury Planning' resourceTitle='Helpful Resources for Luxury Trailer Rentals' resourceDescription='Compare sizes, view photos, and review coverage details for premium restroom trailer planning.' />
 }

@@ -91,7 +91,7 @@ export default function RequestQuotePage() {
         <div className='container mx-auto px-4 lg:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
           {[{ icon: Sparkles, text: 'Climate-controlled trailers' }, { icon: Droplets, text: 'Private flushing stalls' }, { icon: ClipboardList, text: 'Modern vanities and mirrors' }, { icon: Truck, text: 'Delivery, setup, and pickup planning' }].map((item) => (
             <div key={item.text} className='rounded-2xl border border-gold/30 bg-white/5 p-5'>
-              <item.icon className='h-6 w-6 text-gold mb-3' />
+              <div className='mb-3 inline-flex rounded-xl bg-gold/20 p-3'><item.icon className='h-8 w-8 text-gold' /></div>
               <p className='text-white/90 font-medium'>{item.text}</p>
             </div>
           ))}

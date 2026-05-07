@@ -139,7 +139,7 @@ export default function GalleryPage() {
           eyebrow="Gallery"
           title="See Our Luxury Restroom Trailers"
           description="Explore our climate-controlled trailers, modern interiors, and professional event setups across Lansing and Mid-Michigan."
-          primaryCta={{ text: "Request Availability", href: "/request-availability" }}
+          primaryCta={{ text: "Request Availability", href: "/request-quote" }}
         />
 
         {/* Gallery Grid */}
@@ -220,7 +220,7 @@ export default function GalleryPage() {
           title="Like What You See?"
           description="Request availability for your upcoming event and experience the Signature Luxe difference."
           ctaText="Request Availability"
-          ctaHref="/request-availability"
+          ctaHref="/request-quote"
           variant="navy"
         />
       </main>
