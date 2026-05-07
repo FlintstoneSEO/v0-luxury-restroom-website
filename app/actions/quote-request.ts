@@ -1,146 +1,20 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { QuoteFormData, PricingSettings } from "@/lib/types/quote"
-import { calculateQuotePrice, DEFAULT_PRICING, validateQuoteFormData } from "@/lib/pricing-engine"
+import { QuoteFormData } from "@/lib/types/quote"
+import { validateQuoteFormData } from "@/lib/pricing-engine"
+import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation'
 import { Resend } from 'resend'
 
 // Initialize Resend (will gracefully fail if API key not set)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const QUOTE_ACTION_VERSION = "service-role-v2"
-const BUSINESS_ORIGIN_ADDRESS = "4463 Helmsway Dr, Lansing, MI 48911"
-const DEFAULT_FALLBACK_DISTANCE_MILES = 50
 
 export type QuoteRequestFormState = {
   success: boolean
   message: string
   quoteNumber?: string
   errors?: Record<string, string[]>
-}
-
-function normalizeAddress(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[.,]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-function isSameBusinessAddress(destinationAddress: string): boolean {
-  const normalizedDestination = normalizeAddress(destinationAddress)
-  const normalizedBusiness = normalizeAddress(BUSINESS_ORIGIN_ADDRESS)
-
-  return normalizedDestination === normalizedBusiness
-}
-
-function buildDestinationAddress(data: QuoteFormData): string {
-  const street = data.event_address?.trim() ?? ''
-  const city = data.city?.trim() ?? ''
-  const state = data.state?.trim() ?? ''
-  const zip = data.zip_code?.trim() ?? ''
-
-  return [street, city, [state, zip].filter(Boolean).join(' ')].filter(Boolean).join(', ')
-}
-
-async function calculateDrivingDistanceMiles(destinationAddress: string): Promise<number> {
-  if (!destinationAddress) {
-    console.warn('[quote-request] Missing destination address. Using fallback distance 50 miles.')
-    return DEFAULT_FALLBACK_DISTANCE_MILES
-  }
-
-  if (isSameBusinessAddress(destinationAddress)) {
-    return 0
-  }
-
-  const googleApiKey = process.env.GOOGLE_MAPS_API_KEY
-  if (!googleApiKey) {
-    console.error('[quote-request] Missing GOOGLE_MAPS_API_KEY. Falling back to default distance.')
-    console.warn(`[quote-request] Fallback distance used: ${DEFAULT_FALLBACK_DISTANCE_MILES} miles for destination "${destinationAddress}".`)
-    return DEFAULT_FALLBACK_DISTANCE_MILES
-  }
-
-  try {
-    const params = new URLSearchParams({
-      origins: BUSINESS_ORIGIN_ADDRESS,
-      destinations: destinationAddress,
-      units: 'imperial',
-      mode: 'driving',
-      key: googleApiKey,
-    })
-
-    const response = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?${params.toString()}`, {
-      method: 'GET',
-      cache: 'no-store',
-    })
-
-    if (!response.ok) {
-      throw new Error(`Distance Matrix HTTP ${response.status}`)
-    }
-
-    const body = await response.json() as {
-      status?: string
-      rows?: Array<{ elements?: Array<{ status?: string; distance?: { value?: number } }> }>
-      error_message?: string
-    }
-
-    if (body.status !== 'OK') {
-      throw new Error(`Distance Matrix status ${body.status ?? 'UNKNOWN'}${body.error_message ? `: ${body.error_message}` : ''}`)
-    }
-
-    const element = body.rows?.[0]?.elements?.[0]
-    if (!element || element.status !== 'OK' || typeof element.distance?.value !== 'number') {
-      throw new Error(`Distance element unavailable. elementStatus=${element?.status ?? 'UNKNOWN'}`)
-    }
-
-    const miles = element.distance.value / 1609.344
-    return Number(miles.toFixed(1))
-  } catch (error) {
-    console.error('[quote-request] Distance calculation failed', {
-      destinationAddress,
-      error,
-    })
-
-    if (isSameBusinessAddress(destinationAddress)) {
-      return 0
-    }
-
-    console.warn(`[quote-request] Fallback distance used: ${DEFAULT_FALLBACK_DISTANCE_MILES} miles for destination "${destinationAddress}".`)
-    return DEFAULT_FALLBACK_DISTANCE_MILES
-  }
-}
-
-async function getPricingSettings(): Promise<PricingSettings> {
-  const defaultPricing: PricingSettings = DEFAULT_PRICING
-
-  try {
-    const supabase = await createClient()
-    const { data, error } = await supabase.from('pricing_settings').select('setting_key, setting_value')
-
-    if (error) {
-      console.error('[quote-request] pricing_settings read error', {
-        code: error.code,
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-      })
-      return defaultPricing
-    }
-
-    if (!data || data.length === 0) {
-      return defaultPricing
-    }
-
-    const settings: Record<string, number> = {}
-    data.forEach((row) => {
-      settings[row.setting_key] = Number(row.setting_value)
-    })
-
-    return settings as unknown as PricingSettings
-  } catch (error) {
-    console.error('[quote-request] pricing_settings unexpected error', error)
-    return defaultPricing
-  }
 }
 
 export async function submitQuoteRequest(
@@ -180,20 +54,7 @@ export async function submitQuoteRequest(
   try {
     console.log('[quote-request] action version', QUOTE_ACTION_VERSION)
 
-    // Get pricing settings and calculate price
-    const pricingSettings = await getPricingSettings()
-    const destinationAddress = buildDestinationAddress(data)
-    const distanceMiles = await calculateDrivingDistanceMiles(destinationAddress)
-    
-    const priceBreakdown = calculateQuotePrice(
-      data.guest_count,
-      distanceMiles,
-      data.has_power,
-      data.has_water,
-      data.event_end_time,
-      data.event_date,
-      pricingSettings
-    )
+    const { distanceMiles, priceBreakdown, distanceCalculationStatus, distanceCalculationMessage } = await buildQuoteCalculation(data)
 
     // Insert quote request with server-only service role client (bypasses anon RLS)
     let supabaseAdmin
@@ -295,6 +156,7 @@ export async function submitQuoteRequest(
             <p><strong>Address:</strong> ${data.event_address}</p>
             <p><strong>City:</strong> ${data.city}, ${data.state} ${data.zip_code}</p>
             <p><strong>Calculated Driving Distance:</strong> ${distanceMiles.toFixed(1)} miles</p>
+            ${distanceCalculationStatus === 'fallback' ? `<p><strong>Distance Notice:</strong> ${distanceCalculationMessage}</p>` : ''}
             <hr />
             <h3>Site Utilities</h3>
             <p><strong>Power Available:</strong> ${data.has_power ? 'Yes' : 'No'}</p>

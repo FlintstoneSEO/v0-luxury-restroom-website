@@ -87,6 +87,10 @@ export interface PriceBreakdown {
     water_needed: boolean;
     after_hours_count: number;
     rush_days_out: number | null;
+    distance_calculation_status?: 'success' | 'fallback' | 'same_address' | 'failed';
+    distance_calculation_message?: string;
+    distance_fallback_miles?: number;
+    [key: string]: unknown;
   };
 }
 
