@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   // Use the Postgres connection string to run migrations
-  const connectionString = process.env.POSTGRES_URL_NON_POOLING;
+  const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
   
   if (!connectionString) {
     return NextResponse.json({ 
@@ -13,7 +13,21 @@ export async function GET() {
 
   try {
     const { Client } = await import('pg');
-    const client = new Client({ connectionString });
+    
+    // Parse the connection string and remove SSL parameters
+    let connString = connectionString;
+    if (connString.includes('?')) {
+      const url = new URL(connString);
+      // Remove SSL-related params that might cause issues
+      url.searchParams.delete('sslmode');
+      url.searchParams.delete('ssl');
+      connString = url.toString();
+    }
+    
+    const client = new Client({ 
+      connectionString: connString,
+      ssl: { rejectUnauthorized: false }
+    });
     
     await client.connect();
 
@@ -70,4 +84,5 @@ export async function GET() {
     }, { status: 500 });
   }
 }
+
 
