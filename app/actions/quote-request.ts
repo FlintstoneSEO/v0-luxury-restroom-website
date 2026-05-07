@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { QuoteFormData, PricingSettings } from "@/lib/types/quote"
-import { calculateQuotePrice } from "@/lib/pricing-engine"
+import { calculateQuotePrice, DEFAULT_PRICING, validateQuoteFormData } from "@/lib/pricing-engine"
 import { Resend } from 'resend'
 
 // Initialize Resend (will gracefully fail if API key not set)
@@ -111,19 +111,7 @@ async function calculateDrivingDistanceMiles(destinationAddress: string): Promis
 }
 
 async function getPricingSettings(): Promise<PricingSettings> {
-  const defaultPricing: PricingSettings = {
-    base_price_100_guests: 650,
-    base_price_150_guests: 750,
-    base_price_200_guests: 900,
-    base_price_200_plus: 1100,
-    included_miles: 30,
-    travel_rate_per_mile: 2.5,
-    generator_fee: 150,
-    water_fee: 100,
-    after_hours_hourly_rate: 75,
-    after_hours_cutoff_hour: 22,
-    deposit_percentage: 25,
-  }
+  const defaultPricing: PricingSettings = DEFAULT_PRICING
 
   try {
     const supabase = await createClient()
@@ -179,58 +167,7 @@ export async function submitQuoteRequest(
   }
 
   // Validation
-  const errors: Record<string, string[]> = {}
-
-  if (!data.customer_name || data.customer_name.trim().length < 2) {
-    errors.customer_name = ["Please enter your full name"]
-  }
-
-  if (!data.email || !data.email.includes("@")) {
-    errors.email = ["Please enter a valid email address"]
-  }
-
-  if (!data.phone || data.phone.replace(/\D/g, '').length < 10) {
-    errors.phone = ["Please enter a valid phone number"]
-  }
-
-  if (!data.event_date) {
-    errors.event_date = ["Please select an event date"]
-  } else {
-    const eventDate = new Date(data.event_date)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    if (eventDate < today) {
-      errors.event_date = ["Event date must be in the future"]
-    }
-  }
-
-  if (!data.event_type) {
-    errors.event_type = ["Please select an event type"]
-  }
-
-  if (!data.guest_count || data.guest_count < 1) {
-    errors.guest_count = ["Please enter the expected number of guests"]
-  }
-
-  if (!data.event_address) {
-    errors.event_address = ["Please enter the event address"]
-  }
-
-  if (!data.city) {
-    errors.city = ["Please enter the city"]
-  }
-
-  if (!data.zip_code || data.zip_code.length < 5) {
-    errors.zip_code = ["Please enter a valid ZIP code"]
-  }
-
-  if (!data.event_start_time) {
-    errors.event_start_time = ["Please select a start time"]
-  }
-
-  if (!data.event_end_time) {
-    errors.event_end_time = ["Please select an end time"]
-  }
+  const errors = validateQuoteFormData(data)
 
   if (Object.keys(errors).length > 0) {
     return {
@@ -254,6 +191,7 @@ export async function submitQuoteRequest(
       data.has_power,
       data.has_water,
       data.event_end_time,
+      data.event_date,
       pricingSettings
     )
 
@@ -298,9 +236,16 @@ export async function submitQuoteRequest(
         travel_fee: priceBreakdown.travel_fee,
         utility_fee: priceBreakdown.utility_fee,
         after_hours_fee: priceBreakdown.after_hours_fee,
+        cleaning_fee: priceBreakdown.cleaning_fee,
+        damage_waiver_fee: priceBreakdown.damage_waiver_fee,
+        rush_booking_fee: priceBreakdown.rush_booking_fee,
+        subtotal: priceBreakdown.subtotal,
         total_price: priceBreakdown.total_price,
+        status: "pending_review",
         deposit_amount: priceBreakdown.deposit_amount,
+        deposit_status: "due",
         final_balance: priceBreakdown.final_balance,
+        agreement_status: "not_sent",
         calculated_breakdown: priceBreakdown,
       })
       .select('quote_number')

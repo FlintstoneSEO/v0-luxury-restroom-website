@@ -1,35 +1,60 @@
+create extension if not exists pgcrypto;
+
 create table if not exists quote_requests (
   id uuid primary key default gen_random_uuid(),
   quote_number text unique,
-  first_name text,
-  last_name text,
+  customer_name text,
   phone text,
   email text,
   event_date date,
   event_type text,
-  event_location text,
   guest_count int,
-  start_time text,
-  end_time text,
-  power_available text,
-  water_available text,
-  ada_needed text,
-  trailer_interest text,
-  rental_type text,
-  referral_source text,
-  details text,
-  source_page text,
-  status text default 'new',
+  event_address text,
+  city text,
+  state text,
+  zip_code text,
+  event_start_time text,
+  event_end_time text,
+  has_power boolean,
+  has_water boolean,
+  additional_notes text,
+  distance_miles numeric,
+
   base_price numeric,
   travel_fee numeric,
   utility_fee numeric,
   after_hours_fee numeric,
+  cleaning_fee numeric,
+  damage_waiver_fee numeric,
+  rush_booking_fee numeric,
+  subtotal numeric,
   total_price numeric,
+
+  status text default 'pending_review',
+  calculated_breakdown jsonb,
+
+  approval_token_hash text,
+  approval_token_expires_at timestamptz,
+  approval_token_used_at timestamptz,
+
+  agreement_status text default 'not_sent',
+  agreement_sent_at timestamptz,
+  agreement_viewed_at timestamptz,
+  agreement_signed_at timestamptz,
+  agreement_document_url text,
+
   deposit_amount numeric,
+  deposit_status text default 'due',
+  deposit_due_date date,
+  deposit_paid_at timestamptz,
+  deposit_paid_amount numeric,
+  deposit_transaction_reference text,
   final_balance numeric,
+
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
+
 create table if not exists quote_status_history (
   id uuid primary key default gen_random_uuid(),
   quote_request_id uuid references quote_requests(id) on delete cascade,
@@ -39,11 +64,42 @@ create table if not exists quote_status_history (
   changed_by text,
   note text
 );
-create table if not exists proposal_records (
+
+create table if not exists quote_agreements (
   id uuid primary key default gen_random_uuid(),
   quote_request_id uuid references quote_requests(id) on delete cascade,
-  proposal_url text,
+  agreement_provider text,
+  agreement_external_id text,
+  agreement_document_url text,
+  status text default 'not_sent',
   sent_at timestamptz,
-  accepted_at timestamptz,
-  created_at timestamptz default now()
+  viewed_at timestamptz,
+  signed_at timestamptz,
+  voided_at timestamptz,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create table if not exists quote_deposits (
+  id uuid primary key default gen_random_uuid(),
+  quote_request_id uuid references quote_requests(id) on delete cascade,
+  amount_due numeric not null,
+  amount_paid numeric default 0,
+  due_date date,
+  paid_at timestamptz,
+  payment_provider text,
+  payment_reference text,
+  status text default 'due',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create table if not exists quote_approval_tokens (
+  id uuid primary key default gen_random_uuid(),
+  quote_request_id uuid references quote_requests(id) on delete cascade,
+  token_hash text not null,
+  expires_at timestamptz not null,
+  used_at timestamptz,
+  created_at timestamptz default now(),
+  unique (quote_request_id, token_hash)
 );

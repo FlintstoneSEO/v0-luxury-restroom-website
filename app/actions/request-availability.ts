@@ -99,7 +99,8 @@ export async function submitRequestAvailability(
       distanceMiles,
       hasPower,
       hasWater,
-      eventEndTime
+      eventEndTime,
+      eventDate
     );
 
     const quotePayload = {
@@ -123,8 +124,15 @@ export async function submitRequestAvailability(
       travel_fee: priceBreakdown.travel_fee,
       utility_fee: priceBreakdown.utility_fee,
       after_hours_fee: priceBreakdown.after_hours_fee,
+      cleaning_fee: priceBreakdown.cleaning_fee,
+      damage_waiver_fee: priceBreakdown.damage_waiver_fee,
+      rush_booking_fee: priceBreakdown.rush_booking_fee,
+      subtotal: priceBreakdown.subtotal,
       total_price: priceBreakdown.total_price,
+      status: "pending_review",
+      agreement_status: "not_sent",
       deposit_amount: priceBreakdown.deposit_amount,
+      deposit_status: "due",
       final_balance: priceBreakdown.final_balance,
       calculated_breakdown: priceBreakdown,
     };

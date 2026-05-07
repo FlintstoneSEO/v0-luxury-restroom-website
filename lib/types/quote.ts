@@ -1,29 +1,38 @@
+export const QUOTE_REQUEST_STATUSES = [
+  'draft',
+  'pending_review',
+  'quoted',
+  'proposal_sent',
+  'awaiting_client',
+  'approved',
+  'declined',
+  'expired',
+  'cancelled',
+] as const;
+
+export type QuoteRequestStatus = (typeof QUOTE_REQUEST_STATUSES)[number];
+
+export const AGREEMENT_STATUSES = ['not_sent', 'sent', 'viewed', 'signed', 'voided'] as const;
+export type AgreementStatus = (typeof AGREEMENT_STATUSES)[number];
+
+export const DEPOSIT_STATUSES = ['not_required', 'due', 'partially_paid', 'paid', 'refunded'] as const;
+export type DepositStatus = (typeof DEPOSIT_STATUSES)[number];
+
 export interface QuoteFormData {
-  // Customer Info
   customer_name: string;
   phone: string;
   email: string;
-  
-  // Event Details
   event_date: string;
   event_type: string;
   guest_count: number;
-  
-  // Location
   event_address: string;
   city: string;
   state: string;
   zip_code: string;
-  
-  // Timing
   event_start_time: string;
   event_end_time: string;
-  
-  // Utilities
   has_power: boolean;
   has_water: boolean;
-  
-  // Additional
   additional_notes?: string;
 }
 
@@ -38,7 +47,19 @@ export interface PricingSettings {
   water_fee: number;
   after_hours_hourly_rate: number;
   after_hours_cutoff_hour: number;
+  damage_waiver_fee: number;
+  rush_booking_fee: number;
+  cleaning_fee: number;
   deposit_percentage: number;
+}
+
+export interface QuoteLineItem {
+  code: 'base_rental' | 'travel' | 'utilities' | 'after_hours' | 'cleaning' | 'damage_waiver' | 'rush_booking';
+  label: string;
+  quantity: number;
+  unit_price: number;
+  total: number;
+  taxable?: boolean;
 }
 
 export interface PriceBreakdown {
@@ -46,9 +67,14 @@ export interface PriceBreakdown {
   travel_fee: number;
   utility_fee: number;
   after_hours_fee: number;
+  cleaning_fee: number;
+  damage_waiver_fee: number;
+  rush_booking_fee: number;
+  subtotal: number;
   total_price: number;
   deposit_amount: number;
   final_balance: number;
+  line_items: QuoteLineItem[];
   details: {
     guest_tier: string;
     distance_miles: number;
@@ -56,20 +82,48 @@ export interface PriceBreakdown {
     generator_needed: boolean;
     water_needed: boolean;
     after_hours_count: number;
+    rush_days_out: number | null;
   };
 }
 
-export interface QuoteRequest extends QuoteFormData {
+export interface QuoteApprovalToken {
+  token_hash: string;
+  token_expires_at: string;
+  token_used_at?: string | null;
+}
+
+export interface QuoteAgreementTracking {
+  agreement_status: AgreementStatus;
+  agreement_sent_at?: string | null;
+  agreement_viewed_at?: string | null;
+  agreement_signed_at?: string | null;
+  agreement_document_url?: string | null;
+}
+
+export interface QuoteDepositTracking {
+  deposit_status: DepositStatus;
+  deposit_due_date?: string | null;
+  deposit_paid_at?: string | null;
+  deposit_paid_amount?: number | null;
+  deposit_transaction_reference?: string | null;
+}
+
+export interface QuoteRequest extends QuoteFormData, QuoteApprovalToken, QuoteAgreementTracking, QuoteDepositTracking {
   id: string;
   created_at: string;
+  updated_at?: string;
   quote_number: string;
+  status: QuoteRequestStatus;
   distance_miles: number;
   base_price: number;
   travel_fee: number;
   utility_fee: number;
   after_hours_fee: number;
+  cleaning_fee: number;
+  damage_waiver_fee: number;
+  rush_booking_fee: number;
+  subtotal: number;
   total_price: number;
-  status: 'pending' | 'sent' | 'accepted' | 'declined';
   deposit_amount: number;
   final_balance: number;
   calculated_breakdown: PriceBreakdown;
@@ -77,34 +131,11 @@ export interface QuoteRequest extends QuoteFormData {
 
 export const EVENT_TYPES = [
   'Wedding',
-  'Corporate Event', 
+  'Corporate Event',
   'Festival/Concert',
   'Private Party',
   'Construction Site',
   'Outdoor Ceremony',
   'Graduation Party',
-  'Other'
-] as const;
-
-export const MICHIGAN_CITIES = [
-  'Detroit',
-  'Grand Rapids',
-  'Warren',
-  'Sterling Heights',
-  'Ann Arbor',
-  'Lansing',
-  'Flint',
-  'Dearborn',
-  'Livonia',
-  'Troy',
-  'Westland',
-  'Farmington Hills',
-  'Kalamazoo',
-  'Wyoming',
-  'Southfield',
-  'Rochester Hills',
-  'Taylor',
-  'Pontiac',
-  'St. Clair Shores',
-  'Royal Oak'
+  'Other',
 ] as const;
