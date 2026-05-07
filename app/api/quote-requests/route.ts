@@ -31,26 +31,11 @@ export async function POST(req: Request) {
       has_power: parsed.data.has_power,
       has_water: parsed.data.has_water,
       additional_notes: parsed.data.additional_notes,
-      distance_miles: parsed.data.distance_miles,
-      base_price: parsed.data.base_price,
-      travel_fee: parsed.data.travel_fee,
-      utility_fee: parsed.data.utility_fee,
-      after_hours_fee: parsed.data.after_hours_fee,
-      cleaning_fee: parsed.data.cleaning_fee,
-      damage_waiver_fee: parsed.data.damage_waiver_fee,
-      rush_booking_fee: parsed.data.rush_booking_fee,
-      subtotal: parsed.data.subtotal,
-      total_price: parsed.data.total_price,
-      deposit_amount: parsed.data.deposit_amount,
-      final_balance: parsed.data.final_balance,
-      discount_amount: parsed.data.discount_amount,
-      quote_expires_at: parsed.data.quote_expires_at,
-      status: parsed.data.status ?? 'pending_review',
-      agreement_status: parsed.data.agreement_status ?? 'not_sent',
-      deposit_status: parsed.data.deposit_status ?? 'due',
-      internal_notes: parsed.data.internal_notes,
-      customer_notes: parsed.data.customer_notes,
+      status: 'pending_review',
+      agreement_status: 'not_sent',
+      deposit_status: 'due',
     };
+
 
     const { error } = await supabase.from('quote_requests').insert(payload);
     if (error) return NextResponse.json({ ok: false, message: error.message }, { status: 400 });

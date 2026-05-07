@@ -1,57 +1,82 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
+function getSupabaseSetupError() {
+  const urlConfigured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const anonConfigured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
+  if (urlConfigured && anonConfigured) return null;
+
+  return 'Admin authentication is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.';
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow login page to bypass auth check
-  if (pathname === '/admin/login') {
+  if (!pathname.startsWith('/admin')) {
     return NextResponse.next();
   }
 
-  // Protect admin routes (except login)
-  if (pathname.startsWith('/admin')) {
-    let supabaseResponse = NextResponse.next({
-      request,
-    });
+  if (pathname === '/admin/login') {
+    const setupError = getSupabaseSetupError();
 
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              supabaseResponse.cookies.set(name, value, options),
-            );
-          },
-        },
-      },
-    );
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    // If no user, redirect to login
-    if (!user) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+    if (!setupError) {
+      return NextResponse.next();
     }
 
-    // Check if user is admin (has is_admin metadata)
-    const isAdmin = user.user_metadata?.is_admin === true;
-    if (!isAdmin) {
-      // Redirect non-admins to home page
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    return supabaseResponse;
+    const response = NextResponse.next();
+    response.headers.set('x-admin-setup-warning', setupError);
+    return response;
   }
 
-  return NextResponse.next();
+  const setupError = getSupabaseSetupError();
+  if (setupError) {
+    if (process.env.NODE_ENV === 'production') {
+      const loginUrl = new URL('/admin/login', request.url);
+      loginUrl.searchParams.set('setup', 'supabase_env_missing');
+      return NextResponse.redirect(loginUrl);
+    }
+
+    return NextResponse.json(
+      {
+        ok: false,
+        error: 'Admin setup incomplete',
+        message: setupError,
+      },
+      { status: 503 },
+    );
+  }
+
+  let supabaseResponse = NextResponse.next({ request });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options));
+        },
+      },
+    },
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
+  }
+
+  if (user.user_metadata?.is_admin !== true) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {
