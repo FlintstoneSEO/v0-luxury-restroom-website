@@ -1,12 +1,17 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Only protect admin routes
+  // Allow login page to bypass auth check
+  if (pathname === '/admin/login') {
+    return NextResponse.next();
+  }
+
+  // Protect admin routes (except login)
   if (pathname.startsWith('/admin')) {
-    let supabaseResponse = request.nextResponse.next({
+    let supabaseResponse = NextResponse.next({
       request,
     });
 
@@ -33,22 +38,20 @@ export async function middleware(request: NextRequest) {
 
     // If no user, redirect to login
     if (!user) {
-      return request.nextResponse.redirect(new URL('/admin/login', request.url));
+      return NextResponse.redirect(new URL('/admin/login', request.url));
     }
 
     // Check if user is admin (has is_admin metadata)
     const isAdmin = user.user_metadata?.is_admin === true;
     if (!isAdmin) {
       // Redirect non-admins to home page
-      return request.nextResponse.redirect(new URL('/', request.url));
+      return NextResponse.redirect(new URL('/', request.url));
     }
 
     return supabaseResponse;
   }
 
-  return request.nextResponse.next({
-    request,
-  });
+  return NextResponse.next();
 }
 
 export const config = {
