@@ -117,6 +117,11 @@ export async function PATCH(
   const validation = quoteRequestUpdateSchema.safeParse({ id: quoteId, ...payload });
 
   if (!validation.success) {
+    console.error('[v0] Quote update validation errors:', {
+      errors: validation.error.errors,
+      payloadKeys: Object.keys(payload),
+      firstError: validation.error.errors[0],
+    });
     return NextResponse.json(
       { ok: false, error: 'Invalid update payload', details: validation.error.errors },
       { status: 400 }

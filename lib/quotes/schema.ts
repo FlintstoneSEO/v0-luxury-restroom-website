@@ -34,7 +34,7 @@ export const quoteRequestUpdateSchema = z.object({
   // Event details
   event_date: z.string().optional(),
   event_type: z.string().optional(),
-  guest_count: z.number().int().positive().optional(),
+  guest_count: z.number().int().min(0).optional(),
   event_address: z.string().min(3).optional(),
   city: z.string().min(2).optional(),
   state: z.string().min(2).optional(),
@@ -91,9 +91,9 @@ export const quoteRequestUpdateSchema = z.object({
   
   // Customer response
   customer_response: z.string().max(5000).optional(),
-  customer_response_type: z.enum(CUSTOMER_RESPONSE_TYPES).optional().nullable(),
+  customer_response_type: z.enum(CUSTOMER_RESPONSE_TYPES).optional(),
   customer_response_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
-});
+}).passthrough();
 
 // Schema for status updates
 export const quoteStatusUpdateSchema = z.object({
