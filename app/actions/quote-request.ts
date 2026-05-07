@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { QuoteFormData, PricingSettings } from "@/lib/types/quote"
 import { calculateQuotePrice } from "@/lib/pricing-engine"
 import { Resend } from 'resend'
@@ -160,8 +161,6 @@ export async function submitQuoteRequest(
   }
 
   try {
-    const supabase = await createClient()
-    
     // Get pricing settings and calculate price
     const pricingSettings = await getPricingSettings()
     const distanceMiles = estimateDistance(data.city)
@@ -175,8 +174,10 @@ export async function submitQuoteRequest(
       pricingSettings
     )
 
-    // Insert quote request
-    const { data: insertedQuote, error } = await supabase
+    // Insert quote request with server-only service role client (bypasses anon RLS)
+    const supabaseAdmin = createAdminClient()
+
+    const { data: insertedQuote, error } = await supabaseAdmin
       .from("quote_requests")
       .insert({
         customer_name: data.customer_name.trim(),
@@ -208,10 +209,15 @@ export async function submitQuoteRequest(
       .single()
 
     if (error) {
-      console.error("Supabase error:", error)
+      console.error("[quote-request] insert error", {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      })
       return {
         success: false,
-        message: "Something went wrong. Please try again or contact us directly.",
+        message: "We could not save your quote request. Please contact us directly while we resolve this.",
       }
     }
 
@@ -273,7 +279,7 @@ export async function submitQuoteRequest(
     console.error("Submission error:", error)
     return {
       success: false,
-      message: "Something went wrong. Please try again or contact us directly.",
+      message: "We could not save your quote request. Please contact us directly while we resolve this.",
     }
   }
 }
