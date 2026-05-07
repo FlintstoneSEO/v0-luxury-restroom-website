@@ -3,7 +3,11 @@ import { createClient } from '@/lib/supabase/server';
 import { hashApprovalToken, isTokenExpired } from '@/lib/quote-approval';
 import QuoteApprovalView from '@/components/quote/quote-approval-view';
 
-export default async function QuoteApprovalPage({ params }: { params: Promise<{ approvalToken: string }> }) {
+export default async function QuoteApprovalPage({
+  params,
+}: {
+  params: Promise<{ approvalToken: string }>;
+}) {
   const { approvalToken } = await params;
   const tokenHash = hashApprovalToken(approvalToken);
 
@@ -20,7 +24,9 @@ export default async function QuoteApprovalPage({ params }: { params: Promise<{ 
 
   const { data: quote } = await supabase
     .from('quote_requests')
-    .select('quote_number,customer_name,event_date,event_type,total_price,deposit_amount,final_balance,status,customer_response,customer_response_at')
+    .select(
+      'id, name, email, room_type, total_price, final_price, status, customer_response, customer_response_at'
+    )
     .eq('id', tokenRecord.quote_request_id)
     .single();
 
