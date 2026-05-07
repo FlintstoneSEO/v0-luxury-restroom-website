@@ -56,9 +56,10 @@ export async function POST(req: Request) {
     const { error } = await supabase.from('quote_requests').insert(payload);
     if (error) return NextResponse.json({ ok: false, message: error.message }, { status: 400 });
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (error) {
+    console.error('[quote-requests api] create failed', error);
     return NextResponse.json(
-      { ok: false, message: 'Supabase not configured yet. Using mock mode only.' },
+      { ok: false, message: 'Could not create quote request right now.' },
       { status: 503 }
     );
   }

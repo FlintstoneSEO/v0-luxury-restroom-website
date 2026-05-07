@@ -93,11 +93,21 @@ export function calculateAfterHoursFee(endTime: string, settings: PricingSetting
   const cutoffHour = settings.after_hours_cutoff_hour;
   const cutoffMinutes = cutoffHour * 60;
 
-  let endMinutes = (parsed.hours % 24) * 60 + parsed.minutes;
-  if (endMinutes <= cutoffMinutes) endMinutes += 24 * 60;
+  const overnightContinuationHours = new Set([0, 1, 2, 3, 4]);
+  const isOvernightContinuation = overnightContinuationHours.has(parsed.hours);
 
+  const sameDayEndMinutes = (parsed.hours % 24) * 60 + parsed.minutes;
+
+  if (!isOvernightContinuation && sameDayEndMinutes <= cutoffMinutes) {
+    return { fee: 0, hoursCount: 0 };
+  }
+
+  const endMinutes = isOvernightContinuation ? sameDayEndMinutes + 24 * 60 : sameDayEndMinutes;
   const afterHoursMinutes = endMinutes - cutoffMinutes;
-  if (afterHoursMinutes <= 0) return { fee: 0, hoursCount: 0 };
+
+  if (afterHoursMinutes <= 0) {
+    return { fee: 0, hoursCount: 0 };
+  }
 
   const hoursCount = Math.min(4, Math.ceil(afterHoursMinutes / 60));
   return { fee: roundMoney(hoursCount * settings.after_hours_hourly_rate), hoursCount };
