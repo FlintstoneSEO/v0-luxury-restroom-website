@@ -1,5 +1,5 @@
 import { calculateQuotePrice, DEFAULT_PRICING } from '@/lib/pricing-engine'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PriceBreakdown, PricingSettings, QuoteFormData } from '@/lib/types/quote'
 
 const BUSINESS_ORIGIN_ADDRESS = '4463 Helmsway Dr, Lansing, MI 48911'
@@ -53,7 +53,7 @@ export async function getPricingSettings(): Promise<PricingSettings> {
   const mergedSettings: PricingSettings = { ...DEFAULT_PRICING }
 
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { data, error } = await supabase.from('pricing_settings').select('setting_key, setting_value')
 
     if (error) {

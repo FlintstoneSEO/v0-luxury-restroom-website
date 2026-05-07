@@ -2,6 +2,19 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteRequestUpdateSchema } from '@/lib/quotes/schema';
 
+// Fields that should be converted from empty string to null
+const NULLABLE_FIELDS = [
+  'deposit_paid_at',
+  'deposit_payment_link',
+  'agreement_sent_at',
+  'agreement_signed_at',
+  'agreement_document_url',
+  'signed_document_url',
+  'customer_response_at',
+  'quote_expires_at',
+  'deposit_due_date',
+] as const;
+
 // Valid fields that exist in the quote_requests table
 const ALLOWED_UPDATE_FIELDS = [
   'customer_name',
@@ -92,6 +105,13 @@ export async function PATCH(
 ) {
   const { quoteId } = await params;
   const payload = await request.json();
+
+  // Convert empty strings to null for nullable fields
+  for (const field of NULLABLE_FIELDS) {
+    if (field in payload && payload[field] === '') {
+      payload[field] = null;
+    }
+  }
 
   // Validate the update schema
   const validation = quoteRequestUpdateSchema.safeParse({ id: quoteId, ...payload });

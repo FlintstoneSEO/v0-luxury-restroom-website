@@ -123,9 +123,13 @@ export async function submitQuoteRequest(
       if (error.code === '42501') {
         console.error('[quote-request] RLS blocked insert. Confirm service role key is configured in production.')
       }
+      
+      // Return more specific error for debugging
       return {
         success: false,
-        message: "We could not save your quote request right now. Please contact us directly while we resolve this.",
+        message: process.env.NODE_ENV === 'development' 
+          ? `Database error: ${error.message}` 
+          : "We could not save your quote request right now. Please contact us directly while we resolve this.",
       }
     }
 
