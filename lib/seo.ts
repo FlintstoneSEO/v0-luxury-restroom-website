@@ -29,4 +29,8 @@ export const cityPages = [
   { slug: 'flint-mi', city: 'Flint' },
   { slug: 'grand-rapids-mi', city: 'Grand Rapids' },
   { slug: 'ann-arbor-mi', city: 'Ann Arbor' },
+  { slug: 'brighton-mi', city: 'Brighton' },
+  { slug: 'charlotte-mi', city: 'Charlotte' },
+  { slug: 'battle-creek-mi', city: 'Battle Creek' },
+  { slug: 'kalamazoo-mi', city: 'Kalamazoo' },
 ] as const

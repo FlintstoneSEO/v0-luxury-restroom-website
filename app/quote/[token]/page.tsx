@@ -3,6 +3,14 @@ import { createClient } from '@/lib/supabase/server';
 import { hashApprovalToken, isTokenExpired } from '@/lib/quote-approval';
 import QuoteApprovalClient from './quote-approval-client';
 
+export const metadata = {
+  title: 'Quote Review | Signature Luxe Events & Amenities',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 interface QuoteApprovalPageProps {
   params: Promise<{ token: string }>;
 }
