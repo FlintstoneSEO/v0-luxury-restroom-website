@@ -64,10 +64,10 @@ export const quoteRequestUpdateSchema = z.object({
   deposit_amount: nonNegativeMoney.optional(),
   deposit_status: z.enum(DEPOSIT_TRACKING_STATUSES).optional(),
   deposit_due_date: z.string().optional(),
-  deposit_paid_at: z.string().datetime().optional().nullable().or(z.literal('')),
+  deposit_paid_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
   deposit_paid_amount: nonNegativeMoney.optional(),
   deposit_transaction_reference: z.string().optional(),
-  deposit_payment_link: z.string().url().optional().nullable().or(z.literal('')),
+  deposit_payment_link: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
   
   // Balance and expiration
   final_balance: nonNegativeMoney.optional(),
@@ -79,10 +79,10 @@ export const quoteRequestUpdateSchema = z.object({
   
   // Agreement tracking
   agreement_status: z.enum(AGREEMENT_TRACKING_STATUSES).optional(),
-  agreement_sent_at: z.string().datetime().optional().nullable().or(z.literal('')),
-  agreement_signed_at: z.string().datetime().optional().nullable().or(z.literal('')),
-  agreement_document_url: z.string().url().optional().nullable().or(z.literal('')),
-  signed_document_url: z.string().url().optional().nullable().or(z.literal('')),
+  agreement_sent_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
+  agreement_signed_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
+  agreement_document_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
+  signed_document_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
   agreement_provider_reference_id: z.string().optional(),
   
   // Notes
@@ -92,7 +92,7 @@ export const quoteRequestUpdateSchema = z.object({
   // Customer response
   customer_response: z.string().max(5000).optional(),
   customer_response_type: z.enum(CUSTOMER_RESPONSE_TYPES).optional().nullable(),
-  customer_response_at: z.string().datetime().optional().nullable().or(z.literal('')),
+  customer_response_at: z.union([z.string().datetime(), z.literal(''), z.null()]).optional(),
 });
 
 // Schema for status updates
