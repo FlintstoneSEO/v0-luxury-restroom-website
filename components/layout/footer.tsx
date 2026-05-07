@@ -5,7 +5,7 @@ import { Facebook, Instagram, Mail, MapPin, Clock } from "lucide-react"
 const quickLinks = [
   { name: "Home", href: "/" },
   { name: "Start Here", href: "/start-here" },
-  { name: "Our Restrooms", href: "/our-restrooms" },
+  { name: "Our Restrooms", href: "/luxury-restroom-trailer-rentals" },
   { name: "Service Areas", href: "/service-areas" },
   { name: "Gallery", href: "/gallery" },
   { name: "FAQ", href: "/faq" },
@@ -13,21 +13,19 @@ const quickLinks = [
 ]
 
 const eventTypes = [
-  { name: "Weddings", href: "/weddings" },
-  { name: "Special Events", href: "/special-events" },
-  { name: "Construction / Long-Term", href: "/construction-long-term" },
-  { name: "Disaster Relief / Government", href: "/disaster-relief-government" },
+  { name: "Weddings", href: "/wedding-restroom-trailer-rentals" },
+  { name: "Special Events", href: "/private-event-restroom-trailers" },
+  { name: "Construction / Long-Term", href: "/construction-long-term-restroom-trailer-rentals" },
+  { name: "Disaster Relief / Government", href: "/emergency-disaster-relief-restroom-trailers" },
 ]
 
 const serviceAreas = [
-  "Lansing",
-  "East Lansing",
-  "Okemos",
-  "Haslett",
-  "Grand Ledge",
-  "DeWitt",
-  "Holt",
-  "Mason",
+  { name: "Lansing", href: "/service-areas/lansing-mi" },
+  { name: "East Lansing", href: "/service-areas/east-lansing-mi" },
+  { name: "Okemos", href: "/service-areas/okemos-mi" },
+  { name: "Haslett", href: "/service-areas/haslett-mi" },
+  { name: "Grand Ledge", href: "/service-areas/grand-ledge-mi" },
+  { name: "DeWitt", href: "/service-areas/dewitt-mi" },
 ]
 
 export function Footer() {
@@ -125,8 +123,8 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-6">Service Areas</h3>
             <ul className="grid grid-cols-2 gap-2">
               {serviceAreas.map((area) => (
-                <li key={area} className="text-white/80 text-sm">
-                  {area}, MI
+                <li key={area.name} className="text-white/80 text-sm">
+                  <Link href={area.href} className="hover:text-gold transition-colors">{area.name}, MI</Link>
                 </li>
               ))}
             </ul>

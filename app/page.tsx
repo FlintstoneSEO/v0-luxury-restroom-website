@@ -22,13 +22,14 @@ import { ProcessSteps } from "@/components/process-steps"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
+import { localBusinessJsonLd } from "@/lib/seo-schema"
 
 const services = [
   {
     title: "Weddings",
     description:
       "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.",
-    href: "/weddings",
+    href: "/wedding-restroom-trailer-rentals",
     imageSrc: "/images/Wedding Trailer.png",
     imageAlt: "Wedding restroom trailer setup",
   },
@@ -36,7 +37,7 @@ const services = [
     title: "Special Events",
     description:
       "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.",
-    href: "/special-events",
+    href: "/private-event-restroom-trailers",
     imageSrc: "/images/Special Event Trailer.png",
     imageAlt: "Special event restroom trailer",
   },
@@ -44,7 +45,7 @@ const services = [
     title: "Construction / Long-Term",
     description:
       "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.",
-    href: "/construction-long-term",
+    href: "/construction-long-term-restroom-trailer-rentals",
     imageSrc: "/images/Construction Site Trailer.png",
     imageAlt: "Construction site restroom trailer",
   },
@@ -52,7 +53,7 @@ const services = [
     title: "Disaster Relief / Government",
     description:
       "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.",
-    href: "/disaster-relief-government",
+    href: "/emergency-disaster-relief-restroom-trailers",
     imageSrc: "/images/Disaster Relief Trailer.png",
     imageAlt: "Disaster relief and government restroom trailer",
   },
@@ -154,8 +155,12 @@ const eventScenarios = [
 ]
 
 export default function HomePage() {
+  const business = localBusinessJsonLd("Lansing")
+  const video = {"@context":"https://schema.org","@type":"VideoObject",name:"Luxury Restroom Trailer Walkthrough",description:"Walkthrough of Signature Luxe Events & Amenities 3-station luxury restroom trailer for weddings and events in Lansing and Mid-Michigan.",thumbnailUrl:"https://img.youtube.com/vi/hLe4XRdC8Po/hqdefault.jpg",uploadDate:"2026-03-01",embedUrl:"https://www.youtube.com/embed/hLe4XRdC8Po",publisher:{"@type":"Organization",name:"Signature Luxe Events & Amenities"}}
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(video) }} />
       <Header />
       <main>
         {/* Full-Screen Hero with Background Image */}
@@ -203,7 +208,7 @@ export default function HomePage() {
                   variant="outline" 
                   className="border-white/40 bg-white/95 text-navy hover:bg-white hover:text-navy backdrop-blur-sm transition-colors"
                 >
-                  <Link href="/our-restrooms">View Trailer Options</Link>
+                  <Link href="/luxury-restroom-trailer-rentals">View Trailer Options</Link>
                 </Button>
               </div>
 
@@ -324,7 +329,7 @@ export default function HomePage() {
                 </ul>
                 <div className="mt-8">
                   <Button asChild className="bg-gold hover:bg-gold/90 text-navy font-semibold">
-                    <Link href="/our-restrooms">
+                    <Link href="/luxury-restroom-trailer-rentals">
                       Explore All Trailer Options
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
@@ -434,7 +439,7 @@ export default function HomePage() {
                   </ul>
                   <div className="mt-8">
                     <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                      <Link href="/our-restrooms#2-station">View Details</Link>
+                      <Link href="/luxury-restroom-trailer-rentals#2-station">View Details</Link>
                     </Button>
                   </div>
                 </div>
@@ -477,7 +482,7 @@ export default function HomePage() {
                   </ul>
                   <div className="mt-8">
                     <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                      <Link href="/our-restrooms#3-station">View Details</Link>
+                      <Link href="/luxury-restroom-trailer-rentals#3-station">View Details</Link>
                     </Button>
                   </div>
                 </div>
@@ -596,7 +601,7 @@ export default function HomePage() {
                   </ul>
                   <div className="mt-8">
                     <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                      <Link href="/our-restrooms#4-station">View Details</Link>
+                      <Link href="/luxury-restroom-trailer-rentals#4-station">View Details</Link>
                     </Button>
                   </div>
                 </div>
@@ -624,7 +629,7 @@ export default function HomePage() {
                 </p>
                 <div className="mt-8">
                   <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                    <Link href="/our-restrooms">
+                    <Link href="/luxury-restroom-trailer-rentals">
                       Explore Our Restrooms
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
