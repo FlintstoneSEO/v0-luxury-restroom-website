@@ -9,10 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, ChevronRight, Calendar, Users, MapPin, DollarSign, Eye } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, Calendar, Users, MapPin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
@@ -72,12 +72,17 @@ export default function QuoteRequestsDashboard({
   source,
   error,
 }: QuoteRequestsDashboardProps) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [eventTypeFilter, setEventTypeFilter] = useState('all');
   const [agreementFilter, setAgreementFilter] = useState('all');
   const [depositFilter, setDepositFilter] = useState('all');
   const [sortBy, setSortBy] = useState<SortBy>('newest');
+
+  const handleRowClick = (quoteId: string) => {
+    router.push(`/admin/quotes/${quoteId}`);
+  };
 
   // Summary card counts
   const summaryCounts = useMemo(() => {
@@ -287,13 +292,12 @@ export default function QuoteRequestsDashboard({
                 <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Deposit</th>
                 <th className="px-4 py-3 text-right font-semibold text-[#2d3a47]">Total</th>
                 <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Created</th>
-                <th className="px-4 py-3 text-center font-semibold text-[#2d3a47]">Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredQuotes.length === 0 ? (
                 <tr>
-                  <td colSpan={13} className="px-6 py-12 text-center text-muted-foreground">
+                  <td colSpan={12} className="px-6 py-12 text-center text-muted-foreground">
                     No quotes found matching your filters.
                   </td>
                 </tr>
@@ -303,7 +307,8 @@ export default function QuoteRequestsDashboard({
                   return (
                     <tr
                       key={quote.id}
-                      className="border-b border-[#ded2c4]/20 hover:bg-[#2d3a47]/[0.02] transition-colors"
+                      onClick={() => handleRowClick(quote.id)}
+                      className="border-b border-[#ded2c4]/20 hover:bg-[#2d3a47]/[0.04] transition-colors cursor-pointer group"
                     >
                       <td className="px-4 py-3">
                         <div
@@ -335,16 +340,8 @@ export default function QuoteRequestsDashboard({
                       <td className="px-4 py-3 text-right font-semibold text-[#2d3a47]">
                         {formatCurrency(quote.total_price || 0)}
                       </td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">
+                      <td className="px-4 py-3 text-sm text-muted-foreground group-hover:text-[#2d3a47] transition-colors">
                         {formatDate(quote.created_at)}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <Link href={`/admin/quotes/${quote.id}`}>
-                          <Button variant="outline" size="sm" className="gap-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
-                            <Eye className="w-4 h-4" />
-                            View
-                          </Button>
-                        </Link>
                       </td>
                     </tr>
                   );
@@ -367,7 +364,8 @@ export default function QuoteRequestsDashboard({
             return (
               <div
                 key={quote.id}
-                className="bg-white rounded-lg border border-[#ded2c4]/30 p-4 space-y-3"
+                onClick={() => handleRowClick(quote.id)}
+                className="bg-white rounded-lg border border-[#ded2c4]/30 p-4 space-y-3 cursor-pointer hover:border-[#2d3a47]/30 hover:shadow-sm transition-all"
               >
                 <div className="flex justify-between items-start">
                   <div>
@@ -379,12 +377,7 @@ export default function QuoteRequestsDashboard({
                       {formatStatus(quote.status)}
                     </div>
                   </div>
-                  <Link href={`/admin/quotes/${quote.id}`}>
-                    <Button variant="outline" size="sm" className="gap-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
-                      <Eye className="w-4 h-4" />
-                      View
-                    </Button>
-                  </Link>
+                  <span className="text-sm text-muted-foreground">{quote.event_type}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-sm">

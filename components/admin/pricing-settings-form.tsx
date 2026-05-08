@@ -116,10 +116,10 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       )}
 
       {/* Base Pricing */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
-          <DollarSign className="w-5 h-5 text-amber-600" />
-          <h2 className="text-lg font-semibold text-navy">Base Rental Pricing</h2>
+          <DollarSign className="w-5 h-5 text-[#2d3a47]" />
+          <h2 className="text-lg font-semibold text-[#2d3a47]">Base Rental Pricing</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {groupedSettings.basePricing.map(setting => renderSettingInput(setting))}
@@ -127,10 +127,10 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       </div>
 
       {/* Travel Fees */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Truck className="w-5 h-5 text-amber-600" />
-          <h2 className="text-lg font-semibold text-navy">Travel Fees</h2>
+          <Truck className="w-5 h-5 text-[#2d3a47]" />
+          <h2 className="text-lg font-semibold text-[#2d3a47]">Travel Fees</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {groupedSettings.travel.map(setting => 
@@ -140,10 +140,10 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       </div>
 
       {/* Utility Fees */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Zap className="w-5 h-5 text-amber-600" />
-          <h2 className="text-lg font-semibold text-navy">Utility Fees</h2>
+          <Zap className="w-5 h-5 text-[#2d3a47]" />
+          <h2 className="text-lg font-semibold text-[#2d3a47]">Utility Fees</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {groupedSettings.utilities.map(setting => renderSettingInput(setting))}
@@ -151,10 +151,10 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       </div>
 
       {/* After Hours */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Clock className="w-5 h-5 text-amber-600" />
-          <h2 className="text-lg font-semibold text-navy">After Hours Fees</h2>
+          <Clock className="w-5 h-5 text-[#2d3a47]" />
+          <h2 className="text-lg font-semibold text-[#2d3a47]">After Hours Fees</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {groupedSettings.afterHours.map(setting => 
@@ -164,10 +164,10 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       </div>
 
       {/* Deposit */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Percent className="w-5 h-5 text-amber-600" />
-          <h2 className="text-lg font-semibold text-navy">Deposit Settings</h2>
+          <Percent className="w-5 h-5 text-[#2d3a47]" />
+          <h2 className="text-lg font-semibold text-[#2d3a47]">Deposit Settings</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {groupedSettings.deposit.map(setting => renderSettingInput(setting, ''))}
@@ -179,7 +179,7 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         <Button
           type="submit"
           size="lg"
-          className="bg-amber-600 hover:bg-amber-700 text-white"
+          className="bg-[#2d3a47] hover:bg-[#1f2933] text-white"
           disabled={isSaving}
         >
           {isSaving ? (

@@ -192,7 +192,7 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
               </div>
             </div>
           </div>
-          <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="mt-4 pt-4 border-t border-[#ded2c4]/30">
             <div className="text-sm text-muted-foreground mb-1">Event Type</div>
             <div className="font-medium">{quote.event_type}</div>
           </div>
@@ -309,11 +309,11 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
               onClick={() => setResponse('changes')}
               className={`p-4 rounded-lg border-2 transition-colors flex flex-col items-center gap-2 ${
                 response === 'changes'
-                  ? 'border-amber-500 bg-amber-50'
+                  ? 'border-[#d2c2ae] bg-[#f8f5f1]'
                   : 'border-gray-200 hover:border-gray-300'
               }`}
             >
-              <MessageSquare className={`w-8 h-8 ${response === 'changes' ? 'text-amber-500' : 'text-gray-400'}`} />
+              <MessageSquare className={`w-8 h-8 ${response === 'changes' ? 'text-[#2d3a47]' : 'text-gray-400'}`} />
               <span className="font-medium">Request Changes</span>
             </button>
             <button

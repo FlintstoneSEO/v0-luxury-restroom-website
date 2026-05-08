@@ -28,11 +28,15 @@ export default function DistanceSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-serif font-bold text-navy mb-8">Distance Calculation Settings</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-4xl font-serif font-bold text-[#2d3a47] mb-2">Distance Calculation Settings</h1>
+        <p className="text-muted-foreground">
+          Configure the business origin address for distance calculations.
+        </p>
+      </div>
         
-        <div className="bg-white rounded-lg shadow-md p-8 space-y-6">
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6 space-y-6 max-w-2xl">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-blue-900 text-sm">
               <strong>Note:</strong> The business origin address is stored as an environment variable called <code className="bg-blue-100 px-2 py-1 rounded">BUSINESS_ORIGIN_ADDRESS</code>. 
@@ -51,19 +55,19 @@ export default function DistanceSettingsPage() {
               onChange={(e) => setOriginAddress(e.target.value)}
               placeholder="Enter your business address"
               disabled
-              className="bg-gray-100 cursor-not-allowed"
+              className="bg-[#f8f5f1] cursor-not-allowed"
             />
             <p className="text-xs text-muted-foreground mt-2">
-              Current value: <code className="bg-gray-100 px-2 py-1 rounded">{originAddress}</code>
+              Current value: <code className="bg-[#f8f5f1] px-2 py-1 rounded">{originAddress}</code>
             </p>
           </Field>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <h3 className="font-semibold text-amber-900 mb-2">How to Update:</h3>
-            <ol className="text-amber-900 text-sm space-y-2 list-decimal list-inside">
+          <div className="bg-[#f8f5f1] border border-[#ded2c4]/50 rounded-lg p-4">
+            <h3 className="font-semibold text-[#2d3a47] mb-2">How to Update:</h3>
+            <ol className="text-[#2d3a47] text-sm space-y-2 list-decimal list-inside">
               <li>Go to your project settings</li>
               <li>Navigate to the "Vars" section</li>
-              <li>Find or create the <code className="bg-amber-100 px-1">BUSINESS_ORIGIN_ADDRESS</code> variable</li>
+              <li>Find or create the <code className="bg-[#ded2c4]/30 px-1">BUSINESS_ORIGIN_ADDRESS</code> variable</li>
               <li>Update the value to your desired address</li>
               <li>Save and restart your app</li>
             </ol>
@@ -90,9 +94,9 @@ export default function DistanceSettingsPage() {
             )}
           </Button>
 
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">How Distance Calculation Works:</h3>
-            <ul className="text-gray-700 text-sm space-y-2">
+          <div className="bg-[#f8f5f1] rounded-lg p-4">
+            <h3 className="font-semibold text-[#2d3a47] mb-2">How Distance Calculation Works:</h3>
+            <ul className="text-[#2d3a47] text-sm space-y-2">
               <li>• Uses Google Maps Distance Matrix API for accurate distance</li>
               <li>• Calculates in miles using driving distance</li>
               <li>• Automatically included 30 miles in the base price</li>
@@ -100,7 +104,6 @@ export default function DistanceSettingsPage() {
             </ul>
           </div>
         </div>
-      </div>
     </div>
   )
 }
