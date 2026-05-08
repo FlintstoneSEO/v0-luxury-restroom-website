@@ -9,6 +9,7 @@ import { Resend } from 'resend'
 // Initialize Resend (will gracefully fail if API key not set)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const QUOTE_ACTION_VERSION = "service-role-v2"
+const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.signatureluxeevents.com').replace(/\/$/, '')
 
 export type QuoteRequestFormState = {
   success: boolean
@@ -109,7 +110,7 @@ export async function submitQuoteRequest(
         agreement_status: "not_sent",
         calculated_breakdown: priceBreakdown,
       })
-      .select('quote_number')
+      .select('id, quote_number')
       .single()
 
     if (error) {
@@ -136,6 +137,9 @@ export async function submitQuoteRequest(
     // Send email notification
     if (resend) {
       try {
+        const adminQuoteUrl = `${APP_URL}/admin/quotes/${insertedQuote?.id}`
+        const adminDashboardUrl = `${APP_URL}/admin`
+
         await resend.emails.send({
           from: 'Signature Luxe Events & Amenities <info@signatureluxeevents.com>',
           replyTo: 'info@signatureluxeevents.com',
@@ -175,6 +179,53 @@ export async function submitQuoteRequest(
             <p><strong>Total Price:</strong> $${priceBreakdown.total_price.toFixed(2)}</p>
             <p><strong>Deposit (25%):</strong> $${priceBreakdown.deposit_amount.toFixed(2)}</p>
             <p><strong>Final Balance:</strong> $${priceBreakdown.final_balance.toFixed(2)}</p>
+            <hr />
+            <h3>Admin Links</h3>
+            <p><a href="${adminQuoteUrl}" target="_blank" rel="noopener noreferrer">Open this quote request</a></p>
+            <p><a href="${adminDashboardUrl}" target="_blank" rel="noopener noreferrer">Open admin dashboard</a></p>
+          `,
+        })
+
+        await resend.emails.send({
+          from: 'Signature Luxe Events & Amenities <info@signatureluxeevents.com>',
+          replyTo: 'info@signatureluxeevents.com',
+          to: data.email.trim().toLowerCase(),
+          subject: `We received your quote request (${insertedQuote?.quote_number})`,
+          html: `
+            <div style="margin:0;padding:0;background:#f6f3ee;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#2d3a47;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f3ee;padding:24px 12px;">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border:1px solid #ded2c4;border-radius:12px;overflow:hidden;">
+                      <tr>
+                        <td style="background:#2d3a47;padding:22px 24px;text-align:center;">
+                          <img src="https://www.signatureluxeevents.com/images/logo.png" alt="Signature Luxe Events & Amenities" style="max-width:220px;height:auto;display:inline-block;" />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:28px 24px;">
+                          <h1 style="margin:0 0 12px;font-size:24px;line-height:1.2;color:#2d3a47;">Thanks, ${data.customer_name.split(' ')[0]} — we received your request.</h1>
+                          <p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#2d3a47;">Your quote request is in our queue and our team will review your event details shortly.</p>
+                          <div style="background:#f6f3ee;border:1px solid #ded2c4;border-radius:10px;padding:14px 16px;margin-bottom:18px;">
+                            <p style="margin:0 0 6px;font-size:14px;"><strong>Quote Number:</strong> ${insertedQuote?.quote_number}</p>
+                            <p style="margin:0 0 6px;font-size:14px;"><strong>Event Date:</strong> ${data.event_date}</p>
+                            <p style="margin:0;font-size:14px;"><strong>Location:</strong> ${data.city}, ${data.state}</p>
+                          </div>
+                          <p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#2d3a47;">If you need to update your details, reply to this email or call us at <a href="tel:+15174990995" style="color:#2d3a47;">(517) 499-0995</a>.</p>
+                          <a href="${APP_URL}/contact" style="display:inline-block;background:#d4af37;color:#2d3a47;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:8px;">Contact Our Team</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:16px 24px;background:#2d3a47;color:#ffffff;font-size:13px;line-height:1.5;">
+                          Signature Luxe Events & Amenities<br />
+                          Lansing, Michigan • Mid-Michigan Service Area
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
           `,
         })
       } catch (emailError) {
