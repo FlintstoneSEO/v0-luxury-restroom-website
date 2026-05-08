@@ -80,7 +80,7 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
             <div className='rounded-2xl border border-gold/20 bg-white p-8 shadow-sm'>
               <p className='text-gold-text text-xs uppercase tracking-[0.2em] mb-3'>Signature Luxe</p>
               <h2 className='text-2xl font-semibold text-navy mb-4'>{section.heading}</h2>
-              <div className='space-y-4 text-base leading-relaxed text-charcoal/90'>
+              <div className='space-y-4 text-base md:text-lg leading-relaxed text-charcoal/90'>
                 {section.paragraphs.map((paragraph) => <p key={paragraph.slice(0, 30)}>{paragraph}</p>)}
               </div>
             </div>
@@ -93,7 +93,7 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
           <div className='grid lg:grid-cols-2 gap-6 items-stretch'>
             <div className='rounded-2xl border border-gold/20 bg-cream p-8'>
               <div className='h-1.5 w-14 rounded-full bg-gold mb-4' /><p className='text-gold-text text-xs uppercase tracking-[0.2em] mb-3'>{resourceEyebrow}</p><h2 className='text-2xl font-semibold text-navy'>{resourceTitle}</h2>
-              <p className='mt-3 text-base leading-relaxed text-charcoal/90'>{resourceDescription}</p>
+              <p className='mt-3 text-base md:text-[17px] leading-relaxed text-charcoal/90'>{resourceDescription}</p>
             </div>
             <div className='relative overflow-hidden rounded-2xl min-h-[220px] border border-gold/20'>
               <Image src={resourceImageSrc} alt={resourceImageAlt} fill className='object-cover' sizes='(max-width: 1024px) 100vw, 50vw' />
@@ -127,7 +127,7 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
         <div className='container mx-auto px-4 lg:px-8'>
           <h2 className='text-2xl font-semibold text-navy mb-6'>Frequently Asked Questions</h2>
           <div className='space-y-4'>
-            {faqs.map((faq) => <div key={faq.q} className='rounded-xl border border-gold/20 bg-white p-6'><h3 className='font-semibold text-navy'>{faq.q}</h3><p className='mt-2 text-charcoal'>{faq.a}</p></div>)}
+            {faqs.map((faq) => <div key={faq.q} className='rounded-xl border border-gold/20 bg-white p-6'><h3 className='font-semibold text-navy'>{faq.q}</h3><p className='mt-2 text-base md:text-lg leading-relaxed text-charcoal'>{faq.a}</p></div>)}
           </div>
         </div>
       </section>
@@ -136,7 +136,7 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
         <div className='container mx-auto px-4 lg:px-8'>
           <div className='rounded-2xl bg-navy text-white border border-gold/30 p-8 lg:p-10 text-center'>
             <h2 className='text-2xl font-semibold'>{ctaTitle}</h2>
-            <p className='mt-2 text-white/90'>We serve Lansing, Mid-Michigan, and surrounding communities with delivery, setup, pickup, and dependable scheduling.</p>
+            <p className='mt-2 text-base md:text-lg leading-relaxed text-white/90'>We serve Lansing, Mid-Michigan, and surrounding communities with delivery, setup, pickup, and dependable scheduling.</p>
             <Link href='/request-quote' className='inline-block mt-5 bg-gold text-charcoal px-6 py-3 rounded-md font-medium'>Request a Quote</Link>
           </div>
         </div>

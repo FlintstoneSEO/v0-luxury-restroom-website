@@ -414,7 +414,7 @@ export default function HomePage() {
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
                     2-Station Trailer
                   </h3>
-                  <p className="mt-4 text-charcoal/80 leading-relaxed">
+                  <p className="mt-4 text-base md:text-lg text-charcoal/80 leading-relaxed">
                     Our compact 2-station trailer features one women&apos;s room and one men&apos;s room, 
                     each with private stalls, modern vanities, and climate control. Ideal for 
                     intimate weddings, small parties, and residential events.
@@ -457,7 +457,7 @@ export default function HomePage() {
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
                     3-Station Trailer
                   </h3>
-                  <p className="mt-4 text-charcoal/80 leading-relaxed">
+                  <p className="mt-4 text-base md:text-lg text-charcoal/80 leading-relaxed">
                     Our versatile 3-station trailer offers the perfect balance of capacity and luxury,
                     featuring one women&apos;s room and two men&apos;s rooms, or customizable configurations.
                     Ideal for mid-sized weddings, corporate events, and community gatherings.
@@ -576,7 +576,7 @@ export default function HomePage() {
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
                     4-Station Trailer
                   </h3>
-                  <p className="mt-4 text-charcoal/80 leading-relaxed">
+                  <p className="mt-4 text-base md:text-lg text-charcoal/80 leading-relaxed">
                     Our larger 4-station trailer features two women&apos;s rooms and two men&apos;s rooms, 
                     providing ample capacity for larger events. Each station includes private stalls, 
                     modern vanities with succulent artwork, and full climate control.

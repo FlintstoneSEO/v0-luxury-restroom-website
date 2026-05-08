@@ -32,7 +32,7 @@ export function FAQSection({ faqs, className }: FAQSectionProps) {
           <AccordionTrigger className="text-left text-navy hover:text-navy/80 hover:no-underline py-5">
             <span className="font-medium pr-4">{faq.question}</span>
           </AccordionTrigger>
-          <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
+          <AccordionContent className="text-base md:text-lg text-muted-foreground pb-5 leading-relaxed">
             {faq.answer}
           </AccordionContent>
         </AccordionItem>

@@ -81,7 +81,7 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
     <div className='container mx-auto px-4 lg:px-8 text-center max-w-4xl'>
       <p className='text-gold uppercase tracking-[0.2em] text-xs mb-4'>Service Area</p>
       <h1 className='text-4xl md:text-5xl font-serif font-semibold text-white'>Luxury Restroom Trailer Rentals in {data.city}, MI</h1>
-      <p className='mt-5 text-white/80 text-lg'>{data.intro} We also serve {data.nearby}.</p>
+      <p className='mt-5 text-base md:text-lg leading-relaxed text-white/80'>{data.intro} We also serve {data.nearby}.</p>
       <Link href='/request-quote' className='inline-block mt-7 bg-gold text-charcoal px-7 py-3 rounded-md font-medium'>Check Availability in {data.city}</Link>
     </div>
   </section>
@@ -89,14 +89,14 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
   <section className='bg-white py-12'>
     <div className='container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-6'>
       {[{ title: `Restroom Trailer Rentals for ${data.city} Events`, text: data.venueNote }, { title: 'Planning Delivery, Power, Water, and Placement', text: 'Before delivery, we confirm access paths, surface suitability, and utility planning so setup stays smooth and timeline-friendly.' }].map((card) => (
-        <div key={card.title} className='rounded-2xl border border-gold/20 bg-cream p-6 shadow-sm'><h2 className='text-2xl font-semibold text-navy mb-3'>{card.title}</h2><p className='text-charcoal'>{card.text}</p></div>
+        <div key={card.title} className='rounded-2xl border border-gold/20 bg-cream p-6 shadow-sm'><h2 className='text-2xl font-semibold text-navy mb-3'>{card.title}</h2><p className='text-base md:text-lg leading-relaxed text-charcoal'>{card.text}</p></div>
       ))}
     </div>
   </section>
 
   <section className='bg-cream py-12'>
     <div className='container mx-auto px-4 lg:px-8'>
-      <h2 className='text-2xl font-semibold text-navy mb-2'>Restroom Trailer Rentals for Weddings, Events, and Projects in {data.city}</h2><p className='text-charcoal mb-5'>Popular rental scenarios we support throughout {data.city}, MI and surrounding communities.</p>
+      <h2 className='text-2xl font-semibold text-navy mb-2'>Restroom Trailer Rentals for Weddings, Events, and Projects in {data.city}</h2><p className='text-base md:text-lg leading-relaxed text-charcoal mb-5'>Popular rental scenarios we support throughout {data.city}, MI and surrounding communities.</p>
       <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
         {data.useCases.map((useCase) => {
           const card = getUseCaseCard(useCase)
@@ -117,7 +117,7 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
           )
         })}
       </div>
-      <p className='mt-6 text-charcoal'>Coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p>
+      <p className='mt-6 text-base md:text-lg leading-relaxed text-charcoal'>Coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p>
     </div>
   </section>
 
@@ -125,7 +125,7 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
     <div className='container mx-auto px-4 lg:px-8'>
       <h2 className='text-2xl font-semibold text-navy mb-6'>FAQs for {data.city}, MI</h2>
       <div className='grid md:grid-cols-2 gap-4'>
-        {data.faqs.map((f) => <div key={f.q} className='rounded-xl border border-gold/20 bg-cream p-6'><h3 className='font-semibold text-navy'>{f.q}</h3><p className='mt-2 text-charcoal'>{f.a}</p></div>)}
+        {data.faqs.map((f) => <div key={f.q} className='rounded-xl border border-gold/20 bg-cream p-6'><h3 className='font-semibold text-navy'>{f.q}</h3><p className='mt-2 text-base md:text-lg leading-relaxed text-charcoal'>{f.a}</p></div>)}
       </div>
     </div>
   </section>
