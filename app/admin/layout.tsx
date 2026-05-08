@@ -66,7 +66,7 @@ export default function AdminLayout({
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
+              className="md:hidden p-2 hover:bg-[#f8f5f1] rounded-lg"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6 text-navy" />
@@ -81,14 +81,14 @@ export default function AdminLayout({
             <div className="md:hidden border-t border-gold/20 py-4 space-y-3">
               <Link
                 href="/admin"
-                className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-gray-50 rounded-lg transition-colors"
+                className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Dashboard
               </Link>
               <Link
                 href="/admin/settings"
-                className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-gray-50 rounded-lg transition-colors"
+                className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Settings

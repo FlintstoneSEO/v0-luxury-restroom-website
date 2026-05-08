@@ -27,12 +27,10 @@ export default async function AdminSettingsPage() {
   if (error) {
     console.error('Error fetching settings:', error);
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-red-800">Error Loading Settings</h2>
-            <p className="text-red-600 mt-2">Unable to load pricing settings. Please try again later.</p>
-          </div>
+      <div className="space-y-6">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-red-800">Error Loading Settings</h2>
+          <p className="text-red-600 mt-2">Unable to load pricing settings. Please try again later.</p>
         </div>
       </div>
     );
@@ -48,17 +46,15 @@ export default async function AdminSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-serif font-bold text-navy">Pricing Settings</h1>
-          <p className="text-muted-foreground mt-2">
-            Manage the pricing rules used for automatic quote calculations.
-          </p>
-        </div>
-
-        <PricingSettingsForm settings={settings || []} groupedSettings={groupedSettings} />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-4xl font-serif font-bold text-[#2d3a47] mb-2">Pricing Settings</h1>
+        <p className="text-muted-foreground">
+          Manage the pricing rules used for automatic quote calculations.
+        </p>
       </div>
+
+      <PricingSettingsForm settings={settings || []} groupedSettings={groupedSettings} />
     </div>
   );
 }

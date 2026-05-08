@@ -82,7 +82,7 @@ function AddressAutocomplete({
           onChange={handleChange}
           disabled={!ready}
           placeholder="Search for your event address..."
-          className={`w-full px-3 py-2 border rounded-md bg-background text-base md:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+          className={`w-full px-3 py-2 border rounded-md bg-background text-base md:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d3a47] disabled:cursor-not-allowed disabled:opacity-50 ${
             error ? "border-red-500" : "border-input"
           }`}
         />
@@ -122,7 +122,7 @@ export function RequestAvailabilityForm() {
           Request Received!
         </h3>
         {state.quoteNumber && (
-          <p className="text-amber-600 font-semibold mb-4">
+          <p className="text-[#2d3a47] font-semibold mb-4">
             Quote Number: {state.quoteNumber}
           </p>
         )}

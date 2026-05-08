@@ -9,10 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, ChevronRight, Calendar, Users, MapPin, DollarSign, Eye } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, Calendar, Users, MapPin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
@@ -72,12 +72,17 @@ export default function QuoteRequestsDashboard({
   source,
   error,
 }: QuoteRequestsDashboardProps) {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [eventTypeFilter, setEventTypeFilter] = useState('all');
   const [agreementFilter, setAgreementFilter] = useState('all');
   const [depositFilter, setDepositFilter] = useState('all');
   const [sortBy, setSortBy] = useState<SortBy>('newest');
+
+  const handleRowClick = (quoteId: string) => {
+    router.push(`/admin/quotes/${quoteId}`);
+  };
 
   // Summary card counts
   const summaryCounts = useMemo(() => {
@@ -269,156 +274,78 @@ export default function QuoteRequestsDashboard({
         </div>
       </div>
 
-      {/* Desktop Table */}
-      <div className="bg-white rounded-lg border border-[#ded2c4]/30 overflow-hidden hidden lg:block">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-[#2d3a47]/5 border-b border-[#ded2c4]/30">
-              <tr>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Status</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Customer</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Email</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Phone</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Event Date</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Event Type</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Location</th>
-                <th className="px-4 py-3 text-center font-semibold text-[#2d3a47]">Guests</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Agreement</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Deposit</th>
-                <th className="px-4 py-3 text-right font-semibold text-[#2d3a47]">Total</th>
-                <th className="px-4 py-3 text-left font-semibold text-[#2d3a47]">Created</th>
-                <th className="px-4 py-3 text-center font-semibold text-[#2d3a47]">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredQuotes.length === 0 ? (
-                <tr>
-                  <td colSpan={13} className="px-6 py-12 text-center text-muted-foreground">
-                    No quotes found matching your filters.
-                  </td>
-                </tr>
-              ) : (
-                filteredQuotes.map((quote) => {
-                  const statusColor = getStatusColor(quote.status);
-                  return (
-                    <tr
-                      key={quote.id}
-                      className="border-b border-[#ded2c4]/20 hover:bg-[#2d3a47]/[0.02] transition-colors"
-                    >
-                      <td className="px-4 py-3">
-                        <div
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusColor.bg} ${statusColor.text} ${statusColor.border}`}
-                        >
-                          {statusColor.icon}
-                          {formatStatus(quote.status)}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 font-medium text-[#2d3a47]">{quote.customer_name}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{quote.email}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{quote.phone}</td>
-                      <td className="px-4 py-3">{formatDate(quote.event_date)}</td>
-                      <td className="px-4 py-3">{quote.event_type}</td>
-                      <td className="px-4 py-3 text-muted-foreground max-w-[180px] truncate">
-                        {quote.event_address}, {quote.city}, {quote.state} {quote.zip_code}
-                      </td>
-                      <td className="px-4 py-3 text-center">{quote.guest_count}</td>
-                      <td className="px-4 py-3">
-                        <span className="text-xs px-2 py-1 rounded-full bg-[#ded2c4]/20 text-[#2d3a47] border border-[#ded2c4]/60">
-                          {formatStatus(quote.agreement_status)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="text-xs px-2 py-1 rounded-full bg-[#ded2c4]/20 text-[#2d3a47] border border-[#ded2c4]/60">
-                          {formatStatus(quote.deposit_status)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-[#2d3a47]">
-                        {formatCurrency(quote.total_price || 0)}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">
-                        {formatDate(quote.created_at)}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <Link href={`/admin/quotes/${quote.id}`}>
-                          <Button variant="outline" size="sm" className="gap-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
-                            <Eye className="w-4 h-4" />
-                            View
-                          </Button>
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+      {/* Card Gallery */}
+      {filteredQuotes.length === 0 ? (
+        <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-12 text-center text-muted-foreground">
+          No quotes found matching your filters.
         </div>
-      </div>
-
-      {/* Mobile Cards */}
-      <div className="lg:hidden space-y-4">
-        {filteredQuotes.length === 0 ? (
-          <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-8 text-center text-muted-foreground">
-            No quotes found matching your filters.
-          </div>
-        ) : (
-          filteredQuotes.map((quote) => {
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filteredQuotes.map((quote) => {
             const statusColor = getStatusColor(quote.status);
             return (
               <div
                 key={quote.id}
-                className="bg-white rounded-lg border border-[#ded2c4]/30 p-4 space-y-3"
+                onClick={() => handleRowClick(quote.id)}
+                className="bg-white rounded-lg border border-[#ded2c4]/30 cursor-pointer hover:border-[#2d3a47]/30 hover:shadow-md transition-all group overflow-hidden"
               >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-semibold text-[#2d3a47]">{quote.customer_name}</h3>
-                    <div
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mt-1 ${statusColor.bg} ${statusColor.text} ${statusColor.border}`}
-                    >
-                      {statusColor.icon}
-                      {formatStatus(quote.status)}
-                    </div>
+                {/* Card header */}
+                <div className="px-5 pt-5 pb-4 flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-[#2d3a47] text-base leading-tight truncate">{quote.customer_name}</p>
+                    <p className="text-sm text-muted-foreground truncate mt-0.5">{quote.email}</p>
                   </div>
-                  <Link href={`/admin/quotes/${quote.id}`}>
-                    <Button variant="outline" size="sm" className="gap-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
-                      <Eye className="w-4 h-4" />
-                      View
-                    </Button>
-                  </Link>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    {formatDate(quote.event_date)}
-                  </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Users className="w-4 h-4" />
-                    {quote.guest_count} guests
-                  </div>
-                  <div className="flex items-center gap-2 text-muted-foreground col-span-2">
-                    <MapPin className="w-4 h-4" />
-                    {quote.city}, {quote.state}
+                  <div
+                    className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusColor.bg} ${statusColor.text} ${statusColor.border}`}
+                  >
+                    {statusColor.icon}
+                    {formatStatus(quote.status)}
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-[#ded2c4]/20">
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Event: </span>
-                    <span className="font-medium">{quote.event_type}</span>
+                {/* Divider */}
+                <div className="border-t border-[#ded2c4]/20 mx-5" />
+
+                {/* Card body */}
+                <div className="px-5 py-4 space-y-2.5">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="w-4 h-4 shrink-0 text-[#2d3a47]/50" />
+                    <span className="font-medium text-[#2d3a47]">{formatDate(quote.event_date)}</span>
+                    <span className="text-[#ded2c4]">·</span>
+                    <span>{quote.event_type}</span>
                   </div>
-                  <div className="text-right">
-                    <div className="font-bold text-[#2d3a47]">{formatCurrency(quote.total_price || 0)}</div>
-                    <div className="text-xs text-muted-foreground">
-                      Deposit: {formatCurrency(quote.deposit_amount || 0)} ({formatStatus(quote.deposit_status)})
-                    </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <MapPin className="w-4 h-4 shrink-0 text-[#2d3a47]/50" />
+                    <span className="truncate">{quote.city}, {quote.state}</span>
                   </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Users className="w-4 h-4 shrink-0 text-[#2d3a47]/50" />
+                    <span>{quote.guest_count} guests</span>
+                    <span className="text-[#ded2c4]">·</span>
+                    <span>{quote.phone}</span>
+                  </div>
+                </div>
+
+                {/* Card footer */}
+                <div className="border-t border-[#ded2c4]/20 mx-5" />
+                <div className="px-5 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-[#ded2c4]/20 text-[#2d3a47] border border-[#ded2c4]/60">
+                      {formatStatus(quote.agreement_status)}
+                    </span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-[#ded2c4]/20 text-[#2d3a47] border border-[#ded2c4]/60">
+                      {formatStatus(quote.deposit_status)}
+                    </span>
+                  </div>
+                  <span className="font-bold text-[#2d3a47] text-base">
+                    {formatCurrency(quote.total_price || 0)}
+                  </span>
                 </div>
               </div>
             );
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
     </div>
   );
 }
