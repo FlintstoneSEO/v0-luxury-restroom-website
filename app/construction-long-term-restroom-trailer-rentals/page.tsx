@@ -223,7 +223,7 @@ export default function ConstructionLongTermRestroomTrailerRentalsPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-base md:text-[17px] text-muted-foreground leading-relaxed">
                       {solution.description}
                     </p>
                   </CardContent>
@@ -281,7 +281,7 @@ export default function ConstructionLongTermRestroomTrailerRentalsPage() {
                     {setupRequirements.map((req, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0" />
-                        <span className="text-white/80 text-sm">{req}</span>
+                        <span className="text-white/80 text-base">{req}</span>
                       </li>
                     ))}
                   </ul>
@@ -290,7 +290,7 @@ export default function ConstructionLongTermRestroomTrailerRentalsPage() {
                   <h3 className="text-lg font-semibold text-white mb-4">
                     Temporary Restroom During Outages
                   </h3>
-                  <p className="text-white/80 text-sm leading-relaxed mb-4">
+                  <p className="text-white/80 text-base leading-relaxed mb-4">
                     Restroom trailers can also support occupied facilities during remodels, 
                     plumbing work, or temporary outages — ideal for offices, schools, 
                     churches, and other sites that need continuity.

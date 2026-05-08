@@ -43,7 +43,7 @@ function DesktopNavItems({ items }: { items: typeof navigation }) {
         item.children ? (
           <DropdownMenu key={item.name}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors">
+              <button className="flex items-center gap-1 px-3 py-2 text-base font-medium text-charcoal hover:text-navy transition-colors">
                 {item.name}
                 <ChevronDown className="h-4 w-4" />
               </button>
@@ -62,7 +62,7 @@ function DesktopNavItems({ items }: { items: typeof navigation }) {
           <Link
             key={item.name}
             href={item.href}
-            className="px-3 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors"
+            className="px-3 py-2 text-base font-medium text-charcoal hover:text-navy transition-colors"
           >
             {item.name}
           </Link>

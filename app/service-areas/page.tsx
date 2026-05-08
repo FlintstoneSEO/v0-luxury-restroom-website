@@ -168,7 +168,7 @@ export default function ServiceAreasPage() {
                     <item.icon className="h-5 w-5 text-navy" />
                   </div>
                   <h3 className="mt-3 text-lg font-semibold text-navy">{item.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-2 text-base text-muted-foreground">
                     {item.description}
                   </p>
                 </div>

@@ -45,7 +45,7 @@ export function Footer() {
               height={92}
               className="h-20 w-auto mb-6 bg-transparent brightness-0 invert opacity-95"
             />
-            <p className="text-white/80 text-sm leading-relaxed mb-6">
+            <p className="text-white/80 text-base leading-relaxed mb-6">
               Luxury restroom trailer rentals for weddings, private parties, corporate events, 
               construction sites, and long-term needs throughout Lansing and Mid-Michigan.
             </p>
@@ -54,20 +54,20 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-gold mt-0.5 shrink-0" />
-                <span className="text-white/80 text-sm">Based in Lansing, MI</span>
+                <span className="text-white/80 text-base">Based in Lansing, MI</span>
               </div>
               <div className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-gold mt-0.5 shrink-0" />
                 <a 
                   href="mailto:info@signatureluxeevents.com" 
-                  className="text-white/80 text-sm hover:text-gold transition-colors"
+                  className="text-white/80 text-base hover:text-gold transition-colors"
                 >
                   info@signatureluxeevents.com
                 </a>
               </div>
               <div className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-gold mt-0.5 shrink-0" />
-                <div className="text-white/80 text-sm">
+                <div className="text-white/80 text-base">
                   <p>Mon - Fri: 9:00 am - 5:00 pm</p>
                   <p>Saturday: 8:00 am - 3:00 pm</p>
                   <p>Sunday: Closed</p>
@@ -84,7 +84,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link 
                     href={link.href}
-                    className="text-white/80 text-sm hover:text-gold transition-colors"
+                    className="text-white/80 text-base hover:text-gold transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -101,7 +101,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link 
                     href={link.href}
-                    className="text-white/80 text-sm hover:text-gold transition-colors"
+                    className="text-white/80 text-base hover:text-gold transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -110,7 +110,7 @@ export function Footer() {
               <li className="pt-4">
                 <Link 
                   href="/request-quote"
-                  className="inline-flex items-center gap-2 bg-gold text-charcoal px-4 py-2 rounded text-sm font-medium hover:bg-gold/90 transition-colors"
+                  className="inline-flex items-center gap-2 bg-gold text-charcoal px-4 py-2 rounded text-base font-medium hover:bg-gold/90 transition-colors"
                 >
                   Check Availability
                 </Link>
@@ -123,7 +123,7 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-6">Service Areas</h3>
             <ul className="grid grid-cols-2 gap-2">
               {serviceAreas.map((area) => (
-                <li key={area.name} className="text-white/80 text-sm">
+                <li key={area.name} className="text-white/80 text-base">
                   <Link href={area.href} className="hover:text-gold transition-colors">{area.name}, MI</Link>
                 </li>
               ))}
@@ -162,7 +162,7 @@ export function Footer() {
       {/* Service Area Statement */}
       <div className="border-t border-white/10">
         <div className="container mx-auto px-4 lg:px-8 py-6">
-          <p className="text-center text-white/60 text-sm max-w-3xl mx-auto">
+          <p className="text-center text-white/60 text-base max-w-3xl mx-auto">
             Providing luxury restroom trailer rentals throughout Lansing, East Lansing, Okemos, 
             Haslett, Grand Ledge, DeWitt, Holt, Mason, and surrounding Mid-Michigan communities.
           </p>

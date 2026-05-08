@@ -221,7 +221,7 @@ export default function WeddingRestroomTrailerRentalsPage() {
                   {venueTypes.map((venue, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      <span className="text-sm text-charcoal">{venue}</span>
+                      <span className="text-base text-charcoal">{venue}</span>
                     </div>
                   ))}
                 </div>

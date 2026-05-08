@@ -72,13 +72,13 @@ export default function RequestQuotePage() {
                       'Serving Lansing and Mid-Michigan',
                       'Weddings, events, construction, and temporary needs',
                       '2-station, 3-station, and 4-station options',
-                    ].map((item) => <li key={item} className='flex items-start gap-2'><CheckCircle className='h-5 w-5 text-navy mt-0.5 shrink-0' /><span className='text-sm text-charcoal'>{item}</span></li>)}
+                    ].map((item) => <li key={item} className='flex items-start gap-2'><CheckCircle className='h-5 w-5 text-navy mt-0.5 shrink-0' /><span className='text-base text-charcoal'>{item}</span></li>)}
                   </ul>
                 </div>
 
                 <div className='bg-white border border-gold/30 rounded-2xl p-6'>
                   <h3 className='text-lg font-semibold text-navy mb-2'>Prefer to Talk First?</h3>
-                  <p className='text-sm text-charcoal/80 mb-3'>If you prefer direct contact, visit our contact page and share your event date and location details so we can route your request quickly.</p>
+                  <p className='text-base text-charcoal/80 mb-3'>If you prefer direct contact, visit our contact page and share your event date and location details so we can route your request quickly.</p>
                   <Link href='/contact' className='text-navy font-medium hover:underline'>Visit the Contact Page</Link>
                 </div>
               </div>

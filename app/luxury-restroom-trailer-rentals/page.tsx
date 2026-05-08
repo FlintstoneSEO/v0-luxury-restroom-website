@@ -259,7 +259,7 @@ export default function LuxuryRestroomTrailerRentalsPage() {
                         <CardTitle className="text-xl text-navy">
                           {trailer.name}
                         </CardTitle>
-                        <p className="text-sm text-gold font-semibold">
+                        <p className="text-base text-gold font-semibold">
                           {trailer.capacity}
                         </p>
                       </div>
@@ -273,7 +273,7 @@ export default function LuxuryRestroomTrailerRentalsPage() {
                       {trailer.features.map((feature, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <CheckCircle className="h-5 w-5 text-navy mt-0.5 shrink-0" />
-                          <span className="text-sm text-charcoal">{feature}</span>
+                          <span className="text-base text-charcoal">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -428,7 +428,7 @@ export default function LuxuryRestroomTrailerRentalsPage() {
                   {serviceAreas.map((area, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-navy shrink-0" />
-                      <span className="text-sm text-charcoal">{area}</span>
+                      <span className="text-base text-charcoal">{area}</span>
                     </div>
                   ))}
                 </div>
@@ -458,7 +458,7 @@ export default function LuxuryRestroomTrailerRentalsPage() {
                   ].map((tip, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-navy mt-0.5 shrink-0" />
-                      <span className="text-sm text-charcoal leading-relaxed">{tip}</span>
+                      <span className="text-base text-charcoal leading-relaxed">{tip}</span>
                     </li>
                   ))}
                 </ul>
