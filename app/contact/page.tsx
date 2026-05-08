@@ -74,7 +74,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold text-navy">Location</h3>
                       <p className="text-muted-foreground">Lansing, MI</p>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="text-base md:text-lg text-muted-foreground mt-1 leading-relaxed">
                         Serving Mid-Michigan and communities within a 2-hour radius
                       </p>
                     </div>
@@ -101,7 +101,7 @@ export default function ContactPage() {
                   <h3 className="font-semibold text-navy mb-4">
                     Looking to book a restroom trailer?
                   </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
+                  <p className="text-muted-foreground text-base md:text-lg mb-4 leading-relaxed">
                     Use our availability form for the fastest response on quotes 
                     and reservations.
                   </p>
