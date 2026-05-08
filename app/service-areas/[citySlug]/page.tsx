@@ -111,7 +111,7 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
               </div>
               <div className='p-4'>
                 <p className='capitalize font-semibold text-navy'>{card.title}</p>
-                <p className='mt-1 text-sm leading-relaxed text-charcoal/85'>{card.description}</p>
+                <p className='mt-1 text-base md:text-[17px] leading-relaxed text-charcoal/85'>{card.description}</p>
               </div>
             </article>
           )
@@ -145,8 +145,8 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
             </div>
             <div className='p-4'>
               <p className='font-semibold text-navy'>{item.title}</p>
-              <p className='mt-1 text-sm leading-relaxed text-charcoal/85'>{item.description}</p>
-              <p className='mt-3 inline-flex items-center text-sm font-medium text-navy'>View page <ArrowRight className='ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5' /></p>
+              <p className='mt-1 text-base md:text-[17px] leading-relaxed text-charcoal/85'>{item.description}</p>
+              <p className='mt-3 inline-flex items-center text-base font-medium text-navy'>View page <ArrowRight className='ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5' /></p>
             </div>
           </Link>
         ))}

@@ -111,8 +111,8 @@ export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, se
                 </div>
                 <div className='p-4'>
                   <h3 className='font-semibold text-navy'>{item.title}</h3>
-                  <p className='mt-1 text-sm leading-relaxed text-charcoal/85'>{item.desc}</p>
-                  <p className='mt-3 inline-flex items-center text-sm font-medium text-navy'>
+                  <p className='mt-1 text-base md:text-[17px] leading-relaxed text-charcoal/85'>{item.desc}</p>
+                  <p className='mt-3 inline-flex items-center text-base font-medium text-navy'>
                     View page
                     <ArrowRight className='ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5' />
                   </p>

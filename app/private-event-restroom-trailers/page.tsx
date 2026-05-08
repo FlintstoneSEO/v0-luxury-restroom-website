@@ -215,7 +215,7 @@ export default function PrivateEventRestroomTrailersPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-base md:text-[17px] text-muted-foreground leading-relaxed">
                       {event.description}
                     </p>
                   </CardContent>
@@ -350,7 +350,7 @@ export default function PrivateEventRestroomTrailersPage() {
                   ].map((item, index) => (
                     <li key={index} className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-gold shrink-0" />
-                      <span className="text-white/80 text-sm">{item}</span>
+                      <span className="text-white/80 text-base">{item}</span>
                     </li>
                   ))}
                 </ul>

@@ -409,7 +409,7 @@ export default function HomePage() {
                 <div className="order-2 lg:order-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
                     <Users className="h-5 w-5 text-navy" />
-                    <span className="text-sm font-medium text-navy">Perfect for 50-100 guests</span>
+                    <span className="text-base font-medium text-navy">Perfect for 50-100 guests</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
                     2-Station Trailer
@@ -420,19 +420,19 @@ export default function HomePage() {
                     intimate weddings, small parties, and residential events.
                   </p>
                   <ul className="mt-6 grid grid-cols-2 gap-3">
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       1 Women&apos;s Room
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       1 Men&apos;s Room
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Climate Controlled
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Fresh Water System
                     </li>
@@ -452,7 +452,7 @@ export default function HomePage() {
                 <div className="order-2 lg:order-1">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
                     <Users className="h-5 w-5 text-navy" />
-                    <span className="text-sm font-medium text-navy">Perfect for 75-150 guests</span>
+                    <span className="text-base font-medium text-navy">Perfect for 75-150 guests</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
                     3-Station Trailer
@@ -463,19 +463,19 @@ export default function HomePage() {
                     Ideal for mid-sized weddings, corporate events, and community gatherings.
                   </p>
                   <ul className="mt-6 grid grid-cols-2 gap-3">
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       1 Women&apos;s Room
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       2 Men&apos;s Rooms
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Climate Controlled
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Premium Amenities
                     </li>
@@ -571,7 +571,7 @@ export default function HomePage() {
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
                     <Users className="h-5 w-5 text-navy" />
-                    <span className="text-sm font-medium text-navy">Perfect for 100-200+ guests</span>
+                    <span className="text-base font-medium text-navy">Perfect for 100-200+ guests</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
                     4-Station Trailer
@@ -582,19 +582,19 @@ export default function HomePage() {
                     modern vanities with succulent artwork, and full climate control.
                   </p>
                   <ul className="mt-6 grid grid-cols-2 gap-3">
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       2 Women&apos;s Rooms
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       2 Men&apos;s Rooms
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       Climate Controlled
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-charcoal">
+                    <li className="flex items-center gap-2 text-base text-charcoal">
                       <CheckCircle className="h-5 w-5 text-navy shrink-0" />
                       High Capacity Events
                     </li>
@@ -666,7 +666,7 @@ export default function HomePage() {
                   className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
                 >
                   <MapPin className="h-5 w-5 text-gold" />
-                  <span className="text-white text-sm">{area}, MI</span>
+                  <span className="text-white text-base">{area}, MI</span>
                 </div>
               ))}
             </div>

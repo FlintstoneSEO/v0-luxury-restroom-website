@@ -62,10 +62,10 @@ export function ServiceCard({
         <h3 className="text-xl font-serif font-semibold text-navy group-hover:text-navy/80 transition-colors">
           {title}
         </h3>
-        <p className="mt-2 text-muted-foreground text-sm leading-relaxed flex-1">
+        <p className="mt-2 text-muted-foreground text-base md:text-[17px] leading-relaxed flex-1">
           {description}
         </p>
-        <div className="mt-4 flex items-center gap-2 text-sm font-medium text-navy group-hover:gap-3 transition-all">
+        <div className="mt-4 flex items-center gap-2 text-base font-medium text-navy group-hover:gap-3 transition-all">
           Learn More
           <ArrowRight className="w-4 h-4" />
         </div>

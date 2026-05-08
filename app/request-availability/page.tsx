@@ -83,7 +83,7 @@ export default function RequestAvailabilityPage() {
                             <h4 className="font-medium text-white">
                               {step.title}
                             </h4>
-                            <p className="text-sm text-white/70 mt-1">
+                            <p className="text-base text-white/70 mt-1">
                               {step.description}
                             </p>
                           </div>
@@ -106,7 +106,7 @@ export default function RequestAvailabilityPage() {
                       ].map((item, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <CheckCircle className="h-5 w-5 text-navy mt-0.5 shrink-0" />
-                          <span className="text-sm text-charcoal">{item}</span>
+                          <span className="text-base text-charcoal">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -117,7 +117,7 @@ export default function RequestAvailabilityPage() {
                     <h3 className="text-lg font-semibold text-navy mb-2">
                       Prefer Email?
                     </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
+                    <p className="text-base text-muted-foreground mb-3">
                       You can also reach us directly at:
                     </p>
                     <a

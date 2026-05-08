@@ -181,7 +181,7 @@ export default function ConstructionLongTermPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-base md:text-[17px] text-muted-foreground leading-relaxed">
                       {solution.description}
                     </p>
                   </CardContent>
@@ -236,7 +236,7 @@ export default function ConstructionLongTermPage() {
                     {benefits.slice(0, 4).map((benefit, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0" />
-                        <span className="text-white/80 text-sm">{benefit}</span>
+                        <span className="text-white/80 text-base">{benefit}</span>
                       </li>
                     ))}
                   </ul>
@@ -249,7 +249,7 @@ export default function ConstructionLongTermPage() {
                     {setupRequirements.map((req, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-gold shrink-0" />
-                        <span className="text-white/80 text-sm">{req}</span>
+                        <span className="text-white/80 text-base">{req}</span>
                       </li>
                     ))}
                   </ul>

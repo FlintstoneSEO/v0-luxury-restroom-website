@@ -213,7 +213,7 @@ export default function OurRestroomsPage() {
                         <CardTitle className="text-xl text-navy">
                           {trailer.name}
                         </CardTitle>
-                        <p className="text-sm text-gold font-semibold">
+                        <p className="text-base text-gold font-semibold">
                           {trailer.capacity}
                         </p>
                       </div>
@@ -227,7 +227,7 @@ export default function OurRestroomsPage() {
                       {trailer.features.map((feature, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <CheckCircle className="h-5 w-5 text-navy mt-0.5 shrink-0" />
-                          <span className="text-sm text-charcoal">{feature}</span>
+                          <span className="text-base text-charcoal">{feature}</span>
                         </li>
                       ))}
                     </ul>

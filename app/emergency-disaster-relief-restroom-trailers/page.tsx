@@ -205,7 +205,7 @@ export default function EmergencyDisasterReliefRestroomTrailersPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-base md:text-[17px] text-muted-foreground leading-relaxed">
                       {app.description}
                     </p>
                   </CardContent>
