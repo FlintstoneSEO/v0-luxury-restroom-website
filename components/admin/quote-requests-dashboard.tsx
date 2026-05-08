@@ -237,7 +237,7 @@ export default function QuoteRequestsDashboard({
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {[
           { label: 'Pending Requests', value: summaryCounts.pending, icon: ClipboardList },
           { label: 'Under Review', value: summaryCounts.underReview, icon: SlidersHorizontal },
@@ -369,8 +369,8 @@ export default function QuoteRequestsDashboard({
           No quotes found matching your filters.
         </div>
       ) : (
-        <div className="overflow-x-auto pb-2">
-          <div className="grid grid-flow-col auto-cols-[minmax(320px,1fr)] gap-4 min-w-max">
+        <div className="w-full overflow-x-auto pb-2">
+          <div className="grid grid-flow-col auto-cols-[minmax(320px,340px)] gap-4 min-w-max">
             {[
               { key: 'new_requests' as const, label: 'New Requests' },
               { key: 'under_review' as const, label: 'Under Review' },
@@ -380,14 +380,14 @@ export default function QuoteRequestsDashboard({
               { key: 'deposit_paid' as const, label: 'Deposit Paid' },
               { key: 'booked' as const, label: 'Booked' },
             ].map((column) => (
-              <div key={column.key} className="bg-[#f8f4ee] border border-[#ded2c4]/50 rounded-xl p-3 space-y-3">
+              <div key={column.key} className="bg-[#f8f4ee] border border-[#ded2c4]/50 rounded-xl p-3 space-y-3 flex flex-col min-h-[68vh]">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-[#2d3a47]">{column.label}</h3>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-white border border-[#ded2c4]/60 text-[#2d3a47]">
                     {pipelineColumns[column.key].length}
                   </span>
                 </div>
-                <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+                <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1 flex-1">
                   {pipelineColumns[column.key].map((quote) => {
                     const statusColor = getStatusColor(quote.status);
                     const canSendQuote = isQuoteSendable(quote.status);
