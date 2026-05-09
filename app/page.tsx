@@ -22,6 +22,7 @@ import { ProcessSteps } from "@/components/process-steps"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
+import { HomeHero } from "@/components/home-hero"
 import { localBusinessJsonLd } from "@/lib/seo-schema"
 
 const services = [
@@ -163,70 +164,7 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(video) }} />
       <Header />
       <main>
-        {/* Full-Screen Hero with Background Image */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          {/* Background Image */}
-          <div className="absolute inset-0">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_57_05%20PM-andQKOFMNL27uuWQLGIkidESuYaaAs.png"
-              alt="Luxury restroom trailer at elegant outdoor wedding reception with string lights"
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-            {/* Semi-transparent overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-navy/50" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-navy/30" />
-          </div>
-
-          {/* Hero Content */}
-          <div className="relative z-10 container mx-auto px-4 lg:px-8 py-32">
-            <div className="max-w-3xl">
-              <span className="inline-block px-4 py-1.5 bg-gold/20 backdrop-blur-sm border border-gold/30 rounded-full text-sm font-medium text-gold mb-6">
-                Luxury Restroom Trailer Rentals
-              </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-white leading-tight text-balance">
-                Luxury Restroom Trailer Rentals in Lansing, MI
-              </h1>
-              <p className="mt-6 text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl text-pretty">
-                Clean, modern, climate-controlled restroom trailers for weddings, private parties, 
-                corporate events, construction sites, and more throughout Lansing and Mid-Michigan.
-              </p>
-              
-              {/* CTA Buttons */}
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="bg-gold hover:bg-gold/90 text-navy font-semibold px-8">
-                  <Link href="/request-quote">
-                    Check Availability
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button 
-                  asChild 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-white/40 bg-white/95 text-navy hover:bg-white hover:text-navy backdrop-blur-sm transition-colors"
-                >
-                  <Link href="/luxury-restroom-trailer-rentals">View Trailer Options</Link>
-                </Button>
-              </div>
-
-              {/* Trust Line */}
-              <p className="mt-8 flex items-center gap-2 text-white/70 text-sm">
-                <MapPin className="h-5 w-5 text-gold" />
-                Based in Lansing, MI. Serving Mid-Michigan within a 2-hour radius.
-              </p>
-            </div>
-          </div>
-
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center pt-2">
-              <div className="w-1.5 h-3 bg-gold rounded-full" />
-            </div>
-          </div>
-        </section>
+        <HomeHero />
 
         {/* Event Scenarios Showcase */}
         <section className="py-16 bg-white border-b border-cream">
