@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { ServicePageTemplate } from '@/components/service-page-template'
 
-const title = 'Festival & Community Event Restroom Trailer Rental in Michigan | Signature Luxe Events'
+const title = 'Festival Restroom Trailer Rentals Lansing MI | Signature Luxe Events'
 const description = 'Plan festival restroom trailer rental in Michigan with support for crowd flow, line reduction, multi-day sanitation, and community event coordination in Lansing and Mid-Michigan.'
 const canonical = 'https://www.signatureluxeevents.com/festival-community-event-restroom-trailers'
 export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical } }

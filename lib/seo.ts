@@ -15,6 +15,7 @@ export const finalRoutes = [
   '/request-quote',
   '/gallery',
   '/contact',
+  '/start-here',
 ] as const
 
 export const cityPages = [
