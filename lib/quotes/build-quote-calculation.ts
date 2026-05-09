@@ -104,7 +104,7 @@ async function calculateDrivingDistanceMiles(destinationAddress: string): Promis
     return {
       distanceMiles: DEFAULT_FALLBACK_DISTANCE_MILES,
       status: 'fallback',
-      message: 'Google distance calculation failed or API key missing. Verify travel fee manually.',
+      message: 'Missing GOOGLE_MAPS_API_KEY. Using fallback distance; verify travel fee manually.',
     }
   }
 
@@ -126,12 +126,28 @@ async function calculateDrivingDistanceMiles(destinationAddress: string): Promis
 
     const body = await response.json() as {
       status?: string
+      error_message?: string
       rows?: Array<{ elements?: Array<{ status?: string; distance?: { value?: number } }> }>
     }
 
     const element = body.rows?.[0]?.elements?.[0]
-    if (body.status !== 'OK' || !element || element.status !== 'OK' || typeof element.distance?.value !== 'number') {
-      throw new Error('Distance Matrix response malformed')
+
+    console.log('[quote-request] Distance Matrix response', {
+      status: body.status ?? null,
+      error_message: body.error_message ?? null,
+      element_status: element?.status ?? null,
+    })
+
+    if (body.status === 'REQUEST_DENIED') {
+      throw new Error(`REQUEST_DENIED: ${body.error_message ?? 'Unknown Google API denial'}`)
+    }
+
+    if (body.status !== 'OK') {
+      throw new Error(`Google API status ${body.status ?? 'unknown'}`)
+    }
+
+    if (!element || element.status !== 'OK' || typeof element.distance?.value !== 'number') {
+      throw new Error(`Distance element status ${element?.status ?? 'unknown'}`)
     }
 
     const miles = Number((element.distance.value / 1609.344).toFixed(1))
@@ -141,7 +157,7 @@ async function calculateDrivingDistanceMiles(destinationAddress: string): Promis
     return {
       distanceMiles: DEFAULT_FALLBACK_DISTANCE_MILES,
       status: 'fallback',
-      message: 'Google distance calculation failed or API key missing. Verify travel fee manually.',
+      message: 'Google Distance Matrix failed (API key, billing, or API enablement issue). Using fallback distance; verify travel fee manually.',
     }
   }
 }

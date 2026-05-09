@@ -15,13 +15,11 @@ const SENDABLE_STATUSES = [
   'quote_sent', // Allow re-sending
 ];
 
+function shouldExposeApprovalLink() {
+  return process.env.NODE_ENV !== 'production' || process.env.VERCEL_ENV === 'preview';
+}
+
 function getAppUrl(request: Request) {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
-  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
-
-  const vercelUrl = process.env.VERCEL_URL;
-  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, '');
-
   const origin = request.headers.get('origin');
   if (origin) return origin.replace(/\/$/, '');
 
@@ -229,7 +227,11 @@ export async function POST(
       note: 'Quote email sent to customer',
     });
 
-    return NextResponse.json({ ok: true, message: 'Quote email sent successfully' });
+    return NextResponse.json({
+      ok: true,
+      message: 'Quote email sent successfully',
+      ...(shouldExposeApprovalLink() ? { approvalLink } : {}),
+    });
   } catch (error) {
     console.error('[send-quote] Error:', error);
     return NextResponse.json(

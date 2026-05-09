@@ -99,7 +99,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
 
   const [saving, setSaving] = useState(false);
   const [sendingQuote, setSendingQuote] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string; approvalLink?: string } | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     title: string;
@@ -175,7 +175,11 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       const body = await res.json();
       if (!res.ok) throw new Error(body.message || 'Failed to send quote email');
 
-      setMessage({ type: 'success', text: 'Quote email sent successfully.' });
+      setMessage({
+        type: 'success',
+        text: 'Quote email sent successfully.',
+        approvalLink: body.approvalLink,
+      });
       setForm(prev => ({ ...prev, status: 'quote_sent' }));
       router.refresh();
     } catch (error) {
@@ -273,9 +277,24 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           ) : (
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           )}
-          <p className={message.type === 'success' ? 'text-[#2d3a47]' : 'text-red-700'}>
-            {message.text}
-          </p>
+          <div>
+            <p className={message.type === 'success' ? 'text-[#2d3a47]' : 'text-red-700'}>
+              {message.text}
+            </p>
+            {message.approvalLink ? (
+              <p className="mt-2 text-sm">
+                <span className="font-medium text-[#2d3a47]">Test approval link:</span>{' '}
+                <a
+                  href={message.approvalLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline break-all text-[#2d3a47]"
+                >
+                  {message.approvalLink}
+                </a>
+              </p>
+            ) : null}
+          </div>
         </div>
       )}
 

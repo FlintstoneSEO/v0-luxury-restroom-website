@@ -17,9 +17,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname === '/admin/login') {
-    const setupError = getSupabaseSetupError();
+  const setupError = getSupabaseSetupError();
 
+  if (pathname === '/admin/login') {
     if (!setupError) {
       return NextResponse.next();
     }
@@ -29,22 +29,10 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  const setupError = getSupabaseSetupError();
   if (setupError) {
-    if (process.env.NODE_ENV === 'production') {
-      const loginUrl = new URL('/admin/login', request.url);
-      loginUrl.searchParams.set('setup', 'supabase_env_missing');
-      return NextResponse.redirect(loginUrl);
-    }
-
-    return NextResponse.json(
-      {
-        ok: false,
-        error: 'Admin setup incomplete',
-        message: setupError,
-      },
-      { status: 503 },
-    );
+    const loginUrl = new URL('/admin/login', request.url);
+    loginUrl.searchParams.set('error', 'setup_error');
+    return NextResponse.redirect(loginUrl);
   }
 
   let supabaseResponse = NextResponse.next({ request });
@@ -58,7 +46,9 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options));
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
         },
       },
     },
@@ -68,12 +58,22 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
+  if (!user?.email) {
+    const loginUrl = new URL('/admin/login', request.url);
+    loginUrl.searchParams.set('error', 'auth_required');
+    return NextResponse.redirect(loginUrl);
   }
 
-  if (user.user_metadata?.is_admin !== true) {
-    return NextResponse.redirect(new URL('/', request.url));
+  const { data: adminUser, error: adminLookupError } = await supabase
+    .from('admin_users')
+    .select('email')
+    .eq('email', user.email.toLowerCase())
+    .maybeSingle();
+
+  if (adminLookupError || !adminUser) {
+    const loginUrl = new URL('/admin/login', request.url);
+    loginUrl.searchParams.set('error', 'access_denied');
+    return NextResponse.redirect(loginUrl);
   }
 
   return supabaseResponse;
