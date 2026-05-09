@@ -12,8 +12,9 @@ export function generateStaticParams() {
   return resources.map((resource) => ({ slug: resource.slug }))
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const resource = resourcesBySlug[params.slug]
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const resource = resourcesBySlug[slug]
   if (!resource) return {}
 
   return {
@@ -33,8 +34,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   }
 }
 
-export default function ResourceArticlePage({ params }: { params: { slug: string } }) {
-  const resource = resourcesBySlug[params.slug]
+export default async function ResourceArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const resource = resourcesBySlug[slug]
   if (!resource) notFound()
 
   const articleSchema = {
