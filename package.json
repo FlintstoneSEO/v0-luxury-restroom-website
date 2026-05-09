@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seo:audit-links": "node --experimental-strip-types scripts/audit-internal-links.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
