@@ -15,8 +15,27 @@ const SENDABLE_STATUSES = [
   'quote_sent', // Allow re-sending
 ];
 
+function getAppUrl(request: Request) {
+  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
+  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
+
+  const vercelUrl = process.env.VERCEL_URL;
+  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, '');
+
+  const origin = request.headers.get('origin');
+  if (origin) return origin.replace(/\/$/, '');
+
+  const host = request.headers.get('host');
+  if (host) {
+    const proto = request.headers.get('x-forwarded-proto') || 'https';
+    return `${proto}://${host}`.replace(/\/$/, '');
+  }
+
+  return '';
+}
+
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ quoteId: string }> }
 ) {
   const { quoteId } = await params;
@@ -24,10 +43,10 @@ export async function POST(
   try {
     const supabase = createAdminClient();
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
+    const appUrl = getAppUrl(request);
     if (!appUrl) {
       return NextResponse.json(
-        { ok: false, message: 'Missing email configuration: NEXT_PUBLIC_APP_URL is required for approval links.' },
+        { ok: false, message: 'Unable to determine app URL for approval links. Set NEXT_PUBLIC_APP_URL in the deployment environment.' },
         { status: 500 }
       );
     }
