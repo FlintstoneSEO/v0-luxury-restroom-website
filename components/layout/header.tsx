@@ -32,6 +32,7 @@ const navigation = [
   { name: "Service Areas", href: "/service-areas" },
   { name: "Gallery", href: "/gallery" },
   { name: "FAQ", href: "/faq" },
+  { name: "Resources", href: "/resources" },
   { name: "Contact", href: "/contact" },
 ]
 
