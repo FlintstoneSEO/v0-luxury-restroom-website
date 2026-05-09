@@ -1,7 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
@@ -18,16 +17,16 @@ const ERROR_MESSAGES: Record<string, string> = {
 export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
+  const [queryError, setQueryError] = useState<string | null>(null);
+  const [setupWarning, setSetupWarning] = useState(false);
   const supabase = createClient();
 
-  const queryError = useMemo(() => {
-    const code = searchParams.get('error');
-    if (!code) return null;
-    return ERROR_MESSAGES[code] ?? 'Unable to sign in. Please try again.';
-  }, [searchParams]);
-
-  const setupWarning = searchParams.get('setup') === 'supabase_env_missing';
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('error');
+    setQueryError(code ? (ERROR_MESSAGES[code] ?? 'Unable to sign in. Please try again.') : null);
+    setSetupWarning(params.get('setup') === 'supabase_env_missing');
+  }, []);
 
   const handleGoogleLogin = async () => {
     setError(null);
