@@ -22,7 +22,7 @@ import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Start Here | Signature Luxe Events & Amenities",
+  title: "Restroom Trailer Rental Planning Guide Lansing MI | Signature Luxe Events & Amenities",
   description:
     "Learn what information we need to provide you with a custom restroom trailer rental quote for your event in Lansing and Mid-Michigan.",
 }

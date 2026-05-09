@@ -23,6 +23,8 @@ const navigation = [
     children: [
       { name: "Weddings", href: "/wedding-restroom-trailer-rentals" },
       { name: "Private Events", href: "/private-event-restroom-trailers" },
+      { name: "Corporate Events", href: "/corporate-event-restroom-trailers" },
+      { name: "Festivals & Community Events", href: "/festival-community-event-restroom-trailers" },
       { name: "Construction / Long-Term", href: "/construction-long-term-restroom-trailer-rentals" },
       { name: "Emergency / Disaster Relief", href: "/emergency-disaster-relief-restroom-trailers" },
     ],
