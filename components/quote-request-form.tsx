@@ -178,6 +178,7 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
           </Field>
           <Field>
             <FieldLabel htmlFor="event_type">Event Type *</FieldLabel>
+            <input type="hidden" name="event_type" value={eventType} />
             <Select name="event_type" required value={eventType} onValueChange={setEventType}>
               <SelectTrigger>
                 <SelectValue placeholder="Select event type" />
@@ -347,6 +348,7 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
             <FieldLabel htmlFor="has_power">
               Is power available within 100 feet? *
             </FieldLabel>
+            <input type="hidden" name="has_power" value={hasPower} />
             <Select 
               name="has_power" 
               required 
@@ -366,6 +368,7 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
             <FieldLabel htmlFor="has_water">
               Is water available within 100 feet? *
             </FieldLabel>
+            <input type="hidden" name="has_water" value={hasWater} />
             <Select 
               name="has_water" 
               required 

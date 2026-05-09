@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
@@ -43,6 +44,7 @@ const settingLabels: Record<string, string> = {
 };
 
 export default function PricingSettingsForm({ settings, groupedSettings }: PricingSettingsFormProps) {
+  const router = useRouter();
   const [formValues, setFormValues] = useState<Record<string, number>>(
     settings.reduce((acc, setting) => {
       acc[setting.setting_key] = setting.setting_value;
@@ -65,10 +67,20 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
     setSaveMessage(null);
 
     try {
-      // In a real implementation, this would call a server action to update the settings
-      // For now, we'll show a success message
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[admin/pricing-settings-form] payload before save', formValues);
+      }
+      const res = await fetch('/api/admin/pricing', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          settings: formValues,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to save settings');
       setSaveMessage({ type: 'success', text: 'Settings saved successfully!' });
+      router.refresh();
     } catch {
       setSaveMessage({ type: 'error', text: 'Failed to save settings. Please try again.' });
     } finally {

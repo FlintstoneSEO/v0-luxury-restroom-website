@@ -5,6 +5,13 @@ import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation';
 
 export async function POST(req: Request) {
   const body = await req.json();
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[api/quote-requests] request body received', {
+      ...body,
+      email: body?.email ? '[redacted]' : body?.email,
+      phone: body?.phone ? '[redacted]' : body?.phone,
+    });
+  }
 
   const parsed = quoteRequestCreateSchema.safeParse(body);
   if (!parsed.success) {
@@ -53,7 +60,10 @@ export async function POST(req: Request) {
     };
 
 
-    const { error } = await supabase.from('quote_requests').insert(payload);
+    const { error, data } = await supabase.from('quote_requests').insert(payload).select('id, quote_number');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[api/quote-requests] insert response', { error, inserted: data?.length ?? 0 });
+    }
     if (error) return NextResponse.json({ ok: false, message: error.message }, { status: 400 });
     return NextResponse.json({ ok: true });
   } catch (error) {

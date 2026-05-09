@@ -41,6 +41,13 @@ export async function submitQuoteRequest(
     has_water: formData.get("has_water") === "true",
     additional_notes: formData.get("additional_notes") as string || undefined,
   }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[quote-request] payload before submit', {
+      ...data,
+      email: data.email ? '[redacted]' : data.email,
+      phone: data.phone ? '[redacted]' : data.phone,
+    })
+  }
 
   // Validation
   const errors = validateQuoteFormData(data)
@@ -113,6 +120,14 @@ export async function submitQuoteRequest(
       })
       .select('id, quote_number')
       .single()
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[quote-request] database insert response', {
+        hasError: !!error,
+        errorCode: error?.code,
+        insertedQuoteId: insertedQuote?.id,
+        quoteNumber: insertedQuote?.quote_number,
+      })
+    }
 
     if (error) {
       console.error("[quote-request] insert error", {
