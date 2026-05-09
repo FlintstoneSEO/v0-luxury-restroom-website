@@ -20,6 +20,18 @@ const groupedResources = resources.reduce<Record<string, typeof resources>>((acc
   return acc
 }, {})
 
+
+const featuredResourceSlugs = [
+  'restroom-trailer-vs-porta-potty',
+  'how-many-restroom-trailers-for-wedding',
+  'restroom-trailer-setup-requirements',
+  'restroom-trailer-rental-cost-michigan',
+]
+
+const featuredResources = featuredResourceSlugs
+  .map((slug) => resources.find((resource) => resource.slug === slug))
+  .filter((resource): resource is (typeof resources)[number] => Boolean(resource))
+
 const serviceLinks = [
   { href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailer Rentals' },
   { href: '/festival-community-event-restroom-trailers', label: 'Festival & Community Event Restrooms' },
@@ -44,6 +56,23 @@ export default function ResourcesPage() {
 
         <section className="py-14 md:py-20">
           <div className="container mx-auto px-4 lg:px-8 space-y-12">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-serif font-semibold text-navy">Featured Guides</h2>
+              <p className="mt-2 max-w-3xl text-muted-foreground">Start with our most-read planning guides for restroom trailer capacity, setup, and budgeting in Mid-Michigan.</p>
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                {featuredResources.map((resource) => (
+                  <article key={resource.slug} className="rounded-2xl bg-white p-6 shadow-sm border border-gold/40">
+                    <p className="text-sm text-muted-foreground">Published {resource.publishDate}</p>
+                    <h3 className="mt-2 text-xl font-semibold text-navy">{resource.title}</h3>
+                    <p className="mt-3 text-muted-foreground">{resource.excerpt}</p>
+                    <Link className="mt-4 inline-block text-navy font-semibold hover:text-navy/80" href={`/resources/${resource.slug}`}>
+                      Read featured guide →
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            </div>
+
             {Object.entries(groupedResources).map(([category, categoryResources]) => (
               <div key={category}>
                 <h2 className="text-2xl md:text-3xl font-serif font-semibold text-navy">{category}</h2>
