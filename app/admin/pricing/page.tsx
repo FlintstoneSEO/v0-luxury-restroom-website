@@ -9,11 +9,10 @@ export const metadata = {
 
 export default async function AdminPricingPage() {
   const supabase = await createClient();
-  const { data } = await supabase.from('pricing_settings').select('setting_key, setting_value, setting_value_text');
+  const { data } = await supabase.from('pricing_settings').select('setting_key, setting_value');
 
   const fromDb = Object.fromEntries((data ?? []).filter((row) => row.setting_key !== 'optional_addons_json').map((row) => [row.setting_key, Number(row.setting_value)]));
-  const addons = (data ?? []).find((row) => row.setting_key === 'optional_addons_json')?.setting_value_text ?? '[]';
   const merged = { ...DEFAULT_PRICING, ...fromDb };
 
-  return <PricingSettingsEditor initialSettings={merged} initialAddons={addons} />;
+  return <PricingSettingsEditor initialSettings={merged} initialAddons="[]" />;
 }

@@ -3,9 +3,9 @@ import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function PUT(request: Request) {
   try {
-    const { settings, optional_addons_json } = await request.json();
+    const { settings } = await request.json();
     if (process.env.NODE_ENV !== 'production') {
-      console.log('[api/admin/pricing] request body', { settings, optional_addons_json });
+      console.log('[api/admin/pricing] pricing settings payload before upsert', { settings });
     }
     if (!settings || typeof settings !== 'object') {
       return NextResponse.json({ ok: false, error: 'Invalid settings payload.' }, { status: 400 });
@@ -13,12 +13,15 @@ export async function PUT(request: Request) {
 
     const supabase = createAdminClient();
 
-    const numericEntries: Array<{ setting_key: string; setting_value: number | null; setting_value_text: string | null }> = Object.entries(settings as Record<string, number>)
-      .map(([setting_key, setting_value]) => ({
-        setting_key,
-        setting_value: Number(setting_value),
-        setting_value_text: null,
-      }))
+    const numericEntries: Array<{ setting_key: string; setting_value: number; description: string }> = Object.entries(settings as Record<string, number>)
+      .map(([setting_key, rawValue]) => {
+        const setting_value = Number(rawValue);
+        return {
+          setting_key,
+          setting_value,
+          description: `Pricing setting for ${setting_key.replaceAll('_', ' ')}`,
+        };
+      })
       .filter((entry) => Number.isFinite(entry.setting_value));
 
     if (!numericEntries.length) {
@@ -26,15 +29,7 @@ export async function PUT(request: Request) {
     }
 
     const payload = [...numericEntries];
-    if (typeof optional_addons_json === 'string') {
-      payload.push({
-        setting_key: 'optional_addons_json',
-        setting_value: null,
-        setting_value_text: optional_addons_json,
-      });
-    }
-
-    const { error, data } = await supabase.from('pricing_settings').upsert(payload, { onConflict: 'setting_key' }).select('setting_key, setting_value, setting_value_text');
+    const { error, data } = await supabase.from('pricing_settings').upsert(payload, { onConflict: 'setting_key' }).select('setting_key, setting_value, description');
     if (process.env.NODE_ENV !== 'production') {
       console.log('[api/admin/pricing] database response', { error, updated: data?.length ?? 0 });
     }

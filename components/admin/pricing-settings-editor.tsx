@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,6 +25,7 @@ const FIELDS: Array<{ key: string; label: string; help?: string }> = [
 ];
 
 export default function PricingSettingsEditor({ initialSettings, initialAddons }: { initialSettings: Record<string, number>; initialAddons: string }) {
+  const router = useRouter();
   const [values, setValues] = useState<Record<string, number>>(initialSettings);
   const [addons, setAddons] = useState<string>(initialAddons || '[]');
   const [message, setMessage] = useState('');
@@ -39,10 +41,11 @@ export default function PricingSettingsEditor({ initialSettings, initialAddons }
       const res = await fetch('/api/admin/pricing', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ settings: values, optional_addons_json: addons }),
+        body: JSON.stringify({ settings: values }),
       });
       if (!res.ok) throw new Error('Unable to save settings');
       setMessage('Pricing settings saved.');
+      router.refresh();
     } catch {
       setMessage('Failed to save settings. Ensure optional add-ons JSON is valid.');
     } finally {

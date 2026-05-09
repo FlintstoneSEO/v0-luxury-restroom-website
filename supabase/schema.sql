@@ -125,7 +125,6 @@ create table if not exists pricing_settings (
   id uuid primary key default gen_random_uuid(),
   setting_key text unique not null,
   setting_value numeric,
-  setting_value_text text,
   description text,
   updated_at timestamptz default now()
 );

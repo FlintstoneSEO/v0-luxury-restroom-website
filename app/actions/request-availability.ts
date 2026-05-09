@@ -137,12 +137,27 @@ export async function submitRequestAvailability(
       calculated_breakdown: priceBreakdown,
     };
 
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[request-availability] quote request payload before insert', {
+        ...quotePayload,
+        email: quotePayload.email ? '[redacted]' : quotePayload.email,
+        phone: quotePayload.phone ? '[redacted]' : quotePayload.phone,
+      });
+    }
+
     // Create the quote first. This table is the source of truth used by the quote flow.
     const { data: insertedQuote, error: quoteError } = await supabase
       .from('quote_requests')
       .insert([quotePayload])
       .select('quote_number')
       .single();
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[request-availability] Supabase insert response/error', {
+        quoteError,
+        quoteNumber: insertedQuote?.quote_number ?? null,
+      });
+    }
 
     if (quoteError) {
       console.error('[v0] Quote creation error:', quoteError);
