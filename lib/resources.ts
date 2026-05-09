@@ -50,13 +50,13 @@ export const resources: ResourceArticle[] = [
     primaryKeyword: 'restroom trailer vs porta potty',
     secondaryKeywords: ['luxury restroom trailer Michigan', 'event restroom planning Lansing'],
     relatedServicePages: [
-      { href: '/special-events', label: 'Special Event Restroom Trailer Rentals' },
+      { href: '/private-event-restroom-trailers', label: 'Special Event Restroom Trailer Rentals' },
       { href: '/luxury-restroom-trailer-features', label: 'Luxury Restroom Trailer Features' },
       { href: '/start-here', label: 'Start Here: Planning Process' },
       { href: '/request-quote', label: 'Request a Quote' },
     ],
     relatedCityPages: [
-      { href: '/lansing-mi', label: 'Lansing, MI' },
+      { href: '/service-areas/lansing-mi', label: 'Lansing, MI' },
       { href: '/service-areas/east-lansing-mi', label: 'East Lansing Service Area' },
     ],
     relatedResources: [
@@ -72,7 +72,7 @@ export const resources: ResourceArticle[] = [
     sections: [
       { heading: 'Guest Experience and Event Type', content: ['For weddings and high-touch private events in Lansing and across Mid-Michigan, restroom trailers often align better with the overall guest experience. Climate control, interior finishes, sinks, mirrors, and lighting support a cleaner, more comfortable environment than standard units.', 'For short-duration events where comfort expectations are lower, porta potties can be a practical option. The right decision comes down to how you want guests to feel and how important presentation is for your event brand.'] },
       { heading: 'Logistics, Access, and Site Conditions', content: ['A trailer needs a stable placement area, vehicle access for delivery, and utility planning. Signature Luxe Events & Amenities helps hosts confirm these details in advance so setup does not compete with vendor load-in or guest arrival timelines.', 'If your site is remote or highly constrained, you may consider a hybrid plan: trailer support for primary guest areas and supplementary portable units in lower-traffic zones.'] },
-      { heading: 'Budget Planning Without Guesswork', content: ['Comparing options should focus on total event requirements, not just a line-item rate. Final pricing and equipment recommendations depend on guest count, event duration, location, trailer size, and setup needs.', 'Use /start-here to map your event details, then request a tailored plan through /request-quote so you can compare options with real logistics in mind.'] },
+      { heading: 'Budget Planning Without Guesswork', content: ['Comparing options should focus on total event requirements, not just a line-item rate. Final pricing and equipment recommendations depend on guest count, event duration, location, trailer size, and setup needs.', 'Use the Start Here planning guide to map your event details, then submit the quote request form for a tailored plan you can compare with real logistics in mind.'] },
     ],
   },
   {
@@ -84,8 +84,8 @@ export const resources: ResourceArticle[] = [
     category: 'Wedding Planning',
     publishDate: '2026-05-09', updatedDate: '2026-05-09', heroImage: '/images/Wedding Trailer.png', heroImageAlt: 'Wedding restroom trailer at an outdoor Mid-Michigan reception',
     primaryKeyword: 'how many restroom trailers for wedding', secondaryKeywords: ['wedding restroom trailer planning', 'outdoor wedding restroom count'],
-    relatedServicePages: [{ href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailer Rentals' }, { href: '/weddings', label: 'Wedding Service Overview' }, { href: '/start-here', label: 'Start Here: Wedding Planning Steps' }, { href: '/request-quote', label: 'Request a Quote' }],
-    relatedCityPages: [{ href: '/lansing-mi', label: 'Lansing Weddings' }, { href: '/service-areas/okemos-mi', label: 'Okemos Service Area' }],
+    relatedServicePages: [{ href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailer Rentals' }, { href: '/wedding-restroom-trailer-rentals', label: 'Wedding Service Overview' }, { href: '/start-here', label: 'Start Here: Wedding Planning Steps' }, { href: '/request-quote', label: 'Request a Quote' }],
+    relatedCityPages: [{ href: '/service-areas/lansing-mi', label: 'Lansing Weddings' }, { href: '/service-areas/okemos-mi', label: 'Okemos Service Area' }],
     relatedResources: [{ href: '/resources/outdoor-wedding-restroom-planning-michigan', label: 'Outdoor Wedding Restroom Planning Guide for Michigan Couples' }, { href: '/resources/restroom-trailer-setup-requirements', label: 'Restroom Trailer Setup Requirements' }],
     faqs: [
       { question: 'What factors matter most for wedding restroom sizing?', answer: 'Guest count, reception length, alcohol service, and how far restrooms are from key gathering areas all affect demand.' },
@@ -97,12 +97,12 @@ export const resources: ResourceArticle[] = [
     sections: [
       { heading: 'Build Your Estimate from Real Wedding Flow', content: ['Start with expected attendance, then map your timeline: ceremony, cocktail hour, dinner, dancing, and send-off. Usage increases during transition windows, not evenly across the event.', 'For many Mid-Michigan weddings, the key is minimizing lines during peak moments, not simply covering average use.'] },
       { heading: 'Consider Venue Layout and Guest Movement', content: ['If restrooms are far from the tent, barn, or dance floor, people cluster in shorter windows when they do walk over. Strategic placement can improve flow as much as additional capacity.', 'Signature Luxe Events & Amenities can help evaluate access routes and placement so restroom service supports—not disrupts—your reception experience.'] },
-      { heading: 'Get a Tailored Recommendation', content: ['There is no one-size answer. Recommended setup depends on guest count, event duration, location, trailer size, and setup needs.', 'Use /start-here to organize your details and submit /request-quote for a plan designed for your venue and guest profile.'] },
+      { heading: 'Get a Tailored Recommendation', content: ['There is no one-size answer. Recommended setup depends on guest count, event duration, location, trailer size, and setup needs.', 'Use the Start Here planning guide to organize your details, then submit the quote request form for a plan designed for your venue and guest profile.'] },
     ],
   },
   {
     slug: 'restroom-trailer-setup-requirements', title: 'Restroom Trailer Setup Requirements: Power, Water, and Placement', metaTitle: 'Restroom Trailer Setup Requirements | Power, Water, Placement', metaDescription: 'Learn the key setup requirements for restroom trailers in Lansing and Mid-Michigan, including power, water, placement, and delivery access.', excerpt: 'A practical setup checklist to prepare your event site for smooth restroom trailer delivery and operation.', category: 'Event Logistics', publishDate: '2026-05-09', updatedDate: '2026-05-09', heroImage: '/images/Special Event Trailer.png', heroImageAlt: 'Restroom trailer positioned with utility setup at an event site', primaryKeyword: 'restroom trailer setup requirements', secondaryKeywords: ['restroom trailer power requirements', 'event trailer placement checklist'],
-    relatedServicePages: [{ href: '/luxury-restroom-trailer-rentals', label: 'Luxury Restroom Trailer Rentals' }, { href: '/special-events', label: 'Event Logistics Support' }, { href: '/start-here', label: 'Start Here: Site Planning' }, { href: '/request-quote', label: 'Request a Quote' }],
+    relatedServicePages: [{ href: '/luxury-restroom-trailer-rentals', label: 'Luxury Restroom Trailer Rentals' }, { href: '/private-event-restroom-trailers', label: 'Event Logistics Support' }, { href: '/start-here', label: 'Start Here: Site Planning' }, { href: '/request-quote', label: 'Request a Quote' }],
     relatedCityPages: [{ href: '/service-areas/dewitt-mi', label: 'DeWitt Service Area' }, { href: '/service-areas/grand-ledge-mi', label: 'Grand Ledge Service Area' }],
     relatedResources: [{ href: '/resources/festival-restroom-planning-guide', label: 'Festival Restroom Planning Guide' }, { href: '/resources/construction-restroom-trailer-rental-guide', label: 'Construction Restroom Trailer Rental Guide' }],
     faqs: [
@@ -114,7 +114,7 @@ export const resources: ResourceArticle[] = [
     sections: [
       { heading: 'Power Planning', content: ['Confirm what power is available at your venue before finalizing equipment. This step prevents day-of delays and helps align trailer selection with site reality.', 'If your event is in a rural Mid-Michigan location, discuss backup options and cable routing early to protect both safety and aesthetics.'] },
       { heading: 'Water and Service Access', content: ['Water planning should include both source location and hose path so guest areas remain clean and unobstructed. Your logistics plan should also account for service access during the event window.', 'Signature Luxe Events & Amenities coordinates these details with hosts, planners, and venues to reduce surprises during install.'] },
-      { heading: 'Placement and Delivery Path', content: ['Choose a level, accessible placement area with room for entry/exit traffic and nighttime visibility. Avoid blocking emergency lanes, catering routes, or vendor staging zones.', 'Finalize access notes through /start-here and confirm your event-specific setup plan through /request-quote.'] },
+      { heading: 'Placement and Delivery Path', content: ['Choose a level, accessible placement area with room for entry/exit traffic and nighttime visibility. Avoid blocking emergency lanes, catering routes, or vendor staging zones.', 'Finalize access notes in the Start Here planning guide and confirm your event-specific setup plan through the quote request form.'] },
     ],
   },
   {
@@ -152,7 +152,7 @@ export const resources: ResourceArticle[] = [
     sections: [
       { heading: 'Plan Around Your Guest Journey', content: ['Think through the day from arrival to send-off. Restroom placement should support the points where guests naturally gather, especially cocktail and reception spaces.', 'For rural and estate venues in Mid-Michigan, convenience and visibility often determine whether lines stay manageable.'] },
       { heading: 'Coordinate Venue and Vendor Logistics Early', content: ['Outdoor weddings have tighter staging windows, so restroom setup should be scheduled alongside tenting, power distribution, and catering load-in.', 'Signature Luxe Events & Amenities works with your planner or venue team to align setup timing and protect the guest experience.'] },
-      { heading: 'Use a Michigan-Specific Planning Approach', content: ['Local conditions, travel distances, and venue infrastructure vary widely across Lansing and surrounding communities. Final recommendations depend on guest count, event duration, location, trailer size, and setup needs.', 'Start with /start-here and move to /request-quote for a customized wedding restroom plan.'] },
+      { heading: 'Use a Michigan-Specific Planning Approach', content: ['Local conditions, travel distances, and venue infrastructure vary widely across Lansing and surrounding communities. Final recommendations depend on guest count, event duration, location, trailer size, and setup needs.', 'Start with the Start Here planning guide, then move to the quote request form for a customized wedding restroom plan.'] },
     ],
   },
   {
@@ -164,8 +164,8 @@ export const resources: ResourceArticle[] = [
     category: 'Event Logistics',
     publishDate: '2026-05-09', updatedDate: '2026-05-09', heroImage: '/images/Special Event Trailer.png', heroImageAlt: 'Community festival restroom trailer setup in Michigan',
     primaryKeyword: 'festival restroom planning', secondaryKeywords: ['community event restroom guide', 'festival restroom trailer placement'],
-    relatedServicePages: [{ href: '/festival-community-event-restroom-trailers', label: 'Festival & Community Event Restroom Trailers' }, { href: '/special-events', label: 'Special Event Services' }, { href: '/start-here', label: 'Start Here: Event Planning' }, { href: '/request-quote', label: 'Request a Quote' }],
-    relatedCityPages: [{ href: '/lansing-mi', label: 'Lansing Service Area' }, { href: '/service-areas/east-lansing-mi', label: 'East Lansing Service Area' }],
+    relatedServicePages: [{ href: '/festival-community-event-restroom-trailers', label: 'Festival & Community Event Restroom Trailers' }, { href: '/private-event-restroom-trailers', label: 'Special Event Services' }, { href: '/start-here', label: 'Start Here: Event Planning' }, { href: '/request-quote', label: 'Request a Quote' }],
+    relatedCityPages: [{ href: '/service-areas/lansing-mi', label: 'Lansing Service Area' }, { href: '/service-areas/east-lansing-mi', label: 'East Lansing Service Area' }],
     relatedResources: [{ href: '/resources/restroom-trailer-setup-requirements', label: 'Restroom Trailer Setup Requirements' }, { href: '/resources/restroom-trailer-vs-porta-potty', label: 'Restroom Trailer vs Porta Potty' }],
     faqs: [
       { question: 'Where should trailers be placed at festivals?', answer: 'Prioritize high-traffic but non-congested areas near major pathways and gathering zones.' },
@@ -176,12 +176,12 @@ export const resources: ResourceArticle[] = [
     sections: [
       { heading: 'Map Crowd Patterns Before Choosing Locations', content: ['Use your site map and programming schedule to anticipate where people will cluster throughout the day.', 'Restroom placement should support both convenience and circulation so lines do not disrupt vendor, stage, or emergency access.'] },
       { heading: 'Align Operations Teams Early', content: ['Coordinate setup notes with operations leads, public safety contacts, and venue representatives before event week.', 'Signature Luxe Events & Amenities helps teams in Lansing and Mid-Michigan align placement and setup logistics with real-world event flow.'] },
-      { heading: 'Build a Scalable Plan', content: ['Community event requirements vary each year. Final recommendations depend on guest count, event duration, location, trailer size, and setup needs.', 'Use /start-here and /request-quote to build a practical, event-specific restroom strategy.'] },
+      { heading: 'Build a Scalable Plan', content: ['Community event requirements vary each year. Final recommendations depend on guest count, event duration, location, trailer size, and setup needs.', 'Use the Start Here planning guide and quote request form to build a practical, event-specific restroom strategy.'] },
     ],
   },
   {
     slug: 'construction-restroom-trailer-rental-guide', title: 'Construction Restroom Trailer Rental Guide', metaTitle: 'Construction Restroom Trailer Rental Guide | Michigan Jobsites', metaDescription: 'A practical guide for Michigan contractors evaluating restroom trailer rentals for construction and long-term projects.', excerpt: 'Planning guidance for construction teams that need dependable on-site restroom solutions.', category: 'Construction & Long-Term', publishDate: '2026-05-09', updatedDate: '2026-05-09', heroImage: '/images/Construction Site Trailer.png', heroImageAlt: 'Restroom trailer on a construction site in Mid-Michigan', primaryKeyword: 'construction restroom trailer rental', secondaryKeywords: ['jobsite restroom trailer Michigan', 'long-term restroom trailer rental'],
-    relatedServicePages: [{ href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction & Long-Term Rentals' }, { href: '/construction-long-term', label: 'Construction Service Overview' }, { href: '/start-here', label: 'Start Here: Project Planning' }, { href: '/request-quote', label: 'Request a Quote' }],
+    relatedServicePages: [{ href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction & Long-Term Rentals' }, { href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction Service Overview' }, { href: '/start-here', label: 'Start Here: Project Planning' }, { href: '/request-quote', label: 'Request a Quote' }],
     relatedCityPages: [{ href: '/service-areas/dewitt-mi', label: 'DeWitt Service Area' }, { href: '/service-areas/okemos-mi', label: 'Okemos Service Area' }],
     relatedResources: [{ href: '/resources/restroom-trailer-setup-requirements', label: 'Restroom Trailer Setup Requirements' }, { href: '/resources/restroom-trailer-rental-cost-michigan', label: 'Restroom Trailer Rental Cost Guide for Michigan Events' }],
     faqs: [
@@ -193,25 +193,25 @@ export const resources: ResourceArticle[] = [
     sections: [
       { heading: 'Match Equipment to Project Conditions', content: ['Every jobsite is different. Urban infill, greenfield builds, and infrastructure projects each present unique access and placement constraints.', 'A planning-first approach helps avoid mid-project repositioning and service interruptions.'] },
       { heading: 'Plan for Utility and Access Reliability', content: ['Construction environments change quickly, so restroom trailer plans should account for shifting laydown zones and vehicle traffic.', 'Signature Luxe Events & Amenities helps project teams across Mid-Michigan coordinate setup details that keep facilities functional and accessible.'] },
-      { heading: 'Request a Site-Specific Recommendation', content: ['No universal package fits every project. Recommendations depend on crew count, project duration, location, trailer size, and setup needs.', 'Use /start-here and /request-quote to receive a tailored construction rental plan.'] },
+      { heading: 'Request a Site-Specific Recommendation', content: ['No universal package fits every project. Recommendations depend on crew count, project duration, location, trailer size, and setup needs.', 'Use the Start Here planning guide and quote request form to receive a tailored construction rental plan.'] },
     ],
   },
   {
     slug: 'restroom-trailer-rental-cost-michigan', title: 'Restroom Trailer Rental Cost Guide for Michigan Events', metaTitle: 'Restroom Trailer Rental Cost Michigan | Planning Guide', metaDescription: 'Understand what influences restroom trailer rental cost in Michigan, including event logistics, duration, trailer size, and setup requirements.', excerpt: 'A transparent planning guide to help hosts budget restroom trailer rentals in Lansing and Mid-Michigan.', category: 'Event Logistics', publishDate: '2026-05-09', updatedDate: '2026-05-09', heroImage: '/images/Special Event Trailer.png', heroImageAlt: 'Luxury restroom trailer prepared for Michigan event service', primaryKeyword: 'restroom trailer rental cost Michigan', secondaryKeywords: ['Michigan restroom trailer pricing factors', 'event restroom rental budget guide'],
     relatedServicePages: [{ href: '/luxury-restroom-trailer-rentals', label: 'Luxury Restroom Trailer Rentals' }, { href: '/request-quote', label: 'Request a Quote' }, { href: '/start-here', label: 'Start Here: Budget Planning' }],
-    relatedCityPages: [{ href: '/lansing-mi', label: 'Lansing, MI' }, { href: '/service-areas/jackson-mi', label: 'Jackson Service Area' }],
+    relatedCityPages: [{ href: '/service-areas/lansing-mi', label: 'Lansing, MI' }, { href: '/service-areas/jackson-mi', label: 'Jackson Service Area' }],
     relatedResources: [{ href: '/resources/restroom-trailer-vs-porta-potty', label: 'Restroom Trailer vs Porta Potty' }, { href: '/resources/how-many-restroom-trailers-for-wedding', label: 'How Many Restroom Trailers Do You Need for a Wedding?' }],
     faqs: [
       { question: 'What affects restroom trailer rental cost most?', answer: 'Key factors include event duration, guest count, site location, trailer size, and required setup support.' },
       { question: 'Are weekend events priced differently?', answer: 'Scheduling windows can affect planning and logistics, so request an event-specific quote for accurate budgeting.' },
       { question: 'Do remote locations in Michigan change cost?', answer: 'Travel distance and site access can influence the final proposal, especially for rural or hard-to-access venues.' },
       { question: 'Is there a standard statewide price?', answer: 'No. Pricing is customized based on each event operational requirements.' },
-      { question: 'How can I get the most accurate estimate?', answer: 'Share complete details through /start-here and /request-quote, including timeline, location, and setup constraints.' },
+      { question: 'How can I get the most accurate estimate?', answer: 'Share complete details through the Start Here planning guide and quote request form, including timeline, location, and setup constraints.' },
     ],
     sections: [
       { heading: 'Understand Cost Drivers', content: ['Budget planning is strongest when you focus on operational drivers instead of generalized price ranges.', 'For Michigan events, the biggest variables are guest count, event duration, location, trailer size, and setup needs.'] },
       { heading: 'Plan Early to Avoid Last-Minute Compromises', content: ['Early planning gives you more control over placement, utility coordination, and event-day flow.', 'Signature Luxe Events & Amenities provides practical guidance so hosts can align budget decisions with guest experience goals.'] },
-      { heading: 'Build a Quote Around Your Actual Event', content: ['Accurate budgeting starts with complete event information, not assumptions.', 'Start with /start-here and request your tailored plan at /request-quote.'] },
+      { heading: 'Build a Quote Around Your Actual Event', content: ['Accurate budgeting starts with complete event information, not assumptions.', 'Start with the Start Here planning guide and request your tailored plan through the quote request form.'] },
     ],
   }
 
