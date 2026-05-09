@@ -8,7 +8,7 @@ export async function PUT(request: Request) {
   }
   const supabase = createAdminClient();
 
-  const numericEntries = Object.entries(settings as Record<string, number>).map(([setting_key, setting_value]) => ({
+  const numericEntries: Array<{ setting_key: string; setting_value: number | null; setting_value_text: string | null }> = Object.entries(settings as Record<string, number>).map(([setting_key, setting_value]) => ({
     setting_key,
     setting_value,
     setting_value_text: null,
