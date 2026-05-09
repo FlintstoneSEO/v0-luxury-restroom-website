@@ -157,7 +157,7 @@ const eventScenarios = [
 
 export default function HomePage() {
   const business = localBusinessJsonLd("Lansing")
-  const video = {"@context":"https://schema.org","@type":"VideoObject",name:"Luxury Restroom Trailer Walkthrough",description:"Walkthrough of Signature Luxe Events & Amenities 3-station luxury restroom trailer for weddings and events in Lansing and Mid-Michigan.",thumbnailUrl:"https://img.youtube.com/vi/hLe4XRdC8Po/hqdefault.jpg",uploadDate:"2026-03-01",embedUrl:"https://www.youtube.com/embed/hLe4XRdC8Po",publisher:{"@type":"Organization",name:"Signature Luxe Events & Amenities"}}
+  const video = {"@context":"https://schema.org","@type":"VideoObject",name:"Luxury Restroom Trailer Walkthrough",description:"Walkthrough of Signature Luxe Events & Amenities 3-station luxury restroom trailer for weddings and events in Lansing and Mid-Michigan.",thumbnailUrl:"https://img.youtube.com/vi/jtWx3MlGOQI/hqdefault.jpg",uploadDate:"2026-03-01",embedUrl:"https://www.youtube.com/embed/jtWx3MlGOQI",publisher:{"@type":"Organization",name:"Signature Luxe Events & Amenities"}}
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} />
@@ -279,7 +279,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-charcoal">
                   <iframe
-                    src="https://www.youtube.com/embed/hLe4XRdC8Po?si=N-55fBuo4om40kYX"
+                    src="https://www.youtube.com/embed/jtWx3MlGOQI?si=scm0lmNbll48Mw1a"
                     title="3-Station Luxury Restroom Trailer Walkthrough"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
