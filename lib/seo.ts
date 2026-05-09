@@ -12,6 +12,7 @@ export const finalRoutes = [
   '/luxury-restroom-trailer-features',
   '/service-areas',
   '/faq',
+  '/resources',
   '/request-quote',
   '/gallery',
   '/contact',
