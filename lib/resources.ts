@@ -218,3 +218,13 @@ export const resources: ResourceArticle[] = [
 ]
 
 export const resourcesBySlug = Object.fromEntries(resources.map((resource) => [resource.slug, resource]))
+
+export function sectionHeadingToId(heading: string): string {
+  return heading
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+}
+
