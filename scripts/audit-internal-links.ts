@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { finalRoutes, cityPages } from '../lib/seo'
-import { resources } from '../lib/resources'
+import { finalRoutes, cityPages } from '../lib/seo.ts'
+import { resources } from '../lib/resources.ts'
 
 const ROOT = process.cwd()
 const SCAN_DIRS = ['app', 'components', 'lib']
