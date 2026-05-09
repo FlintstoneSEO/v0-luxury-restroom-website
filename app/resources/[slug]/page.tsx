@@ -123,6 +123,19 @@ export default function ResourceArticlePage({ params }: { params: { slug: string
             </div>
           </section>
 
+          <section className="mt-8 rounded-2xl bg-white p-6 border border-border/60">
+            <h2 className="text-xl font-semibold text-navy">Related Resources</h2>
+            <ul className="mt-4 space-y-2">
+              {resource.relatedResources.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-navy hover:text-navy/80">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+
           <section className="mt-12 rounded-2xl bg-navy text-white p-8 text-center">
             <h2 className="text-2xl font-serif font-semibold">Ready to Plan Your Restroom Setup?</h2>
             <p className="mt-3 text-white/85">Request a personalized quote and timeline for your Lansing or Mid-Michigan event.</p>
