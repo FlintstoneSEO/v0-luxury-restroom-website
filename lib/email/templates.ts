@@ -12,7 +12,17 @@ type BrandedEmailInput = {
   footerLines: string[];
 };
 
-const LOGO_URL = 'https://www.signatureluxeevents.com/images/logo.png';
+function getPublicAppUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
+  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
+
+  const vercelUrl = process.env.VERCEL_URL;
+  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, '');
+
+  return 'https://www.signatureluxeevents.com';
+}
+
+const LOGO_URL = `${getPublicAppUrl()}/images/logo.png`;
 
 function renderBrandedCustomerEmail(input: BrandedEmailInput) {
   const html = `

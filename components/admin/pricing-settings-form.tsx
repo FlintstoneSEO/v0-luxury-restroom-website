@@ -81,8 +81,11 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to save settings');
       setSaveMessage({ type: 'success', text: 'Settings saved successfully!' });
       router.refresh();
-    } catch {
-      setSaveMessage({ type: 'error', text: 'Failed to save settings. Please try again.' });
+    } catch (error) {
+      setSaveMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Failed to save settings. Please try again.',
+      });
     } finally {
       setIsSaving(false);
     }
