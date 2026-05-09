@@ -39,7 +39,6 @@ export async function POST(
         id,
         quote_number,
         customer_name,
-        name,
         email,
         customer_email,
         event_date,
@@ -129,7 +128,7 @@ export async function POST(
       quote.state && quote.zip_code ? `${quote.state} ${quote.zip_code}` : quote.state || quote.zip_code,
     ].filter(Boolean).join(', ');
 
-    const customerName = quote.customer_name || quote.name || 'Customer';
+    const customerName = quote.customer_name || 'Customer';
     const totalPrice = quote.total_price ?? quote.total ?? 0;
     const finalBalance = quote.final_balance ?? quote.remaining_balance ?? 0;
 
