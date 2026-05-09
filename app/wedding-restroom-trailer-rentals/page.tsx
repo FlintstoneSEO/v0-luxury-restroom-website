@@ -310,7 +310,7 @@ export default function WeddingRestroomTrailerRentalsPage() {
                     variant="outline"
                     className="w-full border-white/30 text-white hover:bg-white/10"
                   >
-                    <Link href="/our-restrooms">View Trailer Options</Link>
+                    <Link href="/luxury-restroom-trailer-rentals">View Trailer Options</Link>
                   </Button>
                 </div>
               </div>
