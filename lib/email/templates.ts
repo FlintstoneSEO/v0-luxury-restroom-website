@@ -34,7 +34,9 @@ function renderBrandedCustomerEmail(input: BrandedEmailInput) {
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border:1px solid #e9e2d9;border-radius:14px;overflow:hidden;">
               <tr>
                 <td style="background:#2d3a47;padding:24px 20px 18px;text-align:center;">
-                  <img src="${LOGO_URL}" alt="Signature Luxe Events & Amenities logo" width="220" style="width:220px;max-width:100%;height:auto;display:inline-block;border:0;outline:none;text-decoration:none;" />
+                  <div style="display:inline-block;background:#f6f4f1;border:1px solid #ded2c4;border-radius:10px;padding:10px 16px;">
+                    <img src="${LOGO_URL}" alt="Signature Luxe Events & Amenities logo" width="220" style="width:220px;max-width:100%;height:auto;display:inline-block;border:0;outline:none;text-decoration:none;" />
+                  </div>
                   <div style="height:2px;background:#ded2c4;width:180px;max-width:70%;margin:16px auto 0;"></div>
                 </td>
               </tr>
