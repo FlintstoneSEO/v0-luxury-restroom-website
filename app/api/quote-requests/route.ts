@@ -59,6 +59,13 @@ export async function POST(req: Request) {
       deposit_status: 'due',
     };
 
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[api/quote-requests] final Supabase insert object', {
+        ...payload,
+        email: payload.email ? '[redacted]' : payload.email,
+        phone: payload.phone ? '[redacted]' : payload.phone,
+      });
+    }
 
     const { error, data } = await supabase.from('quote_requests').insert(payload).select('id, quote_number');
     if (process.env.NODE_ENV !== 'production') {
