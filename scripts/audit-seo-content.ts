@@ -4,19 +4,10 @@ import path from 'node:path'
 import { finalRoutes, cityPages } from '../lib/seo.ts'
 // @ts-ignore
 import { resources } from '../lib/resources.ts'
+// @ts-ignore
+import { cityContent, priorityCitySlugs } from '../lib/city-pages.ts'
 
 const strict = process.env.SEO_AUDIT_STRICT === 'true'
-
-function loadCityData() {
-  const file = fs.readFileSync(path.join(process.cwd(), 'app/service-areas/[citySlug]/page.tsx'), 'utf8')
-  const start = file.indexOf('const priorityCitySlugs =')
-  const end = file.indexOf('const galleryVisuals =')
-  const snippet = file.slice(start, end).replace(/: Record<string, CityExtra>/g, '')
-  const runtime = new Function(`${snippet}; return { cityContent, priorityCitySlugs };`)()
-  return runtime as { cityContent: Record<string, any>; priorityCitySlugs: Set<string> }
-}
-
-const { cityContent, priorityCitySlugs } = loadCityData()
 const errors: string[] = []
 const warnings: string[] = []
 
@@ -25,6 +16,10 @@ const requiredPriorityFields = ['localOverview','weddingUseCase','privateEventUs
 const requiredResourceFields = ['slug','title','metaTitle','metaDescription','excerpt','category','publishDate','updatedDate','heroImage','heroImageAlt','primaryKeyword','secondaryKeywords','relatedServicePages','relatedCityPages','relatedResources','sections','faqs'] as const
 const placeholders = ['todo','lorem','placeholder','coming soon','sample text']
 const legacyLinks = new Set(['/our-restrooms','/weddings','/special-events','/construction-long-term','/disaster-relief-government','/lansing-mi','/east-lansing-mi','/okemos-mi'])
+
+const finalRouteSet = new Set(finalRoutes)
+const cityPageSet = new Set(cityPages.map((city) => `/service-areas/${city.slug}`))
+const resourceSet = new Set(resources.map((resource) => `/resources/${resource.slug}`))
 
 function hasRoute(route: string) {
   const page = route === '/'
@@ -53,11 +48,19 @@ for (const city of cityPages) {
   if ((priorityCitySlugs as Set<string>).has(city.slug)) {
     for (const field of requiredPriorityFields) if (!(field in data)) errors.push(`Priority city ${city.slug} missing expanded field: ${field}`)
   }
+
+  for (const link of data.resourceLinks ?? []) if (!resourceSet.has(link.href)) errors.push(`City ${city.slug} resourceLinks href does not exist in resources: ${link.href}`)
+  for (const link of data.serviceLinks ?? []) if (!finalRouteSet.has(link.href)) errors.push(`City ${city.slug} serviceLinks href does not exist in finalRoutes: ${link.href}`)
 }
 
 const slugSeen = new Set<string>(), titleSeen = new Set<string>(), keywordSeen = new Set<string>()
 for (const resource of resources as any[]) {
   for (const field of requiredResourceFields) if (!(field in resource)) errors.push(`Resource ${resource.slug ?? '(no slug)'} missing field: ${field}`)
+
+  for (const link of resource.relatedResources ?? []) if (!resourceSet.has(link.href)) errors.push(`Resource ${resource.slug} relatedResources href does not exist in resources: ${link.href}`)
+  for (const link of resource.relatedServicePages ?? []) if (!finalRouteSet.has(link.href)) errors.push(`Resource ${resource.slug} relatedServicePages href does not exist in finalRoutes: ${link.href}`)
+  for (const link of resource.relatedCityPages ?? []) if (!cityPageSet.has(link.href)) errors.push(`Resource ${resource.slug} relatedCityPages href does not exist in cityPages: ${link.href}`)
+
   if ((resource.sections?.length ?? 0) < 3) errors.push(`Resource ${resource.slug} has fewer than 3 sections`)
   if ((resource.faqs?.length ?? 0) < 4) errors.push(`Resource ${resource.slug} has fewer than 4 FAQs`)
   if ((resource.relatedServicePages?.length ?? 0) < 2) errors.push(`Resource ${resource.slug} has fewer than 2 related service pages`)
@@ -76,13 +79,6 @@ for (const resource of resources as any[]) {
 
   const resourceText = JSON.stringify(resource).toLowerCase()
   for (const term of placeholders) if (resourceText.includes(term)) errors.push(`Resource ${resource.slug} includes placeholder term: "${term}"`)
-
-  for (const section of resource.sections ?? []) {
-    for (const paragraph of section.content ?? []) {
-      const matches = [...paragraph.matchAll(/["'`](\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)["'`]/gi)]
-      for (const m of matches) warnings.push(`Resource ${resource.slug} section "${section.heading}" mentions raw path ${m[1]}`)
-    }
-  }
 
   for (const rel of [...(resource.relatedServicePages ?? []), ...(resource.relatedCityPages ?? []), ...(resource.relatedResources ?? [])]) {
     if (legacyLinks.has(rel.href)) errors.push(`Resource ${resource.slug} includes legacy related link: ${rel.href}`)
