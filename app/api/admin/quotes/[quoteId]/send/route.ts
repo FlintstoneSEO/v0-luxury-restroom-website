@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateApprovalToken, hashApprovalToken } from '@/lib/quote-approval';
 import { sendEmail } from '@/lib/email/client';
-import { formatCurrency } from '@/lib/pricing-engine';
+import { quoteSentTemplate } from '@/lib/email/templates';
 
 // Statuses that allow sending a quote
 const SENDABLE_STATUSES = [
@@ -149,52 +149,26 @@ export async function POST(
 
     const customerName = quote.customer_name || 'Customer';
     const totalPrice = quote.total_price ?? quote.total ?? 0;
-    const finalBalance = quote.final_balance ?? quote.remaining_balance ?? 0;
+    const formattedEventDate = quote.event_date
+      ? new Date(quote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      : 'TBD';
 
-    // Build email content
-    const emailHtml = `
-      <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #2d3a47;">Your Luxury Restroom Rental Quote</h2>
-
-        <p>Hi ${customerName},</p>
-
-        <p>Thank you for requesting a quote from Signature Luxe Events & Amenities. We&apos;re pleased to provide pricing for your upcoming event.</p>
-
-        <div style="background: #f8f7f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="color: #2d3a47; margin-top: 0;">Event Details</h3>
-          <p><strong>Event Date:</strong> ${quote.event_date ? new Date(quote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'TBD'}</p>
-          <p><strong>Event Type:</strong> ${quote.event_type || 'TBD'}</p>
-          <p><strong>Location:</strong> ${eventLocation || 'TBD'}</p>
-          <p><strong>Guest Count:</strong> ${quote.guest_count ?? 'TBD'}</p>
-        </div>
-
-        <div style="background: #2d3a47; color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #ded2c4;">Quote Summary</h3>
-          <p style="font-size: 24px; margin: 10px 0;"><strong>Total:</strong> ${formatCurrency(totalPrice)}</p>
-          <p><strong>Deposit Required:</strong> ${formatCurrency(quote.deposit_amount || 0)}</p>
-          <p><strong>Balance Due:</strong> ${formatCurrency(finalBalance)}</p>
-        </div>
-
-        <p style="text-align: center; margin: 30px 0;">
-          <a href="${approvalLink}" style="display: inline-block; background: #2d3a47; color: white; padding: 15px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
-            Review &amp; Respond to Quote
-          </a>
-        </p>
-
-        <p style="color: #666; font-size: 14px;">This quote link will expire in 10 days.</p>
-
-        <p>If you have any questions, please don&apos;t hesitate to reach out.</p>
-
-        <p>Best regards,<br/>
-        <strong>Signature Luxe Events & Amenities</strong></p>
-      </div>
-    `;
+    const emailTemplate = quoteSentTemplate({
+      customerName,
+      eventDate: formattedEventDate,
+      eventType: quote.event_type || 'TBD',
+      guestCount: String(quote.guest_count ?? 'TBD'),
+      eventLocation: eventLocation || 'TBD',
+      quoteTotal: totalPrice,
+      approvalLink,
+    });
 
     // Send email after successful DB writes
     const sendResult = await sendEmail({
       to: quoteEmail,
-      subject: `Your Luxury Restroom Rental Quote - ${quote.quote_number || quote.id.slice(0, 8)}`,
-      html: emailHtml,
+      subject: `${emailTemplate.subject} - ${quote.quote_number || quote.id.slice(0, 8)}`,
+      html: emailTemplate.html,
+      text: emailTemplate.text,
     });
 
     if (!sendResult.sent) {
