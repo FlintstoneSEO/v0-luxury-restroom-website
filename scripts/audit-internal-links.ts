@@ -1,6 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
+// @ts-ignore - explicit .ts extension required for node --experimental-strip-types runtime
 import { finalRoutes, cityPages } from '../lib/seo.ts'
+// @ts-ignore - explicit .ts extension required for node --experimental-strip-types runtime
 import { resources } from '../lib/resources.ts'
 
 const ROOT = process.cwd()
