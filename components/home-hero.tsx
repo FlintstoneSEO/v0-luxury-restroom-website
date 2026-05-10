@@ -11,13 +11,13 @@ const HERO_IMAGE =
 
 export function HomeHero() {
   const [offsetY, setOffsetY] = useState(0)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const rafRef = useRef<number | null>(null)
-  const prefersReducedMotionRef = useRef(false)
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
     const updateMotionPreference = () => {
-      prefersReducedMotionRef.current = mediaQuery.matches
+      setPrefersReducedMotion(mediaQuery.matches)
 
       if (mediaQuery.matches) {
         setOffsetY(0)
@@ -27,7 +27,7 @@ export function HomeHero() {
     const updateParallax = () => {
       rafRef.current = null
 
-      if (prefersReducedMotionRef.current) return
+      if (mediaQuery.matches) return
 
       const nextOffset = Math.min(90, Math.max(-20, window.scrollY * 0.18))
       setOffsetY(nextOffset)
@@ -130,10 +130,18 @@ export function HomeHero() {
         type="button"
         aria-label="Scroll to next section"
         onClick={handleScrollToNextSection}
-        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto motion-safe:animate-scroll-indicator motion-reduce:animate-none"
+        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto"
+        style={{
+          animation: prefersReducedMotion ? 'none' : 'bounce-subtle 2s ease-in-out infinite'
+        }}
       >
-        <div className="flex h-11 w-7 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm">
-          <div className="h-3 w-1.5 rounded-full bg-[#DED2C4]" />
+        <div className="flex h-12 w-8 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm overflow-hidden">
+          <div 
+            className="h-3 w-1.5 rounded-full bg-[#DED2C4]"
+            style={{
+              animation: prefersReducedMotion ? 'none' : 'scroll-wheel 1.5s ease-in-out infinite'
+            }}
+          />
         </div>
       </button>
     </section>
