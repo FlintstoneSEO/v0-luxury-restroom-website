@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Menu, X, LogOut, Settings, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -27,9 +28,13 @@ export default function AdminLayout({
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
               <Link href="/admin" className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-lg bg-navy text-white flex items-center justify-center font-bold">
-                  SL
-                </div>
+                <Image
+                  src="/favicon.ico"
+                  alt="Signature Luxe Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-lg"
+                />
                 <span className="font-serif font-semibold text-navy text-lg hidden sm:inline">
                   Admin Portal
                 </span>
