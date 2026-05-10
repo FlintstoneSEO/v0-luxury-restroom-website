@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -11,25 +11,63 @@ const HERO_IMAGE =
 
 export function HomeHero() {
   const [offsetY, setOffsetY] = useState(0)
+  const rafRef = useRef<number | null>(null)
+  const prefersReducedMotionRef = useRef(false)
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-    if (mediaQuery.matches) return
+    const updateMotionPreference = () => {
+      prefersReducedMotionRef.current = mediaQuery.matches
 
-    const onScroll = () => {
-      setOffsetY(window.scrollY * 0.2)
+      if (mediaQuery.matches) {
+        setOffsetY(0)
+      }
     }
 
+    const updateParallax = () => {
+      rafRef.current = null
+
+      if (prefersReducedMotionRef.current) return
+
+      const nextOffset = Math.min(90, Math.max(-20, window.scrollY * 0.18))
+      setOffsetY(nextOffset)
+    }
+
+    const onScroll = () => {
+      if (rafRef.current !== null) return
+      rafRef.current = window.requestAnimationFrame(updateParallax)
+    }
+
+    updateMotionPreference()
     onScroll()
+
+    mediaQuery.addEventListener("change", updateMotionPreference)
     window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateMotionPreference)
+      window.removeEventListener("scroll", onScroll)
+
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current)
+      }
+    }
   }, [])
+
+  const handleScrollToNextSection = () => {
+    const nextSection =
+      document.querySelector<HTMLElement>("[data-home-next-section]") ||
+      document.querySelector<HTMLElement>("main section:nth-of-type(2)") ||
+      document.querySelector<HTMLElement>("#after-hero")
+
+    nextSection?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <div
-          className="absolute inset-[-4%] motion-reduce:inset-0"
+          className="absolute inset-x-[-6%] inset-y-[-10%] motion-reduce:inset-0 will-change-transform"
           style={{ transform: `translate3d(0, ${offsetY}px, 0)` }}
         >
           <Image
@@ -88,11 +126,16 @@ export function HomeHero() {
         </div>
       </div>
 
-      <div className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 motion-safe:animate-scroll-indicator motion-reduce:animate-none">
+      <button
+        type="button"
+        aria-label="Scroll to next section"
+        onClick={handleScrollToNextSection}
+        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto motion-safe:animate-scroll-indicator motion-reduce:animate-none"
+      >
         <div className="flex h-11 w-7 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm">
           <div className="h-3 w-1.5 rounded-full bg-[#DED2C4]" />
         </div>
-      </div>
+      </button>
     </section>
   )
 }

@@ -180,7 +180,7 @@ export default function HomePage() {
         <HomeHero />
 
         {/* Event Scenarios Showcase */}
-        <section className="py-16 bg-white border-b border-cream">
+        <section data-home-next-section className="py-16 bg-white border-b border-cream">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="text-center mb-10">
               <span className="text-sm font-semibold uppercase tracking-widest text-navy">
