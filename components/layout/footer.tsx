@@ -43,7 +43,7 @@ export function Footer() {
               alt="Signature Luxe Events & Amenities"
               width={280}
               height={92}
-              className="h-20 w-auto mb-6 bg-transparent brightness-0 invert opacity-95"
+              className="h-24 w-auto mb-6 bg-transparent brightness-0 invert opacity-95"
             />
             <p className="text-white/80 text-base leading-relaxed mb-6">
               Luxury restroom trailer rentals for weddings, private parties, corporate events, 

@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   authors: [{ name: 'Signature Luxe Events & Amenities' }],
   creator: 'Signature Luxe Events & Amenities',
   icons: {
-    icon: [{ url: '/icon.png', type: 'image/png' }],
-    apple: [{ url: '/apple-icon.png' }],
+    icon: [{ url: '/favicon.ico' }],
+    apple: [{ url: '/favicon.ico' }],
   },
   openGraph: {
     title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
