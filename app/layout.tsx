@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Montserrat } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { GoogleTagManager } from '@next/third-parties/google'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({ 
@@ -83,6 +84,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
+        <GoogleTagManager gtmId="GTM-XXXXXXX" />
       </body>
     </html>
   )
