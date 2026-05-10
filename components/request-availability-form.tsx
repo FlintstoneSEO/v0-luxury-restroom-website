@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react"
 import type { ChangeEvent } from "react"
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -104,6 +105,7 @@ function AddressAutocomplete({
 }
 
 export function RequestAvailabilityForm() {
+  const mapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   const [state, formAction, isPending] = useActionState(submitRequestAvailability, initialState)
   const [locationValue, setLocationValue] = useState("")
 
@@ -136,7 +138,14 @@ export function RequestAvailabilityForm() {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-6">
+    <>
+      {mapsApiKey ? (
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${mapsApiKey}&libraries=places`}
+          strategy="afterInteractive"
+        />
+      ) : null}
+      <form action={handleSubmit} className="space-y-6">
       {state.message && !state.success && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-800 font-medium">{state.message}</p>
@@ -332,6 +341,7 @@ export function RequestAvailabilityForm() {
       <p className="text-center text-base text-muted-foreground">
         By submitting this form, you agree to be contacted regarding your inquiry.
       </p>
-    </form>
+      </form>
+    </>
   )
 }

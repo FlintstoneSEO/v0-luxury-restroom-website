@@ -23,7 +23,16 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { HomeHero } from "@/components/home-hero"
-import { localBusinessJsonLd } from "@/lib/seo-schema"
+import type { Metadata } from "next"
+import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo-schema"
+
+
+export const metadata: Metadata = {
+  title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
+  description:
+    'Rent luxury restroom trailers in Lansing, MI for weddings, private events, corporate events, festivals, construction sites, and long-term needs.',
+  alternates: { canonical: '/' },
+}
 
 const services = [
   {
@@ -135,17 +144,17 @@ const serviceAreas = [
 const eventScenarios = [
   {
     src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
-    alt: "Wedding reception with luxury trailer",
+    alt: "Luxury restroom trailer setup for outdoor wedding reception in Michigan",
     label: "Weddings"
   },
   {
     src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
-    alt: "Backyard party event",
+    alt: "Luxury restroom trailer rental for backyard private party in Mid-Michigan",
     label: "Parties"
   },
   {
     src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_08_15%20PM-V96pFxXSvB2cRlUNAjQtbfMvGB7ejF.png",
-    alt: "Construction site setup",
+    alt: "Long-term restroom trailer rental for construction site in Michigan",
     label: "Construction"
   },
   {
@@ -157,9 +166,13 @@ const eventScenarios = [
 
 export default function HomePage() {
   const business = localBusinessJsonLd("Lansing")
+  const website = websiteJsonLd()
+  const organization = organizationJsonLd()
   const video = {"@context":"https://schema.org","@type":"VideoObject",name:"Luxury Restroom Trailer Walkthrough",description:"Walkthrough of Signature Luxe Events & Amenities 3-station luxury restroom trailer for weddings and events in Lansing and Mid-Michigan.",thumbnailUrl:"https://img.youtube.com/vi/jtWx3MlGOQI/hqdefault.jpg",uploadDate:"2026-03-01",embedUrl:"https://www.youtube.com/embed/jtWx3MlGOQI",publisher:{"@type":"Organization",name:"Signature Luxe Events & Amenities"}}
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(video) }} />
       <Header />

@@ -9,10 +9,34 @@ export const business = {
   sameAs: [process.env.NEXT_PUBLIC_FACEBOOK_URL, process.env.NEXT_PUBLIC_INSTAGRAM_URL].filter(Boolean),
 }
 
+export function websiteJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${business.url}/#website`,
+    url: business.url,
+    name: business.name,
+    publisher: { '@id': `${business.url}/#organization` },
+  }
+}
+
+export function organizationJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${business.url}/#organization`,
+    name: business.name,
+    url: business.url,
+    logo: business.logo,
+    image: business.image,
+    ...(business.sameAs.length ? { sameAs: business.sameAs } : {}),
+  }
+}
+
 export function localBusinessJsonLd(city = 'Lansing') {
   return {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
+    '@type': ['LocalBusiness', 'EventRentalStore'],
     '@id': `${business.url}#localbusiness`,
     name: business.name,
     description:
@@ -23,6 +47,7 @@ export function localBusinessJsonLd(city = 'Lansing') {
     priceRange: business.priceRange,
     ...(business.phone ? { telephone: business.phone } : {}),
     ...(business.sameAs.length ? { sameAs: business.sameAs } : {}),
+    parentOrganization: { '@id': `${business.url}/#organization` },
     areaServed: business.areaServed,
     serviceType: [
       'Luxury restroom trailer rentals',
@@ -31,12 +56,37 @@ export function localBusinessJsonLd(city = 'Lansing') {
       'Construction and long-term restroom trailer rentals',
       'Emergency and disaster relief restroom trailer rentals',
     ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Luxury Restroom Trailer Rental Services',
+      itemListElement: [
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Wedding restroom trailer rentals' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Private and corporate event restroom trailer rentals' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Construction and long-term restroom trailer rentals' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Emergency and disaster relief restroom trailer rentals' } },
+      ],
+    },
     address: {
       '@type': 'PostalAddress',
       addressLocality: city,
       addressRegion: 'MI',
       addressCountry: 'US',
     },
+  }
+}
+
+export function faqJsonLd(faqs: { question: string; answer: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
   }
 }
 

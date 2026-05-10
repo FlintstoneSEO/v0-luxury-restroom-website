@@ -34,7 +34,7 @@ export function HomeHero() {
         >
           <Image
             src={HERO_IMAGE}
-            alt="Luxury restroom trailer at elegant outdoor wedding reception with string lights"
+            alt="Luxury restroom trailer rental in Lansing Michigan for weddings and outdoor events"
             fill
             priority
             sizes="100vw"
