@@ -94,7 +94,7 @@ export function Header() {
               alt="Signature Luxe Events & Amenities - Luxury Restroom Trailer Rentals in Lansing, MI"
               width={300}
               height={98}
-              className="h-20 w-auto max-w-[320px]"
+              className="h-24 w-auto max-w-[320px]"
               priority
             />
           </Link>
