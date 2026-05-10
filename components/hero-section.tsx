@@ -114,7 +114,7 @@ export function HeroSection({
                     className={cn(
                       "text-base px-8",
                       isPageHero
-                        ? "border-white/30 bg-transparent text-white hover:bg-white/10"
+                        ? "border-white/30 !bg-transparent text-white hover:!bg-white/10"
                         : "border-navy text-navy hover:bg-navy/5"
                     )}
                   >

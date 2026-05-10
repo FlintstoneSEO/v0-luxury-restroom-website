@@ -308,7 +308,7 @@ export default function WeddingRestroomTrailerRentalsPage() {
                   <Button
                     asChild
                     variant="outline"
-                    className="w-full border-white/30 text-white hover:bg-white/10"
+                    className="w-full border-white/30 !bg-transparent text-white hover:!bg-white/10"
                   >
                     <Link href="/luxury-restroom-trailer-rentals">View Trailer Options</Link>
                   </Button>
