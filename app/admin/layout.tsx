@@ -31,8 +31,8 @@ export default function AdminLayout({
                 <Image
                   src="/favicon.ico"
                   alt="Signature Luxe Logo"
-                  width={40}
-                  height={40}
+                  width={56}
+                  height={56}
                   className="rounded-lg"
                 />
                 <span className="font-serif font-semibold text-navy text-lg hidden sm:inline">
