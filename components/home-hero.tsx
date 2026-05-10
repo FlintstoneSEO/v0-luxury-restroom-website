@@ -64,7 +64,7 @@ export function HomeHero() {
   }
 
   return (
-    <section className="relative flex min-h-screen items-end overflow-hidden">
+    <section className="relative flex min-h-screen items-center overflow-hidden md:items-end">
       {/* Background Image Container */}
       <div className="absolute inset-0">
         <div
@@ -91,9 +91,9 @@ export function HomeHero() {
         <div className="pointer-events-none absolute -right-20 bottom-1/3 h-[28rem] w-[28rem] rounded-full bg-[#DED2C4]/20 blur-3xl motion-safe:animate-gold-pulse motion-reduce:animate-none" />
       </div>
 
-      {/* Content - positioned at bottom */}
+      {/* Content - elevated on mobile, anchored lower again on desktop */}
       <div className="relative z-10 w-full">
-        <div className="container mx-auto px-4 pb-24 pt-32 md:pb-28 md:pt-40 lg:px-8">
+        <div className="container mx-auto px-4 pb-16 pt-28 md:pb-28 md:pt-40 lg:px-8">
           <div className="max-w-2xl motion-safe:animate-hero-enter motion-reduce:animate-none">
             <span className="mb-4 inline-block rounded-full border border-[#DED2C4]/40 bg-[#DED2C4]/15 px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.2em] text-[#f4ece2] backdrop-blur-sm">
               Luxury Restroom Trailer Rentals
