@@ -188,15 +188,27 @@
   }
 }
 
-@keyframes scroll-indicator {
+@keyframes scroll-wheel {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce-subtle {
   0%,
   100% {
-    transform: translate(-50%, 0);
-    opacity: 0.85;
+    transform: translateY(0);
   }
   50% {
-    transform: translate(-50%, 8px);
-    opacity: 1;
+    transform: translateY(6px);
   }
 }
 
@@ -213,8 +225,12 @@
     animation: gold-pulse 5.5s ease-in-out infinite;
   }
 
-  .animate-scroll-indicator {
-    animation: scroll-indicator 1.9s ease-in-out infinite;
+  .animate-scroll-wheel {
+    animation: scroll-wheel 1.5s ease-in-out infinite;
+  }
+
+  .animate-bounce-subtle {
+    animation: bounce-subtle 2s ease-in-out infinite;
   }
 }
 
@@ -222,7 +238,8 @@
   .animate-hero-ken-burns,
   .animate-hero-enter,
   .animate-gold-pulse,
-  .animate-scroll-indicator {
+  .animate-scroll-wheel,
+  .animate-bounce-subtle {
     animation: none !important;
   }
 }

@@ -130,10 +130,10 @@ export function HomeHero() {
         type="button"
         aria-label="Scroll to next section"
         onClick={handleScrollToNextSection}
-        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto motion-safe:animate-scroll-indicator motion-reduce:animate-none"
+        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto motion-safe:animate-bounce-subtle motion-reduce:animate-none"
       >
-        <div className="flex h-11 w-7 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm">
-          <div className="h-3 w-1.5 rounded-full bg-[#DED2C4]" />
+        <div className="flex h-12 w-8 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm">
+          <div className="h-3 w-1.5 rounded-full bg-[#DED2C4] motion-safe:animate-scroll-wheel motion-reduce:animate-none" />
         </div>
       </button>
     </section>

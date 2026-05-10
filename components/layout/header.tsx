@@ -133,19 +133,24 @@ export function Header() {
           </div>
           <SheetContent side="right" className="w-full max-w-sm bg-white p-0">
             <div className="flex flex-col h-full">
-              <div className="flex items-center justify-between p-4 border-b">
-                <Image
-                  src="/images/logo.png"
-                  alt="Signature Luxe Events & Amenities"
-                  width={170}
-                  height={52}
-                  className="h-12 w-auto"
-                />
+              <div className="flex flex-col items-center justify-center p-6 border-b relative">
                 <SheetClose asChild>
-                  <Button variant="ghost" size="icon" aria-label="Close menu">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    aria-label="Close menu"
+                    className="absolute top-4 right-4"
+                  >
                     <X className="h-6 w-6" />
                   </Button>
                 </SheetClose>
+                <Image
+                  src="/images/logo.png"
+                  alt="Signature Luxe Events & Amenities"
+                  width={240}
+                  height={78}
+                  className="h-20 w-auto"
+                />
               </div>
               <nav className="flex flex-col p-4 gap-1 flex-1 overflow-y-auto">
                 {navigation.map((item) =>
