@@ -39,6 +39,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Signature Luxe Events & Amenities' }],
   creator: 'Signature Luxe Events & Amenities',
+  icons: {
+    icon: [{ url: '/icon.png', type: 'image/png' }],
+    apple: [{ url: '/apple-icon.png' }],
+  },
   openGraph: {
     title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
     description: 'Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, festivals, construction sites, and long-term use throughout Mid-Michigan.',
