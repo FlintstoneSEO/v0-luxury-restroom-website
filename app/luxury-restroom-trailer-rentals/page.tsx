@@ -136,18 +136,19 @@ const amenities = [
 ]
 
 const serviceAreas = [
-  "Lansing",
-  "East Lansing",
-  "Okemos",
-  "Haslett",
-  "Grand Ledge",
-  "DeWitt",
-  "Jackson",
-  "Howell",
-  "Flint",
-  "Ann Arbor",
-  "Grand Rapids",
-  "Mason",
+  { name: "Lansing", href: "/service-areas/lansing-mi" },
+  { name: "East Lansing", href: "/service-areas/east-lansing-mi" },
+  { name: "Okemos", href: "/service-areas/okemos-mi" },
+  { name: "Haslett", href: "/service-areas/haslett-mi" },
+  { name: "Grand Ledge", href: "/service-areas/grand-ledge-mi" },
+  { name: "DeWitt", href: "/service-areas/dewitt-mi" },
+  { name: "Holt", href: "/service-areas/holt-mi" },
+  { name: "Mason", href: "/service-areas/mason-mi" },
+  { name: "Jackson", href: "/service-areas/jackson-mi" },
+  { name: "Howell", href: "/service-areas/howell-mi" },
+  { name: "Flint", href: "/service-areas/flint-mi" },
+  { name: "Ann Arbor", href: "/service-areas/ann-arbor-mi" },
+  { name: "Grand Rapids", href: "/service-areas/grand-rapids-mi" },
 ]
 
 const faqs = [
@@ -428,7 +429,9 @@ export default function LuxuryRestroomTrailerRentalsPage() {
                   {serviceAreas.map((area, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-navy shrink-0" />
-                      <span className="text-base text-charcoal">{area}</span>
+                      <Link href={area.href} className="text-base text-charcoal underline-offset-2 hover:text-navy hover:underline">
+                        {area.name}
+                      </Link>
                     </div>
                   ))}
                 </div>
