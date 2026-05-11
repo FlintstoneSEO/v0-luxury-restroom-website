@@ -18,7 +18,7 @@ export type CityExtra = {
 }
 
 export const priorityCitySlugs = new Set([
-  'lansing-mi','east-lansing-mi','okemos-mi','grand-ledge-mi','jackson-mi','howell-mi','ann-arbor-mi','grand-rapids-mi',
+  'lansing-mi','east-lansing-mi','okemos-mi','haslett-mi','grand-ledge-mi','dewitt-mi','holt-mi','mason-mi',
 ])
 
 export const defaultServiceLinks = [
@@ -1038,4 +1038,57 @@ export const cityContent: Record<string, CityExtra> = {
       }
     ]
   }
+}
+
+export const enhancedCityContent: Record<string, CityExtra> = {
+  'lansing-mi': {
+    intro: 'Signature Luxe Events & Amenities provides luxury restroom trailer rentals in Lansing, MI for weddings, private parties, corporate gatherings, community celebrations, construction sites, and temporary support needs across the capital region. Based in Lansing and serving Mid-Michigan, our team delivers clean, modern, climate-controlled restroom trailers that elevate guest comfort while protecting indoor facilities. Whether you are coordinating a downtown event, a backyard celebration, or a multi-day production schedule, we tailor layout and logistics to your event flow.',
+    nearby: 'East Lansing, Okemos, Haslett, Holt, Mason, Grand Ledge, DeWitt, and Charlotte',
+    venueNote: 'Lansing events span downtown activations, neighborhood gatherings, and outdoor wedding settings near areas like Frances Park, Cooley Gardens, and Scott Sunken Gardens, so we plan each restroom setup to match guest traffic, event layout, and service timing.',
+    useCases: ['Outdoor wedding weekends', 'Downtown corporate and nonprofit events', 'Private backyard parties', 'Community gatherings and festivals', 'Construction and project support', 'Government and emergency response support'],
+    nearbyCommunities: ['East Lansing', 'Okemos', 'Haslett', 'Holt', 'Mason', 'Grand Ledge', 'DeWitt', 'Charlotte'],
+    faqs: [{ q: 'How far in advance should I reserve a Lansing restroom trailer?', a: 'For spring and fall dates, we recommend reserving as early as possible since wedding and event weekends fill quickly.' }, { q: 'Can trailers be placed at parks or private Lansing properties?', a: 'Yes. We review access, permitted setup areas, and utility options before confirming placement.' }, { q: 'Do you support both one-day and multi-day Lansing rentals?', a: 'Absolutely. We provide short-term event rentals and longer schedules with service planning.' }, { q: 'Can you support downtown Lansing logistics?', a: 'Yes, we coordinate delivery windows, access routes, and placement details for tighter urban setups.' }, { q: 'What details do you need for a Lansing quote?', a: 'We use your event date, exact location, guest count, and utility access details to build a custom quote.' }],
+  },
+  'east-lansing-mi': {
+    intro: 'Signature Luxe Events & Amenities provides luxury restroom trailer rentals in East Lansing, MI for graduation parties, wedding receptions, alumni gatherings, private events, and corporate functions. Based in Lansing and serving Mid-Michigan, we deliver polished, climate-controlled restroom trailers with professional setup and responsive communication. East Lansing schedules are often tied to university-season demand, so we help clients plan utility access, placement, and delivery timing early.',
+    nearby: 'Lansing, Okemos, Haslett, Meridian Township, Bath, Williamston, and DeWitt',
+    venueNote: 'East Lansing planning often centers on MSU football weekends, graduation celebrations, and campus-area events. We support private properties and reception venues without implying university affiliation.',
+    useCases: ['MSU tailgate weekends', 'Graduation parties and alumni reunions', 'Campus-area private events', 'Wedding receptions', 'Community and neighborhood events', 'Corporate and donor-facing gatherings'],
+    nearbyCommunities: ['Lansing', 'Okemos', 'Haslett', 'Meridian Township', 'Bath', 'Williamston', 'DeWitt'],
+    faqs: [{ q: 'Do you provide restroom trailers for MSU football weekends?', a: 'Yes, we support East Lansing tailgate and game-weekend events based on availability.' }, { q: 'Can you accommodate graduation party demand in East Lansing?', a: 'Yes, and earlier booking is strongly recommended for peak graduation windows.' }, { q: 'Do you work with campus-area private homes and venues?', a: 'Yes. We plan setup based on local access constraints and event timelines.' }, { q: 'Are your trailers suitable for formal receptions?', a: 'Yes. Our luxury trailers are clean, modern, and guest-ready for upscale events.' }, { q: 'Can you help determine trailer size for East Lansing events?', a: 'Absolutely. We recommend the 2-, 3-, or 4-station option based on guest count and duration.' }],
+  },
+  'okemos-mi': {
+    intro: 'Signature Luxe Events & Amenities offers luxury restroom trailer rentals in Okemos, MI for weddings, residential celebrations, school events, graduation parties, and corporate gatherings. Based in Lansing and serving Mid-Michigan, we provide modern, climate-controlled trailers that keep guests comfortable and event spaces cleaner. From backyard celebrations to larger Meridian Township community programs, we tailor each rental to access, layout, and timeline requirements.',
+    nearby: 'East Lansing, Haslett, Meridian Township, Williamston, Mason, and Lansing',
+    venueNote: 'Okemos events often include Meridian Township community programming, farmers market-style gatherings, summer concerts, and private outdoor celebrations where premium restroom access improves guest flow.',
+    useCases: ['Residential backyard celebrations', 'School and graduation events', 'Wedding ceremonies and receptions', 'Meridian Township community programs', 'Summer concerts and open-air gatherings', 'Corporate and social events'],
+    nearbyCommunities: ['East Lansing', 'Haslett', 'Meridian Township', 'Williamston', 'Mason', 'Lansing'],
+    faqs: [{ q: 'Can you deliver to private homes in Okemos?', a: 'Yes. We evaluate driveway access, placement space, and utility options before delivery.' }, { q: 'Do you support school and graduation events in Okemos?', a: 'Yes, graduation season is one of our busiest times and early booking helps secure dates.' }, { q: 'Are trailers available for Meridian Township community events?', a: 'Yes, we support community-scale gatherings with flexible trailer options.' }, { q: 'Can you provide restroom support for summer concerts or markets?', a: 'Yes, we can plan setup for open-air events with variable guest flow.' }, { q: 'What trailer size is best for an Okemos wedding?', a: 'We match size to guest count and timeline, with 3- and 4-station units common for larger receptions.' }],
+  },
+  'haslett-mi': {
+    intro: 'Signature Luxe Events & Amenities provides luxury restroom trailer rentals in Haslett, MI for lake-area gatherings, weddings, reunions, graduations, and backyard celebrations. Based in Lansing and serving Mid-Michigan, our team delivers clean, climate-controlled restroom trailers with professional setup and pickup. Haslett events often blend residential and recreational spaces, so we coordinate access and placement details early for a smooth event day.',
+    nearby: 'Okemos, East Lansing, Meridian Township, Bath, Williamston, and Lansing',
+    venueNote: 'Haslett planning frequently includes Lake Lansing gatherings, park-style summer events, family celebrations, and private outdoor parties throughout Meridian Township and nearby Bath-area properties.',
+    useCases: ['Lake Lansing area gatherings', 'Backyard graduation parties', 'Family reunions', 'Private wedding celebrations', 'Summer park-style events', 'Neighborhood community events'],
+    nearbyCommunities: ['Okemos', 'East Lansing', 'Meridian Township', 'Bath', 'Williamston', 'Lansing'],
+    faqs: [{ q: 'Do you deliver restroom trailers near Lake Lansing?', a: 'Yes, we frequently support events in the Lake Lansing and greater Haslett area.' }, { q: 'Can trailers be used for backyard parties in Haslett?', a: 'Yes. We confirm access routes, placement, and utility setup before the event.' }, { q: 'Do you cover Meridian Township and Bath-area properties?', a: 'Absolutely. We serve Haslett and surrounding communities throughout Mid-Michigan.' }, { q: 'Are your trailers appropriate for graduation and reunion events?', a: 'Yes, they are a strong fit for family-focused gatherings with moderate to high guest counts.' }, { q: 'How do I request availability in Haslett?', a: 'Submit your event date, guest count, and location and we will prepare a custom quote.' }],
+  },
+  'grand-ledge-mi': cityContent['grand-ledge-mi'],
+  'dewitt-mi': cityContent['dewitt-mi'],
+  'holt-mi': {
+    intro: 'Signature Luxe Events & Amenities provides luxury restroom trailer rentals in Holt, MI for weddings, backyard celebrations, graduation parties, family reunions, and community events. Based in Lansing and serving Mid-Michigan, we bring clean, modern, climate-controlled restroom trailers that add comfort and convenience to outdoor gatherings. Whether your event is at a neighborhood home, local park, or private property, we coordinate delivery and setup based on your site conditions and timeline.',
+    nearby: 'Lansing, Mason, Delhi Township, Dimondale, Okemos, and East Lansing',
+    venueNote: 'Holt events often center on residential neighborhoods, backyard hosting, family celebrations, and park-based gatherings where practical placement and guest flow matter.',
+    useCases: ['Backyard parties', 'Graduation celebrations', 'Family reunions', 'Park and recreation events', 'Wedding receptions on private property', 'Lansing-area overflow events'],
+    nearbyCommunities: ['Lansing', 'Mason', 'Delhi Township', 'Dimondale', 'Okemos', 'East Lansing'],
+    faqs: [{ q: 'Can you set up a trailer in Holt residential neighborhoods?', a: 'Yes, we review driveway and placement access to support neighborhood events.' }, { q: 'Do you offer Holt rentals for graduation parties?', a: 'Yes. Graduation season is busy, so booking early is recommended.' }, { q: 'Can you support Holt park or outdoor recreation events?', a: 'Yes, we can coordinate setup planning for public or private outdoor sites.' }, { q: 'Is Holt within your standard Mid-Michigan coverage?', a: 'Yes, Holt is part of our core service area from Lansing.' }, { q: 'What information is required for a Holt quote?', a: 'We need your date, location, estimated guests, and utility details to recommend the right trailer.' }],
+  },
+  'mason-mi': {
+    intro: 'Signature Luxe Events & Amenities offers luxury restroom trailer rentals in Mason, MI for fairground-style events, rural property weddings, outdoor receptions, expos, and private celebrations. Based in Lansing and serving Mid-Michigan, we provide polished, climate-controlled restroom trailers that improve comfort for both formal and high-volume events. We plan each Mason rental around property access, guest count, and timeline to keep setup efficient and event-ready.',
+    nearby: 'Lansing, Holt, Leslie, Dansville, Okemos, Williamston, and Eaton Rapids',
+    venueNote: 'Mason planning often involves Ingham County Fairgrounds-style events, horse shows, open houses, and larger outdoor gatherings that need reliable restroom capacity.',
+    useCases: ['Fairground and expo events', 'Rural property weddings', 'Outdoor receptions', 'Horse shows and agricultural gatherings', 'Community open houses', 'Large private birthday celebrations'],
+    nearbyCommunities: ['Lansing', 'Holt', 'Leslie', 'Dansville', 'Okemos', 'Williamston', 'Eaton Rapids'],
+    faqs: [{ q: 'Do you provide trailer rentals for fairground-style events in Mason?', a: 'Yes, we support larger community and event-ground gatherings in the Mason area.' }, { q: 'Can trailers be placed on rural properties for weddings?', a: 'Yes. We assess access routes, grade, and placement surfaces before delivery.' }, { q: 'Are your trailers suitable for larger guest-count events?', a: 'Yes, especially our 4-station units for higher-traffic schedules.' }, { q: 'Do you serve surrounding Mason communities like Leslie and Dansville?', a: 'Yes, we cover Mason and nearby Mid-Michigan communities.' }, { q: 'Can you support multi-day Mason events such as expos or shows?', a: 'Yes, we offer multi-day rentals with planning for service intervals as needed.' }],
+  },
 }

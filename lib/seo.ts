@@ -26,6 +26,8 @@ export const cityPages = [
   { slug: 'haslett-mi', city: 'Haslett' },
   { slug: 'grand-ledge-mi', city: 'Grand Ledge' },
   { slug: 'dewitt-mi', city: 'DeWitt' },
+  { slug: 'holt-mi', city: 'Holt' },
+  { slug: 'mason-mi', city: 'Mason' },
   { slug: 'jackson-mi', city: 'Jackson' },
   { slug: 'howell-mi', city: 'Howell' },
   { slug: 'flint-mi', city: 'Flint' },
