@@ -32,7 +32,6 @@ const navigation = [
   { name: "Service Areas", href: "/service-areas" },
   { name: "Gallery", href: "/gallery" },
   { name: "FAQ", href: "/faq" },
-  { name: "Resources", href: "/resources" },
   { name: "Contact", href: "/contact" },
 ]
 
@@ -46,7 +45,7 @@ function DesktopNavItems({ items }: { items: typeof navigation }) {
         item.children ? (
           <DropdownMenu key={item.name}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 px-3 py-2 text-base font-medium text-charcoal hover:text-navy transition-colors">
+              <button className="flex items-center gap-1 whitespace-nowrap px-2 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors xl:px-3 2xl:text-base">
                 {item.name}
                 <ChevronDown className="h-4 w-4" />
               </button>
@@ -65,7 +64,7 @@ function DesktopNavItems({ items }: { items: typeof navigation }) {
           <Link
             key={item.name}
             href={item.href}
-            className="px-3 py-2 text-base font-medium text-charcoal hover:text-navy transition-colors"
+            className="whitespace-nowrap px-2 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors xl:px-3 2xl:text-base"
           >
             {item.name}
           </Link>
@@ -80,10 +79,10 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="container mx-auto flex h-24 items-center justify-between px-4 lg:px-8 relative">
-        <div className="lg:hidden w-10" />
+      <div className="container mx-auto relative flex h-24 items-center justify-between px-4 lg:px-8">
+        <div className="w-10 xl:hidden" />
 
-        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:w-full lg:gap-4">
+        <div className="hidden xl:grid xl:w-full xl:grid-cols-[1fr_auto_1fr] xl:items-center xl:gap-4">
           <nav className="flex items-center justify-start gap-1">
             <DesktopNavItems items={leftNavigation} />
           </nav>
@@ -103,7 +102,7 @@ export function Header() {
             <nav className="flex items-center gap-1">
               <DesktopNavItems items={rightNavigation} />
             </nav>
-            <Button asChild className="ml-2 bg-navy hover:bg-navy/90 text-white">
+            <Button asChild className="ml-2 whitespace-nowrap bg-navy text-white hover:bg-navy/90">
               <Link href="/request-quote">Check Availability</Link>
             </Button>
           </div>
@@ -111,7 +110,7 @@ export function Header() {
 
         <Link
           href="/"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:hidden flex items-center"
+          className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center xl:hidden"
         >
           <Image
             src="/images/logo.png"
@@ -124,7 +123,7 @@ export function Header() {
         </Link>
 
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <div className="lg:hidden">
+          <div className="xl:hidden">
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" aria-label="Open menu">
                 <Menu className="h-6 w-6" />
