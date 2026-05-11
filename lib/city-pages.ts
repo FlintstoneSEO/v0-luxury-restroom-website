@@ -1071,10 +1071,63 @@ export const enhancedCityContent: Record<string, CityExtra> = {
     venueNote: 'Haslett planning frequently includes Lake Lansing gatherings, park-style summer events, family celebrations, and private outdoor parties throughout Meridian Township and nearby Bath-area properties.',
     useCases: ['Lake Lansing area gatherings', 'Backyard graduation parties', 'Family reunions', 'Private wedding celebrations', 'Summer park-style events', 'Neighborhood community events'],
     nearbyCommunities: ['Okemos', 'East Lansing', 'Meridian Township', 'Bath', 'Williamston', 'Lansing'],
+    localOverview: [
+      'Haslett events frequently center around Lake Lansing, neighborhood homes, and Meridian Township gathering spaces where guests may be spread across docks, patios, and lawn areas.',
+      'Our team helps hosts maintain a premium guest experience by adding dedicated restroom capacity close to activity areas while reducing wear on indoor bathrooms.'
+    ],
+    privateEventUseCase: [
+      'Backyard parties, family reunions, and graduation weekends in Haslett often benefit from a trailer positioned near guest circulation zones without disrupting indoor hosting.',
+      'For private outdoor gatherings, we can align setup with tenting, catering, and parking flow so restroom access feels natural throughout the event timeline.'
+    ],
+    setupLogistics: [
+      'We review residential street access, driveway turning space, and yard placement options to keep delivery smooth in neighborhood settings.',
+      'For Lake Lansing and Bath-area properties, we confirm utility reach, slope conditions, and surface protection before arrival day.'
+    ],
+    seasonalPlanning: [
+      'Summer weekends near Lake Lansing are high demand, so early date selection helps secure preferred trailer size and delivery windows.',
+      'Warm-weather events with extended evening schedules often benefit from larger-capacity units and proactive service planning.'
+    ],
     faqs: [{ q: 'Do you deliver restroom trailers near Lake Lansing?', a: 'Yes, we frequently support events in the Lake Lansing and greater Haslett area.' }, { q: 'Can trailers be used for backyard parties in Haslett?', a: 'Yes. We confirm access routes, placement, and utility setup before the event.' }, { q: 'Do you cover Meridian Township and Bath-area properties?', a: 'Absolutely. We serve Haslett and surrounding communities throughout Mid-Michigan.' }, { q: 'Are your trailers appropriate for graduation and reunion events?', a: 'Yes, they are a strong fit for family-focused gatherings with moderate to high guest counts.' }, { q: 'How do I request availability in Haslett?', a: 'Submit your event date, guest count, and location and we will prepare a custom quote.' }],
   },
-  'grand-ledge-mi': cityContent['grand-ledge-mi'],
-  'dewitt-mi': cityContent['dewitt-mi'],
+  'grand-ledge-mi': {
+    ...cityContent['grand-ledge-mi'],
+    faqs: [
+      { q: 'Do you provide restroom trailers for Grand Ledge park and riverfront events?', a: 'Yes, we support park-adjacent and outdoor gathering spaces throughout the Grand Ledge area.' },
+      { q: 'Can you set up for private-property weddings in Grand Ledge?', a: 'Yes. We assess access, utility connections, and trailer placement before confirming delivery.' },
+      { q: 'Are your trailers a good fit for family reunions and milestone parties?', a: 'Absolutely. Luxury trailers add comfort for family-centered events with mixed guest counts.' },
+      { q: 'Can you coordinate around tighter neighborhood access points?', a: 'Yes, we plan route and setup logistics in advance for residential streets and driveways.' },
+      { q: 'Do you offer multi-day rentals for weekend events?', a: 'Yes, we can schedule multi-day coverage and pickup timing based on your event plan.' },
+    ],
+  },
+  'dewitt-mi': {
+    ...cityContent['dewitt-mi'],
+    intro: 'Signature Luxe Events & Amenities provides luxury restroom trailer rentals in DeWitt, MI for park gatherings, private-property weddings, family celebrations, graduation parties, and school or community events. Based in Lansing and serving Mid-Michigan, we deliver clean, modern, climate-controlled trailers with coordinated setup and pickup. DeWitt events often combine neighborhood hosting with rural-edge properties, so we plan each rental around access, placement, and utility readiness.',
+    venueNote: 'DeWitt planning commonly includes park and pavilion gatherings, private outdoor receptions, community center-style events, and school-connected functions that need dependable restroom capacity.',
+    useCases: ['Park and pavilion gatherings', 'Private-property weddings', 'Family celebrations and reunions', 'Graduation parties', 'Community center-style events', 'School and neighborhood gatherings'],
+    localOverview: [
+      'DeWitt hosts a mix of family-centered neighborhood events and larger seasonal community gatherings where restroom availability can affect guest comfort and flow.',
+      'Our trailers help organizers support both formal and casual events with a polished, self-contained restroom solution.'
+    ],
+    privateEventUseCase: [
+      'Private-property weddings, graduation parties, and family celebrations in DeWitt often benefit from restroom placement that protects indoor spaces and keeps guests nearby.',
+      'For community center-style and school-connected events, we can coordinate trailer sizing based on event duration and peak traffic windows.'
+    ],
+    setupLogistics: [
+      'We evaluate residential properties for driveway approach, turning radius, and practical trailer placement near activity zones.',
+      'For rural-edge sites around DeWitt, we review grade, ground firmness, and distance to power/water so setup remains predictable.'
+    ],
+    seasonalPlanning: [
+      'Spring and summer dates in DeWitt can fill quickly for graduations, reunions, and weekend celebrations, so earlier booking is recommended.',
+      'For warmer-weather community events, we help plan delivery timing and service intervals around longer daily schedules.'
+    ],
+    faqs: [
+      { q: 'Do you provide restroom trailers for DeWitt park and pavilion events?', a: 'Yes, we can support park-based gatherings with site-specific setup planning.' },
+      { q: 'Can trailers be delivered for private-property weddings in DeWitt?', a: 'Absolutely. We confirm access, placement, and utility details before event day.' },
+      { q: 'Do you support DeWitt graduation parties and family celebrations?', a: 'Yes, these are common use cases and we can recommend the right trailer size for guest count and duration.' },
+      { q: 'Can you coordinate setup for school or community-style events?', a: 'Yes, we help plan delivery windows and placement around school and neighborhood event logistics.' },
+      { q: 'Do rural-edge DeWitt properties require extra planning?', a: 'Sometimes, and we review route access, ground conditions, and utility distance during the quote process.' },
+    ],
+  },
   'holt-mi': {
     intro: 'Signature Luxe Events & Amenities provides luxury restroom trailer rentals in Holt, MI for weddings, backyard celebrations, graduation parties, family reunions, and community events. Based in Lansing and serving Mid-Michigan, we bring clean, modern, climate-controlled restroom trailers that add comfort and convenience to outdoor gatherings. Whether your event is at a neighborhood home, local park, or private property, we coordinate delivery and setup based on your site conditions and timeline.',
     nearby: 'Lansing, Mason, Delhi Township, Dimondale, Okemos, and East Lansing',
