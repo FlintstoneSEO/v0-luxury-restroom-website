@@ -202,8 +202,67 @@ const interiorGallery = [
 ]
 
 export default function LuxuryRestroomTrailerRentalsPage() {
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Luxury Restroom Trailer Rentals",
+    areaServed: ["Lansing, MI", "Mid-Michigan"],
+    serviceType: "Luxury restroom trailer rental",
+    provider: {
+      "@type": "LocalBusiness",
+      name: "Signature Luxe Events & Amenities",
+      url: "https://www.signatureluxeevents.com",
+    },
+    url: canonical,
+    description,
+  }
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.signatureluxeevents.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Luxury Restroom Trailer Rentals",
+        item: canonical,
+      },
+    ],
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
       <main>
         {/* Hero */}
