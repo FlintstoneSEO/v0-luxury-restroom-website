@@ -1240,7 +1240,6 @@ export const enhancedCityContent: Record<string, CityExtra> = {
     nearby: 'Okemos, East Lansing, Meridian Township, Bath, Williamston, and Lansing',
     venueNote: 'Haslett planning frequently includes Lake Lansing gatherings, park-style summer events, family celebrations, and private outdoor parties throughout Meridian Township and nearby Bath-area properties.',
     useCases: ['Lake Lansing area gatherings', 'Backyard graduation parties', 'Family reunions', 'Private wedding celebrations', 'Summer park-style events', 'Neighborhood community events'],
-    nearbyCommunities: ['Okemos', 'East Lansing', 'Meridian Township', 'Bath', 'Williamston', 'Lansing'],
     localOverview: [
       'Haslett events frequently center around Lake Lansing, neighborhood homes, and Meridian Township gathering spaces where guests may be spread across docks, patios, and lawn areas.',
       'Our team helps hosts maintain a premium guest experience by adding dedicated restroom capacity close to activity areas while reducing wear on indoor bathrooms.'
