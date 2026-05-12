@@ -349,6 +349,44 @@ export const cityContent: Record<string, CityExtra> = {
       "graduation parties",
       "small corporate events"
     ],
+    "localOverview": [
+      "Haslett events often center around Lake Lansing activity, Meridian Township neighborhoods, and private outdoor hosting across residential properties.",
+      "We help organizers add premium restroom capacity while keeping home interiors, driveways, and guest flow protected."
+    ],
+    "weddingUseCase": [
+      "Private-property weddings in Haslett benefit from luxury restroom trailers when permanent facilities are limited.",
+      "We coordinate delivery timing around ceremony and reception logistics for a smoother wedding timeline."
+    ],
+    "privateEventUseCase": [
+      "Backyard parties, family reunions, graduation parties, and private outdoor gatherings are common Haslett use cases.",
+      "Trailer placement near yard activity zones helps guests stay comfortable without crowding indoor bathrooms."
+    ],
+    "corporateFestivalUseCase": [
+      "Lake Lansing area events and Meridian Township community gatherings often require reliable, guest-ready restroom support."
+    ],
+    "constructionLongTermUseCase": [
+      "For temporary facilities near Haslett and Bath, we can provide longer-term rental options with service scheduling."
+    ],
+    "setupLogistics": [
+      "We review residential streets, driveway access, and yard placement before delivery to avoid event-day surprises."
+    ],
+    "seasonalPlanning": [
+      "Summer event planning in Haslett is best handled early, especially for Lake Lansing weekends and graduation season."
+    ],
+    "nearbyCommunities": ["Okemos", "East Lansing", "Meridian Township", "Bath", "Williamston"],
+    "resourceLinks": [
+      { "href": "/resources/how-many-restroom-trailers-for-wedding", "label": "How Many Restroom Trailers Do You Need for a Wedding?" },
+      { "href": "/resources/restroom-trailer-setup-requirements", "label": "Restroom Trailer Setup Requirements" }
+    ],
+    "serviceLinks": [
+      { "href": "/luxury-restroom-trailer-rentals", "label": "Luxury Restroom Trailer Rentals" },
+      { "href": "/wedding-restroom-trailer-rentals", "label": "Wedding Restroom Trailer Rentals" },
+      { "href": "/private-event-restroom-trailers", "label": "Private Event Restroom Trailers" },
+      { "href": "/corporate-event-restroom-trailers", "label": "Corporate Event Restroom Trailers" },
+      { "href": "/festival-community-event-restroom-trailers", "label": "Festival & Community Event Restroom Trailers" },
+      { "href": "/construction-long-term-restroom-trailer-rentals", "label": "Construction & Long-Term Restroom Trailer Rentals" }
+    ],
+    "trustNote": "From Haslett residential streets to Lake Lansing-area hosting sites, we focus on clean presentation and dependable setup planning.",
     "faqs": [
       {
         "q": "Is Haslett in your regular service area?",
@@ -477,6 +515,42 @@ export const cityContent: Record<string, CityExtra> = {
       "company events",
       "construction support"
     ],
+    "localOverview": [
+      "DeWitt events range from neighborhood celebrations to park and pavilion gatherings that need dependable restroom capacity.",
+      "We support both residential properties and rural-edge sites with polished, guest-ready trailer setups."
+    ],
+    "weddingUseCase": [
+      "For private-property weddings in DeWitt, luxury trailers offer formal restroom comfort where venue facilities are limited."
+    ],
+    "privateEventUseCase": [
+      "Family celebrations, graduation parties, and private outdoor gatherings in DeWitt often use trailers to reduce strain on indoor bathrooms."
+    ],
+    "corporateFestivalUseCase": [
+      "School/community gatherings and pavilion-based events benefit from clean, climate-controlled restroom options."
+    ],
+    "constructionLongTermUseCase": [
+      "We provide long-term and temporary-facility support for DeWitt project sites needing ongoing restroom access."
+    ],
+    "setupLogistics": [
+      "Our team evaluates residential properties and rural-edge sites for route access, turning space, and placement before delivery."
+    ],
+    "seasonalPlanning": [
+      "Spring and summer event planning in DeWitt should be scheduled early due to graduation and wedding demand."
+    ],
+    "nearbyCommunities": ["Lansing", "Bath", "St. Johns", "East Lansing", "Watertown Township"],
+    "resourceLinks": [
+      { "href": "/resources/outdoor-wedding-restroom-planning-michigan", "label": "Outdoor Wedding Restroom Planning Guide" },
+      { "href": "/resources/restroom-trailer-setup-requirements", "label": "Restroom Trailer Setup Requirements" }
+    ],
+    "serviceLinks": [
+      { "href": "/luxury-restroom-trailer-rentals", "label": "Luxury Restroom Trailer Rentals" },
+      { "href": "/wedding-restroom-trailer-rentals", "label": "Wedding Restroom Trailer Rentals" },
+      { "href": "/private-event-restroom-trailers", "label": "Private Event Restroom Trailers" },
+      { "href": "/corporate-event-restroom-trailers", "label": "Corporate Event Restroom Trailers" },
+      { "href": "/festival-community-event-restroom-trailers", "label": "Festival & Community Event Restroom Trailers" },
+      { "href": "/construction-long-term-restroom-trailer-rentals", "label": "Construction & Long-Term Restroom Trailer Rentals" }
+    ],
+    "trustNote": "For DeWitt park events, residential properties, and rural-edge gatherings, we prioritize practical logistics and elevated guest comfort.",
     "faqs": [
       {
         "q": "Do you serve DeWitt year-round?",
@@ -494,6 +568,102 @@ export const cityContent: Record<string, CityExtra> = {
         "q": "Can I book for a weekend event?",
         "a": "Yes, weekend bookings are common."
       }
+    ]
+  },
+  "holt-mi": {
+    "intro": "Holt events often include neighborhood gatherings, private celebrations, and outdoor functions that benefit from premium restroom access.",
+    "nearby": "Lansing, Mason, Delhi Township, and Dimondale",
+    "venueNote": "We coordinate around residential properties and park-style layouts throughout Holt.",
+    "useCases": [
+      "backyard parties",
+      "graduation celebrations",
+      "family reunions",
+      "private-property weddings"
+    ],
+    "localOverview": [
+      "Holt events often take place at neighborhood homes and park-style gathering areas where hosts need practical restroom planning.",
+      "Luxury trailers add comfort while helping protect indoor facilities during higher-traffic celebrations."
+    ],
+    "weddingUseCase": [
+      "For Holt private-property weddings and receptions, luxury trailers provide elevated guest restroom support."
+    ],
+    "privateEventUseCase": [
+      "Backyard parties, graduation celebrations, and family reunions in Holt are common use cases for added restroom capacity."
+    ],
+    "corporateFestivalUseCase": [
+      "Community gatherings and park-centered Holt events benefit from clean, climate-controlled restroom options."
+    ],
+    "constructionLongTermUseCase": [
+      "We can support temporary facility and long-term project needs in Holt with recurring service schedules."
+    ],
+    "setupLogistics": [
+      "We confirm residential access, driveway approach, and trailer placement zones ahead of delivery."
+    ],
+    "seasonalPlanning": [
+      "Spring and summer Holt dates fill quickly for graduations and weddings, so advance planning is recommended."
+    ],
+    "resourceLinks": [
+      { "href": "/resources/restroom-trailer-setup-requirements", "label": "Restroom Trailer Setup Requirements" }
+    ],
+    "serviceLinks": [
+      { "href": "/luxury-restroom-trailer-rentals", "label": "Luxury Restroom Trailer Rentals" },
+      { "href": "/wedding-restroom-trailer-rentals", "label": "Wedding Restroom Trailer Rentals" },
+      { "href": "/private-event-restroom-trailers", "label": "Private Event Restroom Trailers" }
+    ],
+    "faqs": [
+      { "q": "Do you deliver restroom trailers to Holt homes?", "a": "Yes, we regularly support residential events across Holt." },
+      { "q": "Can you support Holt graduation season events?", "a": "Yes, early booking is recommended for spring and early summer." },
+      { "q": "Do you work with Holt park and recreation gatherings?", "a": "Yes, we can coordinate setup for public or private outdoor sites." },
+      { "q": "Are multi-day Holt rentals available?", "a": "Yes, we offer weekend and extended rentals with service planning." },
+      { "q": "How do you size trailers for Holt events?", "a": "We recommend the best unit based on guest count and event duration." }
+    ]
+  },
+  "mason-mi": {
+    "intro": "Mason hosts fairground-style events, private celebrations, and rural property gatherings where dependable restroom capacity matters.",
+    "nearby": "Lansing, Holt, Leslie, and Dansville",
+    "venueNote": "We plan delivery and placement for mixed-surface sites and event-focused properties in Mason.",
+    "useCases": [
+      "fairground events",
+      "rural weddings",
+      "community gatherings",
+      "private parties"
+    ],
+    "localOverview": [
+      "Mason serves fairground-style events, rural properties, and local community gatherings that often need dependable restroom capacity.",
+      "We provide polished restroom trailer setups tailored to both formal and high-volume outdoor schedules."
+    ],
+    "weddingUseCase": [
+      "For Mason rural weddings and private-property receptions, luxury restroom trailers support guest comfort where permanent facilities are limited."
+    ],
+    "privateEventUseCase": [
+      "Private parties and family celebrations in Mason often use trailers to reduce traffic through home interiors."
+    ],
+    "corporateFestivalUseCase": [
+      "Fairground events, community open houses, and expo-style Mason schedules benefit from guest-ready restroom logistics."
+    ],
+    "constructionLongTermUseCase": [
+      "Mason-area project sites can use long-term restroom trailer rentals with recurring service planning."
+    ],
+    "setupLogistics": [
+      "We evaluate route access, mixed surfaces, and utility distances for both in-town and rural-edge Mason properties."
+    ],
+    "seasonalPlanning": [
+      "Spring through early fall is peak event season in Mason, so reserving early improves date and unit availability."
+    ],
+    "resourceLinks": [
+      { "href": "/resources/outdoor-wedding-restroom-planning-michigan", "label": "Outdoor Wedding Restroom Planning Guide" }
+    ],
+    "serviceLinks": [
+      { "href": "/luxury-restroom-trailer-rentals", "label": "Luxury Restroom Trailer Rentals" },
+      { "href": "/wedding-restroom-trailer-rentals", "label": "Wedding Restroom Trailer Rentals" },
+      { "href": "/festival-community-event-restroom-trailers", "label": "Festival & Community Event Restroom Trailers" }
+    ],
+    "faqs": [
+      { "q": "Do you provide restroom trailers for Mason fairground-style events?", "a": "Yes, we support larger public and private event schedules in Mason." },
+      { "q": "Can trailers be delivered to rural Mason wedding properties?", "a": "Yes, we evaluate route access and placement before delivery." },
+      { "q": "Are luxury trailers suitable for Mason expos and open houses?", "a": "Yes, they are a strong fit for guest-facing high-traffic events." },
+      { "q": "Do you cover nearby communities around Mason?", "a": "Yes, including Holt, Leslie, Dansville, and surrounding Mid-Michigan areas." },
+      { "q": "Can I book a multi-day restroom trailer rental in Mason?", "a": "Yes, we offer multi-day plans with pickup and service timing coordination." }
     ]
   },
   "jackson-mi": {
@@ -1070,14 +1240,24 @@ export const enhancedCityContent: Record<string, CityExtra> = {
     nearby: 'Okemos, East Lansing, Meridian Township, Bath, Williamston, and Lansing',
     venueNote: 'Haslett planning frequently includes Lake Lansing gatherings, park-style summer events, family celebrations, and private outdoor parties throughout Meridian Township and nearby Bath-area properties.',
     useCases: ['Lake Lansing area gatherings', 'Backyard graduation parties', 'Family reunions', 'Private wedding celebrations', 'Summer park-style events', 'Neighborhood community events'],
-    nearbyCommunities: ['Okemos', 'East Lansing', 'Meridian Township', 'Bath', 'Williamston', 'Lansing'],
     localOverview: [
       'Haslett events frequently center around Lake Lansing, neighborhood homes, and Meridian Township gathering spaces where guests may be spread across docks, patios, and lawn areas.',
       'Our team helps hosts maintain a premium guest experience by adding dedicated restroom capacity close to activity areas while reducing wear on indoor bathrooms.'
     ],
+    weddingUseCase: [
+      'For private-property weddings near Haslett and the Lake Lansing area, luxury trailers add formal restroom comfort where permanent facilities are limited.',
+      'We coordinate setup timing with tenting, catering, and ceremony flow so restroom access supports the full wedding timeline.'
+    ],
     privateEventUseCase: [
       'Backyard parties, family reunions, and graduation weekends in Haslett often benefit from a trailer positioned near guest circulation zones without disrupting indoor hosting.',
       'For private outdoor gatherings, we can align setup with tenting, catering, and parking flow so restroom access feels natural throughout the event timeline.'
+    ],
+    corporateFestivalUseCase: [
+      'Lake Lansing-area events, neighborhood association gatherings, and Meridian Township community programs often use luxury trailers to provide guest-ready restroom support.',
+      'For school, sponsor, or nonprofit-led outdoor events, we help plan capacity around expected attendance and peak-use windows.'
+    ],
+    constructionLongTermUseCase: [
+      'For temporary facilities in Haslett and nearby Bath or Meridian Township project sites, we offer longer-term trailer rentals with recurring service planning.'
     ],
     setupLogistics: [
       'We review residential street access, driveway turning space, and yard placement options to keep delivery smooth in neighborhood settings.',
@@ -1087,6 +1267,13 @@ export const enhancedCityContent: Record<string, CityExtra> = {
       'Summer weekends near Lake Lansing are high demand, so early date selection helps secure preferred trailer size and delivery windows.',
       'Warm-weather events with extended evening schedules often benefit from larger-capacity units and proactive service planning.'
     ],
+    nearbyCommunities: ['Okemos', 'East Lansing', 'Meridian Township', 'Bath', 'Williamston', 'Lansing'],
+    resourceLinks: [
+      { href: '/resources/how-many-restroom-trailers-for-wedding', label: 'How Many Restroom Trailers Do You Need for a Wedding?' },
+      { href: '/resources/restroom-trailer-setup-requirements', label: 'Restroom Trailer Setup Requirements' }
+    ],
+    serviceLinks: [...defaultServiceLinks],
+    trustNote: 'From residential streets to lake-area properties in Haslett, we focus on proactive communication, careful placement, and polished presentation.',
     faqs: [{ q: 'Do you deliver restroom trailers near Lake Lansing?', a: 'Yes, we frequently support events in the Lake Lansing and greater Haslett area.' }, { q: 'Can trailers be used for backyard parties in Haslett?', a: 'Yes. We confirm access routes, placement, and utility setup before the event.' }, { q: 'Do you cover Meridian Township and Bath-area properties?', a: 'Absolutely. We serve Haslett and surrounding communities throughout Mid-Michigan.' }, { q: 'Are your trailers appropriate for graduation and reunion events?', a: 'Yes, they are a strong fit for family-focused gatherings with moderate to high guest counts.' }, { q: 'How do I request availability in Haslett?', a: 'Submit your event date, guest count, and location and we will prepare a custom quote.' }],
   },
   'grand-ledge-mi': {
@@ -1108,9 +1295,20 @@ export const enhancedCityContent: Record<string, CityExtra> = {
       'DeWitt hosts a mix of family-centered neighborhood events and larger seasonal community gatherings where restroom availability can affect guest comfort and flow.',
       'Our trailers help organizers support both formal and casual events with a polished, self-contained restroom solution.'
     ],
+    weddingUseCase: [
+      'DeWitt private-property weddings and outdoor receptions often use luxury restroom trailers to maintain an elevated guest experience.',
+      'We align delivery and pickup timing with ceremony and reception plans to keep event-day logistics organized.'
+    ],
     privateEventUseCase: [
       'Private-property weddings, graduation parties, and family celebrations in DeWitt often benefit from restroom placement that protects indoor spaces and keeps guests nearby.',
       'For community center-style and school-connected events, we can coordinate trailer sizing based on event duration and peak traffic windows.'
+    ],
+    corporateFestivalUseCase: [
+      'Park and pavilion gatherings, school/community programs, and sponsor-led outdoor events in DeWitt benefit from premium, guest-ready restroom options.',
+      'For public-facing schedules, we help plan trailer count and service timing around expected traffic patterns.'
+    ],
+    constructionLongTermUseCase: [
+      'For active job sites and temporary facility needs around DeWitt, we provide long-term rental options with scheduled maintenance support.'
     ],
     setupLogistics: [
       'We evaluate residential properties for driveway approach, turning radius, and practical trailer placement near activity zones.',
@@ -1120,6 +1318,13 @@ export const enhancedCityContent: Record<string, CityExtra> = {
       'Spring and summer dates in DeWitt can fill quickly for graduations, reunions, and weekend celebrations, so earlier booking is recommended.',
       'For warmer-weather community events, we help plan delivery timing and service intervals around longer daily schedules.'
     ],
+    nearbyCommunities: ['Lansing', 'Bath', 'St. Johns', 'East Lansing', 'Watertown Township'],
+    resourceLinks: [
+      { href: '/resources/outdoor-wedding-restroom-planning-michigan', label: 'Outdoor Wedding Restroom Planning Guide' },
+      { href: '/resources/restroom-trailer-setup-requirements', label: 'Restroom Trailer Setup Requirements' }
+    ],
+    serviceLinks: [...defaultServiceLinks],
+    trustNote: 'From DeWitt neighborhood events to rural-edge properties, we prioritize dependable logistics, clean presentation, and responsive support.',
     faqs: [
       { q: 'Do you provide restroom trailers for DeWitt park and pavilion events?', a: 'Yes, we can support park-based gatherings with site-specific setup planning.' },
       { q: 'Can trailers be delivered for private-property weddings in DeWitt?', a: 'Absolutely. We confirm access, placement, and utility details before event day.' },
