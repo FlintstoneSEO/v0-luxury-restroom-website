@@ -2,7 +2,7 @@
 
 import { useActionState } from "react"
 import Link from "next/link"
-import { Mail, MapPin, Clock, ArrowRight, CheckCircle } from "lucide-react"
+import { Mail, MapPin, Clock, ArrowRight, CheckCircle, Phone } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/hero-section"
@@ -50,6 +50,22 @@ export default function ContactPage() {
                 </p>
 
                 <div className="mt-10 space-y-8">
+                  {/* Phone */}
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+                      <Phone className="w-5 h-5 text-navy" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-navy">Phone</h3>
+                      <a
+                        href="tel:+15172950107"
+                        className="text-muted-foreground hover:text-navy transition-colors"
+                      >
+                        (517) 295-0107
+                      </a>
+                    </div>
+                  </div>
+
                   {/* Email */}
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center shrink-0">

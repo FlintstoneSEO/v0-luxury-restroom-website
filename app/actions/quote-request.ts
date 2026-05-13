@@ -207,8 +207,8 @@ export async function submitQuoteRequest(
           quoteNumber: insertedQuote?.quote_number || 'Pending',
           eventDate: data.event_date,
           eventLocation: `${data.city}, ${data.state}`,
-          businessPhoneDisplay: '(517) 499-0995',
-          businessPhoneHref: '+15174990995',
+          businessPhoneDisplay: '(517) 295-0107',
+          businessPhoneHref: '+15172950107',
           contactUrl: `${APP_URL}/contact`,
         })
 
