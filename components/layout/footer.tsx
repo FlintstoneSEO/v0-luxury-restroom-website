@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Instagram, Mail, MapPin, Clock } from "lucide-react"
+import { Facebook, Instagram, Mail, MapPin, Clock, Phone } from "lucide-react"
 
 const quickLinks = [
   { name: "Home", href: "/" },
@@ -64,6 +64,15 @@ export function Footer() {
                   className="text-white/80 text-base hover:text-gold transition-colors"
                 >
                   info@signatureluxeevents.com
+                </a>
+              </div>
+              <div className="flex items-start gap-3">
+                <Phone className="h-5 w-5 text-gold mt-0.5 shrink-0" />
+                <a
+                  href="tel:+15172950107"
+                  className="text-white/80 text-base hover:text-gold transition-colors"
+                >
+                  (517) 295-0107
                 </a>
               </div>
               <div className="flex items-start gap-3">
