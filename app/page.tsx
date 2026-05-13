@@ -100,7 +100,7 @@ const galleryImages = [
   },
   { 
     id: "3", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
+    src: "/images/Wedding Trailer.png",
     alt: "Wedding restroom trailer rental in Mid-Michigan", 
     category: "Weddings" 
   },
@@ -112,7 +112,7 @@ const galleryImages = [
   },
   { 
     id: "5", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_19_19%20PM-flItPBW2CyM2JXe8YJpcXdcdJRxIOb.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Mobile restroom trailer for outdoor events", 
     category: "Events" 
   },
@@ -143,22 +143,22 @@ const serviceAreas = [
 // Event scenario images for hero showcase
 const eventScenarios = [
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
+    src: "/images/Wedding Trailer.png",
     alt: "Luxury restroom trailer setup for outdoor wedding reception in Michigan",
     label: "Weddings"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Luxury restroom trailer rental for backyard private party in Mid-Michigan",
     label: "Parties"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_08_15%20PM-V96pFxXSvB2cRlUNAjQtbfMvGB7ejF.png",
+    src: "/images/Construction Site Trailer.png",
     alt: "Long-term restroom trailer rental for construction site in Michigan",
     label: "Construction"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Corporate gala event",
     label: "Events"
   },

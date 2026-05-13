@@ -332,13 +332,13 @@ export default function OurRestroomsPage() {
                   },
                   {
                     id: "ext2",
-                    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_19_19%20PM-flItPBW2CyM2JXe8YJpcXdcdJRxIOb.png",
+                    src: "/images/Special Event Trailer.png",
                     alt: "Restroom trailer at evening event with string lights",
                     category: "Events"
                   },
                   {
                     id: "ext3",
-                    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
+                    src: "/images/Special Event Trailer.png",
                     alt: "Restroom trailer at backyard party",
                     category: "Events"
                   },

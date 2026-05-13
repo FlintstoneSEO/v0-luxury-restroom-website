@@ -26,7 +26,7 @@ const galleryImages = [
   },
   {
     id: "3",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
+    src: "/images/Wedding Trailer.png",
     alt: "Wedding restroom trailer rental setup in Mid-Michigan",
     category: "Weddings",
   },
@@ -44,7 +44,7 @@ const galleryImages = [
   },
   {
     id: "6",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Mobile restroom trailer for outdoor events Michigan",
     category: "Exterior",
   },
@@ -56,13 +56,13 @@ const galleryImages = [
   },
   {
     id: "8",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Corporate gala event restroom trailer rental",
     category: "Events",
   },
   {
     id: "9",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2010%2C%202026%2C%2009_22_04%20PM-0pHz7fSqklvOSoLzCnYIMT8fp3gRoJ.png",
+    src: "/images/MSU Tailgate Rental Restroom.png",
     alt: "Luxury restroom trailer at poolside reception",
     category: "Events",
   },
@@ -74,13 +74,13 @@ const galleryImages = [
   },
   {
     id: "11",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_56_46%20PM-H2xCmMMND6AksTZG4HA9OHuDL07tY3.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Festival restroom trailer rental Michigan",
     category: "Events",
   },
   {
     id: "12",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_19_19%20PM-flItPBW2CyM2JXe8YJpcXdcdJRxIOb.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Climate controlled restroom trailer evening event",
     category: "Exterior",
   },

@@ -156,7 +156,7 @@ export default function EmergencyDisasterReliefRestroomTrailersPage() {
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_58_47%20PM-aeanHamx6Bc8VgDx2TG32Sq4iDkyVF.png"
+                  src="/images/Disaster Relief Trailer.png"
                   alt="Restroom trailer at emergency response staging site"
                   fill
                   className="object-cover"

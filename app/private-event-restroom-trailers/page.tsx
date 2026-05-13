@@ -112,13 +112,13 @@ const benefits = [
 const eventGallery = [
   {
     id: "p1",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Restroom trailer at private backyard event",
     category: "Events",
   },
   {
     id: "p2",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Apr%2024%2C%202026%2C%2010_08_32%20PM-R6Ta7a6rys9yAckLBuJnKBPnAZ4mRl.png",
+    src: "/images/Special Event Trailer.png",
     alt: "Luxury restroom trailer setup at backyard party",
     category: "Events",
   },
@@ -263,7 +263,7 @@ export default function PrivateEventRestroomTrailersPage() {
               </div>
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_19_19%20PM-flItPBW2CyM2JXe8YJpcXdcdJRxIOb.png"
+                  src="/images/Special Event Trailer.png"
                   alt="Luxury restroom trailer set up at a private backyard event"
                   fill
                   className="object-cover"

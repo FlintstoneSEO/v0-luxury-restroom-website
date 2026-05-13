@@ -14,8 +14,8 @@ const galleryVisuals = {
   exterior: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg', alt: 'Luxury restroom trailer exterior setup in Michigan' },
   interior: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg', alt: 'Interior vanity in luxury restroom trailer' },
   wedding: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f8c856e0-44a2-4c9a-990c-09e671fee136-VkgBsnTDKck69SOzLmlIYiSb3zZeAS.png', alt: 'Wedding restroom trailer setup at a private estate' },
-  corporate: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_05_24%20PM-syeWtXVuOA1VbMKhN5WOX5kX6LczSq.png', alt: 'Corporate event restroom trailer rental setup' },
-  festival: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_56_46%20PM-H2xCmMMND6AksTZG4HA9OHuDL07tY3.png', alt: 'Festival restroom trailer setup in Michigan' },
+  corporate: { src: '/images/Special Event Trailer.png', alt: 'Corporate event restroom trailer rental setup' },
+  festival: { src: '/images/Special Event Trailer.png', alt: 'Festival restroom trailer setup in Michigan' },
   station3: { src: '/images/3 Station Pro/3Station.jpg', alt: '3 Station Pro restroom trailer exterior' },
 }
 
