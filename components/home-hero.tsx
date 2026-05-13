@@ -7,7 +7,7 @@ import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const HERO_IMAGE =
-  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_57_05%20PM-andQKOFMNL27uuWQLGIkidESuYaaAs.png"
+  "/images/Wedding Trailer.png"
 
 export function HomeHero() {
   const [offsetY, setOffsetY] = useState(0)

@@ -108,7 +108,7 @@ export default function ConstructionLongTermPage() {
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_58_08%20PM-FAtMzJ1Zh8G59v1YcrSx4668yP3wxb.png"
+                  src="/images/Construction Site Trailer.png"
                   alt="Restroom trailer at construction site with workers"
                   fill
                   className="object-cover"
@@ -141,7 +141,7 @@ export default function ConstructionLongTermPage() {
             <div className="grid gap-8 md:grid-cols-2">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_16_57%20PM-VpBHEub4XY4h723FyEp7D51P1xr0DC.png"
+                  src="/images/Construction Site Trailer.png"
                   alt="Restroom trailer at active construction site"
                   fill
                   className="object-cover"
@@ -150,7 +150,7 @@ export default function ConstructionLongTermPage() {
               </div>
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2009_08_15%20PM-V96pFxXSvB2cRlUNAjQtbfMvGB7ejF.png"
+                  src="/images/Construction Site Trailer.png"
                   alt="Restroom trailer at construction site with flowers"
                   fill
                   className="object-cover"

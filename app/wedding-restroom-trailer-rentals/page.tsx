@@ -100,13 +100,13 @@ const weddingBenefits = [
 const weddingGallery = [
   {
     id: "w1",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%208%2C%202026%2C%2008_40_17%20PM-NL7i7EeHuiHMOi8dyFMfz0jREjM8m8.png",
+    src: "/images/Wedding Trailer.png",
     alt: "Wedding restroom trailer rental Lansing Michigan",
     category: "Weddings",
   },
   {
     id: "w2",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%201%2C%202026%2C%2010_57_05%20PM-andQKOFMNL27uuWQLGIkidESuYaaAs.png",
+    src: "/images/Wedding Trailer.png",
     alt: "Luxury restroom trailer at elegant wedding reception",
     category: "Weddings",
   },
