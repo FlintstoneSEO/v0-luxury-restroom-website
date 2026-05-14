@@ -150,19 +150,23 @@ export function Footer() {
               <h4 className="text-sm font-semibold mb-4">Follow Us</h4>
               <div className="flex gap-4">
                 <a 
-                  href="#" 
-                  aria-label="Facebook"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </a>
-                <a 
-                  href="#" 
-                  aria-label="Instagram"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </a>
+  href="https://www.facebook.com/signatureluxeevents"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Facebook"
+  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors"
+>
+  <Facebook className="h-5 w-5" />
+</a>
+<a 
+  href="https://www.instagram.com/signatureluxe_events"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Instagram"
+  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors"
+>
+  <Instagram className="h-5 w-5" />
+</a>
               </div>
             </div>
           </div>
