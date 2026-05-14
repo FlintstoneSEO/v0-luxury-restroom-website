@@ -1,6 +1,6 @@
 export const homepageImages = {
   hero: {
-    src: "/images/Wedding Restroom Trailer in Lansing",
+    src: "/images/Wedding Trailer.png",
     alt: "Luxury restroom trailer parked at an elegant outdoor wedding venue in Lansing, Michigan",
   },
   byOccasion: {
@@ -15,12 +15,12 @@ export const homepageImages = {
       label: "Parties",
     },
     corporateEvents: {
-      src: "/images/Corporate Event Restroom Trailer",
+      src: "/images/MSU Tailgate Rental Restroom.png",
       alt: "Luxury restroom trailer setup for a corporate networking and special event in Lansing",
       label: "Corporate",
     },
     festivals: {
-      src: "/images/Festival Restroom Trailer",
+      src: "/images/Disaster Relief Trailer.png",
       alt: "Luxury restroom trailer serving a Michigan festival and community event crowd",
       label: "Festivals",
     },
@@ -31,7 +31,7 @@ export const homepageImages = {
       alt: "Premium wedding restroom trailer rental for outdoor venues in Lansing, Michigan",
     },
     specialEvents: {
-      src: "/images/Corporate Event Restroom Trailer",
+      src: "/images/MSU Tailgate Rental Restroom.png",
       alt: "Luxury restroom trailer rental for corporate galas, fundraisers, and private events in Mid-Michigan",
     },
     constructionLongTerm: {
