@@ -44,8 +44,8 @@ const galleryImages = [
   },
   {
     id: "6",
-    src: "/images/Special Event Trailer.png",
-    alt: "Mobile restroom trailer for outdoor events Michigan",
+    src: "/images/Construction Site Trailer.png",
+    alt: "Restroom trailer stationed at an active construction project in Michigan",
     category: "Exterior",
   },
   {
@@ -56,8 +56,8 @@ const galleryImages = [
   },
   {
     id: "8",
-    src: "/images/Special Event Trailer.png",
-    alt: "Corporate gala event restroom trailer rental",
+    src: "/images/MSU Tailgate Rental Restroom.png",
+    alt: "Luxury restroom trailer setup for corporate and VIP event guests",
     category: "Events",
   },
   {
@@ -74,14 +74,14 @@ const galleryImages = [
   },
   {
     id: "11",
-    src: "/images/Special Event Trailer.png",
-    alt: "Festival restroom trailer rental Michigan",
+    src: "/images/Disaster Relief Trailer.png",
+    alt: "Disaster response restroom trailer with support vehicles onsite",
     category: "Events",
   },
   {
     id: "12",
     src: "/images/Special Event Trailer.png",
-    alt: "Climate controlled restroom trailer evening event",
+    alt: "Climate controlled restroom trailer during an evening special event",
     category: "Exterior",
   },
   {
