@@ -6,8 +6,9 @@ import { useEffect, useRef, useState } from "react"
 import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const HERO_IMAGE =
-  "/images/Wedding Trailer.png"
+import { homepageImages } from "@/lib/homepage-images"
+
+const HERO_IMAGE = homepageImages.hero
 
 export function HomeHero() {
   const [offsetY, setOffsetY] = useState(0)
@@ -72,8 +73,8 @@ export function HomeHero() {
           style={{ transform: `translate3d(0, ${offsetY}px, 0)` }}
         >
           <Image
-            src={HERO_IMAGE}
-            alt="Luxury restroom trailer rental in Lansing Michigan for weddings and outdoor events"
+            src={HERO_IMAGE.src}
+            alt={HERO_IMAGE.alt}
             fill
             priority
             sizes="100vw"
