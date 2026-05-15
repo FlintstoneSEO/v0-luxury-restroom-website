@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
+import { SITE_MEDIA_PAGE_REGISTRY } from '@/lib/site-media-registry';
 
 export async function PUT(request: Request) {
   try {
@@ -36,6 +37,38 @@ export async function PUT(request: Request) {
 
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
     return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json({ ok: false, error: error instanceof Error ? error.message : 'Unexpected error' }, { status: 500 });
+  }
+}
+
+
+export async function POST() {
+  try {
+    const supabase = await createClient();
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user || auth.user.user_metadata?.is_admin !== true) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const admin = createAdminClient();
+    const now = new Date().toISOString();
+    const rows = SITE_MEDIA_PAGE_REGISTRY.flatMap((page) =>
+      page.sections.map((section) => ({
+        page_slug: page.pageSlug,
+        section_key: section.sectionKey,
+        label: section.label,
+        recommended_width: section.recommendedWidth,
+        recommended_height: section.recommendedHeight,
+        is_active: true,
+        updated_at: now,
+        updated_by: auth.user.id,
+      })),
+    );
+
+    const { error } = await admin.from('site_media').upsert(rows, { onConflict: 'page_slug,section_key' });
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
+    return NextResponse.json({ ok: true, createdOrUpdated: rows.length });
   } catch (error) {
     return NextResponse.json({ ok: false, error: error instanceof Error ? error.message : 'Unexpected error' }, { status: 500 });
   }

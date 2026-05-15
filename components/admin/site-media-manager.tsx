@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { Switch } from '@/components/ui/switch';
+import { SITE_MEDIA_PAGE_REGISTRY, getSiteMediaPageHref, getSiteMediaRegistryItem } from '@/lib/site-media-registry';
 
 interface SiteMediaRow {
   id: string;
@@ -26,38 +27,6 @@ interface SiteMediaRow {
 
 const sanitizeSlug = (value: string) => value.toLowerCase().replace(/[^a-z0-9-_]+/g, '-').replace(/^-+|-+$/g, '');
 const getPreviewImageSrc = (url: string | null) => (!url ? '/placeholder.jpg' : /^https?:\/\//.test(url) || url.startsWith('/') ? url : `/${url.replace(/^\/+/, '')}`);
-
-const getPageLabel = (slug: string) => {
-  if (slug === 'all') return 'All Pages';
-  return slug
-    .split('-')
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-};
-
-
-const pageHrefMap: Record<string, string> = {
-  home: '/',
-  about: '/about',
-  'start-here': '/start-here',
-  quote: '/request-quote',
-  'quote-start-here': '/start-here',
-  weddings: '/weddings',
-  'private-parties': '/private-event-restroom-trailers',
-  'corporate-events': '/corporate-event-restroom-trailers',
-  'special-events': '/special-events',
-  festivals: '/festival-community-event-restroom-trailers',
-  'festivals-community-events': '/festival-community-event-restroom-trailers',
-  'construction-long-term': '/construction-long-term',
-  contact: '/contact',
-};
-
-const getPageHref = (pageSlug: string) => {
-  if (!pageSlug || pageSlug === 'home') return '/';
-  if (pageHrefMap[pageSlug]) return pageHrefMap[pageSlug];
-  return `/${pageSlug.replace(/^\/+/, '')}`;
-};
 
 const usedOnMap: Record<string, string> = {
   hero: 'Main banner image at the top of the page.',
@@ -120,20 +89,22 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
   }, [rows]);
 
   const pageOptions = useMemo(() => {
-    const baseOptions = [
-      'home',
-      'weddings',
-      'private-parties',
-      'corporate-events',
-      'special-events',
-      'festivals',
-      'construction-long-term',
-      'about',
-      'contact',
-      'start-here',
-    ];
-    return ['all', ...Array.from(new Set([...baseOptions, ...rows.map((r) => r.page_slug)])).sort((a, b) => a.localeCompare(b))];
+    const registrySlugs = SITE_MEDIA_PAGE_REGISTRY.map((item) => item.pageSlug);
+    const allSlugs = Array.from(new Set([...registrySlugs, ...rows.map((r) => r.page_slug)])).sort((a, b) => a.localeCompare(b));
+    return ['all', ...allSlugs];
   }, [rows]);
+
+  const missingRegistrySlugs = useMemo(() => SITE_MEDIA_PAGE_REGISTRY
+    .filter((item) => !rows.some((row) => row.page_slug === item.pageSlug))
+    .map((item) => item.pageSlug), [rows]);
+
+  const seedMissingRows = async () => {
+    const res = await fetch('/api/admin/site-media', { method: 'POST' });
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to seed missing media rows.');
+    notify('Missing media rows were created. Refreshing data...');
+    window.location.reload();
+  };
 
   const selectedPageDuplicates = useMemo(() => {
     if (selectedPage === 'all') return [] as Array<{ imageUrl: string; count: number }>;
@@ -229,18 +200,20 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
 
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">{Object.entries({ 'Total image slots': summary.total, 'Active images': summary.active, 'Missing images': summary.missing, 'Missing alt text': summary.missingAlt, 'Duplicate images': summary.duplicate, 'Inactive images': summary.inactive }).map(([label, value]) => <Card key={label}><CardContent className="p-4"><p className="text-xs text-muted-foreground">{label}</p><p className="text-2xl font-semibold">{value}</p></CardContent></Card>)}</div>
 
+    {missingRegistrySlugs.length > 0 && <Card className="border-amber-300 bg-amber-50"><CardContent className="p-3 text-sm flex flex-wrap items-center justify-between gap-3"><p className="text-amber-900"><strong>{missingRegistrySlugs.length}</strong> registry page(s) are missing media records.</p><Button variant="outline" onClick={() => seedMissingRows().catch((e) => notify(e.message))}>Create Missing Media Records</Button></CardContent></Card>}
+
     {showGuide && <Card><CardContent className="p-4 text-sm space-y-2"><p className="font-medium">How to Use This Page</p><ol className="list-decimal pl-5 space-y-1"><li>Choose a page from the Page filter.</li><li>Review each image slot for that page.</li><li>Use Upload / Replace to select the correct image.</li><li>Make sure the alt text describes the image and includes the page context.</li><li>Click Save Changes.</li><li>Use View Live Page to confirm the image appears correctly.</li></ol><p className="text-muted-foreground">Tip: Each image slot controls a specific section of the public website. For example, Wedding Page Hero controls the large image at the top of the Wedding Restroom Trailer page.</p></CardContent></Card>}
 
     <div className="space-y-4">
-      <Card><CardContent className="p-3 grid gap-3 md:grid-cols-4"><select value={selectedPage} onChange={(e) => setSelectedPage(e.target.value)} className="rounded-md border px-3 py-2 text-sm">{pageOptions.map((page) => <option key={page} value={page}>{getPageLabel(page)}</option>)}</select><Input placeholder="Search by title, alt text, filename, section, or page" value={search} onChange={(e) => setSearch(e.target.value)} /><label className="flex items-center gap-2 text-sm">Show Issues Only<Switch checked={issuesOnly} onCheckedChange={setIssuesOnly} /></label><select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive' | 'missing')} className="rounded-md border px-3 py-2 text-sm"><option value="all">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="missing">Missing Image</option></select></CardContent></Card>
+      <Card><CardContent className="p-3 grid gap-3 md:grid-cols-4"><select value={selectedPage} onChange={(e) => setSelectedPage(e.target.value)} className="rounded-md border px-3 py-2 text-sm">{pageOptions.map((page) => { const item = getSiteMediaRegistryItem(page); const hasMissing = missingRegistrySlugs.includes(page); return <option key={page} value={page}>{page === 'all' ? 'All Pages' : `${item?.label ?? page}${hasMissing ? ' (Missing media records)' : ''}`}</option>; })}</select><Input placeholder="Search by title, alt text, filename, section, or page" value={search} onChange={(e) => setSearch(e.target.value)} /><label className="flex items-center gap-2 text-sm">Show Issues Only<Switch checked={issuesOnly} onCheckedChange={setIssuesOnly} /></label><select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive' | 'missing')} className="rounded-md border px-3 py-2 text-sm"><option value="all">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="missing">Missing Image</option></select></CardContent></Card>
 
-        {selectedPage !== 'all' && selectedPageDuplicates.length > 0 && <Card className="border-amber-300 bg-amber-50"><CardContent className="p-3 text-sm"><p className="font-medium text-amber-900">Duplicate image warning on {getPageLabel(selectedPage)}</p><ul className="mt-1 space-y-1 text-amber-800">{selectedPageDuplicates.map((duplicate) => <li key={duplicate.imageUrl} className="break-all">{duplicate.imageUrl} <Badge variant="destructive" className="ml-2">Used {duplicate.count} times</Badge></li>)}</ul></CardContent></Card>}
+        {selectedPage !== 'all' && selectedPageDuplicates.length > 0 && <Card className="border-amber-300 bg-amber-50"><CardContent className="p-3 text-sm"><p className="font-medium text-amber-900">Duplicate image warning on {getSiteMediaRegistryItem(selectedPage)?.label ?? selectedPage}</p><ul className="mt-1 space-y-1 text-amber-800">{selectedPageDuplicates.map((duplicate) => <li key={duplicate.imageUrl} className="break-all">{duplicate.imageUrl} <Badge variant="destructive" className="ml-2">Used {duplicate.count} times</Badge></li>)}</ul></CardContent></Card>}
 
         {filteredRows.map((row) => {
           const warnings = rowWarnings(row);
           return <Card key={row.id} className="shadow-sm border-slate-200"><CardHeader className="space-y-2"><div className="flex flex-wrap items-center gap-2"><CardTitle className="text-lg">{row.label || 'Untitled slot'}</CardTitle>{dirtyIds.has(row.id) && <Badge>Unsaved</Badge>}{row.is_active ? <Badge variant="secondary">Active</Badge> : <Badge variant="outline">Inactive</Badge>}{warnings.map((w) => <Badge key={w} variant="destructive">{w}</Badge>)}</div><p className="text-xs text-muted-foreground">{row.page_slug} · {row.section_key}</p><p className="text-xs text-muted-foreground">Used On: {usedOnMap[row.section_key] ?? 'This image is used in a website section identified by this section key.'}</p></CardHeader><CardContent className="space-y-3"><div className="grid md:grid-cols-2 gap-3"><div className="relative aspect-[4/3] rounded-md overflow-hidden border bg-muted"><Image src={getPreviewImageSrc(row.image_url)} alt={row.alt_text || `${row.section_key} image`} fill className="object-cover" unoptimized /></div><div className="space-y-2 text-sm"><Input value={row.alt_text || ''} onChange={(e) => updateRow(row.id, { alt_text: e.target.value })} placeholder="Alt text" /><Input value={row.caption || ''} onChange={(e) => updateRow(row.id, { caption: e.target.value })} placeholder="Caption" /><label className="flex items-center gap-2">Active <Switch checked={!!row.is_active} onCheckedChange={(checked) => updateRow(row.id, { is_active: checked })} /></label><p className="text-xs text-muted-foreground">Recommended dimensions: {row.recommended_width || '-'} × {row.recommended_height || '-'}</p><p className="text-xs text-muted-foreground break-all">Storage path: {row.storage_path || 'Not set'}</p></div></div>
           <label className="block rounded-md border-2 border-dashed p-4 text-sm cursor-pointer">Drop image here or click to upload<br />JPG, PNG, WebP, or GIF · Max 10 MB<input type="file" className="hidden" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => e.target.files?.[0] && uploadFile(row, e.target.files[0]).catch((err) => notify(err.message))} /></label>
-          <div className="flex flex-wrap gap-2"><Button variant="outline" asChild><a href={getPageHref(row.page_slug)} target="_blank" rel="noreferrer">View Live Page</a></Button>{row.image_url && <Button variant="outline" asChild><a href={row.image_url} target="_blank" rel="noreferrer">Open Image</a></Button>}<Button onClick={() => saveRow(row).catch((e) => notify(e.message))} disabled={!!busyById[row.id]}>{busyById[row.id] ? <><Spinner className="mr-2" />Saving...</> : 'Save Changes'}</Button></div>
+          <div className="flex flex-wrap gap-2"><Button variant="outline" asChild><a href={getSiteMediaPageHref(row.page_slug)} target="_blank" rel="noreferrer">View Live Page</a></Button>{row.image_url && <Button variant="outline" asChild><a href={row.image_url} target="_blank" rel="noreferrer">Open Image</a></Button>}<Button onClick={() => saveRow(row).catch((e) => notify(e.message))} disabled={!!busyById[row.id]}>{busyById[row.id] ? <><Spinner className="mr-2" />Saving...</> : 'Save Changes'}</Button></div>
           </CardContent></Card>;
         })}
 
