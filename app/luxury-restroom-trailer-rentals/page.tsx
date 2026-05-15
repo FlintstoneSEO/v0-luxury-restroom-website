@@ -23,6 +23,7 @@ import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { breadcrumbJsonLd, faqJsonLd, localBusinessJsonLd, serviceJsonLd } from "@/lib/seo-schema"
 
 const title = "Luxury Restroom Trailer Rentals in Lansing, MI | Signature Luxe Events"
 const description =
@@ -33,6 +34,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical },
   openGraph: { title, description, url: canonical },
+  twitter: { card: "summary_large_image", title, description },
 }
 
 const features = [
@@ -202,52 +204,10 @@ const interiorGallery = [
 ]
 
 export default function LuxuryRestroomTrailerRentalsPage() {
-  const serviceSchema = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: "Luxury Restroom Trailer Rentals",
-    areaServed: ["Lansing, MI", "Mid-Michigan"],
-    serviceType: "Luxury restroom trailer rental",
-    provider: {
-      "@type": "LocalBusiness",
-      name: "Signature Luxe Events & Amenities",
-      url: "https://www.signatureluxeevents.com",
-    },
-    url: canonical,
-    description,
-  }
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  }
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://www.signatureluxeevents.com/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Luxury Restroom Trailer Rentals",
-        item: canonical,
-      },
-    ],
-  }
+  const serviceSchema = serviceJsonLd("Luxury restroom trailer rental", canonical)
+  const faqSchema = faqJsonLd(faqs.map((faq) => ({ question: faq.question, answer: faq.answer })))
+  const breadcrumbSchema = breadcrumbJsonLd([{ name: "Home", item: "/" }, { name: "Luxury Restroom Trailer Rentals", item: "/luxury-restroom-trailer-rentals" }])
+  const businessSchema = localBusinessJsonLd("Lansing")
 
   return (
     <>
@@ -262,6 +222,10 @@ export default function LuxuryRestroomTrailerRentalsPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
       />
       <Header />
       <main>

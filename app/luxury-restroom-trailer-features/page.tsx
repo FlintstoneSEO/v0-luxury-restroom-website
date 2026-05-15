@@ -4,7 +4,7 @@ import { ServicePageTemplate } from '@/components/service-page-template'
 const title = 'Luxury Restroom Trailer Features & Amenities | Signature Luxe Events'
 const description = 'Explore luxury restroom trailer features including climate control, flushing toilets, vanities, mirrors, private stalls, and clean presentation for Michigan events.'
 const canonical = 'https://www.signatureluxeevents.com/luxury-restroom-trailer-features'
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical } }
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical }, twitter: { card: "summary_large_image", title, description } }
 
 export default function Page() {
   return <ServicePageTemplate pageTitle='Luxury Restroom Trailer Features' serviceName='Luxury restroom trailer amenities' urlPath='/luxury-restroom-trailer-features' intro='Luxury restroom trailers are built to deliver comfort, privacy, and reliable functionality in outdoor settings. Understanding feature details helps clients compare options and plan confidently.' ctaTitle='Request a Quote for Luxury Restroom Trailer Features' sections={[

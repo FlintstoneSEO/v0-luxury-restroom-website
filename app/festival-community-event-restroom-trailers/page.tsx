@@ -4,7 +4,7 @@ import { ServicePageTemplate } from '@/components/service-page-template'
 const title = 'Festival Restroom Trailer Rentals Lansing MI | Signature Luxe Events'
 const description = 'Plan festival restroom trailer rental in Michigan with support for crowd flow, line reduction, multi-day sanitation, and community event coordination in Lansing and Mid-Michigan.'
 const canonical = 'https://www.signatureluxeevents.com/festival-community-event-restroom-trailers'
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical } }
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical }, twitter: { card: "summary_large_image", title, description } }
 
 export default function Page() {
   return <ServicePageTemplate pageTitle='Festival and Community Event Restroom Trailers' serviceName='Festival restroom trailer rental' urlPath='/festival-community-event-restroom-trailers' intro='Festival and community event schedules create predictable restroom surges. We help organizers across Lansing and Mid-Michigan plan trailer capacity, placement, and service timing for cleaner, smoother public events.' ctaTitle='Request a Quote for Festival and Community Event Restroom Trailers' sections={[

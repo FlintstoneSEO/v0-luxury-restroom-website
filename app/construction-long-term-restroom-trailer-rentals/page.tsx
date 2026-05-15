@@ -34,6 +34,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical },
   openGraph: { title, description, url: canonical },
+  twitter: { card: "summary_large_image", title, description },
 }
 
 const solutionFeatures = [

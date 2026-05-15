@@ -1,12 +1,16 @@
 export const business = {
   name: 'Signature Luxe Events & Amenities',
   url: 'https://www.signatureluxeevents.com',
-  phone: process.env.NEXT_PUBLIC_BUSINESS_PHONE,
+  phone: process.env.NEXT_PUBLIC_BUSINESS_PHONE || '(517) 295-0107',
+  email: 'info@signatureluxeevents.com',
   image: 'https://www.signatureluxeevents.com/images/Wedding Trailer.png',
   logo: 'https://www.signatureluxeevents.com/images/logo.png',
   priceRange: '$$',
   areaServed: ['Lansing, MI','East Lansing, MI','Okemos, MI','Haslett, MI','Grand Ledge, MI','DeWitt, MI','Holt, MI','Mason, MI','Jackson, MI','Howell, MI','Brighton, MI','Charlotte, MI','Ann Arbor, MI','Flint, MI','Grand Rapids, MI','Battle Creek, MI','Kalamazoo, MI','Mid-Michigan'],
-  sameAs: [process.env.NEXT_PUBLIC_FACEBOOK_URL, process.env.NEXT_PUBLIC_INSTAGRAM_URL].filter(Boolean),
+  sameAs: [
+    process.env.NEXT_PUBLIC_FACEBOOK_URL || 'https://www.facebook.com/signatureluxeevents',
+    process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://www.instagram.com/signatureluxe_events',
+  ].filter(Boolean),
 }
 
 export function websiteJsonLd() {
@@ -45,7 +49,8 @@ export function localBusinessJsonLd(city = 'Lansing') {
     image: business.image,
     logo: business.logo,
     priceRange: business.priceRange,
-    ...(business.phone ? { telephone: business.phone } : {}),
+    telephone: business.phone,
+    email: business.email,
     ...(business.sameAs.length ? { sameAs: business.sameAs } : {}),
     parentOrganization: { '@id': `${business.url}/#organization` },
     areaServed: business.areaServed,

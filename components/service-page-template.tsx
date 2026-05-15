@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { ArrowRight, ClipboardCheck, ClipboardList, Droplets, HardHat, Heart, HelpCircle, ImageIcon, MapPin, Sparkles, Thermometer, type LucideIcon } from 'lucide-react'
 import { Header } from './layout/header'
 import { Footer } from './layout/footer'
-import { breadcrumbJsonLd, serviceJsonLd } from '@/lib/seo-schema'
+import { breadcrumbJsonLd, faqJsonLd, localBusinessJsonLd, serviceJsonLd } from '@/lib/seo-schema'
 
 type FAQ = { q: string; a: string }
 type Section = { heading: string; paragraphs: string[] }
@@ -29,12 +29,14 @@ const resources: VisualResource[] = [
 export function ServicePageTemplate({ pageTitle, serviceName, urlPath, intro, sections, faqs, ctaTitle, resourceImageSrc = '/images/Wedding Trailer.png', resourceImageAlt = 'Luxury restroom trailer exterior setup for Michigan event', resourceEyebrow = 'Planning Support', resourceTitle = 'Helpful Resources While You Plan', resourceDescription = 'Explore service areas, event-specific pages, and planning resources.' }: { pageTitle: string; serviceName: string; urlPath: string; intro: string; sections: Section[]; faqs: FAQ[]; ctaTitle: string; resourceImageSrc?: string; resourceImageAlt?: string; resourceEyebrow?: string; resourceTitle?: string; resourceDescription?: string }) {
   const service = serviceJsonLd(serviceName, `https://www.signatureluxeevents.com${urlPath}`)
   const breadcrumbs = breadcrumbJsonLd([{ name: 'Home', item: '/' }, { name: pageTitle, item: urlPath }])
-  const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
+  const faqSchema = faqJsonLd(faqs.map((f) => ({ question: f.q, answer: f.a })))
+  const business = localBusinessJsonLd('Lansing')
 
   return <>
     <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(service) }} />
     <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} />
     <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+    <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} />
     <Header />
     <main>
       <section className='bg-navy py-20 md:py-28 relative overflow-hidden'>
