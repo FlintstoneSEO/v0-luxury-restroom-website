@@ -127,7 +127,12 @@ export default async function HomePage() {
     { title: "Disaster Relief / Government", description: "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.", href: "/emergency-disaster-relief-restroom-trailers", imageSrc: festivalsImage.src, imageAlt: festivalsImage.alt, imageUnoptimized: festivalsImage.unoptimized },
   ]
 
-  const eventScenarios = [weddingsImage, privatePartiesImage, corporateEventsImage, festivalsImage]
+  const eventScenarios = [
+    { ...weddingsImage, displayLabel: "Weddings" },
+    { ...privatePartiesImage, displayLabel: "Parties" },
+    { ...corporateEventsImage, displayLabel: "Corporate" },
+    { ...festivalsImage, displayLabel: "Festivals" },
+  ]
 
   const business = localBusinessJsonLd("Lansing")
   const website = websiteJsonLd()
@@ -168,7 +173,7 @@ export default async function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
                   <div className="absolute bottom-4 left-4">
                     <span className="px-3 py-1 bg-gold/90 text-navy text-sm font-medium rounded-full">
-                      {scenario.label}
+                      {scenario.displayLabel}
                     </span>
                   </div>
                 </div>
