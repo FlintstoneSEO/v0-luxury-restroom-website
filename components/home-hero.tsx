@@ -7,7 +7,7 @@ import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 
-export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string } }) {
+export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string; unoptimized?: boolean } }) {
   const [offsetY, setOffsetY] = useState(0)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const rafRef = useRef<number | null>(null)
@@ -72,6 +72,7 @@ export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string 
           <Image
             src={heroImage.src}
             alt={heroImage.alt}
+            unoptimized={heroImage.unoptimized}
             fill
             priority
             sizes="100vw"

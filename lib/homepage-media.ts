@@ -24,6 +24,18 @@ export interface HomepageMediaRecord {
   recommended_height: number | null;
 }
 
+const SUPABASE_HOST = 'lmytjyqjgjsqqffsulwz.supabase.co';
+
+function isSupabaseHomepageImage(url?: string | null) {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' && parsed.hostname === SUPABASE_HOST;
+  } catch {
+    return false;
+  }
+}
+
 export const homepageImageFallbacks: Record<HomepageSectionKey, { src: string; alt: string; label?: string }> = {
   hero: {
     src: '/images/Wedding Trailer.png',
@@ -86,11 +98,14 @@ export function getHomepageMediaMap(records: HomepageMediaRecord[]) {
 export function resolveHomepageImage(recordsMap: Map<HomepageSectionKey, HomepageMediaRecord>, sectionKey: HomepageSectionKey) {
   const record = recordsMap.get(sectionKey);
   const fallback = homepageImageFallbacks[sectionKey];
+  const isSupabaseImage = isSupabaseHomepageImage(record?.image_url);
+  const src = isSupabaseImage && record?.image_url ? `${record.image_url}?v=${record.id}` : record?.image_url || fallback.src;
 
   return {
-    src: record?.image_url || fallback.src,
+    src,
     alt: record?.alt_text || fallback.alt,
     label: record?.label || fallback.label,
     caption: record?.caption || '',
+    unoptimized: isSupabaseImage,
   };
 }
