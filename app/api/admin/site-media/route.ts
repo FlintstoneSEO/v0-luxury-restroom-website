@@ -31,7 +31,6 @@ export async function PUT(request: Request) {
         caption: row.caption,
         is_active: row.is_active,
         updated_at: new Date().toISOString(),
-        updated_by: auth.user.id,
       })
       .eq('id', row.id);
 
@@ -62,7 +61,6 @@ export async function POST() {
         recommended_height: section.recommendedHeight,
         is_active: true,
         updated_at: now,
-        updated_by: auth.user.id,
       })),
     );
 
