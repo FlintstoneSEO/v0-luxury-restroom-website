@@ -7,6 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 
+function getPreviewImageSrc(imageUrl: string | null) {
+  if (!imageUrl) return '/placeholder.jpg';
+  if (imageUrl.startsWith('/')) return imageUrl;
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) return imageUrl;
+  return `/${imageUrl.replace(/^\/+/, '')}`;
+}
+
 interface HomepageMediaRow {
   id: string;
   section_key: string;
@@ -89,7 +96,7 @@ export default function HomepageMediaManager({ initialRows }: { initialRows: Hom
         <div key={row.id} className="rounded-lg border bg-white p-4 space-y-4">
           <div className="grid md:grid-cols-[220px_1fr] gap-4">
             <div className="relative aspect-[4/3] rounded-md overflow-hidden bg-muted">
-              <Image src={row.image_url || '/placeholder.jpg'} alt={row.alt_text || `${row.section_key} image`} fill className="object-cover" />
+              <Image src={getPreviewImageSrc(row.image_url)} alt={row.alt_text || `${row.section_key} image`} fill className="object-cover" unoptimized />
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
               <Input value={row.label || ''} onChange={(e) => updateRow(row.id, { label: e.target.value })} placeholder="Label" />
