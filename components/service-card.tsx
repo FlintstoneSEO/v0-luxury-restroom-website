@@ -11,6 +11,7 @@ interface ServiceCardProps {
   imageSrc?: string
   imageAlt?: string
   imagePlaceholder?: string
+  imageUnoptimized?: boolean
   className?: string
 }
 
@@ -22,6 +23,7 @@ export function ServiceCard({
   imageSrc,
   imageAlt,
   imagePlaceholder,
+  imageUnoptimized,
   className,
 }: ServiceCardProps) {
   return (
@@ -38,6 +40,7 @@ export function ServiceCard({
           <Image
             src={imageSrc}
             alt={imageAlt || title}
+            unoptimized={imageUnoptimized}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

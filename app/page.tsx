@@ -28,6 +28,8 @@ import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/se
 import { fetchHomepageMedia, getHomepageMediaMap, resolveHomepageImage } from "@/lib/homepage-media"
 
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
   description:
@@ -119,10 +121,10 @@ export default async function HomePage() {
   const trailerGalleryImage = resolveHomepageImage(mediaMap, "trailer_gallery")
 
   const services = [
-    { title: "Weddings", description: "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.", href: "/wedding-restroom-trailer-rentals", imageSrc: weddingsImage.src, imageAlt: weddingsImage.alt },
-    { title: "Special Events", description: "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.", href: "/private-event-restroom-trailers", imageSrc: specialEventsImage.src, imageAlt: specialEventsImage.alt },
-    { title: "Construction / Long-Term", description: "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.", href: "/construction-long-term-restroom-trailer-rentals", imageSrc: trailerGalleryImage.src, imageAlt: trailerGalleryImage.alt },
-    { title: "Disaster Relief / Government", description: "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.", href: "/emergency-disaster-relief-restroom-trailers", imageSrc: festivalsImage.src, imageAlt: festivalsImage.alt },
+    { title: "Weddings", description: "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.", href: "/wedding-restroom-trailer-rentals", imageSrc: weddingsImage.src, imageAlt: weddingsImage.alt, imageUnoptimized: weddingsImage.unoptimized },
+    { title: "Special Events", description: "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.", href: "/private-event-restroom-trailers", imageSrc: specialEventsImage.src, imageAlt: specialEventsImage.alt, imageUnoptimized: specialEventsImage.unoptimized },
+    { title: "Construction / Long-Term", description: "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.", href: "/construction-long-term-restroom-trailer-rentals", imageSrc: trailerGalleryImage.src, imageAlt: trailerGalleryImage.alt, imageUnoptimized: trailerGalleryImage.unoptimized },
+    { title: "Disaster Relief / Government", description: "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.", href: "/emergency-disaster-relief-restroom-trailers", imageSrc: festivalsImage.src, imageAlt: festivalsImage.alt, imageUnoptimized: festivalsImage.unoptimized },
   ]
 
   const eventScenarios = [weddingsImage, privatePartiesImage, corporateEventsImage, festivalsImage]
@@ -158,6 +160,7 @@ export default async function HomePage() {
                   <Image
                     src={scenario.src}
                     alt={scenario.alt}
+                    unoptimized={scenario.unoptimized}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 768px) 50vw, 25vw"
@@ -176,6 +179,7 @@ export default async function HomePage() {
                 <Image
                   src={trailerGalleryImage.src}
                   alt={trailerGalleryImage.alt}
+                  unoptimized={trailerGalleryImage.unoptimized}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 448px"
