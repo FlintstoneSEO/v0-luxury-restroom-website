@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/hero-section"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { CTASection } from "@/components/cta-section"
+import { fetchSiteMedia, getSiteMediaMap, resolveSiteImage } from "@/lib/site-media"
 
 export const metadata: Metadata = {
   title: "Gallery | Signature Luxe Events & Amenities",
@@ -128,7 +129,14 @@ const galleryImages = [
   },
 ]
 
-export default function GalleryPage() {
+export const dynamic = "force-dynamic"
+
+export default async function GalleryPage() {
+  const records = await fetchSiteMedia("gallery")
+  const mediaMap = getSiteMediaMap(records)
+  const heroImage = resolveSiteImage(mediaMap, "gallery", "hero", { src: "/images/Wedding Trailer.png", alt: "Wedding restroom trailer rental setup in Mid-Michigan" })
+  const galleryFeatureImage = resolveSiteImage(mediaMap, "gallery", "gallery_feature", { src: "/images/Construction Site Trailer.png", alt: "Restroom trailer stationed at an active construction project in Michigan" })
+  const resolvedGalleryImages = galleryImages.map((img) => img.id === "6" ? { ...img, src: galleryFeatureImage.src, alt: galleryFeatureImage.alt } : img)
   return (
     <>
       <Header />
@@ -140,12 +148,14 @@ export default function GalleryPage() {
           title="See Our Luxury Restroom Trailers"
           description="Explore our climate-controlled trailers, modern interiors, and professional event setups across Lansing and Mid-Michigan."
           primaryCta={{ text: "Request Availability", href: "/request-quote" }}
+          imageSrc={heroImage.src}
+          imageAlt={heroImage.alt}
         />
 
         {/* Gallery Grid */}
         <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
-            <GalleryGrid images={galleryImages} columns={3} />
+            <GalleryGrid images={resolvedGalleryImages} columns={3} />
           </div>
         </section>
 
@@ -165,7 +175,7 @@ export default function GalleryPage() {
               </p>
             </div>
             <GalleryGrid
-              images={galleryImages.filter((img) => img.category === "Exterior")}
+              images={resolvedGalleryImages.filter((img) => img.category === "Exterior")}
               columns={3}
             />
           </div>
@@ -187,7 +197,7 @@ export default function GalleryPage() {
               </p>
             </div>
             <GalleryGrid
-              images={galleryImages.filter((img) => img.category === "Interior")}
+              images={resolvedGalleryImages.filter((img) => img.category === "Interior")}
               columns={4}
             />
           </div>
@@ -209,7 +219,7 @@ export default function GalleryPage() {
               </p>
             </div>
             <GalleryGrid
-              images={galleryImages.filter((img) => img.category === "3 Station")}
+              images={resolvedGalleryImages.filter((img) => img.category === "3 Station")}
               columns={3}
             />
           </div>

@@ -51,11 +51,11 @@ export default function AdminLayout({
                 <span>Dashboard</span>
               </Link>
               <Link
-                href="/admin/homepage-media"
+                href="/admin/site-media"
                 className="text-muted-foreground hover:text-navy transition-colors flex items-center gap-2"
               >
                 <ImageIcon className="w-4 h-4" />
-                <span>Homepage Media</span>
+                <span>Site Media Manager</span>
               </Link>
               <Link
                 href="/admin/settings"
@@ -92,7 +92,7 @@ export default function AdminLayout({
           {isMenuOpen && (
             <div className="md:hidden border-t border-gold/20 py-4 space-y-3">
               <Link href="/admin" className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-              <Link href="/admin/homepage-media" className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>Homepage Media</Link>
+              <Link href="/admin/site-media" className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>Site Media Manager</Link>
               <Link href="/admin/settings" className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>Settings</Link>
               <button onClick={() => { setIsMenuOpen(false); handleLogout(); }} className="w-full text-left px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">Logout</button>
             </div>
