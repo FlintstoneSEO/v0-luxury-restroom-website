@@ -6,11 +6,8 @@ import { useEffect, useRef, useState } from "react"
 import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-import { homepageImages } from "@/lib/homepage-images"
 
-const HERO_IMAGE = homepageImages.hero
-
-export function HomeHero() {
+export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string } }) {
   const [offsetY, setOffsetY] = useState(0)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const rafRef = useRef<number | null>(null)
@@ -73,8 +70,8 @@ export function HomeHero() {
           style={{ transform: `translate3d(0, ${offsetY}px, 0)` }}
         >
           <Image
-            src={HERO_IMAGE.src}
-            alt={HERO_IMAGE.alt}
+            src={heroImage.src}
+            alt={heroImage.alt}
             fill
             priority
             sizes="100vw"
