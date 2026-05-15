@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button"
 import { HomeHero } from "@/components/home-hero"
 import type { Metadata } from "next"
 import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo-schema"
-import { homepageImages } from "@/lib/homepage-images"
+import { fetchHomepageMedia, getHomepageMediaMap, resolveHomepageImage } from "@/lib/homepage-media"
 
 
 export const metadata: Metadata = {
@@ -34,43 +34,6 @@ export const metadata: Metadata = {
     'Rent luxury restroom trailers in Lansing, MI for weddings, private events, corporate events, festivals, construction sites, and long-term needs.',
   alternates: { canonical: '/' },
 }
-
-const services = [
-  {
-    title: "Weddings",
-    description:
-      "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.",
-    href: "/wedding-restroom-trailer-rentals",
-    imageSrc: homepageImages.services.weddings.src,
-    imageAlt: homepageImages.services.weddings.alt,
-  },
-  {
-    title: "Special Events",
-    description:
-      "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.",
-    href: "/private-event-restroom-trailers",
-    imageSrc: homepageImages.services.specialEvents.src,
-    imageAlt: homepageImages.services.specialEvents.alt,
-  },
-  {
-    title: "Construction / Long-Term",
-    description:
-      "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.",
-    href: "/construction-long-term-restroom-trailer-rentals",
-    imageSrc: homepageImages.services.constructionLongTerm.src,
-    imageAlt: homepageImages.services.constructionLongTerm.alt,
-  },
-  {
-    title: "Disaster Relief / Government",
-    description:
-      "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.",
-    href: "/emergency-disaster-relief-restroom-trailers",
-    imageSrc: homepageImages.services.disasterReliefGovernment.src,
-    imageAlt: homepageImages.services.disasterReliefGovernment.alt,
-  },
-]
-
-
 
 const features = [
   { title: "Climate Controlled", icon: Thermometer },
@@ -143,17 +106,27 @@ const serviceAreas = [
   "Ann Arbor",
 ]
 
-// Event scenario images for hero showcase
-const eventScenarios = [
-  homepageImages.byOccasion.weddings,
-  homepageImages.byOccasion.privateParties,
-  homepageImages.byOccasion.corporateEvents,
-  homepageImages.byOccasion.festivals,
-]
+export default async function HomePage() {
+  const mediaRecords = await fetchHomepageMedia()
+  const mediaMap = getHomepageMediaMap(mediaRecords)
 
+  const heroImage = resolveHomepageImage(mediaMap, "hero")
+  const weddingsImage = resolveHomepageImage(mediaMap, "weddings")
+  const privatePartiesImage = resolveHomepageImage(mediaMap, "private_parties")
+  const corporateEventsImage = resolveHomepageImage(mediaMap, "corporate_events")
+  const festivalsImage = resolveHomepageImage(mediaMap, "festivals")
+  const specialEventsImage = resolveHomepageImage(mediaMap, "special_events")
+  const trailerGalleryImage = resolveHomepageImage(mediaMap, "trailer_gallery")
 
+  const services = [
+    { title: "Weddings", description: "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.", href: "/wedding-restroom-trailer-rentals", imageSrc: weddingsImage.src, imageAlt: weddingsImage.alt },
+    { title: "Special Events", description: "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.", href: "/private-event-restroom-trailers", imageSrc: specialEventsImage.src, imageAlt: specialEventsImage.alt },
+    { title: "Construction / Long-Term", description: "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.", href: "/construction-long-term-restroom-trailer-rentals", imageSrc: trailerGalleryImage.src, imageAlt: trailerGalleryImage.alt },
+    { title: "Disaster Relief / Government", description: "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.", href: "/emergency-disaster-relief-restroom-trailers", imageSrc: festivalsImage.src, imageAlt: festivalsImage.alt },
+  ]
 
-export default function HomePage() {
+  const eventScenarios = [weddingsImage, privatePartiesImage, corporateEventsImage, festivalsImage]
+
   const business = localBusinessJsonLd("Lansing")
   const website = websiteJsonLd()
   const organization = organizationJsonLd()
@@ -166,7 +139,7 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(video) }} />
       <Header />
       <main>
-        <HomeHero />
+        <HomeHero heroImage={heroImage} />
 
         {/* Event Scenarios Showcase */}
         <section data-home-next-section className="py-16 bg-white border-b border-cream">
@@ -201,8 +174,8 @@ export default function HomePage() {
             <div className="mt-6 max-w-md mx-auto">
               <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-gold/30 shadow-md">
                 <Image
-                  src={homepageImages.cta.msuTailgate.src}
-                  alt={homepageImages.cta.msuTailgate.alt}
+                  src={trailerGalleryImage.src}
+                  alt={trailerGalleryImage.alt}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 448px"

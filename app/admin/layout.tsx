@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Menu, X, LogOut, Settings, BarChart3 } from 'lucide-react';
+import { Menu, X, LogOut, Settings, BarChart3, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function AdminLayout({
@@ -51,6 +51,13 @@ export default function AdminLayout({
                 <span>Dashboard</span>
               </Link>
               <Link
+                href="/admin/homepage-media"
+                className="text-muted-foreground hover:text-navy transition-colors flex items-center gap-2"
+              >
+                <ImageIcon className="w-4 h-4" />
+                <span>Homepage Media</span>
+              </Link>
+              <Link
                 href="/admin/settings"
                 className="text-muted-foreground hover:text-navy transition-colors flex items-center gap-2"
               >
@@ -84,29 +91,10 @@ export default function AdminLayout({
           {/* Mobile Menu */}
           {isMenuOpen && (
             <div className="md:hidden border-t border-gold/20 py-4 space-y-3">
-              <Link
-                href="/admin"
-                className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/admin/settings"
-                className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Settings
-              </Link>
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  handleLogout();
-                }}
-                className="w-full text-left px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
-              >
-                Logout
-              </button>
+              <Link href="/admin" className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+              <Link href="/admin/homepage-media" className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>Homepage Media</Link>
+              <Link href="/admin/settings" className="block px-4 py-2 text-muted-foreground hover:text-navy hover:bg-[#f8f5f1] rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>Settings</Link>
+              <button onClick={() => { setIsMenuOpen(false); handleLogout(); }} className="w-full text-left px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">Logout</button>
             </div>
           )}
         </div>
