@@ -99,7 +99,7 @@ export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string;
             </span>
             
             <h1 className="text-balance font-serif text-3xl font-semibold leading-tight text-white drop-shadow-lg sm:text-4xl md:text-5xl lg:text-6xl">
-              Elevate Your Event with Premium Restroom Trailers
+              Luxury Restroom Trailer Rentals in Lansing, MI
             </h1>
             
             <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-white/90 drop-shadow-md md:text-lg">

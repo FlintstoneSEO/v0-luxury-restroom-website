@@ -4,7 +4,7 @@ import { ServicePageTemplate } from '@/components/service-page-template'
 const title = 'Corporate Event Restroom Trailer Rentals Lansing MI | Signature Luxe Events'
 const description = 'VIP restroom trailer rentals for corporate galas, client events, donor functions, and company gatherings across Lansing and Mid-Michigan with professional presentation.'
 const canonical = 'https://www.signatureluxeevents.com/corporate-event-restroom-trailers'
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical } }
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical }, twitter: { card: "summary_large_image", title, description } }
 
 export default function Page() {
   return <ServicePageTemplate pageTitle='Corporate Event Restroom Trailer Rentals for Brand-Forward Events' serviceName='Corporate event restroom trailer rental' urlPath='/corporate-event-restroom-trailers' intro='For corporate galas, client receptions, donor nights, fundraisers, ribbon cuttings, and employee events, restroom quality impacts brand perception. We help Lansing and Mid-Michigan organizations deliver a polished guest experience from arrival to close.' ctaTitle='Request a Corporate Event Quote' sections={[
