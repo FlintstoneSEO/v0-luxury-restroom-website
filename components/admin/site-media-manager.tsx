@@ -27,6 +27,38 @@ interface SiteMediaRow {
 const sanitizeSlug = (value: string) => value.toLowerCase().replace(/[^a-z0-9-_]+/g, '-').replace(/^-+|-+$/g, '');
 const getPreviewImageSrc = (url: string | null) => (!url ? '/placeholder.jpg' : /^https?:\/\//.test(url) || url.startsWith('/') ? url : `/${url.replace(/^\/+/, '')}`);
 
+const getPageLabel = (slug: string) => {
+  if (slug === 'all') return 'All Pages';
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+};
+
+
+const pageHrefMap: Record<string, string> = {
+  home: '/',
+  about: '/about',
+  'start-here': '/start-here',
+  quote: '/request-quote',
+  'quote-start-here': '/start-here',
+  weddings: '/weddings',
+  'private-parties': '/private-event-restroom-trailers',
+  'corporate-events': '/corporate-event-restroom-trailers',
+  'special-events': '/special-events',
+  festivals: '/festival-community-event-restroom-trailers',
+  'festivals-community-events': '/festival-community-event-restroom-trailers',
+  'construction-long-term': '/construction-long-term',
+  contact: '/contact',
+};
+
+const getPageHref = (pageSlug: string) => {
+  if (!pageSlug || pageSlug === 'home') return '/';
+  if (pageHrefMap[pageSlug]) return pageHrefMap[pageSlug];
+  return `/${pageSlug.replace(/^\/+/, '')}`;
+};
+
 const usedOnMap: Record<string, string> = {
   hero: 'Main banner image at the top of the page.',
   feature: 'Supporting image inside the main page content.',
@@ -41,14 +73,6 @@ const usedOnMap: Record<string, string> = {
   trailer_gallery: 'Homepage trailer gallery image.',
   gallery_feature: 'Featured image on the gallery page.',
 };
-
-const PAGE_GROUPS = [
-  { group: 'Homepage', pages: ['home'] },
-  { group: 'Start Here', pages: ['start-here'] },
-  { group: 'Luxury Restroom Trailers', pages: ['luxury-restroom-trailers'] },
-  { group: 'Event Types', pages: ['weddings', 'private-parties', 'corporate-events', 'festivals', 'special-events'] },
-  { group: 'Core Pages', pages: ['gallery', 'faq', 'contact', 'service-areas'] },
-];
 
 export default function SiteMediaManager({ initialRows }: { initialRows: SiteMediaRow[] }) {
   const supabase = createClient();
@@ -84,7 +108,6 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
     return warnings;
   };
 
-  const pages = useMemo(() => ['all', ...Array.from(new Set(rows.map((r) => r.page_slug))).sort()], [rows]);
   const pageStats = useMemo(() => {
     const map = new Map<string, { slots: number; issues: number }>();
     rows.forEach((row) => {
@@ -96,6 +119,31 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
     return map;
   }, [rows]);
 
+  const pageOptions = useMemo(() => {
+    const baseOptions = [
+      'home',
+      'weddings',
+      'private-parties',
+      'corporate-events',
+      'special-events',
+      'festivals',
+      'construction-long-term',
+      'about',
+      'contact',
+      'start-here',
+    ];
+    return ['all', ...Array.from(new Set([...baseOptions, ...rows.map((r) => r.page_slug)])).sort((a, b) => a.localeCompare(b))];
+  }, [rows]);
+
+  const selectedPageDuplicates = useMemo(() => {
+    if (selectedPage === 'all') return [] as Array<{ imageUrl: string; count: number }>;
+    const pageImages = duplicates.get(selectedPage);
+    if (!pageImages) return [] as Array<{ imageUrl: string; count: number }>;
+    return Array.from(pageImages.entries())
+      .filter(([, count]) => count > 1)
+      .map(([imageUrl, count]) => ({ imageUrl, count }));
+  }, [duplicates, selectedPage]);
+
   const filteredRows = useMemo(() => rows.filter((row) => {
     if (selectedPage !== 'all' && row.page_slug !== selectedPage) return false;
     if (issuesOnly && rowWarnings(row).length === 0) return false;
@@ -103,7 +151,7 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
     if (statusFilter === 'inactive' && row.is_active) return false;
     if (statusFilter === 'missing' && !!row.image_url) return false;
     if (!search.trim()) return true;
-    const haystack = [row.page_slug, row.section_key, row.label, row.alt_text, row.caption].join(' ').toLowerCase();
+    const haystack = [row.page_slug, row.section_key, row.label, row.alt_text, row.caption, row.image_url, row.storage_path].join(' ').toLowerCase();
     return haystack.includes(search.toLowerCase());
   }), [rows, selectedPage, issuesOnly, statusFilter, search]);
 
@@ -181,29 +229,23 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
 
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">{Object.entries({ 'Total image slots': summary.total, 'Active images': summary.active, 'Missing images': summary.missing, 'Missing alt text': summary.missingAlt, 'Duplicate images': summary.duplicate, 'Inactive images': summary.inactive }).map(([label, value]) => <Card key={label}><CardContent className="p-4"><p className="text-xs text-muted-foreground">{label}</p><p className="text-2xl font-semibold">{value}</p></CardContent></Card>)}</div>
 
-    {showGuide && <Card><CardContent className="p-4 text-sm space-y-2"><p className="font-medium">How to Use This Page</p><ol className="list-decimal pl-5 space-y-1"><li>Choose a page from the sidebar.</li><li>Review each image slot for that page.</li><li>Use Upload / Replace to select the correct image.</li><li>Make sure the alt text describes the image and includes the page context.</li><li>Click Save Changes.</li><li>Use View Live Page to confirm the image appears correctly.</li></ol><p className="text-muted-foreground">Tip: Each image slot controls a specific section of the public website. For example, Wedding Page Hero controls the large image at the top of the Wedding Restroom Trailer page.</p></CardContent></Card>}
+    {showGuide && <Card><CardContent className="p-4 text-sm space-y-2"><p className="font-medium">How to Use This Page</p><ol className="list-decimal pl-5 space-y-1"><li>Choose a page from the Page filter.</li><li>Review each image slot for that page.</li><li>Use Upload / Replace to select the correct image.</li><li>Make sure the alt text describes the image and includes the page context.</li><li>Click Save Changes.</li><li>Use View Live Page to confirm the image appears correctly.</li></ol><p className="text-muted-foreground">Tip: Each image slot controls a specific section of the public website. For example, Wedding Page Hero controls the large image at the top of the Wedding Restroom Trailer page.</p></CardContent></Card>}
 
-    <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
-      <Card className="h-fit"><CardContent className="p-3 space-y-2">{PAGE_GROUPS.map((group) => <div key={group.group}><p className="text-xs uppercase text-muted-foreground mb-1">{group.group}</p>{group.pages.map((page) => {
-        const stats = pageStats.get(page);
-        if (!stats && !pages.includes(page)) return null;
-        return <button key={page} type="button" onClick={() => setSelectedPage(page)} className={`w-full flex items-center justify-between rounded-md border px-3 py-2 mb-1 text-left ${selectedPage === page ? 'bg-slate-100 border-slate-300' : 'bg-white'}`}><span>{page}</span><span className="flex items-center gap-2"><Badge variant="secondary">{stats?.slots ?? 0}</Badge>{(stats?.issues ?? 0) > 0 && <Badge variant="destructive">{stats?.issues}</Badge>}</span></button>;
-      })}</div>)}<button className="w-full rounded-md border px-3 py-2" onClick={() => setSelectedPage('all')}>All pages</button></CardContent></Card>
+    <div className="space-y-4">
+      <Card><CardContent className="p-3 grid gap-3 md:grid-cols-4"><select value={selectedPage} onChange={(e) => setSelectedPage(e.target.value)} className="rounded-md border px-3 py-2 text-sm">{pageOptions.map((page) => <option key={page} value={page}>{getPageLabel(page)}</option>)}</select><Input placeholder="Search by title, alt text, filename, section, or page" value={search} onChange={(e) => setSearch(e.target.value)} /><label className="flex items-center gap-2 text-sm">Show Issues Only<Switch checked={issuesOnly} onCheckedChange={setIssuesOnly} /></label><select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive' | 'missing')} className="rounded-md border px-3 py-2 text-sm"><option value="all">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="missing">Missing Image</option></select></CardContent></Card>
 
-      <div className="space-y-4">
-        <Card><CardContent className="p-3 grid gap-3 md:grid-cols-3"><Input placeholder="Search by page, section, label, alt text, caption" value={search} onChange={(e) => setSearch(e.target.value)} /><label className="flex items-center gap-2 text-sm">Show Issues Only<Switch checked={issuesOnly} onCheckedChange={setIssuesOnly} /></label><select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive' | 'missing')} className="rounded-md border px-3 py-2 text-sm"><option value="all">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="missing">Missing Image</option></select></CardContent></Card>
+        {selectedPage !== 'all' && selectedPageDuplicates.length > 0 && <Card className="border-amber-300 bg-amber-50"><CardContent className="p-3 text-sm"><p className="font-medium text-amber-900">Duplicate image warning on {getPageLabel(selectedPage)}</p><ul className="mt-1 space-y-1 text-amber-800">{selectedPageDuplicates.map((duplicate) => <li key={duplicate.imageUrl} className="break-all">{duplicate.imageUrl} <Badge variant="destructive" className="ml-2">Used {duplicate.count} times</Badge></li>)}</ul></CardContent></Card>}
 
         {filteredRows.map((row) => {
           const warnings = rowWarnings(row);
           return <Card key={row.id} className="shadow-sm border-slate-200"><CardHeader className="space-y-2"><div className="flex flex-wrap items-center gap-2"><CardTitle className="text-lg">{row.label || 'Untitled slot'}</CardTitle>{dirtyIds.has(row.id) && <Badge>Unsaved</Badge>}{row.is_active ? <Badge variant="secondary">Active</Badge> : <Badge variant="outline">Inactive</Badge>}{warnings.map((w) => <Badge key={w} variant="destructive">{w}</Badge>)}</div><p className="text-xs text-muted-foreground">{row.page_slug} · {row.section_key}</p><p className="text-xs text-muted-foreground">Used On: {usedOnMap[row.section_key] ?? 'This image is used in a website section identified by this section key.'}</p></CardHeader><CardContent className="space-y-3"><div className="grid md:grid-cols-2 gap-3"><div className="relative aspect-[4/3] rounded-md overflow-hidden border bg-muted"><Image src={getPreviewImageSrc(row.image_url)} alt={row.alt_text || `${row.section_key} image`} fill className="object-cover" unoptimized /></div><div className="space-y-2 text-sm"><Input value={row.alt_text || ''} onChange={(e) => updateRow(row.id, { alt_text: e.target.value })} placeholder="Alt text" /><Input value={row.caption || ''} onChange={(e) => updateRow(row.id, { caption: e.target.value })} placeholder="Caption" /><label className="flex items-center gap-2">Active <Switch checked={!!row.is_active} onCheckedChange={(checked) => updateRow(row.id, { is_active: checked })} /></label><p className="text-xs text-muted-foreground">Recommended dimensions: {row.recommended_width || '-'} × {row.recommended_height || '-'}</p><p className="text-xs text-muted-foreground break-all">Storage path: {row.storage_path || 'Not set'}</p></div></div>
           <label className="block rounded-md border-2 border-dashed p-4 text-sm cursor-pointer">Drop image here or click to upload<br />JPG, PNG, WebP, or GIF · Max 10 MB<input type="file" className="hidden" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => e.target.files?.[0] && uploadFile(row, e.target.files[0]).catch((err) => notify(err.message))} /></label>
-          <div className="flex flex-wrap gap-2"><Button variant="outline" asChild><a href={`/${row.page_slug}`} target="_blank" rel="noreferrer">View Live Page</a></Button>{row.image_url && <Button variant="outline" asChild><a href={row.image_url} target="_blank" rel="noreferrer">Open Image</a></Button>}<Button onClick={() => saveRow(row).catch((e) => notify(e.message))} disabled={!!busyById[row.id]}>{busyById[row.id] ? <><Spinner className="mr-2" />Saving...</> : 'Save Changes'}</Button></div>
+          <div className="flex flex-wrap gap-2"><Button variant="outline" asChild><a href={getPageHref(row.page_slug)} target="_blank" rel="noreferrer">View Live Page</a></Button>{row.image_url && <Button variant="outline" asChild><a href={row.image_url} target="_blank" rel="noreferrer">Open Image</a></Button>}<Button onClick={() => saveRow(row).catch((e) => notify(e.message))} disabled={!!busyById[row.id]}>{busyById[row.id] ? <><Spinner className="mr-2" />Saving...</> : 'Save Changes'}</Button></div>
           </CardContent></Card>;
         })}
 
         <Card><CardHeader><CardTitle className="text-base">Image Matching Guide</CardTitle></CardHeader><CardContent className="text-sm space-y-1"><p>Weddings: Use wedding venues, ceremonies, reception setups, daytime or elegant outdoor scenes.</p><p>Private Parties: Use backyard parties, reunions, graduation parties, and family gatherings.</p><p>Corporate Events: Use tailgates, branded events, office parties, networking events, and business settings.</p><p>Festivals: Use community crowds, outdoor vendor areas, fairs, and public events.</p><p>Special Events: Use galas, fundraisers, formal gatherings, and upscale celebrations.</p><p>Trailer pages: Use actual trailer exterior and interior images.</p><p>Service Areas: Use broad service/location imagery and avoid mismatched event-type photos.</p></CardContent></Card>
       </div>
-    </div>
 
     {dirtyIds.size > 0 && <div className="sticky bottom-3 z-20 rounded-lg border bg-white/95 p-3 shadow-lg flex flex-wrap items-center justify-between gap-3"><p className="text-sm">You have {dirtyIds.size} unsaved changes</p><div className="flex gap-2"><Button onClick={() => saveAllChanges().catch((e) => notify(e.message))}>Save All Changes</Button><Button variant="outline" onClick={() => setRows(originalRows)}>Discard Changes</Button></div></div>}
     <ToastMount />
