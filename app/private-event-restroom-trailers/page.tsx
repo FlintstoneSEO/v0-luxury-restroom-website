@@ -22,6 +22,7 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
+import { fetchSiteMedia, getSiteMediaMap, resolveSiteImage } from "@/lib/site-media"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const title =
@@ -164,7 +165,16 @@ const privateEventFaqs = [
   },
 ]
 
-export default function PrivateEventRestroomTrailersPage() {
+export const dynamic = "force-dynamic"
+
+export default async function PrivateEventRestroomTrailersPage() {
+
+  const records = await fetchSiteMedia("event-types-private-parties")
+  const mediaMap = getSiteMediaMap(records)
+  const heroImage = resolveSiteImage(mediaMap, "event-types-private-parties", "hero", { src: "/images/Special Event Trailer.png", alt: "event-types-private-parties hero image" })
+  const featureImage = resolveSiteImage(mediaMap, "event-types-private-parties", "feature", { src: "/images/Special Event Trailer.png", alt: "Private party restroom trailer setup" })
+  const resolvedEventGallery = eventGallery.map((img) => img.id === "p1" ? { ...img, src: featureImage.src, alt: featureImage.alt } : img)
+
   return (
     <>
       <Header />
@@ -177,6 +187,8 @@ export default function PrivateEventRestroomTrailersPage() {
           description="For backyard graduations, reunions, birthdays, and private property events in Lansing and Mid-Michigan, luxury restroom trailers keep guests comfortable and prevent heavy indoor bathroom traffic."
           primaryCta={{ text: "Request Availability", href: "/request-quote" }}
           secondaryCta={{ text: "View Gallery", href: "/gallery" }}
+          imageSrc={heroImage.src}
+          imageAlt={heroImage.alt}
         />
 
         {/* Features */}
@@ -283,7 +295,7 @@ export default function PrivateEventRestroomTrailersPage() {
               description="See how our luxury trailers serve private events and backyard celebrations throughout Mid-Michigan."
             />
             <div className="mt-12">
-              <GalleryGrid images={eventGallery} columns={4} />
+              <GalleryGrid images={resolvedEventGallery} columns={4} />
             </div>
             <div className="mt-10 text-center">
               <Button asChild variant="outline" className="border-navy text-navy">

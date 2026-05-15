@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { fetchSiteMedia, getSiteMediaMap, resolveSiteImage } from '@/lib/site-media';
 
 export type HomepageSectionKey =
   | 'hero'
@@ -8,33 +8,6 @@ export type HomepageSectionKey =
   | 'festivals'
   | 'special_events'
   | 'trailer_gallery';
-
-export interface HomepageMediaRecord {
-  id: string;
-  section_key: HomepageSectionKey;
-  label: string | null;
-  image_url: string | null;
-  storage_bucket: string | null;
-  storage_path: string | null;
-  alt_text: string | null;
-  caption: string | null;
-  sort_order: number | null;
-  is_active: boolean | null;
-  recommended_width: number | null;
-  recommended_height: number | null;
-}
-
-const SUPABASE_HOST = 'lmytjyqjgjsqqffsulwz.supabase.co';
-
-function isSupabaseHomepageImage(url?: string | null) {
-  if (!url) return false;
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === 'https:' && parsed.hostname === SUPABASE_HOST;
-  } catch {
-    return false;
-  }
-}
 
 export const homepageImageFallbacks: Record<HomepageSectionKey, { src: string; alt: string; label?: string }> = {
   hero: {
@@ -72,40 +45,11 @@ export const homepageImageFallbacks: Record<HomepageSectionKey, { src: string; a
 };
 
 export async function fetchHomepageMedia() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('homepage_media')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true });
-
-  if (error) {
-    console.error('[homepage-media] failed to fetch media', error);
-    return [] as HomepageMediaRecord[];
-  }
-
-  return (data || []) as HomepageMediaRecord[];
+  return fetchSiteMedia('homepage');
 }
 
-export function getHomepageMediaMap(records: HomepageMediaRecord[]) {
-  const map = new Map<HomepageSectionKey, HomepageMediaRecord>();
-  for (const record of records) {
-    map.set(record.section_key, record);
-  }
-  return map;
-}
+export const getHomepageMediaMap = getSiteMediaMap;
 
-export function resolveHomepageImage(recordsMap: Map<HomepageSectionKey, HomepageMediaRecord>, sectionKey: HomepageSectionKey) {
-  const record = recordsMap.get(sectionKey);
-  const fallback = homepageImageFallbacks[sectionKey];
-  const isSupabaseImage = isSupabaseHomepageImage(record?.image_url);
-  const src = isSupabaseImage && record?.image_url ? `${record.image_url}?v=${record.id}` : record?.image_url || fallback.src;
-
-  return {
-    src,
-    alt: record?.alt_text || fallback.alt,
-    label: record?.label || fallback.label,
-    caption: record?.caption || '',
-    unoptimized: isSupabaseImage,
-  };
+export function resolveHomepageImage(recordsMap: Map<string, any>, sectionKey: HomepageSectionKey) {
+  return resolveSiteImage(recordsMap, 'homepage', sectionKey, homepageImageFallbacks[sectionKey]);
 }

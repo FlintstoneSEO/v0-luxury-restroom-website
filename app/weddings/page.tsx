@@ -20,6 +20,7 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
+import { fetchSiteMedia, getSiteMediaMap, resolveSiteImage } from "@/lib/site-media"
 
 export const metadata: Metadata = {
   title: "Wedding Restroom Trailer Rentals Lansing MI | Signature Luxe Events",
@@ -135,7 +136,16 @@ const weddingFaqs = [
   },
 ]
 
-export default function WeddingsPage() {
+export const dynamic = "force-dynamic"
+
+export default async function WeddingsPage() {
+
+  const records = await fetchSiteMedia("event-types-weddings")
+  const mediaMap = getSiteMediaMap(records)
+  const heroImage = resolveSiteImage(mediaMap, "event-types-weddings", "hero", { src: "/images/Wedding Trailer.png", alt: "event-types-weddings hero image" })
+  const featureImage = resolveSiteImage(mediaMap, "event-types-weddings", "feature", { src: "/images/Wedding Trailer.png", alt: "Wedding restroom trailer setup" })
+  const resolvedWeddingGallery = weddingGallery.map((img) => img.id === "w1" ? { ...img, src: featureImage.src, alt: featureImage.alt } : img)
+
   return (
     <>
       <Header />
@@ -148,6 +158,8 @@ export default function WeddingsPage() {
           description="Give your guests a clean, comfortable, and upscale restroom experience for your outdoor wedding, private estate celebration, barn wedding, or venue event in Lansing and Mid-Michigan."
           primaryCta={{ text: "Request Availability", href: "/request-quote" }}
           secondaryCta={{ text: "View Gallery", href: "/gallery" }}
+          imageSrc={heroImage.src}
+          imageAlt={heroImage.alt}
         />
 
         {/* Why Upgrade */}
@@ -226,7 +238,7 @@ export default function WeddingsPage() {
               description="See how our luxury trailers enhance wedding celebrations throughout Mid-Michigan."
             />
             <div className="mt-12">
-              <GalleryGrid images={weddingGallery} columns={4} />
+              <GalleryGrid images={resolvedWeddingGallery} columns={4} />
             </div>
             <div className="mt-10 text-center">
               <Button asChild variant="outline" className="border-navy text-navy">
