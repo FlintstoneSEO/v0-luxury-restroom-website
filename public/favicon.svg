@@ -1,9 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title>Signature Luxe Events &amp; Amenities favicon</title>
-  <rect width="512" height="512" rx="96" fill="#2d3a47"/>
-  <circle cx="256" cy="256" r="188" fill="none" stroke="#ded2c4" stroke-width="18"/>
-  <circle cx="256" cy="256" r="154" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="4"/>
-  <text x="256" y="244" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, 'Times New Roman', serif" font-size="170" font-weight="700" fill="#ded2c4">SL</text>
-  <path d="M154 316h204" stroke="#ded2c4" stroke-width="12" stroke-linecap="round"/>
-  <path d="M190 354h132" stroke="#ffffff" stroke-opacity="0.9" stroke-width="8" stroke-linecap="round"/>
+  <title>Signature Luxe Events &amp; Amenities logo favicon</title>
+  <rect width="512" height="512" rx="96" fill="#ffffff"/>
+  <rect x="24" y="24" width="464" height="464" rx="76" fill="#2d3a47"/>
+  <image href="/images/logo.png" x="54" y="150" width="404" height="212" preserveAspectRatio="xMidYMid meet"/>
 </svg>
