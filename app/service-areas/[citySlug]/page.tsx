@@ -11,12 +11,15 @@ import { cityPages } from '@/lib/seo'
 import { cityContent, enhancedCityContent, priorityCitySlugs } from '@/lib/city-pages'
 
 const galleryVisuals = {
-  exterior: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg', alt: 'Luxury restroom trailer exterior setup in Michigan' },
-  interior: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg', alt: 'Interior vanity in luxury restroom trailer' },
-  wedding: { src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f8c856e0-44a2-4c9a-990c-09e671fee136-VkgBsnTDKck69SOzLmlIYiSb3zZeAS.png', alt: 'Wedding restroom trailer setup at a private estate' },
-  corporate: { src: '/images/Special Event Trailer.png', alt: 'Corporate event restroom trailer rental setup' },
-  festival: { src: '/images/Special Event Trailer.png', alt: 'Festival restroom trailer setup in Michigan' },
-  station3: { src: '/images/3 Station Pro/3Station.jpg', alt: '3 Station Pro restroom trailer exterior' },
+  wedding: { src: '/images/Wedding Trailer.png', alt: 'Wedding restroom trailer rental setup for an outdoor Michigan reception' },
+  privateParty: { src: '/images/Special Event Trailer.png', alt: 'Luxury restroom trailer for a private backyard event in Mid-Michigan' },
+  corporate: { src: '/images/Corporate Event Restroom Trailer', alt: 'Corporate event restroom trailer rental for a Mid-Michigan gathering' },
+  festival: { src: '/images/Festival Restroom Trailer', alt: 'Festival and community event restroom trailer setup in Mid-Michigan' },
+  graduation: { src: '/images/MSU Tailgate Rental Restroom.png', alt: 'Graduation and alumni celebration restroom trailer setup in Mid-Michigan' },
+  construction: { src: '/images/Construction Site Trailer.png', alt: 'Construction and long-term restroom trailer rental setup in Mid-Michigan' },
+  interior: { src: '/images/3 Station Pro/3Station5.jpg', alt: 'Luxury restroom trailer interior with upgraded finishes' },
+  exterior: { src: '/images/3 Station Pro/3Station4.jpg', alt: 'Exterior luxury restroom trailer setup on a Michigan event site' },
+  station3: { src: '/images/3 Station Pro/3Station.jpg', alt: '3 station restroom trailer exterior setup in Mid-Michigan' },
 }
 
 type VisualCard = {
@@ -25,6 +28,7 @@ type VisualCard = {
   href?: string
   icon: LucideIcon
   image: { src: string; alt: string }
+  imageCandidates?: Array<keyof typeof galleryVisuals>
 }
 
 const matchesAnyKeyword = (text: string, keywords: string[]) => keywords.some((keyword) => text.includes(keyword))
@@ -32,15 +36,30 @@ const matchesAnyKeyword = (text: string, keywords: string[]) => keywords.some((k
 const getUseCaseCard = (useCase: string): VisualCard => {
   const normalized = useCase.toLowerCase()
 
-  if (matchesAnyKeyword(normalized, ['wedding', 'reception', 'wedding weekend'])) return { title: useCase, description: 'Elegant guest restroom support for ceremonies, receptions, and full wedding weekends.', icon: Heart, image: galleryVisuals.wedding }
-  if (matchesAnyKeyword(normalized, ['graduation', 'alumni'])) return { title: useCase, description: 'Comfortable amenities for graduation parties, alumni events, and school celebrations.', icon: GraduationCap, image: galleryVisuals.corporate }
-  if (matchesAnyKeyword(normalized, ['corporate', 'company', 'nonprofit', 'donor'])) return { title: useCase, description: 'Polished trailer presentation for company gatherings, galas, and donor-focused events.', icon: BriefcaseBusiness, image: galleryVisuals.corporate }
-  if (matchesAnyKeyword(normalized, ['construction', 'contractor', 'project support', 'public works'])) return { title: useCase, description: 'Reliable trailer placement for active work sites and project-based operations.', icon: HardHat, image: galleryVisuals.station3 }
-  if (matchesAnyKeyword(normalized, ['festival', 'community event'])) return { title: useCase, description: 'Guest-ready facilities for public festivals and neighborhood celebrations.', icon: Tent, image: galleryVisuals.festival }
-  if (matchesAnyKeyword(normalized, ['private party', 'private celebrations', 'birthday', 'holiday', 'reunion', 'family reunions'])) return { title: useCase, description: 'Refined restroom options for private celebrations and family-hosted gatherings.', icon: PartyPopper, image: galleryVisuals.wedding }
-  if (matchesAnyKeyword(normalized, ['temporary facility', 'temporary facilities', 'outage', 'long-term support', 'long-term'])) return { title: useCase, description: 'Dependable restroom access during outages and extended temporary operations.', icon: Building2, image: galleryVisuals.exterior }
+  if (matchesAnyKeyword(normalized, ['wedding', 'reception', 'wedding weekend'])) return { title: useCase, description: 'Elegant guest restroom support for ceremonies, receptions, and full wedding weekends.', icon: Heart, image: galleryVisuals.wedding, imageCandidates: ['wedding', 'exterior', 'interior'] }
+  if (matchesAnyKeyword(normalized, ['graduation', 'alumni'])) return { title: useCase, description: 'Comfortable amenities for graduation parties, alumni events, and school celebrations.', icon: GraduationCap, image: galleryVisuals.graduation, imageCandidates: ['graduation', 'corporate', 'privateParty'] }
+  if (matchesAnyKeyword(normalized, ['corporate', 'company', 'nonprofit', 'donor'])) return { title: useCase, description: 'Polished trailer presentation for company gatherings, galas, and donor-focused events.', icon: BriefcaseBusiness, image: galleryVisuals.corporate, imageCandidates: ['corporate', 'interior', 'exterior'] }
+  if (matchesAnyKeyword(normalized, ['construction', 'contractor', 'project support', 'public works'])) return { title: useCase, description: 'Reliable trailer placement for active work sites and project-based operations.', icon: HardHat, image: galleryVisuals.construction, imageCandidates: ['construction', 'station3', 'exterior'] }
+  if (matchesAnyKeyword(normalized, ['festival', 'community event'])) return { title: useCase, description: 'Guest-ready facilities for public festivals and neighborhood celebrations.', icon: Tent, image: galleryVisuals.festival, imageCandidates: ['festival', 'exterior', 'station3'] }
+  if (matchesAnyKeyword(normalized, ['private party', 'private celebrations', 'backyard party', 'backyard parties', 'birthday', 'holiday', 'reunion', 'family reunions'])) return { title: useCase, description: 'Refined restroom options for private celebrations and family-hosted gatherings.', icon: PartyPopper, image: galleryVisuals.privateParty, imageCandidates: ['privateParty', 'interior', 'exterior'] }
+  if (matchesAnyKeyword(normalized, ['temporary facility', 'temporary facilities', 'outage', 'long-term support', 'long-term'])) return { title: useCase, description: 'Dependable restroom access during outages and extended temporary operations.', icon: Building2, image: galleryVisuals.exterior, imageCandidates: ['construction', 'exterior', 'station3'] }
 
   return { title: useCase, description: 'Luxury restroom trailer support tailored to your timeline, guests, and site logistics.', icon: CalendarCheck, image: galleryVisuals.exterior }
+}
+
+const assignDistinctUseCaseImages = (cards: VisualCard[]): VisualCard[] => {
+  const used = new Set<string>()
+  return cards.map((card) => {
+    const candidates = card.imageCandidates?.length ? card.imageCandidates : null
+    if (!candidates) {
+      used.add(card.image.src)
+      return card
+    }
+    const selectedKey = candidates.find((key) => !used.has(galleryVisuals[key].src)) ?? candidates[0]
+    const image = galleryVisuals[selectedKey]
+    used.add(image.src)
+    return { ...card, image }
+  })
 }
 
 const exploreServiceCards: VisualCard[] = [
@@ -65,6 +84,7 @@ export function generateStaticParams() { return cityPages.map((c) => ({ citySlug
 export async function generateMetadata({ params }: { params: Promise<{ citySlug: string }> }): Promise<Metadata> { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) return {}; const isPriorityCity = priorityCitySlugs.has(data.slug); const meta = cityMeta[data.slug]; const title = meta?.title ?? (isPriorityCity ? `Luxury Restroom Trailer Rentals in ${data.city}, MI | Signature Luxe Events` : `Restroom Trailer Rentals ${data.city}, MI`); const description = meta?.description ?? (isPriorityCity ? `Luxury restroom trailer rentals in ${data.city}, MI for weddings, private events, corporate gatherings, festivals, construction projects, and long-term needs with delivery and setup planning.` : `Luxury restroom trailer rentals for weddings, events, and project sites in ${data.city}, Michigan with delivery, setup, and service planning.`); const canonical = `https://www.signatureluxeevents.com/service-areas/${data.slug}`; return { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, images: [{ url: '/images/Wedding Trailer.png', alt: `Climate-controlled luxury restroom trailer rental in ${data.city}, Michigan` }] }, twitter: { card: 'summary_large_image', title, description, images: ['/images/Wedding Trailer.png'] } } }
 
 export default async function CityPage({ params }: { params: Promise<{ citySlug: string }> }) { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) notFound(); const business = localBusinessJsonLd(data.city); const breadcrumbs = breadcrumbJsonLd([{ name: 'Home', item: '/' }, { name: 'Service Areas', item: '/service-areas' }, { name: `${data.city}, MI`, item: `/service-areas/${data.slug}` }]); const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: data.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
+const useCaseCards = assignDistinctUseCaseImages(data.useCases.map((useCase) => getUseCaseCard(useCase)))
 return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /><Header />
 <main>
   <section className='bg-navy py-20 md:py-24'>
@@ -88,10 +108,9 @@ return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: J
     <div className='container mx-auto px-4 lg:px-8'>
       <h2 className='text-2xl font-semibold text-navy mb-2'>Restroom Trailer Rentals for Weddings, Events, and Projects in {data.city}</h2><p className='text-base md:text-lg leading-relaxed text-charcoal mb-5'>Popular rental scenarios we support throughout {data.city}, MI and surrounding communities.</p>
       <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-        {data.useCases.map((useCase) => {
-          const card = getUseCaseCard(useCase)
+        {useCaseCards.map((card) => {
           return (
-            <article key={useCase} className='overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm'>
+            <article key={card.title} className='overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm'>
               <div className='relative h-36'>
                 <Image src={card.image.src} alt={card.image.alt} fill className='object-cover' sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw' />
                 <div className='absolute inset-0 bg-gradient-to-t from-navy/55 via-navy/10 to-transparent' />
