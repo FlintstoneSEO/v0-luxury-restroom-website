@@ -1,3 +1,10 @@
+const soroFeaturedImageHostnames = [
+  'app.trysoro.com',
+  'cdn.trysoro.com',
+  'storage.googleapis.com',
+  'lh3.googleusercontent.com',
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {
@@ -34,11 +41,11 @@ const nextConfig = {
         hostname: 'lmytjyqjgjsqqffsulwz.supabase.co',
         pathname: '/**',
       },
-      {
+      ...soroFeaturedImageHostnames.map((hostname) => ({
         protocol: 'https',
-        hostname: '**',
+        hostname,
         pathname: '/**',
-      },
+      })),
     ],
   },
 }
