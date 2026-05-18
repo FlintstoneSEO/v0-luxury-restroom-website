@@ -13,6 +13,7 @@ export const finalRoutes = [
   '/service-areas',
   '/faq',
   '/resources',
+  '/blog',
   '/request-quote',
   '/gallery',
   '/contact',
