@@ -5,7 +5,7 @@ import { CalendarDays, ArrowRight } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
-import { formatBlogDate, getSoroBlogPosts } from '@/lib/soro-blog'
+import { BLOG_FALLBACK_IMAGE, formatBlogDate, getSoroBlogPosts } from '@/lib/soro-blog'
 import { siteUrl } from '@/lib/seo'
 
 export const revalidate = 21600
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       'Helpful planning guides for luxury restroom trailer rentals across Lansing, Mid-Michigan, and surrounding Michigan communities.',
     url: `${siteUrl}/blog`,
     type: 'website',
-    images: [{ url: '/images/Wedding Trailer.png', alt: 'Luxury restroom trailer for a Michigan event' }],
+    images: [{ url: BLOG_FALLBACK_IMAGE, alt: 'Luxury restroom trailer for a Michigan event' }],
   },
 }
 
@@ -64,7 +64,7 @@ export default async function BlogPage() {
                     <Link href={`/blog/${post.slug}`} className="block">
                       <div className="relative aspect-[16/10] overflow-hidden bg-gold/20">
                         <Image
-                          src={post.featuredImage || '/images/Wedding Trailer.png'}
+                          src={post.featuredImage || BLOG_FALLBACK_IMAGE}
                           alt={post.title}
                           fill
                           sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"

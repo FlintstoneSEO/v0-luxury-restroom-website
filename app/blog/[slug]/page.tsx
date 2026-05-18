@@ -7,7 +7,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
 import { business, breadcrumbJsonLd } from '@/lib/seo-schema'
-import { formatBlogDate, getSoroBlogPost, getSoroBlogPosts } from '@/lib/soro-blog'
+import { BLOG_FALLBACK_IMAGE, formatBlogDate, getSoroBlogPost, getSoroBlogPosts } from '@/lib/soro-blog'
 import { siteUrl } from '@/lib/seo'
 
 export const revalidate = 21600
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) return {}
 
   const canonical = `/blog/${post.slug}`
-  const image = post.featuredImage || '/images/Wedding Trailer.png'
+  const image = post.featuredImage || BLOG_FALLBACK_IMAGE
 
   return {
     title: post.title,
@@ -56,11 +56,11 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   if (!post) notFound()
 
   const canonicalUrl = `${siteUrl}/blog/${post.slug}`
-  const image = post.featuredImage || '/images/Wedding Trailer.png'
+  const image = post.featuredImage || BLOG_FALLBACK_IMAGE
 
   const articleSchema = {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': ['Article', 'BlogPosting'],
     headline: post.title,
     description: post.description,
     image: image.startsWith('http') ? image : `${siteUrl}${image}`,
@@ -71,6 +71,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
     mainEntityOfPage: canonicalUrl,
     url: canonicalUrl,
     articleSection: post.category || 'Luxury Restroom Trailer Rentals',
+    keywords: post.categories.length ? post.categories.join(', ') : undefined,
     about: ['Luxury restroom trailer rentals', 'Lansing Michigan event planning', 'Mid-Michigan outdoor events'],
   }
 
@@ -91,7 +92,9 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
           <header className="mt-6 rounded-3xl border border-gold/40 bg-white p-6 shadow-sm md:p-10">
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              {post.category && <span className="rounded-full bg-cream px-3 py-1 font-medium text-gold-text">{post.category}</span>}
+              {post.categories.length > 0 && (
+                <span className="rounded-full bg-cream px-3 py-1 font-medium text-gold-text">{post.categories.join(' • ')}</span>
+              )}
               <span className="inline-flex items-center gap-1.5">
                 <CalendarDays className="h-4 w-4 text-gold-text" />
                 {formatBlogDate(post.publishedAt)}
