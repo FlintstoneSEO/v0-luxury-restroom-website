@@ -2,56 +2,11 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
 import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 
 export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string; unoptimized?: boolean } }) {
-  const [offsetY, setOffsetY] = useState(0)
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-  const rafRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-    const updateMotionPreference = () => {
-      setPrefersReducedMotion(mediaQuery.matches)
-
-      if (mediaQuery.matches) {
-        setOffsetY(0)
-      }
-    }
-
-    const updateParallax = () => {
-      rafRef.current = null
-
-      if (mediaQuery.matches) return
-
-      const nextOffset = Math.min(90, Math.max(-20, window.scrollY * 0.18))
-      setOffsetY(nextOffset)
-    }
-
-    const onScroll = () => {
-      if (rafRef.current !== null) return
-      rafRef.current = window.requestAnimationFrame(updateParallax)
-    }
-
-    updateMotionPreference()
-    onScroll()
-
-    mediaQuery.addEventListener("change", updateMotionPreference)
-    window.addEventListener("scroll", onScroll, { passive: true })
-
-    return () => {
-      mediaQuery.removeEventListener("change", updateMotionPreference)
-      window.removeEventListener("scroll", onScroll)
-
-      if (rafRef.current !== null) {
-        window.cancelAnimationFrame(rafRef.current)
-      }
-    }
-  }, [])
-
   const handleScrollToNextSection = () => {
     const nextSection =
       document.querySelector<HTMLElement>("[data-home-next-section]") ||
@@ -65,10 +20,7 @@ export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string;
     <section className="relative flex min-h-screen items-center overflow-hidden md:items-end">
       {/* Background Image Container */}
       <div className="absolute inset-0">
-        <div
-          className="absolute inset-x-[-6%] inset-y-[-10%] motion-reduce:inset-0 will-change-transform"
-          style={{ transform: `translate3d(0, ${offsetY}px, 0)` }}
-        >
+        <div className="absolute inset-0 md:inset-x-[-6%] md:inset-y-[-10%]">
           <Image
             src={heroImage.src}
             alt={heroImage.alt}
@@ -76,7 +28,7 @@ export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string;
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center motion-safe:animate-hero-ken-burns motion-reduce:scale-100 motion-reduce:animate-none"
+            className="object-cover object-center motion-safe:md:animate-hero-ken-burns motion-reduce:scale-100 motion-reduce:animate-none"
           />
         </div>
 
@@ -87,7 +39,7 @@ export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string;
         <div className="absolute inset-0 bg-gradient-to-r from-[#1f2a36]/30 via-transparent to-[#1f2a36]/30" />
 
         {/* Decorative glow */}
-        <div className="pointer-events-none absolute -right-20 bottom-1/3 h-[28rem] w-[28rem] rounded-full bg-[#DED2C4]/20 blur-3xl motion-safe:animate-gold-pulse motion-reduce:animate-none" />
+        <div className="pointer-events-none absolute -right-20 bottom-1/3 h-[28rem] w-[28rem] rounded-full bg-[#DED2C4]/20 blur-3xl motion-safe:md:animate-gold-pulse motion-reduce:animate-none" />
       </div>
 
       {/* Content - elevated on mobile, anchored lower again on desktop */}
@@ -140,18 +92,10 @@ export function HomeHero({ heroImage }: { heroImage: { src: string; alt: string;
         type="button"
         aria-label="Scroll to next section"
         onClick={handleScrollToNextSection}
-        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto"
-        style={{
-          animation: prefersReducedMotion ? 'none' : 'bounce-subtle 2s ease-in-out infinite'
-        }}
+        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform motion-safe:animate-[bounce-subtle_2s_ease-in-out_infinite] hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto motion-reduce:animate-none"
       >
         <div className="flex h-12 w-8 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm overflow-hidden">
-          <div 
-            className="h-3 w-1.5 rounded-full bg-[#DED2C4]"
-            style={{
-              animation: prefersReducedMotion ? 'none' : 'scroll-wheel 1.5s ease-in-out infinite'
-            }}
-          />
+          <div className="h-3 w-1.5 rounded-full bg-[#DED2C4] motion-safe:animate-scroll-wheel motion-reduce:animate-none" />
         </div>
       </button>
     </section>
