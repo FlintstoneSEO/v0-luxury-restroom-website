@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export interface SiteMediaRecord {
   id: string;
@@ -19,6 +19,20 @@ export interface SiteMediaRecord {
 
 const SUPABASE_HOST = 'lmytjyqjgjsqqffsulwz.supabase.co';
 
+function getPublicSiteMediaClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    }
+  );
+}
+
 function isSupabaseImage(url?: string | null) {
   if (!url) return false;
   try {
@@ -30,7 +44,7 @@ function isSupabaseImage(url?: string | null) {
 }
 
 export async function fetchSiteMedia(pageSlug?: string) {
-  const supabase = await createClient();
+  const supabase = getPublicSiteMediaClient();
   let query = supabase
     .from('site_media')
     .select('*')
@@ -52,6 +66,7 @@ export async function fetchSiteMedia(pageSlug?: string) {
 }
 
 export async function fetchAllSiteMedia() {
+  const { createClient } = await import('@/lib/supabase/server');
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('site_media')

@@ -41,6 +41,11 @@ const nextConfig = {
         hostname: 'lmytjyqjgjsqqffsulwz.supabase.co',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        pathname: '/**',
+      },
       ...soroFeaturedImageHostnames.map((hostname) => ({
         protocol: 'https',
         hostname,

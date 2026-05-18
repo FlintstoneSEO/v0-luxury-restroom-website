@@ -94,7 +94,6 @@ export function Header() {
               width={300}
               height={98}
               className="h-24 w-auto max-w-[320px]"
-              priority
             />
           </Link>
 
@@ -118,7 +117,6 @@ export function Header() {
             width={260}
             height={85}
             className="h-[4.5rem] w-auto max-w-[260px]"
-            priority
           />
         </Link>
 

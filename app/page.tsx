@@ -9,7 +9,6 @@ import {
   Zap,
   MapPin,
   ArrowRight,
-  Play,
   Users,
   CheckCircle,
 } from "lucide-react"
@@ -23,12 +22,13 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { HomeHero } from "@/components/home-hero"
+import { LiteYouTubeEmbed } from "@/components/lite-youtube-embed"
 import type { Metadata } from "next"
 import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo-schema"
 import { fetchHomepageMedia, getHomepageMediaMap, resolveHomepageImage } from "@/lib/homepage-media"
 
 
-export const dynamic = "force-dynamic"
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
@@ -259,17 +259,13 @@ export default async function HomePage() {
                 </div>
               </div>
               
-              {/* YouTube Video Embed */}
+              {/* Lightweight click-to-play YouTube video */}
               <div className="relative">
-                <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-charcoal">
-                  <iframe
-                    src="https://www.youtube.com/embed/jtWx3MlGOQI?si=scm0lmNbll48Mw1a"
-                    title="3-Station Luxury Restroom Trailer Walkthrough"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
-                </div>
+                <LiteYouTubeEmbed
+                  videoId="jtWx3MlGOQI"
+                  title="3-Station Luxury Restroom Trailer Walkthrough"
+                  className="aspect-video overflow-hidden rounded-2xl bg-charcoal shadow-2xl"
+                />
                 {/* Decorative elements */}
                 <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gold/20 rounded-full blur-2xl" />
                 <div className="absolute -top-4 -left-4 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
