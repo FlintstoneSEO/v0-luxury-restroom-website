@@ -1,7 +1,7 @@
 import { cache } from 'react'
 
 export const SORO_RSS_FEED_URL = 'https://app.trysoro.com/api/rss/1e191ab7-f4d4-4008-9a60-e40f10af4558'
-export const BLOG_REVALIDATE_SECONDS = 60 * 1
+export const BLOG_REVALIDATE_SECONDS = 60 * 60
 export const BLOG_FALLBACK_IMAGE = '/images/Wedding Trailer.png'
 
 export const SORO_FEATURED_IMAGE_HOSTNAMES = [
