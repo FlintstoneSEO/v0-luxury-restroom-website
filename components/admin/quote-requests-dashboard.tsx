@@ -305,131 +305,128 @@ export default function QuoteRequestsDashboard({
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
-        <aside className="space-y-4 lg:sticky lg:top-6">
-          {/* Filters */}
-          <section className="bg-white rounded-xl border border-[#8a7a68] p-4 md:p-5 shadow-sm space-y-5" aria-labelledby="quote-filters-heading">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 id="quote-filters-heading" className="text-lg font-serif font-semibold text-[#2d3a47]">Filters</h2>
-                <p className="text-sm text-[#4b5563]">Refine the dashboard before choosing a pipeline stage.</p>
-              </div>
-              <Search className="h-5 w-5 text-[#2d3a47]" aria-hidden="true" />
-            </div>
+      {/* Full-width Filters */}
+      <section className="bg-white rounded-xl border border-[#8a7a68] p-4 md:p-5 shadow-sm space-y-5" aria-labelledby="quote-filters-heading">
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h2 id="quote-filters-heading" className="text-lg font-serif font-semibold text-[#2d3a47]">Filters</h2>
+            <p className="text-sm text-[#4b5563]">Refine the full dashboard before choosing a pipeline bucket.</p>
+          </div>
+          <div className="flex items-center gap-3 text-sm font-semibold text-[#2d3a47]">
+            <span className="rounded-full bg-[#f8f4ee] px-2.5 py-1 border border-[#8a7a68]" aria-live="polite">{filteredQuotes.length} filtered quote{filteredQuotes.length === 1 ? '' : 's'}</span>
+            <Search className="h-5 w-5 text-[#2d3a47]" aria-hidden="true" />
+          </div>
+        </div>
 
-            <div className="space-y-4">
-              <label className="block space-y-1.5">
-                <span className="text-sm font-semibold text-[#2d3a47]">Search</span>
-                <Input
-                  placeholder="Name, email, phone, address, city..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="border-[#b9aa99] text-[#2d3a47] placeholder:text-[#4b5563]/80 focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2"
-                />
-              </label>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[minmax(260px,1.4fr)_repeat(5,minmax(150px,1fr))_auto] 2xl:items-end">
+          <label className="block space-y-1.5 sm:col-span-2 lg:col-span-3 2xl:col-span-1">
+            <span className="text-sm font-semibold text-[#2d3a47]">Search</span>
+            <Input
+              placeholder="Name, email, phone, address, city..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border-[#b9aa99] text-[#2d3a47] placeholder:text-[#4b5563]/80 focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2"
+            />
+          </label>
 
-              <label className="block space-y-1.5">
-                <span className="text-sm font-semibold text-[#2d3a47]">Quote status</span>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by quote status">
-                    <SelectValue placeholder="Quote Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    {QUOTE_STATUSES.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {formatStatus(status)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
+          <label className="block space-y-1.5">
+            <span className="text-sm font-semibold text-[#2d3a47]">Quote Status</span>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by quote status">
+                <SelectValue placeholder="Quote Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                {QUOTE_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {formatStatus(status)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
 
-              <label className="block space-y-1.5">
-                <span className="text-sm font-semibold text-[#2d3a47]">Event type</span>
-                <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}>
-                  <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by event type">
-                    <SelectValue placeholder="Event Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Event Types</SelectItem>
-                    {EVENT_TYPES.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
+          <label className="block space-y-1.5">
+            <span className="text-sm font-semibold text-[#2d3a47]">Event Type</span>
+            <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}>
+              <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by event type">
+                <SelectValue placeholder="Event Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Event Types</SelectItem>
+                {EVENT_TYPES.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
 
-              <label className="block space-y-1.5">
-                <span className="text-sm font-semibold text-[#2d3a47]">Agreement status</span>
-                <Select value={agreementFilter} onValueChange={setAgreementFilter}>
-                  <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by agreement status">
-                    <SelectValue placeholder="Agreement" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Agreements</SelectItem>
-                    {AGREEMENT_TRACKING_STATUSES.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {formatStatus(status)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
+          <label className="block space-y-1.5">
+            <span className="text-sm font-semibold text-[#2d3a47]">Agreement Status</span>
+            <Select value={agreementFilter} onValueChange={setAgreementFilter}>
+              <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by agreement status">
+                <SelectValue placeholder="Agreement" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Agreements</SelectItem>
+                {AGREEMENT_TRACKING_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {formatStatus(status)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
 
-              <label className="block space-y-1.5">
-                <span className="text-sm font-semibold text-[#2d3a47]">Deposit status</span>
-                <Select value={depositFilter} onValueChange={setDepositFilter}>
-                  <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by deposit status">
-                    <SelectValue placeholder="Deposit" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Deposits</SelectItem>
-                    {DEPOSIT_TRACKING_STATUSES.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {formatStatus(status)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </label>
+          <label className="block space-y-1.5">
+            <span className="text-sm font-semibold text-[#2d3a47]">Deposit Status</span>
+            <Select value={depositFilter} onValueChange={setDepositFilter}>
+              <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by deposit status">
+                <SelectValue placeholder="Deposit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Deposits</SelectItem>
+                {DEPOSIT_TRACKING_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {formatStatus(status)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
 
-              <label className="block space-y-1.5">
-                <span className="text-sm font-semibold text-[#2d3a47]">Sort by</span>
-                <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
-                  <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Sort quotes">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">Newest First</SelectItem>
-                    <SelectItem value="oldest">Oldest First</SelectItem>
-                    <SelectItem value="event_soonest">Event Date (Soonest)</SelectItem>
-                    <SelectItem value="event_latest">Event Date (Latest)</SelectItem>
-                    <SelectItem value="total_highest">Highest Total</SelectItem>
-                    <SelectItem value="total_lowest">Lowest Total</SelectItem>
-                    <SelectItem value="status">Status A-Z</SelectItem>
-                  </SelectContent>
-                </Select>
-              </label>
-            </div>
+          <label className="block space-y-1.5">
+            <span className="text-sm font-semibold text-[#2d3a47]">Sort By</span>
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
+              <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Sort quotes">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="event_soonest">Event Date (Soonest)</SelectItem>
+                <SelectItem value="event_latest">Event Date (Latest)</SelectItem>
+                <SelectItem value="total_highest">Highest Total</SelectItem>
+                <SelectItem value="total_lowest">Lowest Total</SelectItem>
+                <SelectItem value="status">Status A-Z</SelectItem>
+              </SelectContent>
+            </Select>
+          </label>
 
-            <div className="flex flex-col gap-3 border-t border-[#8a7a68] pt-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-semibold text-[#2d3a47]">Filtered quotes</span>
-                <span className="rounded-full bg-[#f8f4ee] px-2.5 py-1 font-semibold text-[#2d3a47] border border-[#8a7a68]">{filteredQuotes.length}</span>
-              </div>
-              <Button
-                type="button"
-                className="w-full bg-[#2d3a47] hover:bg-[#23303c] text-white border border-[#2d3a47] focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2"
-              >
-                <Plus className="h-4 w-4" aria-hidden="true" />
-                New Manual Quote
-              </Button>
-            </div>
-          </section>
+          <Button
+            type="button"
+            className="h-10 w-full bg-[#2d3a47] hover:bg-[#23303c] text-white border border-[#2d3a47] focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 2xl:w-auto 2xl:self-end"
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            New Manual Quote
+          </Button>
+        </div>
+      </section>
 
+      <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
+        <aside className="min-w-0 lg:sticky lg:top-6">
           <section className="bg-[#f8f4ee] rounded-xl border border-[#8a7a68]/80 p-3 shadow-sm" aria-labelledby="pipeline-tabs-heading">
             <div className="px-1 pb-3">
               <h2 id="pipeline-tabs-heading" className="text-lg font-serif font-semibold text-[#2d3a47]">Pipeline Buckets</h2>
@@ -450,7 +447,7 @@ export default function QuoteRequestsDashboard({
                     aria-pressed={isActive}
                     aria-controls="pipeline-records-panel"
                     onClick={() => setActivePipelineBucket(bucket.key)}
-                    className={`min-w-[245px] rounded-xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 lg:min-w-0 ${
+                    className={`min-w-[220px] rounded-xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 sm:min-w-[245px] lg:min-w-0 ${
                       isActive
                         ? 'bg-[#2d3a47] text-white border-[#2d3a47] shadow-md ring-2 ring-[#ded2c4]'
                         : 'bg-white text-[#2d3a47] border-[#b9aa99] hover:bg-[#fffaf4] hover:border-[#2d3a47] hover:shadow-sm'
