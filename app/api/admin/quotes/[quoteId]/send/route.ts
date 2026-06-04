@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateApprovalToken, hashApprovalToken } from '@/lib/quote-approval';
 import { sendEmail } from '@/lib/email/client';
@@ -38,6 +39,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ quoteId: string }> }
 ) {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   const { quoteId } = await params;
 
   try {

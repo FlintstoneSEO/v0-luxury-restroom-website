@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { hashApprovalToken, isTokenExpired } from '@/lib/quote-approval';
 import { quoteCustomerResponseSchema } from '@/lib/quotes/schema';
 import { sendEmail } from '@/lib/email/client';
+import { escapeHtml } from '@/lib/escape-html';
 
 export async function POST(
   request: Request,
@@ -56,6 +57,22 @@ export async function POST(
       );
     }
 
+    const now = new Date().toISOString();
+
+    const { data: usedTokenRows, error: usedTokenError } = await supabase
+      .from('quote_approval_tokens')
+      .update({ used_at: now })
+      .eq('id', tokenRecord.id)
+      .is('used_at', null)
+      .select('id');
+
+    if (usedTokenError || usedTokenRows?.length !== 1) {
+      return NextResponse.json(
+        { ok: false, message: 'You have already responded to this quote' },
+        { status: 409 }
+      );
+    }
+
     // Get the quote for notifications
     const { data: quote } = await supabase
       .from('quote_requests')
@@ -70,7 +87,6 @@ export async function POST(
       );
     }
 
-    const now = new Date().toISOString();
     let newStatus: string;
     let agreementStatus: string | undefined;
 
@@ -116,12 +132,6 @@ export async function POST(
       );
     }
 
-    // Mark token as used
-    await supabase
-      .from('quote_approval_tokens')
-      .update({ used_at: now })
-      .eq('id', tokenRecord.id);
-
     // Insert status history
     await supabase.from('quote_status_history').insert({
       quote_request_id: tokenRecord.quote_request_id,
@@ -134,16 +144,17 @@ export async function POST(
 
     // Send notification email to admin
     const statusDisplay = response_type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+    const adminQuoteUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/admin/quotes/${quote.id}`;
     await sendEmail({
       to: process.env.EMAIL_FROM || 'info@signatureluxeevents.com',
       subject: `Quote ${quote.quote_number || quote.id.slice(0, 8)}: Customer ${statusDisplay}`,
       html: `
         <h2>Customer Quote Response</h2>
-        <p><strong>Quote:</strong> ${quote.quote_number || quote.id}</p>
-        <p><strong>Customer:</strong> ${quote.customer_name} (${quote.email})</p>
-        <p><strong>Response:</strong> ${statusDisplay}</p>
-        ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL || ''}/admin/quotes/${quote.id}">View in Admin Dashboard</a></p>
+        <p><strong>Quote:</strong> ${escapeHtml(quote.quote_number || quote.id)}</p>
+        <p><strong>Customer:</strong> ${escapeHtml(quote.customer_name)} (${escapeHtml(quote.email)})</p>
+        <p><strong>Response:</strong> ${escapeHtml(statusDisplay)}</p>
+        ${comments ? `<p><strong>Comments:</strong> ${escapeHtml(comments)}</p>` : ''}
+        <p><a href="${escapeHtml(adminQuoteUrl)}">View in Admin Dashboard</a></p>
       `,
     });
 

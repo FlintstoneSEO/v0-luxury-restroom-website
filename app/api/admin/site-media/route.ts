@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
+import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { createClient } from '@/lib/supabase/server';
 import { SITE_MEDIA_PAGE_REGISTRY } from '@/lib/site-media-registry';
 
 export async function PUT(request: Request) {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   try {
     const { row } = await request.json();
     if (!row?.id) return NextResponse.json({ ok: false, error: 'Missing row id.' }, { status: 400 });
@@ -11,11 +14,6 @@ export async function PUT(request: Request) {
     if (!row?.section_key?.trim()) return NextResponse.json({ ok: false, error: 'section_key is required.' }, { status: 400 });
     if (row?.image_url && !row?.alt_text?.trim()) return NextResponse.json({ ok: false, error: 'alt_text is required when image_url exists.' }, { status: 400 });
 
-    const supabase = await createClient();
-    const { data: auth } = await supabase.auth.getUser();
-    if (!auth.user || auth.user.user_metadata?.is_admin !== true) {
-      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-    }
 
     const admin = createAdminClient();
     const { error } = await admin
@@ -43,12 +41,10 @@ export async function PUT(request: Request) {
 
 
 export async function POST() {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   try {
-    const supabase = await createClient();
-    const { data: auth } = await supabase.auth.getUser();
-    if (!auth.user || auth.user.user_metadata?.is_admin !== true) {
-      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-    }
 
     const admin = createAdminClient();
     const now = new Date().toISOString();

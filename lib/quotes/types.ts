@@ -134,6 +134,7 @@ export interface QuoteRequest {
   quote_expires_at?: string;
   calculated_breakdown?: Record<string, unknown>;
   is_manual_override?: boolean;
+  needs_manual_distance_review?: boolean;
 
   // Workflow status
   status: QuoteStatus;
@@ -210,6 +211,7 @@ export interface QuoteRequestRow {
   quote_expires_at?: string;
   calculated_breakdown?: Record<string, unknown>;
   is_manual_override?: boolean;
+  needs_manual_distance_review?: boolean;
   status: QuoteStatus;
   approval_token_hash?: string;
   approval_token_expires_at?: string;
@@ -275,6 +277,7 @@ export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
     quote_expires_at: row.quote_expires_at,
     calculated_breakdown: row.calculated_breakdown,
     is_manual_override: row.is_manual_override,
+    needs_manual_distance_review: row.needs_manual_distance_review,
     status: row.status,
     approval_token_hash: row.approval_token_hash,
     approval_token_expires_at: row.approval_token_expires_at,

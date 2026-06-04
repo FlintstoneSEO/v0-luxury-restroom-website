@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireAdminUser } from '@/lib/admin-auth';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteAgreementUpdateSchema } from '@/lib/quotes/schema';
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ quoteId: string }> }
 ) {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   const { quoteId } = await params;
   const payload = await request.json();
 
@@ -22,7 +26,7 @@ export async function PATCH(
     );
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const updateData: Record<string, unknown> = {
     agreement_status: payload.agreement_status,

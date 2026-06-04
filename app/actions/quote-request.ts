@@ -6,6 +6,7 @@ import { validateQuoteFormData } from "@/lib/pricing-engine"
 import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation'
 import { Resend } from 'resend'
 import { quoteRequestConfirmationTemplate } from '@/lib/email/templates'
+import { escapeHtml } from '@/lib/escape-html'
 
 // Initialize Resend (will gracefully fail if API key not set)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
@@ -23,6 +24,14 @@ export async function submitQuoteRequest(
   _prevState: QuoteRequestFormState,
   formData: FormData
 ): Promise<QuoteRequestFormState> {
+  const honeypot = String(formData.get('company_website') || '').trim()
+  if (honeypot) {
+    return {
+      success: false,
+      message: 'We could not save your quote request right now. Please contact us directly while we resolve this.',
+    }
+  }
+
   // Extract all form fields
   const data: QuoteFormData = {
     customer_name: formData.get("customer_name") as string,
@@ -83,16 +92,41 @@ export async function submitQuoteRequest(
       }
     }
 
+    const normalizedEmail = data.email.trim().toLowerCase()
+    const normalizedAddress = data.event_address.trim()
+    const duplicateAddressKey = normalizedAddress.toLowerCase()
+    const duplicateWindowStart = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+    const { data: recentDuplicate, error: duplicateError } = await supabaseAdmin
+      .from('quote_requests')
+      .select('id, event_address')
+      .eq('email', normalizedEmail)
+      .eq('event_date', data.event_date)
+      .gte('created_at', duplicateWindowStart)
+      .limit(10)
+
+    if (duplicateError) {
+      console.error('[quote-request] duplicate detection failed', duplicateError)
+    }
+
+    if (recentDuplicate?.some((quote) => String(quote.event_address || '').trim().toLowerCase() === duplicateAddressKey)) {
+      return {
+        success: false,
+        message: 'We already received a matching quote request. Please wait a few minutes before submitting again.',
+      }
+    }
+
+    const needsManualDistanceReview = distanceCalculationStatus === 'fallback'
+
     const { data: insertedQuote, error } = await supabaseAdmin
       .from("quote_requests")
       .insert({
         customer_name: data.customer_name.trim(),
         phone: data.phone.trim(),
-        email: data.email.trim().toLowerCase(),
+        email: normalizedEmail,
         event_date: data.event_date,
         event_type: data.event_type,
         guest_count: data.guest_count,
-        event_address: data.event_address.trim(),
+        event_address: normalizedAddress,
         city: data.city.trim(),
         state: data.state,
         zip_code: data.zip_code.trim(),
@@ -117,6 +151,7 @@ export async function submitQuoteRequest(
         final_balance: priceBreakdown.final_balance,
         agreement_status: "not_sent",
         calculated_breakdown: priceBreakdown,
+        needs_manual_distance_review: needsManualDistanceReview,
       })
       .select('id, quote_number')
       .single()
@@ -156,6 +191,23 @@ export async function submitQuoteRequest(
         const adminQuoteUrl = `${APP_URL}/admin/quotes/${insertedQuote?.id}`
         const adminDashboardUrl = `${APP_URL}/admin`
 
+        const safeQuoteNumber = escapeHtml(insertedQuote?.quote_number || 'Pending')
+        const safeCustomerName = escapeHtml(data.customer_name)
+        const safeEmail = escapeHtml(data.email)
+        const safePhone = escapeHtml(data.phone)
+        const safeEventDate = escapeHtml(data.event_date)
+        const safeEventType = escapeHtml(data.event_type)
+        const safeStartTime = escapeHtml(data.event_start_time)
+        const safeEndTime = escapeHtml(data.event_end_time)
+        const safeEventAddress = escapeHtml(data.event_address)
+        const safeCity = escapeHtml(data.city)
+        const safeState = escapeHtml(data.state)
+        const safeZipCode = escapeHtml(data.zip_code)
+        const safeDistanceMessage = distanceCalculationMessage ? escapeHtml(distanceCalculationMessage) : ''
+        const safeAdditionalNotes = data.additional_notes ? escapeHtml(data.additional_notes) : ''
+        const safeAdminQuoteUrl = escapeHtml(adminQuoteUrl)
+        const safeAdminDashboardUrl = escapeHtml(adminDashboardUrl)
+
         await resend.emails.send({
           from: 'Signature Luxe Events & Amenities <info@signatureluxeevents.com>',
           replyTo: 'info@signatureluxeevents.com',
@@ -163,29 +215,29 @@ export async function submitQuoteRequest(
           subject: `New Quote Request: ${insertedQuote?.quote_number} - ${data.customer_name}`,
           html: `
             <h2>New Quote Request Received</h2>
-            <p><strong>Quote Number:</strong> ${insertedQuote?.quote_number}</p>
+            <p><strong>Quote Number:</strong> ${safeQuoteNumber}</p>
             <hr />
             <h3>Customer Information</h3>
-            <p><strong>Name:</strong> ${data.customer_name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <p><strong>Phone:</strong> ${data.phone}</p>
+            <p><strong>Name:</strong> ${safeCustomerName}</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
+            <p><strong>Phone:</strong> ${safePhone}</p>
             <hr />
             <h3>Event Details</h3>
-            <p><strong>Date:</strong> ${data.event_date}</p>
-            <p><strong>Type:</strong> ${data.event_type}</p>
+            <p><strong>Date:</strong> ${safeEventDate}</p>
+            <p><strong>Type:</strong> ${safeEventType}</p>
             <p><strong>Guest Count:</strong> ${data.guest_count}</p>
-            <p><strong>Time:</strong> ${data.event_start_time} - ${data.event_end_time}</p>
+            <p><strong>Time:</strong> ${safeStartTime} - ${safeEndTime}</p>
             <hr />
             <h3>Location</h3>
-            <p><strong>Address:</strong> ${data.event_address}</p>
-            <p><strong>City:</strong> ${data.city}, ${data.state} ${data.zip_code}</p>
+            <p><strong>Address:</strong> ${safeEventAddress}</p>
+            <p><strong>City:</strong> ${safeCity}, ${safeState} ${safeZipCode}</p>
             <p><strong>Calculated Driving Distance:</strong> ${distanceMiles.toFixed(1)} miles</p>
-            ${distanceCalculationStatus === 'fallback' ? `<p><strong>Distance Notice:</strong> ${distanceCalculationMessage}</p>` : ''}
+            ${distanceCalculationStatus === 'fallback' ? `<p><strong>Distance Notice:</strong> ${safeDistanceMessage}</p>` : ''}
             <hr />
             <h3>Site Utilities</h3>
             <p><strong>Power Available:</strong> ${data.has_power ? 'Yes' : 'No'}</p>
             <p><strong>Water Available:</strong> ${data.has_water ? 'Yes' : 'No'}</p>
-            ${data.additional_notes ? `<p><strong>Additional Notes:</strong> ${data.additional_notes}</p>` : ''}
+            ${data.additional_notes ? `<p><strong>Additional Notes:</strong> ${safeAdditionalNotes}</p>` : ''}
             <hr />
             <h3>Calculated Pricing</h3>
             <p><strong>Base Price:</strong> $${priceBreakdown.base_price.toFixed(2)}</p>
@@ -197,8 +249,8 @@ export async function submitQuoteRequest(
             <p><strong>Final Balance:</strong> $${priceBreakdown.final_balance.toFixed(2)}</p>
             <hr />
             <h3>Admin Links</h3>
-            <p><a href="${adminQuoteUrl}" target="_blank" rel="noopener noreferrer">Open this quote request</a></p>
-            <p><a href="${adminDashboardUrl}" target="_blank" rel="noopener noreferrer">Open admin dashboard</a></p>
+            <p><a href="${safeAdminQuoteUrl}" target="_blank" rel="noopener noreferrer">Open this quote request</a></p>
+            <p><a href="${safeAdminDashboardUrl}" target="_blank" rel="noopener noreferrer">Open admin dashboard</a></p>
           `,
         })
 
@@ -211,6 +263,7 @@ export async function submitQuoteRequest(
           businessPhoneHref: '+15172950107',
           contactUrl: `${APP_URL}/contact`,
         })
+
 
         await resend.emails.send({
           from: 'Signature Luxe Events & Amenities <info@signatureluxeevents.com>',

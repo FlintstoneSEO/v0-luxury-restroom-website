@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
+import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function PUT(request: Request) {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   try {
     const { settings } = await request.json();
     if (process.env.NODE_ENV !== 'production') {

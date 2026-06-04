@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
+import { requireAdminUser } from '@/lib/admin-auth';
 
 export async function GET() {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ ok: false, error: 'Migration runner is disabled in production.' }, { status: 410 });
+  }
+
   // Use the Postgres connection string to run migrations
   const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
   
@@ -58,6 +66,7 @@ export async function GET() {
       // Quote tracking columns
       'alter table quote_requests add column if not exists quote_expires_at timestamptz',
       'alter table quote_requests add column if not exists is_manual_override boolean default false',
+      'alter table quote_requests add column if not exists needs_manual_distance_review boolean not null default false',
       
       // Utility access columns
       'alter table quote_requests add column if not exists has_power boolean default false',

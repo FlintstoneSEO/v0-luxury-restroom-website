@@ -100,6 +100,16 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
 
   return (
     <form action={formAction} className="space-y-8">
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="company_website">Company website</label>
+        <input
+          id="company_website"
+          name="company_website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
       {state.message && !state.success && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-800 font-medium">{state.message}</p>

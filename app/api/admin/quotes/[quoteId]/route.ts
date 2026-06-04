@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteRequestUpdateSchema } from '@/lib/quotes/schema';
 
@@ -71,6 +72,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ quoteId: string }> }
 ) {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   const { quoteId } = await params;
 
   try {
@@ -103,6 +107,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ quoteId: string }> }
 ) {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   const { quoteId } = await params;
   const payload = await request.json();
 
