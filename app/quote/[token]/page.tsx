@@ -1,5 +1,4 @@
-import { notFound } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { hashApprovalToken, isTokenExpired } from '@/lib/quote-approval';
 import QuoteApprovalClient from './quote-approval-client';
 
@@ -21,7 +20,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
   // Hash the token to look it up
   const tokenHash = hashApprovalToken(token);
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Find the approval token
   const { data: tokenRecord, error: tokenError } = await supabase
@@ -31,26 +30,21 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
     .single();
 
   if (tokenError || !tokenRecord) {
-    notFound();
+    return (
+      <QuoteLinkError
+        title="Invalid Quote Link"
+        message="This quote link is invalid or could not be verified. Please check the link or contact us for assistance."
+      />
+    );
   }
 
   // Check if token is expired
   if (isTokenExpired(tokenRecord.expires_at)) {
     return (
-      <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center">
-          <h1 className="text-2xl font-serif font-bold text-[#2d3a47] mb-4">Quote Link Expired</h1>
-          <p className="text-muted-foreground mb-6">
-            This quote link has expired. Please contact us to request a new quote.
-          </p>
-          <a
-            href="/"
-            className="inline-block bg-[#2d3a47] text-white px-6 py-3 rounded-md hover:bg-[#2d3a47]/90 transition-colors"
-          >
-            Return Home
-          </a>
-        </div>
-      </div>
+      <QuoteLinkError
+        title="Expired Quote Link"
+        message="This quote link has expired. Please contact us to request a new quote."
+      />
     );
   }
 
@@ -93,7 +87,12 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
     .single();
 
   if (quoteError || !quote) {
-    notFound();
+    return (
+      <QuoteLinkError
+        title="Quote Not Found"
+        message="We could not find the quote associated with this link. Please contact us for assistance."
+      />
+    );
   }
 
   // Check if already responded
@@ -105,5 +104,27 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       token={token}
       alreadyResponded={alreadyResponded}
     />
+  );
+}
+
+function QuoteLinkError({ title, message }: { title: string; message: string }) {
+  return (
+    <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center border border-[#d8c7a3]/40">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#d8c7a3]/20 text-[#2d3a47]">
+          <span className="font-serif text-2xl" aria-hidden="true">
+            SL
+          </span>
+        </div>
+        <h1 className="text-2xl font-serif font-bold text-[#2d3a47] mb-4">{title}</h1>
+        <p className="text-muted-foreground mb-6">{message}</p>
+        <a
+          href="/"
+          className="inline-block bg-[#2d3a47] text-white px-6 py-3 rounded-md hover:bg-[#2d3a47]/90 transition-colors"
+        >
+          Return Home
+        </a>
+      </div>
+    </div>
   );
 }
