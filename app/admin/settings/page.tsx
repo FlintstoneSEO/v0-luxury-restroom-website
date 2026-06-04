@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
 import PricingSettingsForm from '@/components/admin/pricing-settings-form';
 
 export const metadata = {
@@ -41,6 +40,7 @@ export default async function AdminSettingsPage() {
     basePricing: settings?.filter(s => s.setting_key.startsWith('base_price')) || [],
     travel: settings?.filter(s => ['included_miles', 'travel_rate_per_mile'].includes(s.setting_key)) || [],
     utilities: settings?.filter(s => ['generator_fee', 'water_fee'].includes(s.setting_key)) || [],
+    serviceFees: settings?.filter(s => ['cleaning_fee', 'damage_waiver_fee'].includes(s.setting_key)) || [],
     afterHours: settings?.filter(s => s.setting_key.startsWith('after_hours')) || [],
     deposit: settings?.filter(s => s.setting_key === 'deposit_percentage') || [],
   };
