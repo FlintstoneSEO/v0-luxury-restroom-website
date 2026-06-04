@@ -23,14 +23,43 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle } from 'lucide-react';
+import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye } from 'lucide-react';
 import Link from 'next/link';
 
 interface QuoteDetailEditorProps {
   quote: QuoteRequest;
 }
+
+type QuoteEmailPreview = {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+};
+
+type RecalculationTriggerFields = {
+  event_address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  guest_count: number;
+  event_date: string;
+  event_start_time: string;
+  event_end_time: string;
+  has_power: boolean;
+  has_water: boolean;
+};
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
@@ -38,6 +67,21 @@ function formatCurrency(amount: number) {
 
 function toDateInputValue(value?: string) {
   return value ? value.slice(0, 10) : '';
+}
+
+function getRecalculationTriggerFields(quote: QuoteRequest): RecalculationTriggerFields {
+  return {
+    event_address: quote.event_address ?? '',
+    city: quote.city ?? '',
+    state: quote.state ?? '',
+    zip_code: quote.zip_code ?? '',
+    guest_count: quote.guest_count ?? 0,
+    event_date: quote.event_date ?? '',
+    event_start_time: quote.event_start_time ?? '',
+    event_end_time: quote.event_end_time ?? '',
+    has_power: quote.has_power ?? false,
+    has_water: quote.has_water ?? false,
+  };
 }
 
 function hasFallbackDistanceCalculation(quote: QuoteRequest) {
@@ -118,6 +162,11 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
 
   const [saving, setSaving] = useState(false);
   const [sendingQuote, setSendingQuote] = useState(false);
+  const [previewingQuoteEmail, setPreviewingQuoteEmail] = useState(false);
+  const [emailPreview, setEmailPreview] = useState<QuoteEmailPreview | null>(null);
+  const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
+  const [lastSavedRecalculationFields, setLastSavedRecalculationFields] = useState<RecalculationTriggerFields>(() => getRecalculationTriggerFields(quote));
+  const [distanceReviewQuote, setDistanceReviewQuote] = useState<QuoteRequest>(quote);
   const [recalculatingQuote, setRecalculatingQuote] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
@@ -157,21 +206,81 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     }
   }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, form.deposit_amount, form.is_manual_override, recalculatePricing]);
 
+  const applyQuoteToForm = (updatedQuote: QuoteRequest, options?: { markRecalculated?: boolean }) => {
+    if (options?.markRecalculated) {
+      setLastSavedRecalculationFields(getRecalculationTriggerFields(updatedQuote));
+      setDistanceReviewQuote(updatedQuote);
+    }
+    setForm(prev => ({
+      ...prev,
+      customer_name: updatedQuote.customer_name ?? '',
+      email: updatedQuote.email ?? '',
+      phone: updatedQuote.phone ?? '',
+      event_date: updatedQuote.event_date ?? '',
+      event_type: updatedQuote.event_type ?? '',
+      guest_count: updatedQuote.guest_count ?? 0,
+      event_address: updatedQuote.event_address ?? '',
+      city: updatedQuote.city ?? '',
+      state: updatedQuote.state ?? '',
+      zip_code: updatedQuote.zip_code ?? '',
+      event_start_time: updatedQuote.event_start_time ?? '',
+      event_end_time: updatedQuote.event_end_time ?? '',
+      has_power: updatedQuote.has_power ?? false,
+      has_water: updatedQuote.has_water ?? false,
+      additional_notes: updatedQuote.additional_notes ?? '',
+      distance_miles: updatedQuote.distance_miles ?? 0,
+      base_price: updatedQuote.base_price ?? 0,
+      travel_fee: updatedQuote.travel_fee ?? 0,
+      utility_fee: updatedQuote.utility_fee ?? 0,
+      after_hours_fee: updatedQuote.after_hours_fee ?? 0,
+      cleaning_fee: updatedQuote.cleaning_fee ?? 0,
+      damage_waiver_fee: updatedQuote.damage_waiver_fee ?? 0,
+      rush_booking_fee: updatedQuote.rush_booking_fee ?? 0,
+      subtotal: updatedQuote.subtotal ?? 0,
+      total_price: updatedQuote.total_price ?? 0,
+      deposit_amount: updatedQuote.deposit_amount ?? 0,
+      final_balance: updatedQuote.final_balance ?? 0,
+      quote_expires_at: toDateInputValue(updatedQuote.quote_expires_at),
+      is_manual_override: updatedQuote.is_manual_override ?? false,
+      status: updatedQuote.status,
+      agreement_status: updatedQuote.agreement_status,
+      deposit_status: updatedQuote.deposit_status,
+      internal_notes: updatedQuote.internal_notes ?? '',
+      customer_notes: updatedQuote.customer_notes ?? '',
+      agreement_document_url: updatedQuote.agreement_document_url ?? '',
+      signed_document_url: updatedQuote.signed_document_url ?? '',
+      agreement_provider_reference_id: updatedQuote.agreement_provider_reference_id ?? '',
+      agreement_sent_at: updatedQuote.agreement_sent_at ?? '',
+      agreement_signed_at: updatedQuote.agreement_signed_at ?? '',
+      deposit_payment_link: updatedQuote.deposit_payment_link ?? '',
+      deposit_due_date: toDateInputValue(updatedQuote.deposit_due_date),
+      deposit_paid_at: updatedQuote.deposit_paid_at ?? '',
+      deposit_paid_amount: updatedQuote.deposit_paid_amount ?? 0,
+      deposit_transaction_reference: updatedQuote.deposit_transaction_reference ?? '',
+    }));
+  };
+
+  const saveQuote = async () => {
+    const res = await fetch(`/api/admin/quotes/${quote.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.error || 'Failed to save quote');
+
+    return body.quote as QuoteRequest;
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setMessage(null);
 
     try {
-      const res = await fetch(`/api/admin/quotes/${quote.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error || 'Failed to save quote');
-
-      setMessage({ type: 'success', text: 'Quote updated successfully.' });
+      const updatedQuote = await saveQuote();
+      applyQuoteToForm(updatedQuote);
+      setMessage({ type: 'success', text: 'Quote updated successfully. Use Save & Recalculate Pricing if event details changed.' });
       router.refresh();
     } catch (error) {
       setMessage({
@@ -196,6 +305,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       if (!res.ok) throw new Error(body.message || 'Failed to send quote email');
 
       setMessage({ type: 'success', text: 'Quote email sent successfully.' });
+      setEmailPreviewOpen(false);
       setForm(prev => ({ ...prev, status: 'quote_sent' }));
       router.refresh();
     } catch (error) {
@@ -208,11 +318,13 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     }
   };
 
-  const handleRecalculatePricing = async () => {
+  const handleSaveAndRecalculatePricing = async () => {
     setRecalculatingQuote(true);
     setMessage(null);
 
     try {
+      await saveQuote();
+
       const res = await fetch(`/api/admin/quotes/${quote.id}/recalculate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -223,33 +335,48 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       if (!res.ok) throw new Error(body.message || 'Failed to recalculate pricing');
 
       const updatedQuote = body.quote as QuoteRequest;
-      setForm(prev => ({
-        ...prev,
-        base_price: updatedQuote.base_price ?? 0,
-        travel_fee: updatedQuote.travel_fee ?? 0,
-        utility_fee: updatedQuote.utility_fee ?? 0,
-        after_hours_fee: updatedQuote.after_hours_fee ?? 0,
-        cleaning_fee: updatedQuote.cleaning_fee ?? 0,
-        damage_waiver_fee: updatedQuote.damage_waiver_fee ?? 0,
-        rush_booking_fee: updatedQuote.rush_booking_fee ?? 0,
-        subtotal: updatedQuote.subtotal ?? 0,
-        total_price: updatedQuote.total_price ?? 0,
-        deposit_amount: updatedQuote.deposit_amount ?? 0,
-        final_balance: updatedQuote.final_balance ?? 0,
-        distance_miles: updatedQuote.distance_miles ?? 0,
-        is_manual_override: false,
-      }));
-      setMessage({ type: 'success', text: 'Pricing recalculated from current quote fields. Manual override has been turned off.' });
+      applyQuoteToForm(updatedQuote, { markRecalculated: true });
+      setMessage({ type: 'success', text: 'Quote saved and pricing recalculated from the latest quote details. Manual override has been turned off.' });
       router.refresh();
     } catch (error) {
       setMessage({
         type: 'error',
-        text: error instanceof Error ? error.message : 'Failed to recalculate pricing.',
+        text: error instanceof Error ? error.message : 'Failed to save and recalculate pricing.',
       });
     } finally {
       setRecalculatingQuote(false);
     }
   };
+
+  const handlePreviewQuoteEmail = async () => {
+    setPreviewingQuoteEmail(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/email-preview`, {
+        method: 'GET',
+      });
+
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to load quote email preview');
+
+      setEmailPreview({
+        to: body.to,
+        subject: body.subject,
+        html: body.html,
+        text: body.text,
+      });
+      setEmailPreviewOpen(true);
+    } catch (error) {
+      setMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Failed to load quote email preview.',
+      });
+    } finally {
+      setPreviewingQuoteEmail(false);
+    }
+  };
+
 
   const markAgreementSent = async () => {
     setForm(prev => ({
@@ -291,8 +418,19 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
   };
 
   const calculatedPricing = recalculatePricing();
-  const fallbackDistance = hasFallbackDistanceCalculation(quote);
-  const distanceMessage = getDistanceCalculationMessage(quote);
+  const fallbackDistance = hasFallbackDistanceCalculation(distanceReviewQuote);
+  const distanceMessage = getDistanceCalculationMessage(distanceReviewQuote);
+  const quoteDetailsChanged =
+    form.event_address !== lastSavedRecalculationFields.event_address ||
+    form.city !== lastSavedRecalculationFields.city ||
+    form.state !== lastSavedRecalculationFields.state ||
+    form.zip_code !== lastSavedRecalculationFields.zip_code ||
+    form.guest_count !== lastSavedRecalculationFields.guest_count ||
+    form.event_date !== lastSavedRecalculationFields.event_date ||
+    form.event_start_time !== lastSavedRecalculationFields.event_start_time ||
+    form.event_end_time !== lastSavedRecalculationFields.event_end_time ||
+    form.has_power !== lastSavedRecalculationFields.has_power ||
+    form.has_water !== lastSavedRecalculationFields.has_water;
 
   return (
     <div className="space-y-6">
@@ -532,16 +670,16 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
               className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
               onClick={() => setConfirmDialog({
                 open: true,
-                title: form.is_manual_override ? 'Replace Manual Pricing?' : 'Recalculate Pricing?',
+                title: form.is_manual_override ? 'Save & Replace Manual Pricing?' : 'Save & Recalculate Pricing?',
                 description: form.is_manual_override
-                  ? 'This will rerun server-side pricing from the current quote fields, replace manual pricing values, and turn off Manual Override.'
-                  : 'This will rerun server-side pricing from the current quote fields and update all calculated pricing fields.',
-                action: handleRecalculatePricing,
+                  ? 'This will save the current form values, rerun server-side pricing, replace manual pricing values, and turn off Manual Override.'
+                  : 'This will save the current form values, then rerun server-side pricing and update mileage and calculated pricing fields.',
+                action: handleSaveAndRecalculatePricing,
               })}
               disabled={recalculatingQuote}
             >
               {recalculatingQuote ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RotateCcw className="w-4 h-4 mr-2" />}
-              Recalculate Pricing
+              Save & Recalculate Pricing
             </Button>
             <div className="flex items-center gap-2">
             <Checkbox
@@ -553,6 +691,18 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
             </div>
           </div>
         </div>
+        {quoteDetailsChanged && (
+          <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900" role="status">
+            <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            <p>Address or quote details changed. Save &amp; Recalculate to update mileage and pricing.</p>
+          </div>
+        )}
+        {form.is_manual_override && (
+          <div className="mb-4 flex items-start gap-3 rounded-lg border border-[#2d3a47]/30 bg-[#2d3a47]/5 p-3 text-sm text-[#2d3a47]">
+            <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            <p>Manual Override is enabled. Saving and recalculating requires confirmation before calculated pricing replaces manual values.</p>
+          </div>
+        )}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Field>
             <FieldLabel htmlFor="base_price">Base Price</FieldLabel>
@@ -929,6 +1079,25 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           )}
         </Button>
         <Button
+          type="button"
+          variant="outline"
+          onClick={handlePreviewQuoteEmail}
+          disabled={previewingQuoteEmail}
+          className="flex-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20 focus-visible:ring-[#2d3a47]/50"
+        >
+          {previewingQuoteEmail ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Loading Preview...
+            </>
+          ) : (
+            <>
+              <Eye className="w-4 h-4 mr-2" />
+              Preview Quote Email
+            </>
+          )}
+        </Button>
+        <Button
           variant="default"
           onClick={() => setConfirmDialog({
             open: true,
@@ -958,6 +1127,79 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           </Button>
         </Link>
       </div>
+
+
+      {/* Email Preview Dialog */}
+      <Dialog open={emailPreviewOpen} onOpenChange={setEmailPreviewOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-5xl" aria-describedby="quote-email-preview-description">
+          <DialogHeader>
+            <DialogTitle>Quote Email Preview</DialogTitle>
+            <DialogDescription id="quote-email-preview-description">
+              Review the customer email content before sending. Previewing does not create an approval token or send email.
+            </DialogDescription>
+          </DialogHeader>
+
+          {emailPreview && (
+            <div className="space-y-4">
+              <div className="grid gap-3 rounded-lg border border-[#ded2c4]/60 bg-[#f6f4f1] p-4 text-sm text-[#2d3a47] md:grid-cols-2">
+                <div>
+                  <p className="font-semibold">Recipient</p>
+                  <p className="break-all">{emailPreview.to}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">Subject</p>
+                  <p>{emailPreview.subject}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="mb-2 font-semibold text-[#2d3a47]">Rendered HTML Email</h3>
+                <iframe
+                  title="Rendered quote email preview"
+                  srcDoc={emailPreview.html}
+                  sandbox=""
+                  className="h-[520px] w-full rounded-lg border border-[#ded2c4]/70 bg-white"
+                />
+              </div>
+
+              <details className="rounded-lg border border-[#ded2c4]/70 bg-white p-4">
+                <summary className="cursor-pointer font-semibold text-[#2d3a47] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d3a47]/50 focus-visible:ring-offset-2">
+                  Plain text preview
+                </summary>
+                <pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap rounded-md bg-[#2d3a47]/5 p-3 text-sm text-[#1f2933]">
+                  {emailPreview.text}
+                </pre>
+              </details>
+            </div>
+          )}
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20 focus-visible:ring-[#2d3a47]/50">
+                Close
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              onClick={handleSendQuoteEmail}
+              disabled={sendingQuote}
+              className="bg-[#2d3a47] text-white hover:bg-[#2d3a47]/90 focus-visible:ring-[#2d3a47]/50"
+            >
+              {sendingQuote ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Send Quote Email
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Confirmation Dialog */}
       <AlertDialog open={confirmDialog?.open} onOpenChange={(open) => !open && setConfirmDialog(null)}>

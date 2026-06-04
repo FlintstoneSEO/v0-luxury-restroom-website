@@ -59,7 +59,7 @@ function renderBrandedCustomerEmail(input: BrandedEmailInput) {
                 </td>
               </tr>
               <tr>
-                <td style="background:#111111;color:#ded2c4;padding:16px 24px;text-align:center;font-size:13px;line-height:1.6;">
+                <td style="background:#2d3a47;color:#ffffff;padding:16px 24px;text-align:center;font-size:13px;line-height:1.6;">
                   ${footerHtml}
                 </td>
               </tr>
