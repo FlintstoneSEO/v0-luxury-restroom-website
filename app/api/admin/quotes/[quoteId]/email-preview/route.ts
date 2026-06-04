@@ -90,6 +90,14 @@ export async function GET(
       ? new Date(quote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
       : 'TBD';
 
+    const { data: quoteOptions } = await supabase
+      .from('quote_options')
+      .select('id, option_label, option_description, total_price, is_recommended, status')
+      .eq('quote_request_id', quote.id)
+      .neq('status', 'deleted')
+      .order('is_recommended', { ascending: false })
+      .order('created_at', { ascending: true });
+
     const emailTemplate = quoteSentTemplate({
       customerName: quote.customer_name || 'Customer',
       eventDate: formattedEventDate,
@@ -99,6 +107,7 @@ export async function GET(
       quoteTotal: quote.total_price ?? quote.total ?? 0,
       approvalLink: `${appUrl}/quote/preview-token-not-active`,
       customerNotes: quote.additional_notes,
+      quoteOptions: quoteOptions ?? [],
     });
 
     return NextResponse.json({

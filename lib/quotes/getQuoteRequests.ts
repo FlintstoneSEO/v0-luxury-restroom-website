@@ -1,4 +1,4 @@
-import { createClient as createSupabaseServerClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { mockQuoteRequests } from '@/lib/quotes/mockQuotes';
 import { mapQuoteRequestRow, QuoteRequest, QuoteRequestRow } from '@/lib/quotes/types';
 
@@ -9,7 +9,7 @@ export interface GetQuoteRequestsResult {
 }
 
 function hasSupabaseEnv(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
 export async function getQuoteRequests(): Promise<GetQuoteRequestsResult> {
@@ -17,15 +17,15 @@ export async function getQuoteRequests(): Promise<GetQuoteRequestsResult> {
     return {
       quotes: mockQuoteRequests,
       source: 'mock',
-      error: 'Supabase environment variables are not configured. Using mock quote data.',
+      error: 'Supabase admin environment variables are not configured. Using mock quote data.',
     };
   }
 
   try {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('quote_requests')
-      .select('*')
+      .select('*, quote_options(id, option_label, option_description, status, total_price, is_recommended)')
       .order('created_at', { ascending: false });
 
     if (error) {

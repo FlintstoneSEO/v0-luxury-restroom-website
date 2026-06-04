@@ -506,6 +506,8 @@ export default function QuoteRequestsDashboard({
                 const canSendQuote = isQuoteSendable(quote.status);
                 const canSendAgreement = isAgreementSendable(quote.status);
                 const fallbackDistance = hasFallbackDistanceCalculation(quote);
+                const optionCount = quote.quote_options?.length ?? 0;
+                const selectedOption = quote.quote_options?.find((option) => option.id === quote.selected_quote_option_id || option.status === 'selected');
 
                 return (
                   <article
@@ -554,6 +556,11 @@ export default function QuoteRequestsDashboard({
                           <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${depositColor.bg} ${depositColor.text} ${depositColor.border}`}>
                             {depositColor.icon}<span>Deposit: {formatStatus(quote.deposit_status)}</span>
                           </span>
+                          {optionCount > 0 && (
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f8f4ee] px-2.5 py-1 text-xs font-semibold text-[#2d3a47] border border-[#8a7a68]">
+                              {selectedOption ? `Selected: ${selectedOption.option_label}` : `${optionCount} Option${optionCount === 1 ? '' : 's'}`}
+                            </span>
+                          )}
                           {fallbackDistance && (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-900 border border-amber-400" title={getDistanceCalculationMessage(quote)}>
                               <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> Distance review needed
@@ -594,6 +601,9 @@ export default function QuoteRequestsDashboard({
                 <p className="text-sm text-[#2d3a47]"><strong>Email:</strong> {selectedQuote.email}</p>
                 <p className="text-sm text-[#2d3a47]"><strong>Phone:</strong> {selectedQuote.phone}</p>
                 <p className="text-sm text-[#2d3a47]"><strong>Status:</strong> {formatStatus(selectedQuote.status)}</p>
+                {(selectedQuote.quote_options?.length ?? 0) > 0 && (
+                  <p className="text-sm text-[#2d3a47]"><strong>Quote Options:</strong> {selectedQuote.quote_options?.find((option) => option.id === selectedQuote.selected_quote_option_id || option.status === 'selected')?.option_label ?? `${selectedQuote.quote_options?.length} options`}</p>
+                )}
               </div>
 
               <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">

@@ -76,11 +76,41 @@ export const EVENT_TYPES = [
 
 export type EventType = (typeof EVENT_TYPES)[number];
 
+export interface QuoteOption {
+  id: string;
+  quote_request_id: string;
+  option_label: string;
+  option_description?: string | null;
+  is_recommended: boolean;
+  status: string;
+  has_power?: boolean | null;
+  has_water?: boolean | null;
+  distance_miles?: number | null;
+  base_price: number;
+  travel_fee: number;
+  utility_fee: number;
+  after_hours_fee: number;
+  cleaning_fee: number;
+  damage_waiver_fee: number;
+  rush_booking_fee: number;
+  subtotal: number;
+  discount_amount: number;
+  total_price: number;
+  deposit_amount: number;
+  final_balance: number;
+  calculated_breakdown?: Record<string, unknown> | null;
+  needs_manual_distance_review: boolean;
+  created_at: string;
+  updated_at?: string;
+}
+
 // Main quote request interface matching the Supabase schema
 export interface QuoteRequest {
   // Core identification
   id: string;
   quote_number?: string;
+  selected_quote_option_id?: string | null;
+  quote_options?: QuoteOption[];
 
   // Customer information
   customer_name: string;
@@ -172,6 +202,8 @@ export interface QuoteRequest {
 export interface QuoteRequestRow {
   id: string;
   quote_number?: string;
+  selected_quote_option_id?: string | null;
+  quote_options?: QuoteOption[];
   customer_name: string;
   phone: string;
   email: string;
@@ -238,6 +270,8 @@ export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
   return {
     id: row.id,
     quote_number: row.quote_number,
+    selected_quote_option_id: row.selected_quote_option_id,
+    quote_options: row.quote_options,
     customer_name: row.customer_name,
     phone: row.phone,
     email: row.email,
