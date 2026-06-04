@@ -145,7 +145,7 @@ export function quoteSentTemplate(input: {
     bodyHtml: `<p style="margin:0 0 10px;">Hello ${safeCustomerName},</p>
       <p style="margin:0 0 10px;">Thank you for considering Signature Luxe Events & Amenities for your upcoming event.</p>
       <p style="margin:0;">We are pleased to provide your customized quote for our luxury restroom trailer rental service.</p>
-      <p style="margin:10px 0 0;">Please review the details below. When you are ready, you may approve your quote using the button provided.</p>`,
+      <p style="margin:10px 0 0;">Please review the summary below, then open your quote review page to see the full breakdown and choose how you would like to proceed.</p>`,
     detailsHtml: `
       <p style="margin:0 0 6px;font-size:14px;"><strong>Event Date:</strong> ${safeEventDate}</p>
       <p style="margin:0 0 6px;font-size:14px;"><strong>Event Type:</strong> ${safeEventType}</p>
@@ -154,13 +154,13 @@ export function quoteSentTemplate(input: {
       ${customerNotesHtml}
       <p style="margin:0;font-size:14px;"><strong>Estimated Total:</strong> ${formatCurrency(input.quoteTotal)}</p>
     `,
-    ctaLabel: 'Approve My Quote',
+    ctaLabel: 'Review Quote & Respond',
     ctaUrl: input.approvalLink,
     postCtaHtml: `<p style="margin:0 0 10px;">Once your quote is approved, we will send the next steps for your rental agreement and deposit payment.</p><p style="margin:0;">We look forward to helping you provide an elevated restroom experience for your guests.</p>`,
     footerLines: ['Signature Luxe Events & Amenities', 'Luxury Restroom Trailer Rentals', 'for Weddings, Private Events, Corporate Events, and Special Occasions', 'Lansing, Michigan and surrounding communities'],
   });
 
-  const text = `Hello ${input.customerName},\n\nThank you for considering Signature Luxe Events & Amenities for your upcoming event.\n\nWe are pleased to provide your customized quote for our luxury restroom trailer rental service.\n\nQuote Summary:\n${quoteSummaryTextLines.join('\n')}\n\nApprove your quote here:\n${input.approvalLink}\n\nOnce your quote is approved, we will send the next steps for your rental agreement and deposit payment.\n\nSignature Luxe Events & Amenities\nLuxury Restroom Trailer Rentals\nLansing, Michigan and surrounding communities`;
+  const text = `Hello ${input.customerName},\n\nThank you for considering Signature Luxe Events & Amenities for your upcoming event.\n\nWe are pleased to provide your customized quote for our luxury restroom trailer rental service.\n\nQuote Summary:\n${quoteSummaryTextLines.join('\n')}\n\nReview your quote and respond here:\n${input.approvalLink}\n\nOnce your quote is approved, we will send the next steps for your rental agreement and deposit payment.\n\nSignature Luxe Events & Amenities\nLuxury Restroom Trailer Rentals\nLansing, Michigan and surrounding communities`;
 
   return { subject, html, text, logoUrl };
 }
