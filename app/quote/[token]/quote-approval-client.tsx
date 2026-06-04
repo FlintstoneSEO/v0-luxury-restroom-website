@@ -153,7 +153,7 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
           </h2>
           <p className="text-muted-foreground">
             Thank you for considering Signature Luxe for your luxury restroom rental needs.
-            Please review the details below and let us know how you&apos;d like to proceed.
+            Review your quote details below. When ready, choose one of the response options.
           </p>
         </div>
 
@@ -291,7 +291,10 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
 
         {/* Response Section */}
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-[#2d3a47] mb-4">Your Response</h3>
+          <h3 className="text-lg font-semibold text-[#2d3a47] mb-2">Your Response</h3>
+          <p className="text-muted-foreground mb-4">
+            Review your quote details below. When ready, choose one of the response options.
+          </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
             <button
