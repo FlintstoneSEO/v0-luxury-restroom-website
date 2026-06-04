@@ -30,7 +30,15 @@ interface QuoteRequestsDashboardProps {
 }
 
 type SortBy = 'newest' | 'oldest' | 'event_soonest' | 'event_latest' | 'total_highest' | 'total_lowest' | 'status';
-type PipelineColumn = 'new_requests' | 'under_review' | 'quote_sent' | 'customer_approved' | 'agreement_sent' | 'deposit_paid' | 'booked';
+type PipelineColumn =
+  | 'new_requests'
+  | 'under_review'
+  | 'quote_sent'
+  | 'customer_approved'
+  | 'agreement_sent'
+  | 'deposit_paid'
+  | 'booked'
+  | 'closed_lost';
 type PipelineBucket = PipelineColumn | 'all';
 
 const pipelineBucketConfig: Array<{
@@ -47,6 +55,7 @@ const pipelineBucketConfig: Array<{
   { key: 'agreement_sent', label: 'Agreement Sent', description: 'Agreement workflow active', icon: FileSignature },
   { key: 'deposit_paid', label: 'Deposit Paid', description: 'Payment progress', icon: CreditCard },
   { key: 'booked', label: 'Booked', description: 'Confirmed or completed', icon: CheckCircle2 },
+  { key: 'closed_lost', label: 'Closed / Lost', description: 'Declined, cancelled, or expired quotes', icon: AlertCircle },
 ];
 
 function getStatusColor(status: string) {
@@ -124,7 +133,9 @@ function getPipelineColumn(status: string): PipelineColumn {
   if (status === 'customer_approved') return 'customer_approved';
   if (['agreement_pending', 'agreement_sent', 'agreement_signed'].includes(status)) return 'agreement_sent';
   if (['deposit_pending', 'deposit_paid'].includes(status)) return 'deposit_paid';
-  return 'booked';
+  if (['booked', 'confirmed', 'completed'].includes(status)) return 'booked';
+  if (['declined', 'cancelled', 'expired'].includes(status)) return 'closed_lost';
+  return 'under_review';
 }
 
 export default function QuoteRequestsDashboard({
@@ -184,25 +195,32 @@ export default function QuoteRequestsDashboard({
     const normalizedSearch = search.trim().toLowerCase();
 
     const filtered = initialQuotes.filter((quote) => {
-      if (statusFilter !== 'all' && quote.status !== statusFilter) return false;
-      if (eventTypeFilter !== 'all' && quote.event_type !== eventTypeFilter) return false;
-      if (agreementFilter !== 'all' && quote.agreement_status !== agreementFilter) return false;
-      if (depositFilter !== 'all' && quote.deposit_status !== depositFilter) return false;
+      const quoteStatus = quote.status || 'pending_review';
+      const quoteAgreementStatus = quote.agreement_status || 'not_sent';
+      const quoteDepositStatus = quote.deposit_status || 'due';
+      const quoteEventType = quote.event_type || '';
+
+      if (statusFilter !== 'all' && quoteStatus !== statusFilter) return false;
+      if (eventTypeFilter !== 'all' && quoteEventType !== eventTypeFilter) return false;
+      if (agreementFilter !== 'all' && quoteAgreementStatus !== agreementFilter) return false;
+      if (depositFilter !== 'all' && quoteDepositStatus !== depositFilter) return false;
 
       if (!normalizedSearch) return true;
 
-      return [
-        quote.customer_name,
-        quote.email,
-        quote.phone,
-        quote.event_address,
-        quote.city,
-        quote.event_type,
-        quote.status,
-      ]
-        .join(' ')
-        .toLowerCase()
-        .includes(normalizedSearch);
+      const searchableText = [
+        quote.customer_name ?? '',
+        quote.email ?? '',
+        quote.phone ?? '',
+        quote.event_address ?? '',
+        quote.city ?? '',
+        quote.state ?? '',
+        quote.zip_code ?? '',
+        quote.event_type ?? '',
+        quote.status ?? '',
+        quote.quote_number ?? '',
+      ].join(' ').toLowerCase();
+
+      return searchableText.includes(normalizedSearch);
     });
 
     return filtered.sort((a, b) => {
@@ -218,7 +236,7 @@ export default function QuoteRequestsDashboard({
         case 'total_lowest':
           return (a.total_price || 0) - (b.total_price || 0);
         case 'status':
-          return a.status.localeCompare(b.status);
+          return (a.status || 'pending_review').localeCompare(b.status || 'pending_review');
         case 'newest':
         default:
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -235,15 +253,34 @@ export default function QuoteRequestsDashboard({
       agreement_sent: [],
       deposit_paid: [],
       booked: [],
+      closed_lost: [],
     };
     filteredQuotes.forEach((quote) => {
-      base[getPipelineColumn(quote.status)].push(quote);
+      base[getPipelineColumn(quote.status || 'pending_review')].push(quote);
     });
     return base;
   }, [filteredQuotes]);
 
   const selectedPipelineConfig = pipelineBucketConfig.find((bucket) => bucket.key === activePipelineBucket) ?? pipelineBucketConfig[0];
   const selectedQuotes = activePipelineBucket === 'all' ? filteredQuotes : pipelineColumns[activePipelineBucket];
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[QuoteRequestsDashboard] counts', {
+      initialQuotes: initialQuotes.length,
+      filteredQuotes: filteredQuotes.length,
+      bucketCounts: {
+        all: filteredQuotes.length,
+        new_requests: pipelineColumns.new_requests.length,
+        under_review: pipelineColumns.under_review.length,
+        quote_sent: pipelineColumns.quote_sent.length,
+        customer_approved: pipelineColumns.customer_approved.length,
+        agreement_sent: pipelineColumns.agreement_sent.length,
+        deposit_paid: pipelineColumns.deposit_paid.length,
+        booked: pipelineColumns.booked.length,
+        closed_lost: pipelineColumns.closed_lost.length,
+      },
+    });
+  }
 
   return (
     <div className="space-y-8">
@@ -558,7 +595,7 @@ export default function QuoteRequestsDashboard({
                           </span>
                           {optionCount > 0 && (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f8f4ee] px-2.5 py-1 text-xs font-semibold text-[#2d3a47] border border-[#8a7a68]">
-                              {selectedOption ? `Selected: ${selectedOption.option_label}` : `${optionCount} Option${optionCount === 1 ? '' : 's'}`}
+                              {optionCount} Option{optionCount === 1 ? '' : 's'}{selectedOption ? ` · Selected: ${selectedOption.option_label}` : ''}
                             </span>
                           )}
                           {fallbackDistance && (
