@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Spinner } from '@/components/ui/spinner';
-import { Save, DollarSign, Truck, Zap, Clock, Percent } from 'lucide-react';
+import { Save, DollarSign, Truck, Zap, Clock, Percent, ShieldCheck } from 'lucide-react';
 
 interface PricingSetting {
   id: string;
@@ -20,6 +20,7 @@ interface GroupedSettings {
   basePricing: PricingSetting[];
   travel: PricingSetting[];
   utilities: PricingSetting[];
+  serviceFees: PricingSetting[];
   afterHours: PricingSetting[];
   deposit: PricingSetting[];
 }
@@ -38,6 +39,8 @@ const settingLabels: Record<string, string> = {
   travel_rate_per_mile: 'Rate per additional mile',
   generator_fee: 'Generator fee (no power)',
   water_fee: 'Water service fee (no water)',
+  cleaning_fee: 'Cleaning Fee',
+  damage_waiver_fee: 'Damage Waiver Fee',
   after_hours_hourly_rate: 'Hourly rate after cutoff',
   after_hours_cutoff_hour: 'Cutoff hour (24h format)',
   deposit_percentage: 'Deposit percentage',
@@ -162,6 +165,17 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {groupedSettings.utilities.map(setting => renderSettingInput(setting))}
+        </div>
+      </div>
+
+      {/* Standard Service Fees */}
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <ShieldCheck className="w-5 h-5 text-[#2d3a47]" />
+          <h2 className="text-lg font-semibold text-[#2d3a47]">Standard Service Fees</h2>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {groupedSettings.serviceFees.map(setting => renderSettingInput(setting))}
         </div>
       </div>
 
