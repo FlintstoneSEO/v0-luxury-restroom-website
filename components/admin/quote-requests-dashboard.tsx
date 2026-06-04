@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/select';
 
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, Plus, Mail, SquarePen, FileSignature, Eye } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, Plus, Mail, SquarePen, FileSignature, Eye, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface QuoteRequestsDashboardProps {
@@ -82,6 +82,21 @@ function isQuoteSendable(status: string) {
 
 function isAgreementSendable(status: string) {
   return ['quote_sent', 'sent_to_customer', 'customer_approved', 'agreement_pending'].includes(status);
+}
+
+function hasFallbackDistanceCalculation(quote: QuoteRequest) {
+  const details = quote.calculated_breakdown?.details;
+  return quote.needs_manual_distance_review === true || (typeof details === 'object' && details !== null && (details as Record<string, unknown>).distance_calculation_status === 'fallback');
+}
+
+function getDistanceCalculationMessage(quote: QuoteRequest) {
+  const details = quote.calculated_breakdown?.details;
+  if (typeof details === 'object' && details !== null) {
+    const message = (details as Record<string, unknown>).distance_calculation_message;
+    if (typeof message === 'string') return message;
+  }
+
+  return 'Fallback mileage was used. Verify travel fee manually.';
 }
 
 function getPipelineColumn(status: string): PipelineColumn {
@@ -392,6 +407,7 @@ export default function QuoteRequestsDashboard({
                     const statusColor = getStatusColor(quote.status);
                     const canSendQuote = isQuoteSendable(quote.status);
                     const canSendAgreement = isAgreementSendable(quote.status);
+                    const fallbackDistance = hasFallbackDistanceCalculation(quote);
                     return (
                       <div key={quote.id} onClick={() => handleRowClick(quote.id)} className="bg-white rounded-xl border border-[#ded2c4]/40 cursor-pointer hover:shadow-md transition-all overflow-hidden">
                         <div className="h-1 w-full bg-[#ded2c4]" />
@@ -415,6 +431,11 @@ export default function QuoteRequestsDashboard({
                           <div className="flex flex-wrap gap-1">
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#2d3a47]/5 border border-[#2d3a47]/20">{formatStatus(quote.agreement_status)}</span>
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#2d3a47]/5 border border-[#2d3a47]/20">{formatStatus(quote.deposit_status)}</span>
+                            {fallbackDistance && (
+                              <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 border border-amber-300 text-amber-800" title={getDistanceCalculationMessage(quote)}>
+                                <AlertTriangle className="h-3 w-3" /> Distance review
+                              </span>
+                            )}
                           </div>
                           <div className="flex items-center justify-between pt-1">
                             <span className="font-semibold text-[#2d3a47] text-sm">{formatCurrency(quote.total_price || 0)}</span>
@@ -467,6 +488,9 @@ export default function QuoteRequestsDashboard({
                 <h4 className="text-sm font-semibold uppercase tracking-wide text-[#2d3a47]/70">Quote Breakdown</h4>
                 <p className="text-sm text-[#2d3a47]"><strong>Base Price:</strong> {formatCurrency(selectedQuote.base_price || 0)}</p>
                 <p className="text-sm text-[#2d3a47]"><strong>Travel Fee:</strong> {formatCurrency(selectedQuote.travel_fee || 0)}</p>
+                {hasFallbackDistanceCalculation(selectedQuote) && (
+                  <p className="text-sm text-amber-800"><strong>Distance Notice:</strong> {getDistanceCalculationMessage(selectedQuote)}</p>
+                )}
                 <p className="text-sm text-[#2d3a47]"><strong>Utility Fee:</strong> {formatCurrency(selectedQuote.utility_fee || 0)}</p>
                 <p className="text-sm text-[#2d3a47]"><strong>Total:</strong> {formatCurrency(selectedQuote.total_price || 0)}</p>
               </div>

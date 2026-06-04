@@ -32,6 +32,7 @@ create table if not exists quote_requests (
 
   status text default 'pending_review',
   calculated_breakdown jsonb,
+  needs_manual_distance_review boolean not null default false,
 
   approval_token_hash text,
   approval_token_expires_at timestamptz,

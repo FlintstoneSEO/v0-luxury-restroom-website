@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard } from 'lucide-react';
+import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
 interface QuoteDetailEditorProps {
@@ -34,6 +34,25 @@ interface QuoteDetailEditorProps {
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+}
+
+function toDateInputValue(value?: string) {
+  return value ? value.slice(0, 10) : '';
+}
+
+function hasFallbackDistanceCalculation(quote: QuoteRequest) {
+  const details = quote.calculated_breakdown?.details;
+  return quote.needs_manual_distance_review === true || (typeof details === 'object' && details !== null && (details as Record<string, unknown>).distance_calculation_status === 'fallback');
+}
+
+function getDistanceCalculationMessage(quote: QuoteRequest) {
+  const details = quote.calculated_breakdown?.details;
+  if (typeof details === 'object' && details !== null) {
+    const message = (details as Record<string, unknown>).distance_calculation_message;
+    if (typeof message === 'string') return message;
+  }
+
+  return 'Distance used fallback mileage. Verify travel fee manually.';
 }
 
 export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
@@ -72,7 +91,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     total_price: quote.total_price ?? 0,
     deposit_amount: quote.deposit_amount ?? 0,
     final_balance: quote.final_balance ?? 0,
-    quote_expires_at: quote.quote_expires_at ?? '',
+    quote_expires_at: toDateInputValue(quote.quote_expires_at),
     is_manual_override: quote.is_manual_override ?? false,
     
     // Workflow
@@ -91,7 +110,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     
     // Deposit
     deposit_payment_link: quote.deposit_payment_link ?? '',
-    deposit_due_date: quote.deposit_due_date ?? '',
+    deposit_due_date: toDateInputValue(quote.deposit_due_date),
     deposit_paid_at: quote.deposit_paid_at ?? '',
     deposit_paid_amount: quote.deposit_paid_amount ?? 0,
     deposit_transaction_reference: quote.deposit_transaction_reference ?? '',
@@ -99,6 +118,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
 
   const [saving, setSaving] = useState(false);
   const [sendingQuote, setSendingQuote] = useState(false);
+  const [recalculatingQuote, setRecalculatingQuote] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
@@ -188,6 +208,49 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     }
   };
 
+  const handleRecalculatePricing = async () => {
+    setRecalculatingQuote(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/recalculate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ force: form.is_manual_override }),
+      });
+
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to recalculate pricing');
+
+      const updatedQuote = body.quote as QuoteRequest;
+      setForm(prev => ({
+        ...prev,
+        base_price: updatedQuote.base_price ?? 0,
+        travel_fee: updatedQuote.travel_fee ?? 0,
+        utility_fee: updatedQuote.utility_fee ?? 0,
+        after_hours_fee: updatedQuote.after_hours_fee ?? 0,
+        cleaning_fee: updatedQuote.cleaning_fee ?? 0,
+        damage_waiver_fee: updatedQuote.damage_waiver_fee ?? 0,
+        rush_booking_fee: updatedQuote.rush_booking_fee ?? 0,
+        subtotal: updatedQuote.subtotal ?? 0,
+        total_price: updatedQuote.total_price ?? 0,
+        deposit_amount: updatedQuote.deposit_amount ?? 0,
+        final_balance: updatedQuote.final_balance ?? 0,
+        distance_miles: updatedQuote.distance_miles ?? 0,
+        is_manual_override: false,
+      }));
+      setMessage({ type: 'success', text: 'Pricing recalculated from current quote fields. Manual override has been turned off.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Failed to recalculate pricing.',
+      });
+    } finally {
+      setRecalculatingQuote(false);
+    }
+  };
+
   const markAgreementSent = async () => {
     setForm(prev => ({
       ...prev,
@@ -228,6 +291,8 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
   };
 
   const calculatedPricing = recalculatePricing();
+  const fallbackDistance = hasFallbackDistanceCalculation(quote);
+  const distanceMessage = getDistanceCalculationMessage(quote);
 
   return (
     <div className="space-y-6">
@@ -242,7 +307,15 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex justify-between items-start">
           <div>
+            <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-3xl font-serif font-bold text-[#2d3a47] mb-1">{quote.customer_name}</h1>
+              {fallbackDistance && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-800" title={distanceMessage}>
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  Distance review needed
+                </span>
+              )}
+            </div>
             <p className="text-muted-foreground">
               {quote.email} | {quote.phone}
             </p>
@@ -258,6 +331,16 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           </div>
         </div>
       </div>
+
+      {fallbackDistance && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 flex gap-3 items-start">
+          <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold">Fallback distance calculation</p>
+            <p>{distanceMessage}</p>
+          </div>
+        </div>
+      )}
 
       {/* Messages */}
       {message && (
@@ -442,13 +525,32 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#2d3a47]">Pricing</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
+              onClick={() => setConfirmDialog({
+                open: true,
+                title: form.is_manual_override ? 'Replace Manual Pricing?' : 'Recalculate Pricing?',
+                description: form.is_manual_override
+                  ? 'This will rerun server-side pricing from the current quote fields, replace manual pricing values, and turn off Manual Override.'
+                  : 'This will rerun server-side pricing from the current quote fields and update all calculated pricing fields.',
+                action: handleRecalculatePricing,
+              })}
+              disabled={recalculatingQuote}
+            >
+              {recalculatingQuote ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RotateCcw className="w-4 h-4 mr-2" />}
+              Recalculate Pricing
+            </Button>
+            <div className="flex items-center gap-2">
             <Checkbox
               id="is_manual_override"
               checked={form.is_manual_override}
               onCheckedChange={(checked) => setForm({ ...form, is_manual_override: !!checked })}
             />
             <label htmlFor="is_manual_override" className="text-sm">Manual Override</label>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

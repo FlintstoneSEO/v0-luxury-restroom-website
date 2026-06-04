@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
+import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { createClient } from '@/lib/supabase/server';
 
 export async function PUT(request: Request) {
+  const adminAuth = await requireAdminUser();
+  if (!adminAuth.ok) return adminAuth.response;
+
   try {
     const { row } = await request.json();
     if (!row?.id) return NextResponse.json({ ok: false, error: 'Missing row id.' }, { status: 400 });
 
-    const supabase = await createClient();
-    const { data: auth } = await supabase.auth.getUser();
-    if (!auth.user || auth.user.user_metadata?.is_admin !== true) {
-      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-    }
 
     const admin = createAdminClient();
     const { error } = await admin
@@ -25,7 +23,7 @@ export async function PUT(request: Request) {
         caption: row.caption,
         is_active: row.is_active,
         updated_at: new Date().toISOString(),
-        updated_by: auth.user.id,
+        updated_by: adminAuth.user.id,
       })
       .eq('id', row.id);
 

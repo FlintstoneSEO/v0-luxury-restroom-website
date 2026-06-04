@@ -13,6 +13,13 @@ export async function POST(req: Request) {
     });
   }
 
+  if (String(body?.company_website || '').trim()) {
+    return NextResponse.json(
+      { ok: false, message: 'Could not create quote request right now.' },
+      { status: 400 }
+    );
+  }
+
   const parsed = quoteRequestCreateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
@@ -23,16 +30,40 @@ export async function POST(req: Request) {
 
   try {
     const supabase = createAdminClient();
-    const { distanceMiles, priceBreakdown } = await buildQuoteCalculation(parsed.data);
+    const normalizedEmail = parsed.data.email.trim().toLowerCase();
+    const normalizedAddress = parsed.data.event_address.trim();
+    const duplicateAddressKey = normalizedAddress.toLowerCase();
+    const duplicateWindowStart = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+
+    const { data: recentDuplicate, error: duplicateError } = await supabase
+      .from('quote_requests')
+      .select('id, event_address')
+      .eq('email', normalizedEmail)
+      .eq('event_date', parsed.data.event_date)
+      .gte('created_at', duplicateWindowStart)
+      .limit(10);
+
+    if (duplicateError) {
+      console.error('[api/quote-requests] duplicate detection failed', duplicateError);
+    }
+
+    if (recentDuplicate?.some((quote) => String(quote.event_address || '').trim().toLowerCase() === duplicateAddressKey)) {
+      return NextResponse.json(
+        { ok: false, message: 'We already received a matching quote request. Please wait a few minutes before submitting again.' },
+        { status: 409 }
+      );
+    }
+
+    const { distanceMiles, priceBreakdown, distanceCalculationStatus } = await buildQuoteCalculation(parsed.data);
 
     const payload = {
       customer_name: parsed.data.customer_name,
-      email: parsed.data.email,
+      email: normalizedEmail,
       phone: parsed.data.phone,
       event_date: parsed.data.event_date,
       event_type: parsed.data.event_type,
       guest_count: parsed.data.guest_count,
-      event_address: parsed.data.event_address,
+      event_address: normalizedAddress,
       city: parsed.data.city,
       state: parsed.data.state,
       zip_code: parsed.data.zip_code,
@@ -54,6 +85,7 @@ export async function POST(req: Request) {
       deposit_amount: priceBreakdown.deposit_amount,
       final_balance: priceBreakdown.final_balance,
       calculated_breakdown: priceBreakdown,
+      needs_manual_distance_review: distanceCalculationStatus === 'fallback',
       status: 'pending_review',
       agreement_status: 'not_sent',
       deposit_status: 'due',
