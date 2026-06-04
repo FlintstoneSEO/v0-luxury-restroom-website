@@ -77,6 +77,7 @@ export async function POST(
         deposit_amount,
         final_balance,
         remaining_balance,
+        additional_notes,
         status
       `)
       .eq('id', quoteId)
@@ -165,6 +166,7 @@ export async function POST(
       eventLocation: eventLocation || 'TBD',
       quoteTotal: totalPrice,
       approvalLink,
+      customerNotes: quote.additional_notes,
     });
 
     // Send email after successful DB writes

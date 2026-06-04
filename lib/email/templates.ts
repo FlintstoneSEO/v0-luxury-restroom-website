@@ -116,6 +116,7 @@ export function quoteSentTemplate(input: {
   eventLocation: string;
   quoteTotal: number;
   approvalLink: string;
+  customerNotes?: string | null;
 }) {
   const subject = 'Your Luxury Restroom Trailer Quote';
   const safeCustomerName = escapeHtml(input.customerName);
@@ -123,6 +124,19 @@ export function quoteSentTemplate(input: {
   const safeEventType = escapeHtml(input.eventType);
   const safeGuestCount = escapeHtml(input.guestCount);
   const safeEventLocation = escapeHtml(input.eventLocation);
+  const customerNotes = input.customerNotes?.trim();
+  const safeCustomerNotes = customerNotes ? escapeHtml(customerNotes) : '';
+  const customerNotesHtml = safeCustomerNotes
+    ? `<p style="margin:0 0 6px;font-size:14px;"><strong>Customer Notes:</strong> <span style="white-space:pre-wrap;">${safeCustomerNotes}</span></p>`
+    : '';
+  const quoteSummaryTextLines = [
+    `Event Date: ${input.eventDate}`,
+    `Event Type: ${input.eventType}`,
+    `Guest Count: ${input.guestCount}`,
+    `Event Location: ${input.eventLocation}`,
+    ...(customerNotes ? [`Customer Notes: ${customerNotes}`] : []),
+    `Estimated Total: ${formatCurrency(input.quoteTotal)}`,
+  ];
 
   const { html, logoUrl } = renderBrandedCustomerEmail({
     preheader: 'Prepared exclusively for your upcoming event',
@@ -137,6 +151,7 @@ export function quoteSentTemplate(input: {
       <p style="margin:0 0 6px;font-size:14px;"><strong>Event Type:</strong> ${safeEventType}</p>
       <p style="margin:0 0 6px;font-size:14px;"><strong>Guest Count:</strong> ${safeGuestCount}</p>
       <p style="margin:0 0 6px;font-size:14px;"><strong>Event Location:</strong> ${safeEventLocation}</p>
+      ${customerNotesHtml}
       <p style="margin:0;font-size:14px;"><strong>Estimated Total:</strong> ${formatCurrency(input.quoteTotal)}</p>
     `,
     ctaLabel: 'Approve My Quote',
@@ -145,7 +160,7 @@ export function quoteSentTemplate(input: {
     footerLines: ['Signature Luxe Events & Amenities', 'Luxury Restroom Trailer Rentals', 'for Weddings, Private Events, Corporate Events, and Special Occasions', 'Lansing, Michigan and surrounding communities'],
   });
 
-  const text = `Hello ${input.customerName},\n\nThank you for considering Signature Luxe Events & Amenities for your upcoming event.\n\nWe are pleased to provide your customized quote for our luxury restroom trailer rental service.\n\nQuote Summary:\nEvent Date: ${input.eventDate}\nEvent Type: ${input.eventType}\nGuest Count: ${input.guestCount}\nEvent Location: ${input.eventLocation}\nEstimated Total: ${formatCurrency(input.quoteTotal)}\n\nApprove your quote here:\n${input.approvalLink}\n\nOnce your quote is approved, we will send the next steps for your rental agreement and deposit payment.\n\nSignature Luxe Events & Amenities\nLuxury Restroom Trailer Rentals\nLansing, Michigan and surrounding communities`;
+  const text = `Hello ${input.customerName},\n\nThank you for considering Signature Luxe Events & Amenities for your upcoming event.\n\nWe are pleased to provide your customized quote for our luxury restroom trailer rental service.\n\nQuote Summary:\n${quoteSummaryTextLines.join('\n')}\n\nApprove your quote here:\n${input.approvalLink}\n\nOnce your quote is approved, we will send the next steps for your rental agreement and deposit payment.\n\nSignature Luxe Events & Amenities\nLuxury Restroom Trailer Rentals\nLansing, Michigan and surrounding communities`;
 
   return { subject, html, text, logoUrl };
 }
