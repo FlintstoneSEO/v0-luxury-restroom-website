@@ -185,6 +185,18 @@ export async function POST(
       ? `Customer approved ${selectedOption.option_label}${selectedOption.option_description ? `: ${selectedOption.option_description}` : ''}`
       : null;
 
+    const responseEventType = {
+      approved: 'quote_approved',
+      change_requested: 'quote_change_requested',
+      declined: 'quote_declined',
+    }[response_type];
+
+    await supabase.from('quote_link_events').insert({
+      quote_request_id: tokenRecord.quote_request_id,
+      token_id: tokenRecord.id,
+      event_type: responseEventType,
+    });
+
     // Insert status history
     await supabase.from('quote_status_history').insert({
       quote_request_id: tokenRecord.quote_request_id,

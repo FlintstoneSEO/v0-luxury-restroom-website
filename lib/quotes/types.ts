@@ -175,6 +175,11 @@ export interface QuoteRequest {
   approval_token_used_at?: string;
   approved_at?: string;
 
+  // Quote email/view tracking
+  quote_sent_at?: string | null;
+  quote_viewed_at?: string | null;
+  quote_view_count?: number;
+
   // Customer response
   customer_response?: string;
   customer_response_type?: CustomerResponseType;
@@ -249,6 +254,9 @@ export interface QuoteRequestRow {
   approval_token_expires_at?: string;
   approval_token_used_at?: string;
   approved_at?: string;
+  quote_sent_at?: string | null;
+  quote_viewed_at?: string | null;
+  quote_view_count?: number;
   customer_response?: string;
   customer_response_type?: CustomerResponseType;
   customer_response_at?: string;
@@ -266,6 +274,14 @@ export interface QuoteRequestRow {
 }
 
 // Map database row to QuoteRequest
+export interface QuoteLinkEvent {
+  id: string;
+  quote_request_id: string;
+  token_id?: string | null;
+  event_type: string;
+  created_at: string;
+}
+
 export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
   return {
     id: row.id,
@@ -317,6 +333,9 @@ export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
     approval_token_expires_at: row.approval_token_expires_at,
     approval_token_used_at: row.approval_token_used_at,
     approved_at: row.approved_at,
+    quote_sent_at: row.quote_sent_at,
+    quote_viewed_at: row.quote_viewed_at,
+    quote_view_count: row.quote_view_count ?? 0,
     customer_response: row.customer_response,
     customer_response_type: row.customer_response_type,
     customer_response_at: row.customer_response_at,

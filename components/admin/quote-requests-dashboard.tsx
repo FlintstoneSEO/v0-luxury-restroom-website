@@ -91,6 +91,14 @@ function formatStatus(status: string) {
     .join(' ');
 }
 
+function getQuoteViewLabel(quote: QuoteRequest) {
+  if (!quote.quote_sent_at) return null;
+  if (!quote.quote_viewed_at) return 'Not Viewed';
+
+  const viewCount = quote.quote_view_count ?? 0;
+  return viewCount > 1 ? `Viewed ${viewCount}x` : 'Viewed';
+}
+
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('en-US', {
     month: 'short',
@@ -545,6 +553,7 @@ export default function QuoteRequestsDashboard({
                 const fallbackDistance = hasFallbackDistanceCalculation(quote);
                 const optionCount = quote.quote_options?.length ?? 0;
                 const selectedOption = quote.quote_options?.find((option) => option.id === quote.selected_quote_option_id || option.status === 'selected');
+                const quoteViewLabel = getQuoteViewLabel(quote);
 
                 return (
                   <article
@@ -593,6 +602,11 @@ export default function QuoteRequestsDashboard({
                           <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${depositColor.bg} ${depositColor.text} ${depositColor.border}`}>
                             {depositColor.icon}<span>Deposit: {formatStatus(quote.deposit_status)}</span>
                           </span>
+                          {quoteViewLabel && (
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#2d3a47] border border-[#8a7a68]">
+                              <Eye className="h-3.5 w-3.5" aria-hidden="true" /> Quote Link: {quoteViewLabel}
+                            </span>
+                          )}
                           {optionCount > 0 && (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f8f4ee] px-2.5 py-1 text-xs font-semibold text-[#2d3a47] border border-[#8a7a68]">
                               {optionCount} Option{optionCount === 1 ? '' : 's'}{selectedOption ? ` · Selected: ${selectedOption.option_label}` : ''}

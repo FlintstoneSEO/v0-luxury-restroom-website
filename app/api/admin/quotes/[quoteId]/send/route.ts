@@ -111,13 +111,17 @@ export async function POST(
     const tokenHash = hashApprovalToken(token);
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 10).toISOString(); // 10 days
 
-    const { error: tokenError } = await supabase.from('quote_approval_tokens').insert({
-      quote_request_id: quote.id,
-      token_hash: tokenHash,
-      expires_at: expiresAt,
-    });
+    const { data: tokenRecord, error: tokenError } = await supabase
+      .from('quote_approval_tokens')
+      .insert({
+        quote_request_id: quote.id,
+        token_hash: tokenHash,
+        expires_at: expiresAt,
+      })
+      .select('id')
+      .single();
 
-    if (tokenError) {
+    if (tokenError || !tokenRecord) {
       console.error('[send-quote] Token insert error:', tokenError);
       return NextResponse.json(
         { ok: false, message: 'Failed to create approval token record.' },
@@ -207,6 +211,12 @@ export async function POST(
         { status: 500 }
       );
     }
+
+    await supabase.from('quote_link_events').insert({
+      quote_request_id: quote.id,
+      token_id: tokenRecord.id,
+      event_type: 'quote_email_sent',
+    });
 
     // Insert status history
     await supabase.from('quote_status_history').insert({
