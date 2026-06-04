@@ -25,7 +25,17 @@ export async function getQuoteRequests(): Promise<GetQuoteRequestsResult> {
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('quote_requests')
-      .select('*, quote_options(id, option_label, option_description, status, total_price, is_recommended)')
+      .select(`
+        *,
+        quote_options!quote_options_quote_request_id_fkey(
+          id,
+          option_label,
+          option_description,
+          status,
+          total_price,
+          is_recommended
+        )
+      `)
       .order('created_at', { ascending: false });
 
     if (error) {
