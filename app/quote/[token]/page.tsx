@@ -81,6 +81,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       final_balance,
       customer_notes,
       status,
+      selected_quote_option_id,
       created_at
     `)
     .eq('id', tokenRecord.quote_request_id)
@@ -95,6 +96,14 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
     );
   }
 
+  const { data: options } = await supabase
+    .from('quote_options')
+    .select('*')
+    .eq('quote_request_id', quote.id)
+    .neq('status', 'deleted')
+    .order('is_recommended', { ascending: false })
+    .order('created_at', { ascending: true });
+
   // Check if already responded
   const alreadyResponded = tokenRecord.used_at !== null;
 
@@ -103,6 +112,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       quote={quote}
       token={token}
       alreadyResponded={alreadyResponded}
+      options={options ?? []}
     />
   );
 }

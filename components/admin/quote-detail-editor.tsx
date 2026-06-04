@@ -33,8 +33,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Field, FieldLabel } from '@/components/ui/field';
-import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye } from 'lucide-react';
+import { QuoteRequest, QuoteOption, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
+import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
 import Link from 'next/link';
 
 interface QuoteDetailEditorProps {
@@ -47,6 +47,45 @@ type QuoteEmailPreview = {
   html: string;
   text: string;
 };
+
+
+type QuoteOptionForm = {
+  id?: string;
+  option_label: string;
+  option_description: string;
+  is_recommended: boolean;
+  has_power: boolean;
+  has_water: boolean;
+  base_price: number;
+  travel_fee: number;
+  utility_fee: number;
+  after_hours_fee: number;
+  cleaning_fee: number;
+  damage_waiver_fee: number;
+  rush_booking_fee: number;
+  discount_amount: number;
+  deposit_amount: number;
+};
+
+function buildOptionForm(option?: QuoteOption, quote?: QuoteRequest): QuoteOptionForm {
+  return {
+    id: option?.id,
+    option_label: option?.option_label ?? '',
+    option_description: option?.option_description ?? '',
+    is_recommended: option?.is_recommended ?? false,
+    has_power: option?.has_power ?? quote?.has_power ?? false,
+    has_water: option?.has_water ?? quote?.has_water ?? false,
+    base_price: option?.base_price ?? quote?.base_price ?? 0,
+    travel_fee: option?.travel_fee ?? quote?.travel_fee ?? 0,
+    utility_fee: option?.utility_fee ?? quote?.utility_fee ?? 0,
+    after_hours_fee: option?.after_hours_fee ?? quote?.after_hours_fee ?? 0,
+    cleaning_fee: option?.cleaning_fee ?? quote?.cleaning_fee ?? 0,
+    damage_waiver_fee: option?.damage_waiver_fee ?? quote?.damage_waiver_fee ?? 0,
+    rush_booking_fee: option?.rush_booking_fee ?? quote?.rush_booking_fee ?? 0,
+    discount_amount: option?.discount_amount ?? quote?.discount_amount ?? 0,
+    deposit_amount: option?.deposit_amount ?? quote?.deposit_amount ?? 0,
+  };
+}
 
 type RecalculationTriggerFields = {
   event_address: string;
@@ -169,6 +208,12 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
   const [distanceReviewQuote, setDistanceReviewQuote] = useState<QuoteRequest>(quote);
   const [recalculatingQuote, setRecalculatingQuote] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [quoteOptions, setQuoteOptions] = useState<QuoteOption[]>(quote.quote_options ?? []);
+  const [loadingOptions, setLoadingOptions] = useState(false);
+  const [savingOption, setSavingOption] = useState(false);
+  const [recalculatingOptionId, setRecalculatingOptionId] = useState<string | null>(null);
+  const [optionDialogOpen, setOptionDialogOpen] = useState(false);
+  const [optionForm, setOptionForm] = useState<QuoteOptionForm>(() => buildOptionForm(undefined, quote));
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     title: string;
@@ -374,6 +419,130 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       });
     } finally {
       setPreviewingQuoteEmail(false);
+    }
+  };
+
+
+  const loadQuoteOptions = useCallback(async () => {
+    setLoadingOptions(true);
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/options`, { method: 'GET' });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to load quote options');
+      setQuoteOptions(body.options ?? []);
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to load quote options.' });
+    } finally {
+      setLoadingOptions(false);
+    }
+  }, [quote.id]);
+
+  useEffect(() => {
+    void loadQuoteOptions();
+  }, [loadQuoteOptions]);
+
+  const openOptionDialog = (option?: QuoteOption) => {
+    setOptionForm(buildOptionForm(option, quote));
+    setOptionDialogOpen(true);
+  };
+
+  const duplicateCurrentQuoteAsOption = () => {
+    setOptionForm({
+      option_label: quoteOptions.length === 0 ? 'Option A: Current Quote' : `Option ${String.fromCharCode(65 + quoteOptions.length)}: Current Quote`,
+      option_description: 'Duplicated from the current quote pricing.',
+      is_recommended: quoteOptions.length === 0,
+      has_power: form.has_power,
+      has_water: form.has_water,
+      base_price: form.base_price,
+      travel_fee: form.travel_fee,
+      utility_fee: form.utility_fee,
+      after_hours_fee: form.after_hours_fee,
+      cleaning_fee: form.cleaning_fee,
+      damage_waiver_fee: form.damage_waiver_fee,
+      rush_booking_fee: form.rush_booking_fee,
+      discount_amount: form.discount_amount,
+      deposit_amount: form.deposit_amount,
+    });
+    setOptionDialogOpen(true);
+  };
+
+  const saveOption = async () => {
+    if (!optionForm.option_label.trim()) {
+      setMessage({ type: 'error', text: 'Option label is required.' });
+      return;
+    }
+
+    setSavingOption(true);
+    setMessage(null);
+    try {
+      const res = await fetch(
+        optionForm.id ? `/api/admin/quotes/${quote.id}/options/${optionForm.id}` : `/api/admin/quotes/${quote.id}/options`,
+        {
+          method: optionForm.id ? 'PATCH' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(optionForm),
+        }
+      );
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to save quote option');
+      await loadQuoteOptions();
+      setOptionDialogOpen(false);
+      setMessage({ type: 'success', text: 'Quote option saved.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to save quote option.' });
+    } finally {
+      setSavingOption(false);
+    }
+  };
+
+  const recalculateOption = async (optionId: string) => {
+    setRecalculatingOptionId(optionId);
+    setMessage(null);
+    try {
+      await saveQuote();
+      const res = await fetch(`/api/admin/quotes/${quote.id}/options/${optionId}/recalculate`, { method: 'POST' });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to recalculate option');
+      await loadQuoteOptions();
+      setMessage({ type: 'success', text: 'Quote option recalculated.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to recalculate quote option.' });
+    } finally {
+      setRecalculatingOptionId(null);
+    }
+  };
+
+  const deleteOption = async (optionId: string) => {
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/options/${optionId}`, { method: 'DELETE' });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.message || 'Failed to delete quote option');
+      await loadQuoteOptions();
+      setMessage({ type: 'success', text: 'Quote option deleted.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to delete quote option.' });
+    }
+  };
+
+  const markRecommended = async (optionId: string) => {
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/options/${optionId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_recommended: true }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to mark recommended');
+      await loadQuoteOptions();
+      setMessage({ type: 'success', text: 'Recommended option updated.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to mark option recommended.' });
     }
   };
 
@@ -830,6 +999,91 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
         </div>
       </div>
 
+      {/* Quote Options */}
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-[#2d3a47]">Quote Options</h2>
+            <p className="text-sm text-muted-foreground">Create multiple pricing options for the same event so the customer can choose one during approval.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => openOptionDialog()}>
+              <Plus className="mr-2 h-4 w-4" /> Add Option
+            </Button>
+            <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={duplicateCurrentQuoteAsOption}>
+              <Copy className="mr-2 h-4 w-4" /> Duplicate Current Quote as Option
+            </Button>
+          </div>
+        </div>
+
+        {quoteDetailsChanged && quoteOptions.length > 0 && (
+          <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900" role="status">
+            <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            <p>Quote details changed. Recalculate options before sending.</p>
+          </div>
+        )}
+
+        {loadingOptions ? (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Loading quote options...</div>
+        ) : quoteOptions.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-[#ded2c4] bg-[#f8f7f5] p-4 text-sm text-muted-foreground">
+            No quote options yet. Add an option or duplicate the current quote to get started.
+          </div>
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-2">
+            {quoteOptions.map((option) => (
+              <div key={option.id} className="rounded-lg border border-[#ded2c4]/70 p-4 focus-within:ring-2 focus-within:ring-[#2d3a47]/50">
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-semibold text-[#2d3a47]">{option.option_label}</h3>
+                      {option.is_recommended && <span className="rounded-full border border-[#2d3a47]/40 bg-[#2d3a47]/10 px-2 py-0.5 text-xs font-semibold text-[#2d3a47]">Recommended</span>}
+                      {option.status === 'selected' && <span className="rounded-full border border-green-700 bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-800">Selected</span>}
+                    </div>
+                    {option.option_description && <p className="mt-1 text-sm text-muted-foreground">{option.option_description}</p>}
+                    <p className="mt-1 text-xs text-muted-foreground">Power: {option.has_power ? 'Available' : 'Customer needs service'} • Water: {option.has_water ? 'Available' : 'Customer needs service'}</p>
+                  </div>
+                  <p className="text-right text-lg font-bold text-[#2d3a47]">{formatCurrency(option.total_price || 0)}</p>
+                </div>
+
+                {option.needs_manual_distance_review && (
+                  <div className="mb-3 flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900">
+                    <AlertTriangle className="mt-0.5 h-3.5 w-3.5" /> Distance review needed for this option.
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <span>Base: <strong>{formatCurrency(option.base_price || 0)}</strong></span>
+                  <span>Travel: <strong>{formatCurrency(option.travel_fee || 0)}</strong></span>
+                  <span>Utility: <strong>{formatCurrency(option.utility_fee || 0)}</strong></span>
+                  <span>Cleaning: <strong>{formatCurrency(option.cleaning_fee || 0)}</strong></span>
+                  <span>Damage Waiver: <strong>{formatCurrency(option.damage_waiver_fee || 0)}</strong></span>
+                  <span>Rush Booking: <strong>{formatCurrency(option.rush_booking_fee || 0)}</strong></span>
+                  <span>Discount: <strong>-{formatCurrency(option.discount_amount || 0)}</strong></span>
+                  <span>Deposit: <strong>{formatCurrency(option.deposit_amount || 0)}</strong></span>
+                  <span className="col-span-2">Final Balance: <strong>{formatCurrency(option.final_balance || 0)}</strong></span>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => openOptionDialog(option)}>
+                    <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit Option
+                  </Button>
+                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => recalculateOption(option.id)} disabled={recalculatingOptionId === option.id}>
+                    {recalculatingOptionId === option.id ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="mr-1.5 h-3.5 w-3.5" />} Recalculate Option
+                  </Button>
+                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => markRecommended(option.id)} disabled={option.is_recommended}>
+                    <Star className="mr-1.5 h-3.5 w-3.5" /> Mark Recommended
+                  </Button>
+                  <Button type="button" size="sm" variant="outline" className="border-red-200 text-red-700 hover:bg-red-50" onClick={() => setConfirmDialog({ open: true, title: 'Delete Quote Option', description: `Delete ${option.option_label}? This cannot be undone.`, action: () => deleteOption(option.id) })} disabled={option.status === 'selected'}>
+                    <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Delete Option
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Workflow Status */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Workflow Status</h2>
@@ -1128,6 +1382,75 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
         </Link>
       </div>
 
+
+      {/* Quote Option Editor Dialog */}
+      <Dialog open={optionDialogOpen} onOpenChange={setOptionDialogOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl" aria-describedby="quote-option-editor-description">
+          <DialogHeader>
+            <DialogTitle>{optionForm.id ? 'Edit Quote Option' : 'Add Quote Option'}</DialogTitle>
+            <DialogDescription id="quote-option-editor-description">
+              Adjust option labels, utility assumptions, discounts, and individual pricing fields for manual adjustments.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field className="md:col-span-2">
+              <FieldLabel htmlFor="option_label">Option Label</FieldLabel>
+              <Input id="option_label" value={optionForm.option_label} onChange={(e) => setOptionForm({ ...optionForm, option_label: e.target.value })} placeholder="Option A: With Generator + Water Service" />
+            </Field>
+            <Field className="md:col-span-2">
+              <FieldLabel htmlFor="option_description">Option Description</FieldLabel>
+              <Textarea id="option_description" value={optionForm.option_description} onChange={(e) => setOptionForm({ ...optionForm, option_description: e.target.value })} rows={3} placeholder="Describe what is included in this option." />
+            </Field>
+            <div className="md:col-span-2 flex flex-wrap gap-4 rounded-lg bg-[#f8f7f5] p-3">
+              <label className="flex items-center gap-2 text-sm font-medium text-[#2d3a47]">
+                <Checkbox checked={optionForm.has_power} onCheckedChange={(checked) => setOptionForm({ ...optionForm, has_power: !!checked })} />
+                Power available
+              </label>
+              <label className="flex items-center gap-2 text-sm font-medium text-[#2d3a47]">
+                <Checkbox checked={optionForm.has_water} onCheckedChange={(checked) => setOptionForm({ ...optionForm, has_water: !!checked })} />
+                Water available
+              </label>
+              <label className="flex items-center gap-2 text-sm font-medium text-[#2d3a47]">
+                <Checkbox checked={optionForm.is_recommended} onCheckedChange={(checked) => setOptionForm({ ...optionForm, is_recommended: !!checked })} />
+                Recommended option
+              </label>
+            </div>
+            {[
+              ['base_price', 'Base Price'],
+              ['travel_fee', 'Travel Fee'],
+              ['utility_fee', 'Utility Fee'],
+              ['after_hours_fee', 'After Hours Fee'],
+              ['cleaning_fee', 'Cleaning Fee'],
+              ['damage_waiver_fee', 'Damage Waiver'],
+              ['rush_booking_fee', 'Rush Booking Fee'],
+              ['discount_amount', 'Discount'],
+              ['deposit_amount', 'Deposit Amount'],
+            ].map(([field, label]) => (
+              <Field key={field}>
+                <FieldLabel htmlFor={`option_${field}`}>{label}</FieldLabel>
+                <Input
+                  id={`option_${field}`}
+                  type="number"
+                  step="0.01"
+                  value={optionForm[field as keyof QuoteOptionForm] as number}
+                  onChange={(e) => setOptionForm({ ...optionForm, [field]: parseFloat(e.target.value) || 0 })}
+                />
+              </Field>
+            ))}
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">Cancel</Button>
+            </DialogClose>
+            <Button type="button" onClick={saveOption} disabled={savingOption} className="bg-[#2d3a47] text-white hover:bg-[#2d3a47]/90">
+              {savingOption && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save Option
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Email Preview Dialog */}
       <Dialog open={emailPreviewOpen} onOpenChange={setEmailPreviewOpen}>

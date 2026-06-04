@@ -1,6 +1,14 @@
 import { formatCurrency } from '@/lib/pricing-engine';
 import { escapeHtml } from '@/lib/escape-html';
 
+export type QuoteEmailOptionSummary = {
+  id?: string;
+  option_label: string;
+  option_description?: string | null;
+  total_price: number;
+  is_recommended?: boolean;
+};
+
 type BrandedEmailInput = {
   preheader?: string;
   headline: string;
@@ -117,6 +125,7 @@ export function quoteSentTemplate(input: {
   quoteTotal: number;
   approvalLink: string;
   customerNotes?: string | null;
+  quoteOptions?: QuoteEmailOptionSummary[];
 }) {
   const subject = 'Your Luxury Restroom Trailer Quote';
   const safeCustomerName = escapeHtml(input.customerName);
@@ -125,6 +134,8 @@ export function quoteSentTemplate(input: {
   const safeGuestCount = escapeHtml(input.guestCount);
   const safeEventLocation = escapeHtml(input.eventLocation);
   const customerNotes = input.customerNotes?.trim();
+  const quoteOptions = input.quoteOptions?.filter((option) => option.option_label?.trim()) ?? [];
+  const hasMultipleOptions = quoteOptions.length > 1;
   const safeCustomerNotes = customerNotes ? escapeHtml(customerNotes) : '';
   const customerNotesHtml = safeCustomerNotes
     ? `<p style="margin:0 0 6px;font-size:14px;"><strong>Customer Notes:</strong> <span style="white-space:pre-wrap;">${safeCustomerNotes}</span></p>`
@@ -135,7 +146,12 @@ export function quoteSentTemplate(input: {
     `Guest Count: ${input.guestCount}`,
     `Event Location: ${input.eventLocation}`,
     ...(customerNotes ? [`Customer Notes: ${customerNotes}`] : []),
-    `Estimated Total: ${formatCurrency(input.quoteTotal)}`,
+    ...(hasMultipleOptions
+      ? [
+          'Quote Options:',
+          ...quoteOptions.map((option) => `${option.option_label}${option.option_description ? `: ${option.option_description}` : ''} — Total ${formatCurrency(option.total_price)}`),
+        ]
+      : [`Estimated Total: ${formatCurrency(input.quoteTotal)}`]),
   ];
 
   const { html, logoUrl } = renderBrandedCustomerEmail({
@@ -144,23 +160,26 @@ export function quoteSentTemplate(input: {
     subheading: 'Prepared exclusively for your upcoming event',
     bodyHtml: `<p style="margin:0 0 10px;">Hello ${safeCustomerName},</p>
       <p style="margin:0 0 10px;">Thank you for considering Signature Luxe Events & Amenities for your upcoming event.</p>
-      <p style="margin:0;">We are pleased to provide your customized quote for our luxury restroom trailer rental service.</p>
-      <p style="margin:10px 0 0;">Please review the summary below, then open your quote review page to see the full breakdown and choose how you would like to proceed.</p>`,
+      <p style="margin:0;">${hasMultipleOptions ? 'We prepared multiple quote options for your event. Open your quote review page to compare options and choose how you would like to proceed.' : 'We are pleased to provide your customized quote for our luxury restroom trailer rental service.'}</p>
+      ${hasMultipleOptions ? '' : '<p style="margin:10px 0 0;">Please review the summary below, then open your quote review page to see the full breakdown and choose how you would like to proceed.</p>'}`,
     detailsHtml: `
       <p style="margin:0 0 6px;font-size:14px;"><strong>Event Date:</strong> ${safeEventDate}</p>
       <p style="margin:0 0 6px;font-size:14px;"><strong>Event Type:</strong> ${safeEventType}</p>
       <p style="margin:0 0 6px;font-size:14px;"><strong>Guest Count:</strong> ${safeGuestCount}</p>
       <p style="margin:0 0 6px;font-size:14px;"><strong>Event Location:</strong> ${safeEventLocation}</p>
       ${customerNotesHtml}
-      <p style="margin:0;font-size:14px;"><strong>Estimated Total:</strong> ${formatCurrency(input.quoteTotal)}</p>
+      ${hasMultipleOptions ? `<div style="margin-top:10px;border-top:1px solid #ded2c4;padding-top:10px;">
+        <p style="margin:0 0 8px;font-size:14px;"><strong>Quote Options:</strong></p>
+        ${quoteOptions.map((option) => `<p style="margin:0 0 6px;font-size:14px;"><strong>${escapeHtml(option.option_label)}${option.is_recommended ? ' (Recommended)' : ''}:</strong> ${option.option_description ? `${escapeHtml(option.option_description)} — ` : ''}Total ${formatCurrency(option.total_price)}</p>`).join('')}
+      </div>` : `<p style="margin:0;font-size:14px;"><strong>Estimated Total:</strong> ${formatCurrency(input.quoteTotal)}</p>`}
     `,
-    ctaLabel: 'Review Quote & Respond',
+    ctaLabel: hasMultipleOptions ? 'Review Quote Options' : 'Review Quote & Respond',
     ctaUrl: input.approvalLink,
     postCtaHtml: `<p style="margin:0 0 10px;">Once your quote is approved, we will send the next steps for your rental agreement and deposit payment.</p><p style="margin:0;">We look forward to helping you provide an elevated restroom experience for your guests.</p>`,
     footerLines: ['Signature Luxe Events & Amenities', 'Luxury Restroom Trailer Rentals', 'for Weddings, Private Events, Corporate Events, and Special Occasions', 'Lansing, Michigan and surrounding communities'],
   });
 
-  const text = `Hello ${input.customerName},\n\nThank you for considering Signature Luxe Events & Amenities for your upcoming event.\n\nWe are pleased to provide your customized quote for our luxury restroom trailer rental service.\n\nQuote Summary:\n${quoteSummaryTextLines.join('\n')}\n\nReview your quote and respond here:\n${input.approvalLink}\n\nOnce your quote is approved, we will send the next steps for your rental agreement and deposit payment.\n\nSignature Luxe Events & Amenities\nLuxury Restroom Trailer Rentals\nLansing, Michigan and surrounding communities`;
+  const text = `Hello ${input.customerName},\n\nThank you for considering Signature Luxe Events & Amenities for your upcoming event.\n\nWe are pleased to provide your customized quote for our luxury restroom trailer rental service.\n\nQuote Summary:\n${quoteSummaryTextLines.join('\n')}\n\n${hasMultipleOptions ? 'Review your quote options and respond here:' : 'Review your quote and respond here:'}\n${input.approvalLink}\n\nOnce your quote is approved, we will send the next steps for your rental agreement and deposit payment.\n\nSignature Luxe Events & Amenities\nLuxury Restroom Trailer Rentals\nLansing, Michigan and surrounding communities`;
 
   return { subject, html, text, logoUrl };
 }

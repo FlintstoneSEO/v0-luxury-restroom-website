@@ -158,6 +158,14 @@ export async function POST(
       ? new Date(quote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
       : 'TBD';
 
+    const { data: quoteOptions } = await supabase
+      .from('quote_options')
+      .select('id, option_label, option_description, total_price, is_recommended, status')
+      .eq('quote_request_id', quote.id)
+      .neq('status', 'deleted')
+      .order('is_recommended', { ascending: false })
+      .order('created_at', { ascending: true });
+
     const emailTemplate = quoteSentTemplate({
       customerName,
       eventDate: formattedEventDate,
@@ -167,6 +175,7 @@ export async function POST(
       quoteTotal: totalPrice,
       approvalLink,
       customerNotes: quote.additional_notes,
+      quoteOptions: quoteOptions ?? [],
     });
 
     // Send email after successful DB writes

@@ -21,7 +21,7 @@ export async function POST(
     );
   }
 
-  const { response_type, comments } = validation.data;
+  const { response_type, comments, selected_quote_option_id } = validation.data;
 
   try {
     const tokenHash = hashApprovalToken(token);
@@ -59,20 +59,6 @@ export async function POST(
 
     const now = new Date().toISOString();
 
-    const { data: usedTokenRows, error: usedTokenError } = await supabase
-      .from('quote_approval_tokens')
-      .update({ used_at: now })
-      .eq('id', tokenRecord.id)
-      .is('used_at', null)
-      .select('id');
-
-    if (usedTokenError || usedTokenRows?.length !== 1) {
-      return NextResponse.json(
-        { ok: false, message: 'You have already responded to this quote' },
-        { status: 409 }
-      );
-    }
-
     // Get the quote for notifications
     const { data: quote } = await supabase
       .from('quote_requests')
@@ -87,6 +73,29 @@ export async function POST(
       );
     }
 
+
+    const { data: quoteOptions, error: optionsError } = await supabase
+      .from('quote_options')
+      .select('id, option_label, option_description, base_price, travel_fee, utility_fee, after_hours_fee, cleaning_fee, damage_waiver_fee, rush_booking_fee, subtotal, discount_amount, total_price, deposit_amount, final_balance')
+      .eq('quote_request_id', quote.id)
+      .neq('status', 'deleted');
+
+    if (optionsError) {
+      console.error('[quote-respond] Options fetch error:', optionsError);
+      return NextResponse.json({ ok: false, message: 'Failed to validate quote options' }, { status: 500 });
+    }
+
+    const hasOptions = (quoteOptions ?? []).length > 0;
+    const selectedOption = selected_quote_option_id
+      ? (quoteOptions ?? []).find((option) => option.id === selected_quote_option_id)
+      : null;
+
+    if (response_type === 'approved' && hasOptions && !selectedOption) {
+      return NextResponse.json(
+        { ok: false, message: selected_quote_option_id ? 'Selected quote option is invalid' : 'Please choose a quote option before approving' },
+        { status: 400 }
+      );
+    }
     let newStatus: string;
     let agreementStatus: string | undefined;
 
@@ -105,6 +114,20 @@ export async function POST(
         newStatus = quote.status;
     }
 
+    const { data: usedTokenRows, error: usedTokenError } = await supabase
+      .from('quote_approval_tokens')
+      .update({ used_at: now })
+      .eq('id', tokenRecord.id)
+      .is('used_at', null)
+      .select('id');
+
+    if (usedTokenError || usedTokenRows?.length !== 1) {
+      return NextResponse.json(
+        { ok: false, message: 'You have already responded to this quote' },
+        { status: 409 }
+      );
+    }
+
     // Update the quote
     const updateData: Record<string, unknown> = {
       status: newStatus,
@@ -117,6 +140,22 @@ export async function POST(
     if (response_type === 'approved') {
       updateData.approved_at = now;
       updateData.agreement_status = agreementStatus;
+
+      if (selectedOption) {
+        updateData.selected_quote_option_id = selectedOption.id;
+        updateData.base_price = selectedOption.base_price;
+        updateData.travel_fee = selectedOption.travel_fee;
+        updateData.utility_fee = selectedOption.utility_fee;
+        updateData.after_hours_fee = selectedOption.after_hours_fee;
+        updateData.cleaning_fee = selectedOption.cleaning_fee;
+        updateData.damage_waiver_fee = selectedOption.damage_waiver_fee;
+        updateData.rush_booking_fee = selectedOption.rush_booking_fee;
+        updateData.subtotal = selectedOption.subtotal;
+        updateData.discount_amount = selectedOption.discount_amount;
+        updateData.total_price = selectedOption.total_price;
+        updateData.deposit_amount = selectedOption.deposit_amount;
+        updateData.final_balance = selectedOption.final_balance;
+      }
     }
 
     const { error: updateError } = await supabase
@@ -132,6 +171,20 @@ export async function POST(
       );
     }
 
+    if (response_type === 'approved' && selectedOption) {
+      await supabase.from('quote_options').update({ status: 'selected', updated_at: now }).eq('id', selectedOption.id);
+      await supabase
+        .from('quote_options')
+        .update({ status: 'not_selected', updated_at: now })
+        .eq('quote_request_id', tokenRecord.quote_request_id)
+        .neq('id', selectedOption.id)
+        .neq('status', 'deleted');
+    }
+
+    const selectedOptionNote = selectedOption
+      ? `Customer approved ${selectedOption.option_label}${selectedOption.option_description ? `: ${selectedOption.option_description}` : ''}`
+      : null;
+
     // Insert status history
     await supabase.from('quote_status_history').insert({
       quote_request_id: tokenRecord.quote_request_id,
@@ -139,7 +192,7 @@ export async function POST(
       new_status: newStatus,
       changed_at: now,
       changed_by: 'customer',
-      note: comments || `Customer ${response_type.replace('_', ' ')}`,
+      note: selectedOptionNote || comments || `Customer ${response_type.replace('_', ' ')}`,
     });
 
     // Send notification email to admin
@@ -153,6 +206,7 @@ export async function POST(
         <p><strong>Quote:</strong> ${escapeHtml(quote.quote_number || quote.id)}</p>
         <p><strong>Customer:</strong> ${escapeHtml(quote.customer_name)} (${escapeHtml(quote.email)})</p>
         <p><strong>Response:</strong> ${escapeHtml(statusDisplay)}</p>
+        ${selectedOption ? `<p><strong>Selected Option:</strong> ${escapeHtml(selectedOption.option_label)}${selectedOption.option_description ? `: ${escapeHtml(selectedOption.option_description)}` : ''}</p>` : ''}
         ${comments ? `<p><strong>Comments:</strong> ${escapeHtml(comments)}</p>` : ''}
         <p><a href="${escapeHtml(adminQuoteUrl)}">View in Admin Dashboard</a></p>
       `,

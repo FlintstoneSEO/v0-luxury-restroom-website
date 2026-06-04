@@ -38,10 +38,34 @@ interface Quote {
   created_at: string;
 }
 
+interface QuoteOption {
+  id: string;
+  option_label: string;
+  option_description?: string | null;
+  is_recommended: boolean;
+  status: string;
+  has_power?: boolean | null;
+  has_water?: boolean | null;
+  base_price: number;
+  travel_fee: number;
+  utility_fee: number;
+  after_hours_fee: number;
+  cleaning_fee: number;
+  damage_waiver_fee: number;
+  rush_booking_fee: number;
+  subtotal: number;
+  discount_amount: number;
+  total_price: number;
+  deposit_amount: number;
+  final_balance: number;
+  needs_manual_distance_review: boolean;
+}
+
 interface QuoteApprovalClientProps {
   quote: Quote;
   token: string;
   alreadyResponded: boolean;
+  options?: QuoteOption[];
 }
 
 function formatCurrency(amount: number) {
@@ -65,18 +89,35 @@ function formatTime(timeString: string) {
   return `${hour12}:${minutes} ${ampm}`;
 }
 
-export default function QuoteApprovalClient({ quote, token, alreadyResponded }: QuoteApprovalClientProps) {
+function PriceRow({ label, amount, isDiscount = false }: { label: string; amount: number; isDiscount?: boolean }) {
+  return (
+    <div className={`flex justify-between ${isDiscount ? 'text-green-700' : ''}`}>
+      <span>{label}</span>
+      <span>{isDiscount ? '-' : ''}{formatCurrency(amount || 0)}</span>
+    </div>
+  );
+}
+
+export default function QuoteApprovalClient({ quote, token, alreadyResponded, options = [] }: QuoteApprovalClientProps) {
   const [response, setResponse] = useState<'approve' | 'changes' | 'decline' | null>(null);
   const [comments, setComments] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(alreadyResponded);
   const [error, setError] = useState<string | null>(null);
+  const visibleOptions = options.filter((option) => option.status !== 'deleted');
+  const hasOptions = visibleOptions.length > 0;
+  const [selectedOptionId, setSelectedOptionId] = useState<string>(visibleOptions.find((option) => option.is_recommended)?.id ?? visibleOptions[0]?.id ?? '');
 
   const handleSubmit = async () => {
     if (!response) return;
 
     if (response === 'changes' && !comments.trim()) {
       setError('Please provide details for requested changes.');
+      return;
+    }
+
+    if (response === 'approve' && hasOptions && !selectedOptionId) {
+      setError('Please choose a quote option before approving.');
       return;
     }
 
@@ -90,6 +131,7 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
         body: JSON.stringify({
           response_type: response === 'approve' ? 'approved' : response === 'changes' ? 'change_requested' : 'declined',
           comments: comments.trim() || undefined,
+          selected_quote_option_id: response === 'approve' && hasOptions ? selectedOptionId : undefined,
         }),
       });
 
@@ -134,6 +176,29 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
   }
 
   const eventLocation = `${quote.event_address}, ${quote.city}, ${quote.state} ${quote.zip_code}`;
+  const singleQuoteOption: QuoteOption = {
+    id: quote.id,
+    option_label: 'Quote Summary',
+    option_description: null,
+    is_recommended: false,
+    status: quote.status,
+    has_power: quote.has_power,
+    has_water: quote.has_water,
+    base_price: quote.base_price ?? 0,
+    travel_fee: quote.travel_fee ?? 0,
+    utility_fee: quote.utility_fee ?? 0,
+    after_hours_fee: quote.after_hours_fee ?? 0,
+    cleaning_fee: quote.cleaning_fee ?? 0,
+    damage_waiver_fee: quote.damage_waiver_fee ?? 0,
+    rush_booking_fee: quote.rush_booking_fee ?? 0,
+    subtotal: quote.subtotal ?? 0,
+    discount_amount: quote.discount_amount ?? 0,
+    total_price: quote.total_price ?? 0,
+    deposit_amount: quote.deposit_amount ?? 0,
+    final_balance: quote.final_balance ?? 0,
+    needs_manual_distance_review: false,
+  };
+  const pricingOptions = hasOptions ? visibleOptions : [singleQuoteOption];
 
   return (
     <div className="min-h-screen bg-[#f8f7f5]">
@@ -210,74 +275,80 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
 
         {/* Pricing */}
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-[#2d3a47] mb-4">Quote Summary</h3>
-          <div className="space-y-2 text-sm">
-            {(quote.base_price ?? 0) > 0 && (
-              <div className="flex justify-between">
-                <span>Base Rental</span>
-                <span>{formatCurrency(quote.base_price || 0)}</span>
-              </div>
-            )}
-            {(quote.travel_fee ?? 0) > 0 && (
-              <div className="flex justify-between">
-                <span>Travel Fee</span>
-                <span>{formatCurrency(quote.travel_fee || 0)}</span>
-              </div>
-            )}
-            {(quote.utility_fee ?? 0) > 0 && (
-              <div className="flex justify-between">
-                <span>Utility Fee (Generator/Water)</span>
-                <span>{formatCurrency(quote.utility_fee || 0)}</span>
-              </div>
-            )}
-            {(quote.after_hours_fee ?? 0) > 0 && (
-              <div className="flex justify-between">
-                <span>After Hours Fee</span>
-                <span>{formatCurrency(quote.after_hours_fee || 0)}</span>
-              </div>
-            )}
-            {(quote.cleaning_fee ?? 0) > 0 && (
-              <div className="flex justify-between">
-                <span>Cleaning Fee</span>
-                <span>{formatCurrency(quote.cleaning_fee || 0)}</span>
-              </div>
-            )}
-            {(quote.damage_waiver_fee ?? 0) > 0 && (
-              <div className="flex justify-between">
-                <span>Damage Waiver</span>
-                <span>{formatCurrency(quote.damage_waiver_fee || 0)}</span>
-              </div>
-            )}
-            {(quote.rush_booking_fee ?? 0) > 0 && (
-              <div className="flex justify-between">
-                <span>Rush Booking Fee</span>
-                <span>{formatCurrency(quote.rush_booking_fee || 0)}</span>
-              </div>
-            )}
-            {(quote.discount_amount ?? 0) > 0 && (
-              <div className="flex justify-between text-green-600">
-                <span>Discount</span>
-                <span>-{formatCurrency(quote.discount_amount || 0)}</span>
-              </div>
-            )}
-          </div>
+          <h3 className="text-lg font-semibold text-[#2d3a47] mb-4">{hasOptions ? 'Choose Your Quote Option' : 'Quote Summary'}</h3>
+          {hasOptions && (
+            <p className="mb-4 text-sm text-muted-foreground">Select the option you would like to approve. Request Changes and Decline remain available without selecting an option.</p>
+          )}
+          <div className="space-y-4" role={hasOptions ? 'radiogroup' : undefined} aria-label={hasOptions ? 'Choose your quote option' : undefined}>
+            {pricingOptions.map((option) => {
+              const selected = selectedOptionId === option.id;
+              return (
+                <label
+                  key={option.id}
+                  className={`block rounded-lg border-2 p-4 transition-colors focus-within:ring-2 focus-within:ring-[#2d3a47] focus-within:ring-offset-2 ${
+                    hasOptions && selected ? 'border-[#2d3a47] bg-[#f8f5f1]' : 'border-gray-200 bg-white'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    {hasOptions && (
+                      <input
+                        type="radio"
+                        name="quote-option"
+                        value={option.id}
+                        checked={selected}
+                        onChange={() => setSelectedOptionId(option.id)}
+                        className="mt-1 h-4 w-4 accent-[#2d3a47]"
+                      />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                          <h4 className="font-semibold text-[#2d3a47]">{option.option_label}</h4>
+                          {option.option_description && <p className="mt-1 text-sm text-muted-foreground">{option.option_description}</p>}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {option.is_recommended && (
+                            <span className="rounded-full border border-[#2d3a47]/40 bg-[#2d3a47]/10 px-2.5 py-1 text-xs font-semibold text-[#2d3a47]">Recommended</span>
+                          )}
+                          {hasOptions && selected && (
+                            <span className="rounded-full border border-[#2d3a47] bg-[#2d3a47] px-2.5 py-1 text-xs font-semibold text-white">Selected</span>
+                          )}
+                        </div>
+                      </div>
 
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <div className="flex justify-between text-lg font-bold text-[#2d3a47]">
-              <span>Total</span>
-              <span>{formatCurrency(quote.total_price || 0)}</span>
-            </div>
-          </div>
+                      <div className="mt-4 space-y-2 text-sm">
+                        {option.base_price > 0 && <PriceRow label="Base Rental" amount={option.base_price} />}
+                        {option.travel_fee > 0 && <PriceRow label="Travel Fee" amount={option.travel_fee} />}
+                        {option.utility_fee > 0 && <PriceRow label="Utility Fee (Generator/Water)" amount={option.utility_fee} />}
+                        {option.after_hours_fee > 0 && <PriceRow label="After Hours Fee" amount={option.after_hours_fee} />}
+                        {option.cleaning_fee > 0 && <PriceRow label="Cleaning Fee" amount={option.cleaning_fee} />}
+                        {option.damage_waiver_fee > 0 && <PriceRow label="Damage Waiver" amount={option.damage_waiver_fee} />}
+                        {option.rush_booking_fee > 0 && <PriceRow label="Rush Booking Fee" amount={option.rush_booking_fee} />}
+                        {option.discount_amount > 0 && <PriceRow label="Discount" amount={option.discount_amount} isDiscount />}
+                      </div>
 
-          <div className="mt-4 p-4 bg-[#2d3a47]/5 rounded-lg space-y-2">
-            <div className="flex justify-between">
-              <span className="font-medium">Deposit Required</span>
-              <span className="font-semibold">{formatCurrency(quote.deposit_amount || 0)}</span>
-            </div>
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Balance Due at Event</span>
-              <span>{formatCurrency(quote.final_balance || 0)}</span>
-            </div>
+                      <div className="mt-4 border-t border-gray-200 pt-4">
+                        <div className="flex justify-between text-lg font-bold text-[#2d3a47]">
+                          <span>Total</span>
+                          <span>{formatCurrency(option.total_price || 0)}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 rounded-lg bg-[#2d3a47]/5 p-4 space-y-2">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Deposit Required</span>
+                          <span className="font-semibold">{formatCurrency(option.deposit_amount || 0)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>Balance Due at Event</span>
+                          <span>{formatCurrency(option.final_balance || 0)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </label>
+              );
+            })}
           </div>
         </div>
 
@@ -355,7 +426,7 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded }: 
 
               <Button
                 onClick={handleSubmit}
-                disabled={submitting || (response === 'changes' && !comments.trim())}
+                disabled={submitting || (response === 'changes' && !comments.trim()) || (response === 'approve' && hasOptions && !selectedOptionId)}
                 className="w-full bg-[#2d3a47] hover:bg-[#2d3a47]/90"
               >
                 {submitting ? (

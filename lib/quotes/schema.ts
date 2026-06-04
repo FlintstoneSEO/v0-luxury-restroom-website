@@ -101,6 +101,32 @@ export const quoteRequestUpdateSchema = z.object({
   customer_response_at: optionalDateTimeInput.optional(),
 });
 
+
+export const quoteOptionInputSchema = z.object({
+  option_label: z.string().min(1, 'Option label is required').max(120),
+  option_description: z.string().max(1000).optional().nullable(),
+  is_recommended: z.boolean().optional(),
+  status: z.string().max(40).optional(),
+  has_power: z.boolean().optional().nullable(),
+  has_water: z.boolean().optional().nullable(),
+  distance_miles: nonNegativeMoney.optional().nullable(),
+  base_price: nonNegativeMoney.optional(),
+  travel_fee: nonNegativeMoney.optional(),
+  utility_fee: nonNegativeMoney.optional(),
+  after_hours_fee: nonNegativeMoney.optional(),
+  cleaning_fee: nonNegativeMoney.optional(),
+  damage_waiver_fee: nonNegativeMoney.optional(),
+  rush_booking_fee: nonNegativeMoney.optional(),
+  subtotal: nonNegativeMoney.optional(),
+  discount_amount: nonNegativeMoney.optional(),
+  total_price: nonNegativeMoney.optional(),
+  deposit_amount: nonNegativeMoney.optional(),
+  final_balance: nonNegativeMoney.optional(),
+  needs_manual_distance_review: z.boolean().optional(),
+});
+
+export const quoteOptionUpdateSchema = quoteOptionInputSchema.partial();
+
 // Schema for status updates
 export const quoteStatusUpdateSchema = z.object({
   id: z.string().uuid('Valid ID required'),
@@ -137,6 +163,7 @@ export const quoteDepositUpdateSchema = z.object({
 export const quoteCustomerResponseSchema = z.object({
   response_type: z.enum(CUSTOMER_RESPONSE_TYPES),
   comments: z.string().max(2000).optional(),
+  selected_quote_option_id: z.string().uuid().optional(),
 }).superRefine((data, ctx) => {
   if (data.response_type === 'change_requested' && !data.comments?.trim()) {
     ctx.addIssue({
