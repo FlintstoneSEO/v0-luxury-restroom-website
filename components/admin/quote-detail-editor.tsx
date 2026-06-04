@@ -104,6 +104,26 @@ function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }
 
+function formatDateTime(value?: string | null) {
+  if (!value) return 'Not yet';
+  return new Date(value).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+function formatCustomerResponse(quote: QuoteRequest) {
+  if (!quote.customer_response_type) return 'Pending';
+
+  return quote.customer_response_type
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 function toDateInputValue(value?: string) {
   return value ? value.slice(0, 10) : '';
 }
@@ -1286,6 +1306,44 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
             <CheckCircle className="w-4 h-4 mr-2" />
             Mark Deposit Paid
           </Button>
+        </div>
+      </div>
+
+      {/* Customer Activity */}
+      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
+        <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Customer Activity</h2>
+        <div className="space-y-3 text-sm text-[#2d3a47]">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div className="rounded-lg border border-[#ded2c4]/60 bg-[#f8f7f5] p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#4b5563]">Quote email sent</p>
+              <p className="mt-1 font-medium">{formatDateTime(quote.quote_sent_at)}</p>
+            </div>
+            <div className="rounded-lg border border-[#ded2c4]/60 bg-[#f8f7f5] p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#4b5563]">Quote link opened</p>
+              <p className="mt-1 font-medium">{formatDateTime(quote.quote_viewed_at)}</p>
+            </div>
+            <div className="rounded-lg border border-[#ded2c4]/60 bg-[#f8f7f5] p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#4b5563]">Link views</p>
+              <p className="mt-1 font-medium">{quote.quote_view_count ?? 0}</p>
+            </div>
+            <div className="rounded-lg border border-[#ded2c4]/60 bg-[#f8f7f5] p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#4b5563]">Customer response</p>
+              <p className="mt-1 font-medium">{formatCustomerResponse(quote)}</p>
+              {quote.customer_response_at && (
+                <p className="mt-1 text-xs text-[#4b5563]">{formatDateTime(quote.customer_response_at)}</p>
+              )}
+            </div>
+          </div>
+
+          {quote.quote_sent_at ? (
+            quote.quote_viewed_at ? (
+              <p>Customer has opened the quote link.</p>
+            ) : (
+              <p>Customer has not opened the quote link yet.</p>
+            )
+          ) : (
+            <p>Quote has not been emailed to the customer yet.</p>
+          )}
         </div>
       </div>
 

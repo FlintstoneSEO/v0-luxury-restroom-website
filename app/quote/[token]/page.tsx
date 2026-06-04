@@ -25,7 +25,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
   // Find the approval token
   const { data: tokenRecord, error: tokenError } = await supabase
     .from('quote_approval_tokens')
-    .select('quote_request_id, expires_at, used_at')
+    .select('id, quote_request_id, expires_at, used_at, first_viewed_at, last_viewed_at, view_count')
     .eq('token_hash', tokenHash)
     .single();
 
@@ -82,6 +82,8 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       customer_notes,
       status,
       selected_quote_option_id,
+      quote_viewed_at,
+      quote_view_count,
       created_at
     `)
     .eq('id', tokenRecord.quote_request_id)
@@ -96,6 +98,33 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
     );
   }
 
+  const now = new Date().toISOString();
+
+  await supabase
+    .from('quote_approval_tokens')
+    .update({
+      first_viewed_at: tokenRecord.first_viewed_at ?? now,
+      last_viewed_at: now,
+      view_count: (tokenRecord.view_count ?? 0) + 1,
+    })
+    .eq('id', tokenRecord.id);
+
+  await supabase
+    .from('quote_requests')
+    .update({
+      quote_viewed_at: quote.quote_viewed_at ?? now,
+      quote_view_count: (quote.quote_view_count ?? 0) + 1,
+    })
+    .eq('id', tokenRecord.quote_request_id);
+
+  await supabase
+    .from('quote_link_events')
+    .insert({
+      quote_request_id: tokenRecord.quote_request_id,
+      token_id: tokenRecord.id,
+      event_type: 'quote_link_opened',
+    });
+
   const { data: options } = await supabase
     .from('quote_options')
     .select('*')
@@ -104,12 +133,16 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
     .order('is_recommended', { ascending: false })
     .order('created_at', { ascending: true });
 
+  const publicQuote = { ...quote };
+  delete publicQuote.quote_viewed_at;
+  delete publicQuote.quote_view_count;
+
   // Check if already responded
   const alreadyResponded = tokenRecord.used_at !== null;
 
   return (
     <QuoteApprovalClient
-      quote={quote}
+      quote={publicQuote}
       token={token}
       alreadyResponded={alreadyResponded}
       options={options ?? []}
