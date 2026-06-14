@@ -162,7 +162,7 @@ export const quoteDepositUpdateSchema = z.object({
 // Schema for customer quote response
 export const quoteCustomerResponseSchema = z.object({
   response_type: z.enum(CUSTOMER_RESPONSE_TYPES),
-  comments: z.string().max(2000).optional(),
+  comments: z.string().trim().max(2000).optional(),
   selected_quote_option_id: z.string().uuid().optional(),
 }).superRefine((data, ctx) => {
   if (data.response_type === 'change_requested' && !data.comments?.trim()) {
@@ -173,4 +173,9 @@ export const quoteCustomerResponseSchema = z.object({
     });
   }
 
+});
+
+// Schema for non-final customer quote messages
+export const quoteCustomerMessageSchema = z.object({
+  message: z.string().trim().min(1, 'Message is required').max(2000, 'Message must be 2000 characters or less'),
 });
