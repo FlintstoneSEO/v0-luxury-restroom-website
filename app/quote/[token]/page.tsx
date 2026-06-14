@@ -84,7 +84,8 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       selected_quote_option_id,
       quote_viewed_at,
       quote_view_count,
-      created_at
+      created_at,
+      is_test_quote
     `)
     .eq('id', tokenRecord.quote_request_id)
     .single();

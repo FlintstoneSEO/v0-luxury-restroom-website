@@ -61,6 +61,9 @@ create table if not exists quote_requests (
   internal_notes text,
   customer_notes text,
   is_manual_override boolean default false,
+  is_test_quote boolean not null default false,
+  test_label text,
+  test_source_quote_id uuid references quote_requests(id) on delete set null,
   approved_at timestamptz,
   customer_response text,
   customer_response_type text,
@@ -70,6 +73,9 @@ create table if not exists quote_requests (
   updated_at timestamptz default now()
 );
 
+
+create index if not exists quote_requests_is_test_quote_idx on quote_requests(is_test_quote);
+create index if not exists quote_requests_test_source_quote_id_idx on quote_requests(test_source_quote_id);
 
 create table if not exists quote_options (
   id uuid primary key default gen_random_uuid(),

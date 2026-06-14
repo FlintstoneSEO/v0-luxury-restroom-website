@@ -111,6 +111,9 @@ export interface QuoteRequest {
   quote_number?: string;
   selected_quote_option_id?: string | null;
   quote_options?: QuoteOption[];
+  is_test_quote?: boolean;
+  test_label?: string | null;
+  test_source_quote_id?: string | null;
 
   // Customer information
   customer_name: string;
@@ -209,6 +212,9 @@ export interface QuoteRequestRow {
   quote_number?: string;
   selected_quote_option_id?: string | null;
   quote_options?: QuoteOption[];
+  is_test_quote?: boolean;
+  test_label?: string | null;
+  test_source_quote_id?: string | null;
   customer_name: string;
   phone: string;
   email: string;
@@ -288,6 +294,9 @@ export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
     quote_number: row.quote_number,
     selected_quote_option_id: row.selected_quote_option_id,
     quote_options: row.quote_options,
+    is_test_quote: row.is_test_quote ?? false,
+    test_label: row.test_label,
+    test_source_quote_id: row.test_source_quote_id,
     customer_name: row.customer_name,
     phone: row.phone,
     email: row.email,

@@ -3,6 +3,9 @@ import { createClient } from '@/lib/supabase/server';
 import QuoteDetailEditor from '@/components/admin/quote-detail-editor';
 import { mapQuoteRequestRow, QuoteRequestRow } from '@/lib/quotes/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata = {
   title: 'Admin Quote Detail | Signature Luxe',
   robots: {

@@ -35,11 +35,15 @@ import {
 import { Field, FieldLabel } from '@/components/ui/field';
 import { QuoteRequest, QuoteOption, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
-import Link from 'next/link';
 
 interface QuoteDetailEditorProps {
   quote: QuoteRequest;
 }
+
+type TestQuoteSendResult = {
+  quote_id: string;
+  approval_link?: string;
+};
 
 type QuoteEmailPreview = {
   to: string;
@@ -234,6 +238,10 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
   const [recalculatingOptionId, setRecalculatingOptionId] = useState<string | null>(null);
   const [optionDialogOpen, setOptionDialogOpen] = useState(false);
   const [optionForm, setOptionForm] = useState<QuoteOptionForm>(() => buildOptionForm(undefined, quote));
+  const [testQuoteDialogOpen, setTestQuoteDialogOpen] = useState(false);
+  const [testRecipientEmail, setTestRecipientEmail] = useState('');
+  const [sendingTestQuote, setSendingTestQuote] = useState(false);
+  const [testQuoteResult, setTestQuoteResult] = useState<TestQuoteSendResult | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     title: string;
@@ -354,6 +362,39 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleBackToDashboard = () => {
+    router.push('/admin');
+    router.refresh();
+  };
+
+  const handleSendTestQuote = async () => {
+    if (!testRecipientEmail.trim()) {
+      setMessage({ type: 'error', text: 'Enter a test recipient email first.' });
+      return;
+    }
+
+    setSendingTestQuote(true);
+    setMessage(null);
+    setTestQuoteResult(null);
+
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/send-test`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ test_recipient_email: testRecipientEmail.trim() }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to send test quote');
+      setTestQuoteResult({ quote_id: body.quote_id, approval_link: body.approval_link });
+      setMessage({ type: 'success', text: quote.is_test_quote ? 'Test quote sent.' : 'A cloned test quote was created and sent. The real quote was not changed.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to send test quote.' });
+    } finally {
+      setSendingTestQuote(false);
     }
   };
 
@@ -625,10 +666,10 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Link href="/admin" className="flex items-center gap-2 text-[#2d3a47] hover:underline">
+        <button type="button" onClick={handleBackToDashboard} className="flex items-center gap-2 text-[#2d3a47] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 rounded">
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
-        </Link>
+        </button>
       </div>
 
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
@@ -658,6 +699,13 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
           </div>
         </div>
       </div>
+
+      {quote.is_test_quote && (
+        <div className="rounded-lg border-2 border-amber-500 bg-amber-100 p-4 text-sm text-amber-950">
+          <p className="font-bold">TEST QUOTE</p>
+          <p>Customer actions on this page affect only this test quote{quote.test_source_quote_id ? ` cloned from ${quote.test_source_quote_id}` : ''}. They do not update a source real quote.</p>
+        </div>
+      )}
 
       {fallbackDistance && (
         <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 flex gap-3 items-start">
@@ -1432,14 +1480,45 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
             </>
           )}
         </Button>
-        <Link href="/admin" className="flex-1">
-          <Button variant="outline" className="w-full border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Button>
-        </Link>
+        <Button type="button" variant="outline" onClick={() => setTestQuoteDialogOpen(true)} className="flex-1 border-amber-300 text-amber-900 hover:bg-amber-50">
+          <Send className="w-4 h-4 mr-2" />
+          Send Test Quote
+        </Button>
+        <Button type="button" variant="outline" onClick={handleBackToDashboard} className="flex-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Button>
       </div>
 
+
+      <Dialog open={testQuoteDialogOpen} onOpenChange={setTestQuoteDialogOpen}>
+        <DialogContent aria-describedby="send-test-quote-description">
+          <DialogHeader>
+            <DialogTitle>Send Test Quote</DialogTitle>
+            <DialogDescription id="send-test-quote-description">
+              Send a cloned test quote to an internal test recipient. Real customer quote status and customer email are not changed.
+            </DialogDescription>
+          </DialogHeader>
+          <Field>
+            <FieldLabel htmlFor="test_recipient_email">Test recipient email</FieldLabel>
+            <Input id="test_recipient_email" type="email" value={testRecipientEmail} onChange={(event) => setTestRecipientEmail(event.target.value)} placeholder="tester@example.com" />
+          </Field>
+          {testQuoteResult && (
+            <div className="space-y-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm">
+              <p className="font-semibold text-amber-950">Test quote sent successfully.</p>
+              <a className="block text-[#2d3a47] underline" href={`/admin/quotes/${testQuoteResult.quote_id}`}>View test quote in admin</a>
+              {testQuoteResult.approval_link && <a className="block break-all text-[#2d3a47] underline" href={testQuoteResult.approval_link} target="_blank" rel="noreferrer">Open test approval link</a>}
+            </div>
+          )}
+          <DialogFooter>
+            <DialogClose asChild><Button type="button" variant="outline">Close</Button></DialogClose>
+            <Button type="button" onClick={handleSendTestQuote} disabled={sendingTestQuote} className="bg-[#2d3a47] text-white hover:bg-[#2d3a47]/90">
+              {sendingTestQuote && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Send Test Quote
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Quote Option Editor Dialog */}
       <Dialog open={optionDialogOpen} onOpenChange={setOptionDialogOpen}>
