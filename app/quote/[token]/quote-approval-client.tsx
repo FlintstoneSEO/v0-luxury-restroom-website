@@ -99,10 +99,11 @@ function PriceRow({ label, amount, isDiscount = false }: { label: string; amount
 }
 
 export default function QuoteApprovalClient({ quote, token, alreadyResponded, options = [] }: QuoteApprovalClientProps) {
-  const [response, setResponse] = useState<'approve' | 'changes' | 'decline' | null>(null);
+  const [response, setResponse] = useState<'approve' | 'changes' | 'decline' | 'message' | null>(null);
   const [comments, setComments] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(alreadyResponded);
+  const [messageSent, setMessageSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const visibleOptions = options.filter((option) => option.status !== 'deleted');
   const hasOptions = visibleOptions.length > 0;
@@ -112,7 +113,12 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
     if (!response) return;
 
     if (response === 'changes' && !comments.trim()) {
-      setError('Please provide details for requested changes.');
+      setError('Please provide details for requested quote changes.');
+      return;
+    }
+
+    if (response === 'message' && !comments.trim()) {
+      setError('Please enter your question or message.');
       return;
     }
 
@@ -125,14 +131,17 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
     setError(null);
 
     try {
-      const res = await fetch(`/api/quote/${token}/respond`, {
+      const isMessage = response === 'message';
+      const res = await fetch(`/api/quote/${token}/${isMessage ? 'message' : 'respond'}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          response_type: response === 'approve' ? 'approved' : response === 'changes' ? 'change_requested' : 'declined',
-          comments: comments.trim() || undefined,
-          selected_quote_option_id: response === 'approve' && hasOptions ? selectedOptionId : undefined,
-        }),
+        body: JSON.stringify(isMessage
+          ? { message: comments.trim() }
+          : {
+              response_type: response === 'approve' ? 'approved' : response === 'changes' ? 'change_requested' : 'declined',
+              comments: comments.trim() || undefined,
+              selected_quote_option_id: response === 'approve' && hasOptions ? selectedOptionId : undefined,
+            }),
       });
 
       const body = await res.json();
@@ -141,7 +150,13 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
         throw new Error(body.message || 'Failed to submit response');
       }
 
-      setSubmitted(true);
+      if (response === 'message') {
+        setMessageSent(true);
+        setComments('');
+        setResponse(null);
+      } else {
+        setSubmitted(true);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -218,7 +233,7 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
           </h2>
           <p className="text-muted-foreground">
             Thank you for considering Signature Luxe for your luxury restroom rental needs.
-            Review your quote details below. When ready, choose one of the response options.
+            Review your quote details below. When ready, approve, request quote revisions, decline, or send us a question without using your quote link.
           </p>
         </div>
 
@@ -364,10 +379,20 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-lg font-semibold text-[#2d3a47] mb-2">Your Response</h3>
           <p className="text-muted-foreground mb-4">
-            Review your quote details below. When ready, choose one of the response options.
+            Review your quote details below. When ready, approve, request quote revisions, decline, or send us a question without using your quote link.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          {messageSent && (
+            <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+              Your message has been sent. You can still return to this quote link to approve, request changes, or decline.
+            </div>
+          )}
+
+          <div className="mb-4 rounded-lg border border-[#d2c2ae] bg-[#f8f5f1] p-4 text-sm text-[#2d3a47]">
+            Have a question before approving? Send us a message and your quote link will remain active.
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-6">
             <button
               onClick={() => setResponse('approve')}
               className={`p-4 rounded-lg border-2 transition-colors flex flex-col items-center gap-2 ${
@@ -388,7 +413,20 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
               }`}
             >
               <MessageSquare className={`w-8 h-8 ${response === 'changes' ? 'text-[#2d3a47]' : 'text-gray-400'}`} />
-              <span className="font-medium">Request Changes</span>
+              <span className="font-medium">Request Quote Changes</span>
+              <span className="text-xs text-muted-foreground text-center">Use this for revised event details, pricing, or options.</span>
+            </button>
+
+            <button
+              onClick={() => setResponse('message')}
+              className={`p-4 rounded-lg border-2 transition-colors flex flex-col items-center gap-2 ${
+                response === 'message'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <MessageSquare className={`w-8 h-8 ${response === 'message' ? 'text-blue-500' : 'text-gray-400'}`} />
+              <span className="font-medium">Ask a Question</span>
             </button>
             <button
               onClick={() => setResponse('decline')}
@@ -410,7 +448,9 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
                   response === 'approve'
                     ? 'Any additional comments? (optional)'
                     : response === 'changes'
-                    ? 'Please describe the changes you would like...'
+                    ? 'Please describe the quote changes you would like...'
+                    : response === 'message'
+                    ? 'Type your question or message here...'
                     : 'Would you like to share why? (optional)'
                 }
                 value={comments}
@@ -426,16 +466,16 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
 
               <Button
                 onClick={handleSubmit}
-                disabled={submitting || (response === 'changes' && !comments.trim()) || (response === 'approve' && hasOptions && !selectedOptionId)}
+                disabled={submitting || ((response === 'changes' || response === 'message') && !comments.trim()) || (response === 'approve' && hasOptions && !selectedOptionId)}
                 className="w-full bg-[#2d3a47] hover:bg-[#2d3a47]/90"
               >
                 {submitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Submitting...
+                    {response === 'message' ? 'Sending...' : 'Submitting...'}
                   </>
                 ) : (
-                  'Submit Response'
+                  response === 'message' ? 'Send Message' : 'Submit Response'
                 )}
               </Button>
             </div>
