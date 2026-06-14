@@ -40,6 +40,7 @@ type PipelineColumn =
   | 'booked'
   | 'closed_lost';
 type PipelineBucket = PipelineColumn | 'all';
+type TestQuoteFilter = 'hide' | 'show' | 'only';
 
 const pipelineBucketConfig: Array<{
   key: PipelineBucket;
@@ -160,6 +161,8 @@ export default function QuoteRequestsDashboard({
   const [sortBy, setSortBy] = useState<SortBy>('newest');
   const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null);
   const [activePipelineBucket, setActivePipelineBucket] = useState<PipelineBucket>('new_requests');
+  const [testQuoteFilter, setTestQuoteFilter] = useState<TestQuoteFilter>('hide');
+  const [creatingTestQuote, setCreatingTestQuote] = useState(false);
 
   const handleRowClick = (quoteId: string) => {
     router.push(`/admin/quotes/${quoteId}`);
@@ -169,19 +172,46 @@ export default function QuoteRequestsDashboard({
     setSelectedQuote(quote);
   };
 
+  const handleRefreshDashboard = () => {
+    router.refresh();
+  };
+
+  const handleCreateTestQuote = async () => {
+    const testRecipientEmail = window.prompt('Send test quote to which email address?');
+    if (!testRecipientEmail) return;
+
+    setCreatingTestQuote(true);
+    try {
+      const res = await fetch('/api/admin/quotes/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ test_recipient_email: testRecipientEmail }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || body.error || 'Failed to create test quote');
+      router.push(`/admin/quotes/${body.quote_id}`);
+      router.refresh();
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Failed to create test quote');
+    } finally {
+      setCreatingTestQuote(false);
+    }
+  };
+
   // Summary card counts
   const summaryCounts = useMemo(() => {
-    const pending = initialQuotes.filter((q) => q.status === 'pending_review').length;
-    const underReview = initialQuotes.filter((q) => q.status === 'under_review').length;
-    const quoteSent = initialQuotes.filter((q) => q.status === 'quote_sent' || q.status === 'sent_to_customer').length;
-    const approved = initialQuotes.filter((q) => q.status === 'customer_approved').length;
-    const upcoming = initialQuotes.filter((q) => {
+    const metricQuotes = initialQuotes.filter((q) => testQuoteFilter !== 'hide' || !q.is_test_quote);
+    const pending = metricQuotes.filter((q) => q.status === 'pending_review').length;
+    const underReview = metricQuotes.filter((q) => ['under_review', 'draft_quote', 'change_requested'].includes(q.status)).length;
+    const quoteSent = metricQuotes.filter((q) => q.status === 'quote_sent' || q.status === 'sent_to_customer').length;
+    const approved = metricQuotes.filter((q) => q.status === 'customer_approved').length;
+    const upcoming = metricQuotes.filter((q) => {
       const eventDate = new Date(q.event_date);
       const now = new Date();
       const thirtyDaysOut = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
       return eventDate >= now && eventDate <= thirtyDaysOut && ['booked', 'confirmed', 'deposit_paid'].includes(q.status);
     }).length;
-    const estimatedPipelineRevenue = initialQuotes
+    const estimatedPipelineRevenue = metricQuotes
       .filter((q) =>
         [
           'pending_review',
@@ -197,7 +227,7 @@ export default function QuoteRequestsDashboard({
       )
       .reduce((sum, quote) => sum + (quote.total_price || 0), 0);
     return { pending, underReview, quoteSent, approved, upcoming, estimatedPipelineRevenue };
-  }, [initialQuotes]);
+  }, [initialQuotes, testQuoteFilter]);
 
   const filteredQuotes = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -208,6 +238,8 @@ export default function QuoteRequestsDashboard({
       const quoteDepositStatus = quote.deposit_status || 'due';
       const quoteEventType = quote.event_type || '';
 
+      if (testQuoteFilter === 'hide' && quote.is_test_quote) return false;
+      if (testQuoteFilter === 'only' && !quote.is_test_quote) return false;
       if (statusFilter !== 'all' && quoteStatus !== statusFilter) return false;
       if (eventTypeFilter !== 'all' && quoteEventType !== eventTypeFilter) return false;
       if (agreementFilter !== 'all' && quoteAgreementStatus !== agreementFilter) return false;
@@ -250,7 +282,7 @@ export default function QuoteRequestsDashboard({
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
-  }, [initialQuotes, search, statusFilter, eventTypeFilter, agreementFilter, depositFilter, sortBy]);
+  }, [initialQuotes, search, statusFilter, eventTypeFilter, agreementFilter, depositFilter, sortBy, testQuoteFilter]);
 
   const pipelineColumns = useMemo(() => {
     const base: Record<PipelineColumn, QuoteRequest[]> = {
@@ -303,7 +335,7 @@ export default function QuoteRequestsDashboard({
             Quote &amp; Booking Command Center
           </h1>
           <p className="text-[#ded2c4] max-w-3xl">
-            Manage restroom trailer inquiries from quote request to booked event.
+            Manage restroom trailer inquiries from quote request to booked event. Quotes moved to Quote Sent leave Under Review and appear in the Quote Sent bucket after refresh.
           </p>
         </div>
         {source === 'mock' && (
@@ -355,15 +387,16 @@ export default function QuoteRequestsDashboard({
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div>
             <h2 id="quote-filters-heading" className="text-lg font-serif font-semibold text-[#2d3a47]">Filters</h2>
-            <p className="text-sm text-[#4b5563]">Refine the full dashboard before choosing a pipeline bucket.</p>
+            <p className="text-sm text-[#4b5563]">Refine the full dashboard before choosing a pipeline bucket. Test quotes are hidden from metrics by default.</p>
           </div>
           <div className="flex items-center gap-3 text-sm font-semibold text-[#2d3a47]">
             <span className="rounded-full bg-[#f8f4ee] px-2.5 py-1 border border-[#8a7a68]" aria-live="polite">{filteredQuotes.length} filtered quote{filteredQuotes.length === 1 ? '' : 's'}</span>
+            <Button type="button" variant="outline" onClick={handleRefreshDashboard} className="border-[#8a7a68] text-[#2d3a47] hover:bg-[#f8f4ee]">Refresh Dashboard</Button>
             <Search className="h-5 w-5 text-[#2d3a47]" aria-hidden="true" />
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[minmax(260px,1.4fr)_repeat(5,minmax(150px,1fr))_auto] 2xl:items-end">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[minmax(260px,1.4fr)_repeat(6,minmax(150px,1fr))_auto] 2xl:items-end">
           <label className="block space-y-1.5 sm:col-span-2 lg:col-span-3 2xl:col-span-1">
             <span className="text-sm font-semibold text-[#2d3a47]">Search</span>
             <Input
@@ -443,6 +476,20 @@ export default function QuoteRequestsDashboard({
           </label>
 
           <label className="block space-y-1.5">
+            <span className="text-sm font-semibold text-[#2d3a47]">Test Quotes</span>
+            <Select value={testQuoteFilter} onValueChange={(v) => setTestQuoteFilter(v as TestQuoteFilter)}>
+              <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter test quotes">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hide">Hide Test Quotes</SelectItem>
+                <SelectItem value="show">Show Test Quotes</SelectItem>
+                <SelectItem value="only">Test Quotes Only</SelectItem>
+              </SelectContent>
+            </Select>
+          </label>
+
+          <label className="block space-y-1.5">
             <span className="text-sm font-semibold text-[#2d3a47]">Sort By</span>
             <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Sort quotes">
@@ -462,10 +509,12 @@ export default function QuoteRequestsDashboard({
 
           <Button
             type="button"
+            onClick={handleCreateTestQuote}
+            disabled={creatingTestQuote}
             className="h-10 w-full bg-[#2d3a47] hover:bg-[#23303c] text-white border border-[#2d3a47] focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 2xl:w-auto 2xl:self-end"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
-            New Manual Quote
+            {creatingTestQuote ? 'Creating...' : 'Create Test Quote'}
           </Button>
         </div>
       </section>
@@ -574,7 +623,7 @@ export default function QuoteRequestsDashboard({
                       <div className="min-w-0 space-y-4">
                         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                           <div className="min-w-0">
-                            <h3 className="text-lg font-semibold text-[#2d3a47] group-hover:underline group-hover:decoration-[#ded2c4] group-hover:underline-offset-4">{quote.customer_name}</h3>
+                            <div className="flex flex-wrap items-center gap-2"><h3 className="text-lg font-semibold text-[#2d3a47] group-hover:underline group-hover:decoration-[#ded2c4] group-hover:underline-offset-4">{quote.customer_name}</h3>{quote.is_test_quote && <span className="rounded-full border border-amber-500 bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-900">TEST QUOTE</span>}</div>
                             <p className="mt-1 text-sm font-medium text-[#4b5563]">Quote #{quote.quote_number || quote.id.slice(0, 8)}</p>
                           </div>
                           <div className="text-left md:text-right">
@@ -602,6 +651,9 @@ export default function QuoteRequestsDashboard({
                           <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${depositColor.bg} ${depositColor.text} ${depositColor.border}`}>
                             {depositColor.icon}<span>Deposit: {formatStatus(quote.deposit_status)}</span>
                           </span>
+                          {quote.is_test_quote && (
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900 border border-amber-500">TEST QUOTE</span>
+                          )}
                           {quoteViewLabel && (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#2d3a47] border border-[#8a7a68]">
                               <Eye className="h-3.5 w-3.5" aria-hidden="true" /> Quote Link: {quoteViewLabel}

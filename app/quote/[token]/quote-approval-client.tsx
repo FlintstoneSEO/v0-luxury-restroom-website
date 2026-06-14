@@ -36,6 +36,7 @@ interface Quote {
   customer_notes?: string;
   status: string;
   created_at: string;
+  is_test_quote?: boolean;
 }
 
 interface QuoteOption {
@@ -226,6 +227,12 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+        {quote.is_test_quote && (
+          <div className="rounded-lg border-2 border-amber-500 bg-amber-100 p-4 text-sm text-amber-950" role="status">
+            <p className="font-bold">Test Quote</p>
+            <p>This quote is for internal testing only. Responses affect only this test quote.</p>
+          </div>
+        )}
         {/* Welcome */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-2xl font-serif font-bold text-[#2d3a47] mb-2">
