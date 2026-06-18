@@ -41,10 +41,30 @@ const settingLabels: Record<string, string> = {
   water_fee: 'Water service fee (no water)',
   cleaning_fee: 'Cleaning Fee',
   damage_waiver_fee: 'Damage Waiver Fee',
+  rush_booking_fee: 'Rush Booking Fee',
+  extra_day_fee: 'Extra Day Fee',
   after_hours_hourly_rate: 'Hourly rate after cutoff',
   after_hours_cutoff_hour: 'Cutoff hour (24h format)',
   deposit_percentage: 'Deposit percentage',
 };
+
+const GROUPED_SETTING_KEYS = new Set([
+  'base_price_100_guests',
+  'base_price_150_guests',
+  'base_price_200_guests',
+  'base_price_200_plus',
+  'included_miles',
+  'travel_rate_per_mile',
+  'generator_fee',
+  'water_fee',
+  'cleaning_fee',
+  'damage_waiver_fee',
+  'rush_booking_fee',
+  'extra_day_fee',
+  'after_hours_hourly_rate',
+  'after_hours_cutoff_hour',
+  'deposit_percentage',
+]);
 
 export default function PricingSettingsForm({ settings, groupedSettings }: PricingSettingsFormProps) {
   const router = useRouter();
@@ -56,6 +76,7 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
   );
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const otherSettings = settings.filter((setting) => !GROUPED_SETTING_KEYS.has(setting.setting_key));
 
   const handleChange = (key: string, value: string) => {
     setFormValues(prev => ({
@@ -133,7 +154,6 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
       )}
 
-      {/* Base Pricing */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
           <DollarSign className="w-5 h-5 text-[#2d3a47]" />
@@ -144,7 +164,6 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
       </div>
 
-      {/* Travel Fees */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
           <Truck className="w-5 h-5 text-[#2d3a47]" />
@@ -157,7 +176,6 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
       </div>
 
-      {/* Utility Fees */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
           <Zap className="w-5 h-5 text-[#2d3a47]" />
@@ -168,7 +186,6 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
       </div>
 
-      {/* Standard Service Fees */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
           <ShieldCheck className="w-5 h-5 text-[#2d3a47]" />
@@ -179,7 +196,6 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
       </div>
 
-      {/* After Hours */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
           <Clock className="w-5 h-5 text-[#2d3a47]" />
@@ -192,7 +208,6 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
       </div>
 
-      {/* Deposit */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center gap-2 mb-6">
           <Percent className="w-5 h-5 text-[#2d3a47]" />
@@ -203,7 +218,18 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
         </div>
       </div>
 
-      {/* Submit Button */}
+      {otherSettings.length > 0 && (
+        <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
+          <div className="flex items-center gap-2 mb-6">
+            <DollarSign className="w-5 h-5 text-[#2d3a47]" />
+            <h2 className="text-lg font-semibold text-[#2d3a47]">Other Pricing Settings</h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {otherSettings.map(setting => renderSettingInput(setting))}
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-end">
         <Button
           type="submit"
