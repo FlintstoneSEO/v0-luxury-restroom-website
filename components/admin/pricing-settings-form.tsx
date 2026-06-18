@@ -30,6 +30,24 @@ interface PricingSettingsFormProps {
   groupedSettings: GroupedSettings;
 }
 
+const defaultSettingValues: Record<string, number> = {
+  base_price_100_guests: 650,
+  base_price_150_guests: 750,
+  base_price_200_guests: 900,
+  base_price_200_plus: 1100,
+  included_miles: 30,
+  travel_rate_per_mile: 2.5,
+  generator_fee: 150,
+  water_fee: 100,
+  cleaning_fee: 125,
+  damage_waiver_fee: 75,
+  rush_booking_fee: 250,
+  extra_day_fee: 275,
+  after_hours_hourly_rate: 75,
+  after_hours_cutoff_hour: 22,
+  deposit_percentage: 25,
+};
+
 const settingLabels: Record<string, string> = {
   base_price_100_guests: 'Up to 100 guests',
   base_price_150_guests: '101-150 guests',
@@ -49,34 +67,46 @@ const settingLabels: Record<string, string> = {
 };
 
 const GROUPED_SETTING_KEYS = new Set([
-  'base_price_100_guests',
-  'base_price_150_guests',
-  'base_price_200_guests',
-  'base_price_200_plus',
-  'included_miles',
-  'travel_rate_per_mile',
-  'generator_fee',
-  'water_fee',
-  'cleaning_fee',
-  'damage_waiver_fee',
-  'rush_booking_fee',
-  'extra_day_fee',
-  'after_hours_hourly_rate',
-  'after_hours_cutoff_hour',
-  'deposit_percentage',
+  ...Object.keys(defaultSettingValues),
 ]);
 
-export default function PricingSettingsForm({ settings, groupedSettings }: PricingSettingsFormProps) {
+function mergeSettingsWithDefaults(settings: PricingSetting[]): PricingSetting[] {
+  const settingsByKey = new Map(settings.map((setting) => [setting.setting_key, setting]));
+  const defaults = Object.entries(defaultSettingValues).map(([key, value]) => {
+    const existing = settingsByKey.get(key);
+    return existing ?? {
+      id: key,
+      setting_key: key,
+      setting_value: value,
+      description: `Pricing setting for ${key.replaceAll('_', ' ')}`,
+      updated_at: '',
+    };
+  });
+
+  const extras = settings.filter((setting) => !(setting.setting_key in defaultSettingValues));
+  return [...defaults, ...extras];
+}
+
+export default function PricingSettingsForm({ settings, groupedSettings: _groupedSettings }: PricingSettingsFormProps) {
   const router = useRouter();
+  const mergedSettings = mergeSettingsWithDefaults(settings);
+  const groupedSettings: GroupedSettings = {
+    basePricing: mergedSettings.filter(s => s.setting_key.startsWith('base_price')),
+    travel: mergedSettings.filter(s => ['included_miles', 'travel_rate_per_mile'].includes(s.setting_key)),
+    utilities: mergedSettings.filter(s => ['generator_fee', 'water_fee'].includes(s.setting_key)),
+    serviceFees: mergedSettings.filter(s => ['cleaning_fee', 'damage_waiver_fee', 'rush_booking_fee', 'extra_day_fee'].includes(s.setting_key)),
+    afterHours: mergedSettings.filter(s => s.setting_key.startsWith('after_hours')),
+    deposit: mergedSettings.filter(s => s.setting_key === 'deposit_percentage'),
+  };
   const [formValues, setFormValues] = useState<Record<string, number>>(
-    settings.reduce((acc, setting) => {
+    mergedSettings.reduce((acc, setting) => {
       acc[setting.setting_key] = setting.setting_value;
       return acc;
     }, {} as Record<string, number>)
   );
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const otherSettings = settings.filter((setting) => !GROUPED_SETTING_KEYS.has(setting.setting_key));
+  const otherSettings = mergedSettings.filter((setting) => !GROUPED_SETTING_KEYS.has(setting.setting_key));
 
   const handleChange = (key: string, value: string) => {
     setFormValues(prev => ({
@@ -97,9 +127,7 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       const res = await fetch('/api/admin/pricing', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          settings: formValues,
-        }),
+        body: JSON.stringify({ settings: formValues }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to save settings');
@@ -170,9 +198,7 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
           <h2 className="text-lg font-semibold text-[#2d3a47]">Travel Fees</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {groupedSettings.travel.map(setting => 
-            renderSettingInput(setting, setting.setting_key === 'included_miles' ? '' : '$')
-          )}
+          {groupedSettings.travel.map(setting => renderSettingInput(setting, setting.setting_key === 'included_miles' ? '' : '$'))}
         </div>
       </div>
 
@@ -202,9 +228,7 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
           <h2 className="text-lg font-semibold text-[#2d3a47]">After Hours Fees</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {groupedSettings.afterHours.map(setting => 
-            renderSettingInput(setting, setting.setting_key === 'after_hours_cutoff_hour' ? '' : '$')
-          )}
+          {groupedSettings.afterHours.map(setting => renderSettingInput(setting, setting.setting_key === 'after_hours_cutoff_hour' ? '' : '$'))}
         </div>
       </div>
 
@@ -231,12 +255,7 @@ export default function PricingSettingsForm({ settings, groupedSettings }: Prici
       )}
 
       <div className="flex justify-end">
-        <Button
-          type="submit"
-          size="lg"
-          className="bg-[#2d3a47] hover:bg-[#1f2933] text-white"
-          disabled={isSaving}
-        >
+        <Button type="submit" size="lg" className="bg-[#2d3a47] hover:bg-[#1f2933] text-white" disabled={isSaving}>
           {isSaving ? (
             <>
               <Spinner className="mr-2" />
