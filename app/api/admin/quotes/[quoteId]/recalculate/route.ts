@@ -4,6 +4,10 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation';
 import { QuoteFormData } from '@/lib/types/quote';
 
+function roundMoney(value: number) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ quoteId: string }> }
@@ -35,6 +39,7 @@ export async function POST(
         has_power,
         has_water,
         additional_notes,
+        discount_amount,
         is_manual_override
       `)
       .eq('id', quoteId)
@@ -73,6 +78,15 @@ export async function POST(
     };
 
     const { distanceMiles, priceBreakdown, distanceCalculationStatus } = await buildQuoteCalculation(quoteInput);
+    const discountAmount = Math.max(0, roundMoney(Number(quote.discount_amount ?? 0)));
+    const discountedTotal = roundMoney(Math.max(0, priceBreakdown.subtotal - discountAmount));
+    const finalBalance = roundMoney(Math.max(0, discountedTotal - priceBreakdown.deposit_amount));
+    const discountedPriceBreakdown = {
+      ...priceBreakdown,
+      discount_amount: discountAmount,
+      total_price: discountedTotal,
+      final_balance: finalBalance,
+    };
     const now = new Date().toISOString();
 
     const updateData = {
@@ -84,11 +98,12 @@ export async function POST(
       damage_waiver_fee: priceBreakdown.damage_waiver_fee,
       rush_booking_fee: priceBreakdown.rush_booking_fee,
       subtotal: priceBreakdown.subtotal,
-      total_price: priceBreakdown.total_price,
+      discount_amount: discountAmount,
+      total_price: discountedTotal,
       deposit_amount: priceBreakdown.deposit_amount,
-      final_balance: priceBreakdown.final_balance,
+      final_balance: finalBalance,
       distance_miles: distanceMiles,
-      calculated_breakdown: priceBreakdown,
+      calculated_breakdown: discountedPriceBreakdown,
       needs_manual_distance_review: distanceCalculationStatus === 'fallback',
       is_manual_override: false,
       updated_at: now,
