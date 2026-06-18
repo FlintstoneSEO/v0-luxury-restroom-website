@@ -49,7 +49,7 @@ const considerations = [
   {
     title: "Power Requirements",
     description:
-      "Our trailers need a 20 amp power source within 100 feet. If power isn&apos;t available, we can discuss generator options.",
+      "Our trailers need a 20 amp power source within 100 feet. If power is not available, we can discuss generator options.",
     icon: Zap,
   },
   {
