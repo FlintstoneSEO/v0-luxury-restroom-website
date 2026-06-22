@@ -148,8 +148,9 @@ export function calculateQuotePrice(
   ];
 
   const subtotal = roundMoney(basePrice + travelFee + utilityFee + afterHoursFee + cleaningFee + damageWaiverFee + rushBookingFee);
-  const depositAmount = roundMoney((subtotal * settings.deposit_percentage) / 100);
-  const finalBalance = roundMoney(subtotal - depositAmount);
+  const totalPrice = roundMoney(Math.max(0, subtotal));
+  const depositAmount = roundMoney((totalPrice * settings.deposit_percentage) / 100);
+  const finalBalance = roundMoney(Math.max(0, totalPrice - depositAmount));
 
   return {
     base_price: basePrice,
@@ -160,7 +161,7 @@ export function calculateQuotePrice(
     damage_waiver_fee: damageWaiverFee,
     rush_booking_fee: rushBookingFee,
     subtotal,
-    total_price: subtotal,
+    total_price: totalPrice,
     deposit_amount: depositAmount,
     final_balance: finalBalance,
     line_items: lineItems,

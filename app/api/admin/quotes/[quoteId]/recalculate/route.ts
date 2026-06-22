@@ -80,11 +80,13 @@ export async function POST(
     const { distanceMiles, priceBreakdown, distanceCalculationStatus } = await buildQuoteCalculation(quoteInput);
     const discountAmount = Math.max(0, roundMoney(Number(quote.discount_amount ?? 0)));
     const discountedTotal = roundMoney(Math.max(0, priceBreakdown.subtotal - discountAmount));
-    const finalBalance = roundMoney(Math.max(0, discountedTotal - priceBreakdown.deposit_amount));
+    const depositAmount = roundMoney((discountedTotal * (Number(priceBreakdown.details?.deposit_percentage) || 0)) / 100);
+    const finalBalance = roundMoney(Math.max(0, discountedTotal - depositAmount));
     const discountedPriceBreakdown = {
       ...priceBreakdown,
       discount_amount: discountAmount,
       total_price: discountedTotal,
+      deposit_amount: depositAmount,
       final_balance: finalBalance,
     };
     const now = new Date().toISOString();
@@ -100,7 +102,7 @@ export async function POST(
       subtotal: priceBreakdown.subtotal,
       discount_amount: discountAmount,
       total_price: discountedTotal,
-      deposit_amount: priceBreakdown.deposit_amount,
+      deposit_amount: depositAmount,
       final_balance: finalBalance,
       distance_miles: distanceMiles,
       calculated_breakdown: discountedPriceBreakdown,
