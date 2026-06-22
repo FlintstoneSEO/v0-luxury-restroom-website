@@ -153,7 +153,7 @@ function calculatePricingTotals(input: PricingInput, depositPercentage: number) 
       (input.rush_booking_fee || 0)
   );
   const total = roundMoney(Math.max(0, subtotal - (input.discount_amount || 0)));
-  const depositAmount = roundMoney((subtotal * depositPercentage) / 100);
+  const depositAmount = roundMoney((total * depositPercentage) / 100);
   const finalBalance = roundMoney(Math.max(0, total - depositAmount));
 
   return { subtotal, total, depositAmount, finalBalance };

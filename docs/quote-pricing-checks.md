@@ -52,8 +52,8 @@ Cutoff is 22:00. After-hours are rounded **up** to the next whole hour and cappe
 If event date is within 14 days from quote calculation date, add rush booking fee.
 
 ## Deposit rule
-`deposit_amount = subtotal * 25%`
-`final_balance = subtotal - deposit_amount`
+`deposit_amount = total_price * 25%`
+`final_balance = total_price - deposit_amount`
 
 ## Distance calculation behavior
 - Origin: `4463 Helmsway Dr, Lansing, MI 48911`

@@ -46,7 +46,7 @@ export function normalizeOptionPricing(input: OptionPricingInput) {
   output.total_price = roundMoney(Math.max(0, output.subtotal - output.discount_amount));
 
   const depositPercentage = Number(input.deposit_percentage ?? DEFAULT_PRICING.deposit_percentage);
-  output.deposit_amount = roundMoney(output.subtotal * (Number.isFinite(depositPercentage) ? depositPercentage : DEFAULT_PRICING.deposit_percentage) / 100);
+  output.deposit_amount = roundMoney(output.total_price * (Number.isFinite(depositPercentage) ? depositPercentage : DEFAULT_PRICING.deposit_percentage) / 100);
 
   output.final_balance = roundMoney(Math.max(0, output.total_price - output.deposit_amount));
 
