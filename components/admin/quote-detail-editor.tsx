@@ -34,10 +34,12 @@ import {
 } from '@/components/ui/dialog';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { QuoteRequest, QuoteOption, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
+import { DEFAULT_PRICING } from '@/lib/pricing-engine';
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
 
 interface QuoteDetailEditorProps {
   quote: QuoteRequest;
+  depositPercentage?: number;
 }
 
 type TestQuoteSendResult = {
@@ -108,6 +110,55 @@ function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }
 
+function roundMoney(value: number) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
+function getQuoteDepositPercentage(quote: QuoteRequest, configuredDepositPercentage?: number) {
+  if (Number.isFinite(configuredDepositPercentage) && Number(configuredDepositPercentage) >= 0) {
+    return Number(configuredDepositPercentage);
+  }
+
+  const details = quote.calculated_breakdown?.details;
+  const breakdownPercentage = typeof details === 'object' && details !== null
+    ? Number((details as Record<string, unknown>).deposit_percentage)
+    : Number.NaN;
+
+  if (Number.isFinite(breakdownPercentage) && breakdownPercentage >= 0) {
+    return breakdownPercentage;
+  }
+
+  return DEFAULT_PRICING.deposit_percentage;
+}
+
+type PricingInput = {
+  base_price: number;
+  travel_fee: number;
+  utility_fee: number;
+  after_hours_fee: number;
+  cleaning_fee: number;
+  damage_waiver_fee: number;
+  rush_booking_fee: number;
+  discount_amount: number;
+};
+
+function calculatePricingTotals(input: PricingInput, depositPercentage: number) {
+  const subtotal = roundMoney(
+    (input.base_price || 0) +
+      (input.travel_fee || 0) +
+      (input.utility_fee || 0) +
+      (input.after_hours_fee || 0) +
+      (input.cleaning_fee || 0) +
+      (input.damage_waiver_fee || 0) +
+      (input.rush_booking_fee || 0)
+  );
+  const total = roundMoney(Math.max(0, subtotal - (input.discount_amount || 0)));
+  const depositAmount = roundMoney((subtotal * depositPercentage) / 100);
+  const finalBalance = roundMoney(Math.max(0, total - depositAmount));
+
+  return { subtotal, total, depositAmount, finalBalance };
+}
+
 function formatDateTime(value?: string | null) {
   if (!value) return 'Not yet';
   return new Date(value).toLocaleString('en-US', {
@@ -162,7 +213,7 @@ function getDistanceCalculationMessage(quote: QuoteRequest) {
   return 'Distance used fallback mileage. Verify travel fee manually.';
 }
 
-export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
+export default function QuoteDetailEditor({ quote, depositPercentage: configuredDepositPercentage }: QuoteDetailEditorProps) {
   const router = useRouter();
   const [form, setForm] = useState({
     // Customer
@@ -249,35 +300,44 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     action: () => Promise<void>;
   } | null>(null);
 
-  // Calculate subtotal, total, and final balance
+  const depositPercentage = getQuoteDepositPercentage(quote, configuredDepositPercentage);
+
+  // Calculate subtotal, total, deposit, and final balance
   const recalculatePricing = useCallback(() => {
-    const subtotal = 
-      (form.base_price || 0) +
-      (form.travel_fee || 0) +
-      (form.utility_fee || 0) +
-      (form.after_hours_fee || 0) +
-      (form.cleaning_fee || 0) +
-      (form.damage_waiver_fee || 0) +
-      (form.rush_booking_fee || 0);
-    
-    const total = subtotal - (form.discount_amount || 0);
-    const finalBalance = total - (form.deposit_amount || 0);
-    
-    return { subtotal, total, finalBalance };
-  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, form.deposit_amount]);
+    return calculatePricingTotals({
+      base_price: form.base_price,
+      travel_fee: form.travel_fee,
+      utility_fee: form.utility_fee,
+      after_hours_fee: form.after_hours_fee,
+      cleaning_fee: form.cleaning_fee,
+      damage_waiver_fee: form.damage_waiver_fee,
+      rush_booking_fee: form.rush_booking_fee,
+      discount_amount: form.discount_amount,
+    }, depositPercentage);
+  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, depositPercentage]);
 
   // Auto-calculate when pricing fields change
   useEffect(() => {
     if (!form.is_manual_override) {
-      const { subtotal, total, finalBalance } = recalculatePricing();
+      const { subtotal, total, depositAmount, finalBalance } = recalculatePricing();
       setForm(prev => ({
         ...prev,
         subtotal,
         total_price: total,
+        deposit_amount: depositAmount,
         final_balance: finalBalance,
       }));
     }
-  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, form.deposit_amount, form.is_manual_override, recalculatePricing]);
+  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, form.is_manual_override, recalculatePricing]);
+
+
+  useEffect(() => {
+    const { depositAmount } = calculatePricingTotals(optionForm, depositPercentage);
+    setOptionForm(prev => ({
+      ...prev,
+      deposit_amount: depositAmount,
+    }));
+  }, [optionForm.base_price, optionForm.travel_fee, optionForm.utility_fee, optionForm.after_hours_fee, optionForm.cleaning_fee, optionForm.damage_waiver_fee, optionForm.rush_booking_fee, optionForm.discount_amount, depositPercentage]);
 
   const applyQuoteToForm = (updatedQuote: QuoteRequest, options?: { markRecalculated?: boolean }) => {
     if (options?.markRecalculated) {
@@ -522,7 +582,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
       damage_waiver_fee: form.damage_waiver_fee,
       rush_booking_fee: form.rush_booking_fee,
       discount_amount: form.discount_amount,
-      deposit_amount: form.deposit_amount,
+      deposit_amount: calculatePricingTotals(form, depositPercentage).depositAmount,
     });
     setOptionDialogOpen(true);
   };
@@ -647,7 +707,9 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
     setMessage({ type: 'success', text: 'Deposit marked as paid. Remember to save changes.' });
   };
 
-  const calculatedPricing = recalculatePricing();
+  const calculatedPricing = form.is_manual_override
+    ? { subtotal: form.subtotal, total: form.total_price, depositAmount: form.deposit_amount, finalBalance: form.final_balance }
+    : recalculatePricing();
   const fallbackDistance = hasFallbackDistanceCalculation(distanceReviewQuote);
   const distanceMessage = getDistanceCalculationMessage(distanceReviewQuote);
   const quoteDetailsChanged =
@@ -1035,7 +1097,7 @@ export default function QuoteDetailEditor({ quote }: QuoteDetailEditorProps) {
             </div>
             <div>
               <span className="text-muted-foreground">Deposit:</span>
-              <span className="ml-2 font-semibold">{formatCurrency(form.deposit_amount)}</span>
+              <span className="ml-2 font-semibold">{formatCurrency(calculatedPricing.depositAmount)}</span>
             </div>
             <div>
               <span className="text-muted-foreground">Final Balance:</span>

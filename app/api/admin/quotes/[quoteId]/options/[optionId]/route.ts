@@ -3,6 +3,7 @@ import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteOptionUpdateSchema } from '@/lib/quotes/schema';
 import { normalizeOptionPricing } from '@/lib/quotes/quote-options';
+import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
 
 const PRICING_FIELDS = ['base_price', 'travel_fee', 'utility_fee', 'after_hours_fee', 'cleaning_fee', 'damage_waiver_fee', 'rush_booking_fee', 'discount_amount', 'deposit_amount'] as const;
 
@@ -34,7 +35,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ qu
   }
 
   if (PRICING_FIELDS.some((field) => field in input)) {
-    Object.assign(updateData, normalizeOptionPricing({ ...current, ...input }));
+    const pricingSettings = await getPricingSettings();
+    Object.assign(updateData, normalizeOptionPricing({ ...current, ...input, deposit_percentage: pricingSettings.deposit_percentage }));
   }
 
   if (input.is_recommended === true) {
