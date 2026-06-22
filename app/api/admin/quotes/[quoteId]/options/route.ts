@@ -3,6 +3,7 @@ import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteOptionInputSchema } from '@/lib/quotes/schema';
 import { normalizeOptionPricing } from '@/lib/quotes/quote-options';
+import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
 
 const OPTION_SELECT = '*';
 
@@ -43,6 +44,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
   if (quoteError || !quote) return NextResponse.json({ ok: false, message: 'Quote not found' }, { status: 404 });
 
   const input = validation.data;
+  const pricingSettings = await getPricingSettings();
   const pricing = normalizeOptionPricing({
     base_price: input.base_price ?? quote.base_price ?? 0,
     travel_fee: input.travel_fee ?? quote.travel_fee ?? 0,
@@ -53,6 +55,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
     rush_booking_fee: input.rush_booking_fee ?? quote.rush_booking_fee ?? 0,
     discount_amount: input.discount_amount ?? quote.discount_amount ?? 0,
     deposit_amount: input.deposit_amount ?? quote.deposit_amount ?? 0,
+    deposit_percentage: pricingSettings.deposit_percentage,
   });
 
   if (input.is_recommended) {

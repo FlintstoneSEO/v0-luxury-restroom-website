@@ -172,6 +172,7 @@ export function calculateQuotePrice(
       water_needed: waterNeeded,
       after_hours_count: afterHoursCount,
       rush_days_out: daysOut,
+      deposit_percentage: settings.deposit_percentage,
     },
   };
 }

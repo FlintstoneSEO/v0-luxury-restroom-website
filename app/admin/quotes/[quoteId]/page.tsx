@@ -18,9 +18,19 @@ export default async function AdminQuoteDetailPage({ params }: { params: Promise
   const { quoteId } = await params;
   const supabase = await createClient();
 
-  const { data: quote, error } = await supabase.from('quote_requests').select('*').eq('id', quoteId).single();
+  const [{ data: quote, error }, { data: depositSetting }] = await Promise.all([
+    supabase.from('quote_requests').select('*').eq('id', quoteId).single(),
+    supabase.from('pricing_settings').select('setting_value').eq('setting_key', 'deposit_percentage').maybeSingle(),
+  ]);
 
   if (error || !quote) notFound();
 
-  return <QuoteDetailEditor quote={mapQuoteRequestRow(quote as QuoteRequestRow)} />;
+  const depositPercentage = Number(depositSetting?.setting_value);
+
+  return (
+    <QuoteDetailEditor
+      quote={mapQuoteRequestRow(quote as QuoteRequestRow)}
+      depositPercentage={Number.isFinite(depositPercentage) ? depositPercentage : undefined}
+    />
+  );
 }

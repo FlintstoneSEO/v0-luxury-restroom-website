@@ -1,6 +1,6 @@
 import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation';
 import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
-import { calculateQuotePrice } from '@/lib/pricing-engine';
+import { calculateQuotePrice, DEFAULT_PRICING } from '@/lib/pricing-engine';
 import { QuoteFormData } from '@/lib/types/quote';
 
 const MONEY_FIELDS = [
@@ -20,7 +20,7 @@ const MONEY_FIELDS = [
 
 type MoneyField = (typeof MONEY_FIELDS)[number];
 
-type OptionPricingInput = Partial<Record<MoneyField, number | null>>;
+type OptionPricingInput = Partial<Record<MoneyField, number | null>> & { deposit_percentage?: number | null };
 
 export function roundMoney(value: number) {
   return Math.round((value + Number.EPSILON) * 100) / 100;
@@ -45,9 +45,8 @@ export function normalizeOptionPricing(input: OptionPricingInput) {
   );
   output.total_price = roundMoney(Math.max(0, output.subtotal - output.discount_amount));
 
-  if (!input.deposit_amount || Number(input.deposit_amount) === 0) {
-    output.deposit_amount = roundMoney(output.total_price * 0.5);
-  }
+  const depositPercentage = Number(input.deposit_percentage ?? DEFAULT_PRICING.deposit_percentage);
+  output.deposit_amount = roundMoney(output.subtotal * (Number.isFinite(depositPercentage) ? depositPercentage : DEFAULT_PRICING.deposit_percentage) / 100);
 
   output.final_balance = roundMoney(Math.max(0, output.total_price - output.deposit_amount));
 
@@ -76,7 +75,7 @@ export async function recalculateQuoteOption(quote: QuoteFormData, option: { has
   const normalized = normalizeOptionPricing({
     ...calculation.priceBreakdown,
     discount_amount: discountAmount,
-    deposit_amount: roundMoney(Math.max(0, calculation.priceBreakdown.subtotal - discountAmount) * (pricingSettings.deposit_percentage / 100)),
+    deposit_percentage: pricingSettings.deposit_percentage,
   });
 
   return {
