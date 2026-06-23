@@ -1,0 +1,20 @@
+paths:
+  static: ''
+  uploads: uploads
+timezone: America/New_York
+markdown:
+  engine: commonmark
+  options: {}
+collections_config:
+  pages:
+    path: ''
+    icon: wysiwyg
+  app:
+    path: app
+    icon: api
+  components:
+    path: components
+    icon: comment
+  docs:
+    path: docs
+    icon: docs
