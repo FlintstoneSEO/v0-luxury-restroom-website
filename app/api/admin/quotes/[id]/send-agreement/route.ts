@@ -4,18 +4,49 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { sendDropboxSignAgreement } from '@/lib/integrations/dropbox-sign';
 import type { QuoteRequestRow } from '@/lib/quotes/types';
 
+function isQuoteApproved(quote: QuoteRequestRow) {
+  return (
+    quote.status === 'customer_approved' ||
+    quote.status === 'approved' ||
+    quote.customer_response_type === 'approved' ||
+    Boolean(quote.approved_at) ||
+    Boolean(quote.customer_approved_at)
+  );
+}
+
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const adminAuth = await requireAdminUser();
   if (!adminAuth.ok) return adminAuth.response;
   const { id } = await params;
+
   try {
     const supabase = createAdminClient();
     const { data: quote, error } = await supabase.from('quote_requests').select('*').eq('id', id).single();
-    if (error || !quote) return NextResponse.json({ message: 'Quote not found' }, { status: 404 });
-    if (quote.agreement_status === 'signed') return NextResponse.json({ message: 'Agreement is already signed' }, { status: 409 });
 
-    const result = await sendDropboxSignAgreement(quote as QuoteRequestRow);
+    if (error || !quote) {
+      return NextResponse.json({ message: 'Quote not found' }, { status: 404 });
+    }
+
+    const typedQuote = quote as QuoteRequestRow;
+
+    if (!isQuoteApproved(typedQuote)) {
+      return NextResponse.json(
+        { message: 'The customer must approve the quote before an agreement can be sent.' },
+        { status: 409 }
+      );
+    }
+
+    if (typedQuote.agreement_status === 'signed') {
+      return NextResponse.json({ message: 'Agreement is already signed' }, { status: 409 });
+    }
+
+    if (typedQuote.agreement_status === 'sent' && typedQuote.dropbox_sign_request_id) {
+      return NextResponse.json({ message: 'Agreement has already been sent.' }, { status: 409 });
+    }
+
+    const result = await sendDropboxSignAgreement(typedQuote);
     const now = new Date().toISOString();
+
     const { data: updated, error: updateError } = await supabase.from('quote_requests').update({
       agreement_status: 'sent',
       status: 'agreement_sent',
@@ -26,10 +57,17 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
       agreement_document_url: result.signingUrl ?? null,
       updated_at: now,
     }).eq('id', id).select('*').single();
+
     if (updateError) throw updateError;
+
     return NextResponse.json({ quote: updated, signature_request_id: result.signatureRequestId });
   } catch (error) {
-    console.error('[admin/quotes/send-agreement] Error:', error instanceof Error ? error.message : error);
-    return NextResponse.json({ message: 'Failed to send agreement' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Failed to send agreement';
+    console.error('[admin/quotes/send-agreement] Error:', message);
+
+    return NextResponse.json(
+      { message: process.env.NODE_ENV === 'production' ? 'Failed to send agreement. Check Dropbox Sign configuration and template settings.' : message },
+      { status: 500 }
+    );
   }
 }
