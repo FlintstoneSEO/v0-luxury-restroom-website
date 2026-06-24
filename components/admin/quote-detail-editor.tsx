@@ -263,11 +263,16 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
     agreement_document_url: quote.agreement_document_url ?? '',
     signed_document_url: quote.signed_document_url ?? '',
     agreement_provider_reference_id: quote.agreement_provider_reference_id ?? '',
+    dropbox_sign_request_id: quote.dropbox_sign_request_id ?? '',
+    dropbox_sign_signature_id: quote.dropbox_sign_signature_id ?? '',
+    signed_agreement_url: quote.signed_agreement_url ?? '',
     agreement_sent_at: quote.agreement_sent_at ?? '',
     agreement_signed_at: quote.agreement_signed_at ?? '',
     
     // Deposit
     deposit_payment_link: quote.deposit_payment_link ?? '',
+    square_deposit_invoice_id: quote.square_deposit_invoice_id ?? '',
+    square_deposit_invoice_url: quote.square_deposit_invoice_url ?? '',
     deposit_due_date: toDateInputValue(quote.deposit_due_date),
     deposit_paid_at: quote.deposit_paid_at ?? '',
     deposit_paid_amount: quote.deposit_paid_amount ?? 0,
@@ -276,6 +281,8 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
 
   const [saving, setSaving] = useState(false);
   const [sendingQuote, setSendingQuote] = useState(false);
+  const [sendingAgreement, setSendingAgreement] = useState(false);
+  const [sendingDepositInvoice, setSendingDepositInvoice] = useState(false);
   const [previewingQuoteEmail, setPreviewingQuoteEmail] = useState(false);
   const [emailPreview, setEmailPreview] = useState<QuoteEmailPreview | null>(null);
   const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
@@ -383,9 +390,14 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
       agreement_document_url: updatedQuote.agreement_document_url ?? '',
       signed_document_url: updatedQuote.signed_document_url ?? '',
       agreement_provider_reference_id: updatedQuote.agreement_provider_reference_id ?? '',
+      dropbox_sign_request_id: updatedQuote.dropbox_sign_request_id ?? '',
+      dropbox_sign_signature_id: updatedQuote.dropbox_sign_signature_id ?? '',
+      signed_agreement_url: updatedQuote.signed_agreement_url ?? '',
       agreement_sent_at: updatedQuote.agreement_sent_at ?? '',
       agreement_signed_at: updatedQuote.agreement_signed_at ?? '',
       deposit_payment_link: updatedQuote.deposit_payment_link ?? '',
+      square_deposit_invoice_id: updatedQuote.square_deposit_invoice_id ?? '',
+      square_deposit_invoice_url: updatedQuote.square_deposit_invoice_url ?? '',
       deposit_due_date: toDateInputValue(updatedQuote.deposit_due_date),
       deposit_paid_at: updatedQuote.deposit_paid_at ?? '',
       deposit_paid_amount: updatedQuote.deposit_paid_amount ?? 0,
@@ -667,6 +679,40 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
     }
   };
 
+
+  const handleSendAgreement = async () => {
+    setSendingAgreement(true);
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/send-agreement`, { method: 'POST' });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to send agreement');
+      applyQuoteToForm(body.quote as QuoteRequest);
+      setMessage({ type: 'success', text: 'Dropbox Sign agreement sent to the customer.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to send agreement.' });
+    } finally {
+      setSendingAgreement(false);
+    }
+  };
+
+  const handleSendDepositInvoice = async () => {
+    setSendingDepositInvoice(true);
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/admin/quotes/${quote.id}/send-deposit-invoice`, { method: 'POST' });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || 'Failed to send deposit invoice');
+      applyQuoteToForm(body.quote as QuoteRequest);
+      setMessage({ type: 'success', text: 'Square deposit invoice sent to the customer.' });
+      router.refresh();
+    } catch (error) {
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to send deposit invoice.' });
+    } finally {
+      setSendingDepositInvoice(false);
+    }
+  };
 
   const markAgreementSent = async () => {
     setForm(prev => ({
@@ -1307,7 +1353,29 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
             </div>
           </Field>
         </div>
-        <div className="flex gap-3 mt-4">
+        <div className="flex flex-wrap gap-3 mt-4">
+          <Button
+            className="bg-[#2d3a47] hover:bg-[#1f2933] text-white"
+            onClick={handleSendAgreement}
+            disabled={sendingAgreement || form.agreement_status === 'signed'}
+          >
+            {sendingAgreement ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileSignature className="w-4 h-4 mr-2" />}
+            Send Agreement
+          </Button>
+          <Button
+            variant="outline"
+            className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
+            disabled={!form.dropbox_sign_request_id}
+            onClick={() => setMessage({ type: 'success', text: `Agreement status: ${form.agreement_status.replace(/_/g, ' ')}` })}
+          >
+            <Eye className="w-4 h-4 mr-2" />
+            View Agreement Status
+          </Button>
+          {form.signed_agreement_url && (
+            <Button asChild variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
+              <a href={form.signed_agreement_url} target="_blank" rel="noreferrer">View Signed Agreement</a>
+            </Button>
+          )}
           <Button
             variant="outline"
             className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
@@ -1387,7 +1455,18 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
             </div>
           </Field>
         </div>
-        <div className="flex gap-3 mt-4">
+        <div className="flex flex-wrap gap-3 mt-4">
+          <Button
+            className="bg-[#2d3a47] hover:bg-[#1f2933] text-white"
+            onClick={handleSendDepositInvoice}
+            disabled={sendingDepositInvoice || form.agreement_status !== 'signed' || form.deposit_status === 'paid'}
+          >
+            {sendingDepositInvoice ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CreditCard className="w-4 h-4 mr-2" />}
+            Send Deposit Invoice
+          </Button>
+          <Button asChild variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" disabled={!form.square_deposit_invoice_url}>
+            <a href={form.square_deposit_invoice_url || '#'} target="_blank" rel="noreferrer">View Square Invoice</a>
+          </Button>
           <Button
             variant="outline"
             className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
