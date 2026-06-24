@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { verifySquareWebhook } from '@/lib/integrations/square';
+import { getInvoicePaidAmount, verifySquareWebhook } from '@/lib/integrations/square';
 
 function findQuoteId(invoice: any) {
   const customField = invoice?.custom_fields?.find((field: any) => field.label === 'quote_id')?.value;
@@ -27,10 +27,12 @@ export async function POST(request: Request) {
     const invoiceId = invoice?.id;
     const supabase = createAdminClient();
     const now = new Date().toISOString();
+    const paidAmount = getInvoicePaidAmount(invoice);
     let query = supabase.from('quote_requests').update({
       deposit_status: 'paid',
       status: 'confirmed',
       deposit_paid_at: now,
+      ...(paidAmount !== undefined ? { deposit_paid_amount: paidAmount } : {}),
       deposit_transaction_reference: invoiceId ?? null,
       updated_at: now,
     });
