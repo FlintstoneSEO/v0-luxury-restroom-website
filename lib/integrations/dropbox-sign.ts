@@ -3,17 +3,15 @@ import { buildAgreementMergeFields, toDropboxSignCustomFields } from '@/lib/agre
 
 function getConfig() {
   const apiKey = process.env.DROPBOX_SIGN_API_KEY;
-  const clientId = process.env.DROPBOX_SIGN_CLIENT_ID;
   const templateId = process.env.DROPBOX_SIGN_TEMPLATE_ID;
-  if (!apiKey || !clientId || !templateId) throw new Error('Missing Dropbox Sign configuration');
-  return { apiKey, clientId, templateId, testMode: process.env.DROPBOX_SIGN_TEST_MODE !== 'false' };
+  if (!apiKey || !templateId) throw new Error('Missing Dropbox Sign API key or template ID');
+  return { apiKey, templateId, testMode: process.env.DROPBOX_SIGN_TEST_MODE !== 'false' };
 }
 
 export async function sendDropboxSignAgreement(quote: QuoteRequestRow) {
-  const { apiKey, clientId, templateId, testMode } = getConfig();
+  const { apiKey, templateId, testMode } = getConfig();
   const payload = {
     template_ids: [templateId],
-    client_id: clientId,
     subject: `Signature Luxe rental agreement for ${quote.event_date}`,
     message: 'Please review and sign your Signature Luxe Events & Amenities rental agreement.',
     signers: [{ role: 'Customer', name: quote.customer_name, email_address: quote.email }],
