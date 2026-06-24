@@ -8,8 +8,7 @@ function isQuoteApproved(quote: QuoteRequestRow) {
   return (
     quote.status === 'customer_approved' ||
     quote.customer_response_type === 'approved' ||
-    Boolean(quote.approved_at) ||
-    Boolean(quote.customer_approved_at)
+    Boolean(quote.approved_at)
   );
 }
 
@@ -30,7 +29,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
 
     if (!isQuoteApproved(typedQuote)) {
       return NextResponse.json(
-        { message: 'The customer must approve the quote before an agreement can be sent.' },
+        { message: 'Quote approval is required before sending an agreement.' },
         { status: 409 }
       );
     }
