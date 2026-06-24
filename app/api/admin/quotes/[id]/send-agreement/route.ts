@@ -7,7 +7,6 @@ import type { QuoteRequestRow } from '@/lib/quotes/types';
 function isQuoteApproved(quote: QuoteRequestRow) {
   return (
     quote.status === 'customer_approved' ||
-    quote.status === 'approved' ||
     quote.customer_response_type === 'approved' ||
     Boolean(quote.approved_at) ||
     Boolean(quote.customer_approved_at)
