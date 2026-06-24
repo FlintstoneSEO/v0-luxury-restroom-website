@@ -26,10 +26,10 @@ function cents(value: unknown) { return Math.max(0, Math.round(Number(value ?? 0
 
 export async function createSquareDepositInvoice(quote: QuoteRequestRow) {
   const { locationId } = cfg();
-  const customerBody = await squareFetch<{ customer: { id: string } }>('/v2/customers', {
+  const customerId = quote.square_customer_id || (await squareFetch<{ customer: { id: string } }>('/v2/customers', {
     method: 'POST',
     body: JSON.stringify({ given_name: quote.customer_name, email_address: quote.email, phone_number: quote.phone, reference_id: quote.id }),
-  });
+  })).customer.id;
   const amount = cents(quote.deposit_amount);
   if (amount <= 0) throw new Error('Quote deposit amount must be greater than zero');
   const invoiceBody = await squareFetch<{ invoice: { id: string; public_url?: string; version?: number } }>('/v2/invoices', {
@@ -38,7 +38,7 @@ export async function createSquareDepositInvoice(quote: QuoteRequestRow) {
       idempotency_key: `deposit-${quote.id}-${Date.now()}`,
       invoice: {
         location_id: locationId,
-        primary_recipient: { customer_id: customerBody.customer.id },
+        primary_recipient: { customer_id: customerId },
         delivery_method: 'EMAIL',
         payment_requests: [{ request_type: 'BALANCE', due_date: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10), fixed_amount_requested_money: { amount, currency: 'USD' } }],
         title: `Signature Luxe deposit - Quote ${quote.quote_number ?? quote.id.slice(0, 8)}`,
@@ -49,7 +49,17 @@ export async function createSquareDepositInvoice(quote: QuoteRequestRow) {
     }),
   });
   await squareFetch(`/v2/invoices/${invoiceBody.invoice.id}/publish`, { method: 'POST', body: JSON.stringify({ idempotency_key: `publish-deposit-${quote.id}-${Date.now()}`, version: invoiceBody.invoice.version ?? 0 }) });
-  return { customerId: customerBody.customer.id, invoiceId: invoiceBody.invoice.id, publicUrl: invoiceBody.invoice.public_url };
+  return { customerId, invoiceId: invoiceBody.invoice.id, publicUrl: invoiceBody.invoice.public_url };
+}
+
+export function getInvoicePaidAmount(invoice: any) {
+  const money =
+    invoice?.payment_requests?.[0]?.total_completed_amount_money ??
+    invoice?.payment_requests?.[0]?.computed_amount_money ??
+    invoice?.total_money ??
+    invoice?.amount_paid_money;
+  const amount = Number(money?.amount);
+  return Number.isFinite(amount) ? amount / 100 : undefined;
 }
 
 export function verifySquareWebhook(rawBody: string, signature: string | null, notificationUrl: string) {

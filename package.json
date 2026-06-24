@@ -11,6 +11,7 @@
     "seo:audit-content": "node --experimental-strip-types scripts/audit-seo-content.ts"
   },
   "dependencies": {
+    "@dropbox/sign": "latest",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
@@ -63,6 +64,7 @@
     "recharts": "2.15.0",
     "resend": "^6.12.2",
     "sonner": "^1.7.1",
+    "square": "latest",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "use-places-autocomplete": "^4.0.1",
