@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { generateApprovalToken, hashApprovalToken } from '@/lib/quote-approval';
 import { sendEmail } from '@/lib/email/client';
 import { quoteSentTemplate } from '@/lib/email/templates';
+import { formatLocalDateOnly } from '@/lib/date-only';
 
 function getAppUrl(request: Request) {
   const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
@@ -65,7 +66,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
 
   const approvalLink = `${appUrl}/quote/${token}`;
   const eventLocation = [testQuote.event_address, testQuote.city, testQuote.state && testQuote.zip_code ? `${testQuote.state} ${testQuote.zip_code}` : testQuote.state || testQuote.zip_code].filter(Boolean).join(', ');
-  const formattedEventDate = testQuote.event_date ? new Date(testQuote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'TBD';
+  const formattedEventDate = testQuote.event_date ? formatLocalDateOnly(testQuote.event_date, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'TBD';
   const { data: quoteOptions } = await supabase.from('quote_options').select('id, option_label, option_description, total_price, is_recommended, status').eq('quote_request_id', testQuote.id).neq('status', 'deleted').order('is_recommended', { ascending: false }).order('created_at', { ascending: true });
 
   const emailTemplate = quoteSentTemplate({

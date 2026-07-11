@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { generateApprovalToken, hashApprovalToken } from '@/lib/quote-approval';
 import { sendEmail } from '@/lib/email/client';
 import { quoteSentTemplate } from '@/lib/email/templates';
+import { formatLocalDateOnly } from '@/lib/date-only';
 
 // Statuses that allow sending a quote
 const SENDABLE_STATUSES = [
@@ -159,7 +160,7 @@ export async function POST(
     const customerName = quote.customer_name || 'Customer';
     const totalPrice = quote.total_price ?? quote.total ?? 0;
     const formattedEventDate = quote.event_date
-      ? new Date(quote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      ? formatLocalDateOnly(quote.event_date, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
       : 'TBD';
 
     const { data: quoteOptions } = await supabase
