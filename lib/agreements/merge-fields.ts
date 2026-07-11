@@ -1,3 +1,4 @@
+import { formatLocalDateOnly } from '@/lib/date-only';
 import type { QuoteRequestRow } from '@/lib/quotes/types';
 
 function money(value: unknown) {
@@ -7,8 +8,9 @@ function money(value: unknown) {
 
 function date(value: unknown) {
   if (!value) return '';
-  const parsed = new Date(String(value));
-  return Number.isNaN(parsed.getTime()) ? String(value) : parsed.toLocaleDateString('en-US');
+  const dateString = String(value);
+
+  return /^\d{4}-\d{2}-\d{2}$/.test(dateString) ? formatLocalDateOnly(dateString) : dateString;
 }
 
 export function buildAgreementMergeFields(quote: QuoteRequestRow) {

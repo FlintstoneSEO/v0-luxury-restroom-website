@@ -74,7 +74,9 @@ function formatCurrency(amount: number) {
 }
 
 function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  const [year, month, day] = dateString.split('-').map(Number);
+
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { formatLocalDateOnly, parseLocalDateOnly } from '@/lib/date-only';
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
 import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, Plus, Mail, SquarePen, FileSignature, Eye, AlertTriangle } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -101,7 +102,7 @@ function getQuoteViewLabel(quote: QuoteRequest) {
 }
 
 function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  return formatLocalDateOnly(dateString, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -206,7 +207,7 @@ export default function QuoteRequestsDashboard({
     const quoteSent = metricQuotes.filter((q) => q.status === 'quote_sent' || q.status === 'sent_to_customer').length;
     const approved = metricQuotes.filter((q) => q.status === 'customer_approved').length;
     const upcoming = metricQuotes.filter((q) => {
-      const eventDate = new Date(q.event_date);
+      const eventDate = parseLocalDateOnly(q.event_date);
       const now = new Date();
       const thirtyDaysOut = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
       return eventDate >= now && eventDate <= thirtyDaysOut && ['booked', 'confirmed', 'deposit_paid'].includes(q.status);
@@ -268,9 +269,9 @@ export default function QuoteRequestsDashboard({
         case 'oldest':
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case 'event_soonest':
-          return new Date(a.event_date).getTime() - new Date(b.event_date).getTime();
+          return parseLocalDateOnly(a.event_date).getTime() - parseLocalDateOnly(b.event_date).getTime();
         case 'event_latest':
-          return new Date(b.event_date).getTime() - new Date(a.event_date).getTime();
+          return parseLocalDateOnly(b.event_date).getTime() - parseLocalDateOnly(a.event_date).getTime();
         case 'total_highest':
           return (b.total_price || 0) - (a.total_price || 0);
         case 'total_lowest':

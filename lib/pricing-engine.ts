@@ -1,3 +1,4 @@
+import { parseLocalDateOnly } from './date-only';
 import { PriceBreakdown, PricingSettings, QuoteFormData, QuoteLineItem } from './types/quote';
 
 export const DEFAULT_PRICING: PricingSettings = {
@@ -38,7 +39,7 @@ export function validateQuoteFormData(data: QuoteFormData): Record<string, strin
   if (!data.event_date) {
     errors.event_date = ['Please select an event date'];
   } else {
-    const eventDate = new Date(data.event_date);
+    const eventDate = parseLocalDateOnly(data.event_date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (eventDate < today) errors.event_date = ['Event date must be in the future'];

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteSentTemplate } from '@/lib/email/templates';
+import { formatLocalDateOnly } from '@/lib/date-only';
 
 function getAppUrl(request: Request) {
   const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
@@ -87,7 +88,7 @@ export async function GET(
     ].filter(Boolean).join(', ');
 
     const formattedEventDate = quote.event_date
-      ? new Date(quote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      ? formatLocalDateOnly(quote.event_date, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
       : 'TBD';
 
     const { data: quoteOptions } = await supabase
