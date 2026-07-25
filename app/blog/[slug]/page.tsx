@@ -6,8 +6,9 @@ import { CalendarDays, ArrowLeft, ExternalLink } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
+import { getBlogPostImage } from '@/lib/blog-images'
 import { business, breadcrumbJsonLd } from '@/lib/seo-schema'
-import { BLOG_FALLBACK_IMAGE, formatBlogDate, getSoroBlogPost, getSoroBlogPosts } from '@/lib/soro-blog'
+import { formatBlogDate, getSoroBlogPost, getSoroBlogPosts } from '@/lib/soro-blog'
 import { siteUrl } from '@/lib/seo'
 
 export const revalidate = 21600
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) return {}
 
   const canonical = `/blog/${post.slug}`
-  const image = post.featuredImage || BLOG_FALLBACK_IMAGE
+  const image = getBlogPostImage(post)
 
   return {
     title: post.title,
@@ -56,7 +57,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   if (!post) notFound()
 
   const canonicalUrl = `${siteUrl}/blog/${post.slug}`
-  const image = post.featuredImage || BLOG_FALLBACK_IMAGE
+  const image = getBlogPostImage(post)
 
   const articleSchema = {
     '@context': 'https://schema.org',
