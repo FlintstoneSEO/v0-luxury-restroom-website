@@ -6,8 +6,8 @@
     "rubyVersion": "3.4.8",
     "nodeVersion": "22",
     "denoVersion": "2.7.1",
-    "install_command": "npm install --prefix apps/web",
-    "build_command": "npm run build --prefix apps/web",
-    "output_path": "apps/web/dist"
+    "install_command": "npm install",
+    "build_command": "npm run build",
+    "output_path": "dist"
   }
 }
