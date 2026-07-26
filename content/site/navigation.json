@@ -1,0 +1,29 @@
+{
+  "utilityMessage": "Elevated restroom experiences across Mid-Michigan",
+  "primary": [
+    { "label": "Home", "href": "/" },
+    { "label": "Start Here", "href": "/start-here" },
+    { "label": "Luxury Restroom Trailers", "href": "/luxury-restroom-trailer-rentals" },
+    {
+      "label": "Event Types",
+      "href": "#",
+      "children": [
+        { "label": "Weddings", "href": "/wedding-restroom-trailer-rentals" },
+        { "label": "Private Events", "href": "/private-event-restroom-trailers" },
+        { "label": "Corporate Events", "href": "/corporate-event-restroom-trailers" },
+        { "label": "Festivals & Community Events", "href": "/festival-community-event-restroom-trailers" },
+        { "label": "Construction / Long-Term", "href": "/construction-long-term-restroom-trailer-rentals" },
+        { "label": "Emergency / Disaster Relief", "href": "/emergency-disaster-relief-restroom-trailers" }
+      ]
+    },
+    { "label": "Service Areas", "href": "/service-areas" },
+    { "label": "Gallery", "href": "/gallery" },
+    { "label": "FAQ", "href": "/faq" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "cta": { "label": "Check Availability", "href": "/request-quote" },
+  "logo": {
+    "src": "/images/logo.png",
+    "alt": "Signature Luxe Events & Amenities - Luxury Restroom Trailer Rentals in Lansing, MI"
+  }
+}

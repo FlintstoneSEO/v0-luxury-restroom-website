@@ -1,0 +1,16 @@
+{
+  "_schema": "trailer",
+  "slug": "2-station-trailer",
+  "draft": false,
+  "order": 1,
+  "name": "2-Station Trailer",
+  "capacity": "Up to 150 guests",
+  "description": "Compact option for events and job sites where space is limited. Recommended for gatherings with an expected guest count of up to 150 people.",
+  "features": [
+    "2 private restroom stalls",
+    "Climate controlled interior",
+    "Hand washing stations",
+    "Compact footprint",
+    "Ideal for smaller venues"
+  ]
+}

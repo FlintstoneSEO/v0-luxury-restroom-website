@@ -43,6 +43,7 @@ export const DEPOSIT_TRACKING_STATUSES = [
   'not_requested',
   'due',
   'requested',
+  'invoice_sent',
   'pending',
   'paid',
   'overdue',
@@ -159,9 +160,15 @@ export interface QuoteRequest {
   deposit_paid_amount?: number;
   deposit_transaction_reference?: string;
   deposit_payment_link?: string;
+  square_customer_id?: string;
+  square_deposit_invoice_id?: string;
+  square_deposit_invoice_url?: string;
+  square_final_invoice_id?: string;
+  square_final_invoice_url?: string;
   stripe_payment_intent_id?: string;
   stripe_checkout_session_id?: string;
   final_balance?: number;
+  final_balance_paid_at?: string;
 
   // Quote management
   quote_expires_at?: string;
@@ -195,6 +202,9 @@ export interface QuoteRequest {
   agreement_signed_at?: string;
   agreement_document_url?: string;
   signed_document_url?: string;
+  signed_agreement_url?: string;
+  dropbox_sign_request_id?: string;
+  dropbox_sign_signature_id?: string;
   agreement_provider_reference_id?: string;
 
   // Notes
@@ -248,9 +258,15 @@ export interface QuoteRequestRow {
   deposit_paid_amount?: number;
   deposit_transaction_reference?: string;
   deposit_payment_link?: string;
+  square_customer_id?: string;
+  square_deposit_invoice_id?: string;
+  square_deposit_invoice_url?: string;
+  square_final_invoice_id?: string;
+  square_final_invoice_url?: string;
   stripe_payment_intent_id?: string;
   stripe_checkout_session_id?: string;
   final_balance?: number;
+  final_balance_paid_at?: string;
   quote_expires_at?: string;
   calculated_breakdown?: Record<string, unknown>;
   is_manual_override?: boolean;
@@ -272,6 +288,9 @@ export interface QuoteRequestRow {
   agreement_signed_at?: string;
   agreement_document_url?: string;
   signed_document_url?: string;
+  signed_agreement_url?: string;
+  dropbox_sign_request_id?: string;
+  dropbox_sign_signature_id?: string;
   agreement_provider_reference_id?: string;
   internal_notes?: string;
   customer_notes?: string;
@@ -330,9 +349,15 @@ export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
     deposit_paid_amount: row.deposit_paid_amount,
     deposit_transaction_reference: row.deposit_transaction_reference,
     deposit_payment_link: row.deposit_payment_link,
+    square_customer_id: row.square_customer_id,
+    square_deposit_invoice_id: row.square_deposit_invoice_id,
+    square_deposit_invoice_url: row.square_deposit_invoice_url,
+    square_final_invoice_id: row.square_final_invoice_id,
+    square_final_invoice_url: row.square_final_invoice_url,
     stripe_payment_intent_id: row.stripe_payment_intent_id,
     stripe_checkout_session_id: row.stripe_checkout_session_id,
     final_balance: row.final_balance,
+    final_balance_paid_at: row.final_balance_paid_at,
     quote_expires_at: row.quote_expires_at,
     calculated_breakdown: row.calculated_breakdown,
     is_manual_override: row.is_manual_override,
@@ -354,6 +379,9 @@ export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
     agreement_signed_at: row.agreement_signed_at,
     agreement_document_url: row.agreement_document_url,
     signed_document_url: row.signed_document_url,
+    signed_agreement_url: row.signed_agreement_url,
+    dropbox_sign_request_id: row.dropbox_sign_request_id,
+    dropbox_sign_signature_id: row.dropbox_sign_signature_id,
     agreement_provider_reference_id: row.agreement_provider_reference_id,
     internal_notes: row.internal_notes,
     customer_notes: row.customer_notes,

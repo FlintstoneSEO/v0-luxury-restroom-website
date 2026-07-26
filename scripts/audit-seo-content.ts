@@ -1,11 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-// @ts-ignore
-import { finalRoutes, cityPages } from '../lib/seo.ts'
-// @ts-ignore
-import { resources } from '../lib/resources.ts'
-// @ts-ignore
-import { cityContent, priorityCitySlugs } from '../lib/city-pages.ts'
+const readJsonFiles = (directory: string) => fs.readdirSync(directory).filter((file) => file.endsWith('.json')).map((file) => JSON.parse(fs.readFileSync(path.join(directory, file), 'utf8')))
+const routesData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content/site/routes.json'), 'utf8'))
+const finalRoutes = routesData.routes as string[]
+const serviceAreas = readJsonFiles(path.join(process.cwd(), 'content/service-areas'))
+const cityPages = serviceAreas.map(({ slug, city }) => ({ slug, city }))
+const resources = readJsonFiles(path.join(process.cwd(), 'content/resources'))
+const cityContent = Object.fromEntries(serviceAreas.map(({ slug, ...area }) => [slug, area]))
+const priorityCitySlugs = new Set(serviceAreas.filter((area) => area.priority).map((area) => area.slug))
 
 const strict = process.env.SEO_AUDIT_STRICT === 'true'
 const errors: string[] = []

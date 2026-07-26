@@ -1,0 +1,35 @@
+{
+  "_schema": "service_area",
+  "slug": "brighton-mi",
+  "city": "Brighton",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Brighton events and private properties often need premium temporary restroom access that feels clean and guest-ready.",
+  "nearby": "Howell, Hartland, South Lyon, and Novi",
+  "venueNote": "We coordinate placement and utility planning for private homes, venues, and project sites.",
+  "useCases": [
+    "weddings",
+    "private parties",
+    "corporate gatherings",
+    "project support"
+  ],
+  "faqs": [
+    {
+      "q": "Do you serve Brighton event venues?",
+      "a": "Yes, Brighton is part of our regional coverage area."
+    },
+    {
+      "q": "Can you support wedding weekends in Brighton?",
+      "a": "Yes, with early booking recommended for peak dates."
+    },
+    {
+      "q": "Are long-term rentals available in Brighton?",
+      "a": "Yes, based on schedule and project needs."
+    },
+    {
+      "q": "Can you assist with backyard setup logistics?",
+      "a": "Yes, we review access and placement details before delivery."
+    }
+  ]
+}

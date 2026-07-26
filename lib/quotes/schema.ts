@@ -74,9 +74,15 @@ export const quoteRequestUpdateSchema = z.object({
   deposit_paid_amount: nonNegativeMoney.optional(),
   deposit_transaction_reference: z.string().optional(),
   deposit_payment_link: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
+  square_customer_id: z.string().optional(),
+  square_deposit_invoice_id: z.string().optional(),
+  square_deposit_invoice_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
+  square_final_invoice_id: z.string().optional(),
+  square_final_invoice_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
   
   // Balance and expiration
   final_balance: nonNegativeMoney.optional(),
+  final_balance_paid_at: optionalDateTimeInput.optional(),
   quote_expires_at: optionalDateInput.optional(),
   
   // Workflow status
@@ -89,6 +95,9 @@ export const quoteRequestUpdateSchema = z.object({
   agreement_signed_at: optionalDateTimeInput.optional(),
   agreement_document_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
   signed_document_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
+  signed_agreement_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
+  dropbox_sign_request_id: z.string().optional(),
+  dropbox_sign_signature_id: z.string().optional(),
   agreement_provider_reference_id: z.string().optional(),
   
   // Notes

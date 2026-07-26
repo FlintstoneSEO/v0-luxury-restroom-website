@@ -67,6 +67,7 @@ interface QuoteApprovalClientProps {
   token: string;
   alreadyResponded: boolean;
   options?: QuoteOption[];
+  publicSiteOrigin: string;
 }
 
 function formatCurrency(amount: number) {
@@ -74,7 +75,9 @@ function formatCurrency(amount: number) {
 }
 
 function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  const [year, month, day] = dateString.split('-').map(Number);
+
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -99,7 +102,13 @@ function PriceRow({ label, amount, isDiscount = false }: { label: string; amount
   );
 }
 
-export default function QuoteApprovalClient({ quote, token, alreadyResponded, options = [] }: QuoteApprovalClientProps) {
+export default function QuoteApprovalClient({
+  quote,
+  token,
+  alreadyResponded,
+  options = [],
+  publicSiteOrigin,
+}: QuoteApprovalClientProps) {
   const [response, setResponse] = useState<'approve' | 'changes' | 'decline' | 'message' | null>(null);
   const [comments, setComments] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -181,7 +190,7 @@ export default function QuoteApprovalClient({ quote, token, alreadyResponded, op
               : 'Your response has been submitted. Our team will be in touch shortly.'}
           </p>
           <a
-            href="/"
+            href={publicSiteOrigin}
             className="inline-block bg-[#2d3a47] text-white px-6 py-3 rounded-md hover:bg-[#2d3a47]/90 transition-colors"
           >
             Return Home

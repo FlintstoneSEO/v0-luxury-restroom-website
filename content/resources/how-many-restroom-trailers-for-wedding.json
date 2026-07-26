@@ -1,0 +1,102 @@
+{
+  "_schema": "resource",
+  "draft": false,
+  "slug": "how-many-restroom-trailers-for-wedding",
+  "title": "How Many Restroom Trailers Do You Need for a Wedding?",
+  "metaTitle": "How Many Restroom Trailers for Wedding | Michigan Planning Guide",
+  "metaDescription": "Estimate restroom trailer needs for Michigan weddings using guest count, timeline, venue layout, and service style with practical guidance from Signature Luxe Events & Amenities.",
+  "excerpt": "A wedding restroom planning framework for couples and coordinators in Lansing and Mid-Michigan.",
+  "category": "Wedding Planning",
+  "publishDate": "2026-05-09",
+  "updatedDate": "2026-05-09",
+  "heroImage": "/images/Wedding Trailer.png",
+  "heroImageAlt": "Wedding restroom trailer at an outdoor Mid-Michigan reception",
+  "primaryKeyword": "how many restroom trailers for wedding",
+  "secondaryKeywords": [
+    "wedding restroom trailer planning",
+    "outdoor wedding restroom count"
+  ],
+  "relatedServicePages": [
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Service Overview"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here: Wedding Planning Steps"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "relatedCityPages": [
+    {
+      "href": "/service-areas/lansing-mi",
+      "label": "Lansing Weddings"
+    },
+    {
+      "href": "/service-areas/okemos-mi",
+      "label": "Okemos Service Area"
+    }
+  ],
+  "relatedResources": [
+    {
+      "href": "/resources/outdoor-wedding-restroom-planning-michigan",
+      "label": "Outdoor Wedding Restroom Planning Guide for Michigan Couples"
+    },
+    {
+      "href": "/resources/restroom-trailer-setup-requirements",
+      "label": "Restroom Trailer Setup Requirements"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What factors matter most for wedding restroom sizing?",
+      "answer": "Guest count, reception length, alcohol service, and how far restrooms are from key gathering areas all affect demand."
+    },
+    {
+      "question": "Do I need more capacity for longer receptions?",
+      "answer": "Yes. Multi-hour receptions and late-night dancing typically increase total use and peak-time line risk."
+    },
+    {
+      "question": "Can venue restrooms reduce trailer needs?",
+      "answer": "Often, yes. Existing facilities can complement trailers, but only if they are accessible and sufficient for expected traffic."
+    },
+    {
+      "question": "Should I plan for a comfort buffer?",
+      "answer": "A modest capacity buffer is usually wise for weddings because guest flow concentrates around cocktails, dinner, and transitions."
+    },
+    {
+      "question": "How early should we reserve?",
+      "answer": "Reserve as early as practical once date and venue are confirmed, especially for peak Michigan wedding months."
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Build Your Estimate from Real Wedding Flow",
+      "content": [
+        "Start with expected attendance, then map your timeline: ceremony, cocktail hour, dinner, dancing, and send-off. Usage increases during transition windows, not evenly across the event.",
+        "For many Mid-Michigan weddings, the key is minimizing lines during peak moments, not simply covering average use."
+      ]
+    },
+    {
+      "heading": "Consider Venue Layout and Guest Movement",
+      "content": [
+        "If restrooms are far from the tent, barn, or dance floor, people cluster in shorter windows when they do walk over. Strategic placement can improve flow as much as additional capacity.",
+        "Signature Luxe Events & Amenities can help evaluate access routes and placement so restroom service supports—not disrupts—your reception experience."
+      ]
+    },
+    {
+      "heading": "Get a Tailored Recommendation",
+      "content": [
+        "There is no one-size answer. Recommended setup depends on guest count, event duration, location, trailer size, and setup needs.",
+        "Use the Start Here planning guide to organize your details, then submit the quote request form for a plan designed for your venue and guest profile."
+      ]
+    }
+  ]
+}

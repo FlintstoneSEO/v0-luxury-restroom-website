@@ -7,11 +7,11 @@ import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation'
 import { Resend } from 'resend'
 import { quoteRequestConfirmationTemplate } from '@/lib/email/templates'
 import { escapeHtml } from '@/lib/escape-html'
+import { getAdminAppOrigin, getPublicSiteOrigin } from '@/lib/app-origins'
 
 // Initialize Resend (will gracefully fail if API key not set)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const QUOTE_ACTION_VERSION = "service-role-v2"
-const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.signatureluxeevents.com').replace(/\/$/, '')
 
 export type QuoteRequestFormState = {
   success: boolean
@@ -188,8 +188,10 @@ export async function submitQuoteRequest(
     // Send email notification
     if (resend) {
       try {
-        const adminQuoteUrl = `${APP_URL}/admin/quotes/${insertedQuote?.id}`
-        const adminDashboardUrl = `${APP_URL}/admin`
+        const adminAppOrigin = getAdminAppOrigin()
+        const publicSiteOrigin = getPublicSiteOrigin()
+        const adminQuoteUrl = `${adminAppOrigin}/admin/quotes/${insertedQuote?.id}`
+        const adminDashboardUrl = `${adminAppOrigin}/admin`
 
         const safeQuoteNumber = escapeHtml(insertedQuote?.quote_number || 'Pending')
         const safeCustomerName = escapeHtml(data.customer_name)
@@ -261,7 +263,7 @@ export async function submitQuoteRequest(
           eventLocation: `${data.city}, ${data.state}`,
           businessPhoneDisplay: '(517) 295-0107',
           businessPhoneHref: '+15172950107',
-          contactUrl: `${APP_URL}/contact`,
+          contactUrl: `${publicSiteOrigin}/contact`,
         })
 
 

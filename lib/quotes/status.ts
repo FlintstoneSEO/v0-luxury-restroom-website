@@ -1,6 +1,7 @@
 import { QuoteStatus } from '@/lib/quotes/types';
 
 export const quoteStatusLabels: Partial<Record<QuoteStatus, string>> = {
+  pending: 'Pending',
   pending_review: 'Pending Review',
   new: 'New',
   under_review: 'Under Review',
@@ -21,6 +22,65 @@ export const quoteStatusLabels: Partial<Record<QuoteStatus, string>> = {
   declined: 'Declined',
   expired: 'Expired',
 };
+
+export type AdminStatusFamily = 'quote' | 'agreement' | 'deposit';
+export type AdminStatusTone = 'neutral' | 'info' | 'warning' | 'success' | 'danger';
+
+const agreementStatusLabels: Record<string, string> = {
+  not_sent: 'Not Sent',
+  not_started: 'Not Started',
+  ready_to_send: 'Ready to Send',
+  sent: 'Sent',
+  signed: 'Signed',
+  voided: 'Voided',
+  cancelled: 'Cancelled',
+};
+
+const depositStatusLabels: Record<string, string> = {
+  not_required: 'Not Required',
+  not_requested: 'Not Requested',
+  due: 'Due',
+  requested: 'Requested',
+  invoice_sent: 'Invoice Sent',
+  pending: 'Pending',
+  paid: 'Paid',
+  overdue: 'Overdue',
+  refunded: 'Refunded',
+  waived: 'Waived',
+};
+
+export function formatAdminStatus(status: string, family: AdminStatusFamily = 'quote'): string {
+  const label =
+    family === 'agreement'
+      ? agreementStatusLabels[status]
+      : family === 'deposit'
+        ? depositStatusLabels[status]
+        : quoteStatusLabels[status as QuoteStatus];
+
+  return label ?? status.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
+export function getAdminStatusTone(status: string, family: AdminStatusFamily = 'quote'): AdminStatusTone {
+  if (family === 'agreement') {
+    if (status === 'signed') return 'success';
+    if (['sent', 'ready_to_send'].includes(status)) return 'info';
+    if (['voided', 'cancelled'].includes(status)) return 'danger';
+    return 'neutral';
+  }
+
+  if (family === 'deposit') {
+    if (status === 'paid') return 'success';
+    if (['due', 'requested', 'invoice_sent', 'pending'].includes(status)) return 'warning';
+    if (status === 'overdue') return 'danger';
+    return 'neutral';
+  }
+
+  if (['customer_approved', 'agreement_signed', 'deposit_paid', 'booked', 'confirmed', 'completed'].includes(status)) return 'success';
+  if (['quote_sent', 'sent_to_customer', 'agreement_pending', 'agreement_sent'].includes(status)) return 'info';
+  if (['pending', 'pending_review', 'new', 'under_review', 'draft_quote', 'change_requested', 'deposit_pending'].includes(status)) return 'warning';
+  if (['cancelled', 'declined', 'expired'].includes(status)) return 'danger';
+  return 'neutral';
+}
 
 export const quoteStatusBadgeStyles: Partial<Record<QuoteStatus, string>> = {
   pending_review: 'bg-slate-100 text-slate-800',
@@ -61,5 +121,5 @@ export function isCompletedQuote(status: QuoteStatus): boolean {
 }
 
 export function getQuoteStatusLabel(status: QuoteStatus): string {
-  return quoteStatusLabels[status] ?? status.replace(/_/g, ' ');
+  return formatAdminStatus(status, 'quote');
 }

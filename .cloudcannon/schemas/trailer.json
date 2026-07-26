@@ -1,0 +1,11 @@
+{
+  "_schema": "trailer",
+  "slug": "new-trailer",
+  "draft": true,
+  "order": 0,
+  "name": "New trailer",
+  "capacity": "Add the recommended guest capacity.",
+  "description": "Add a useful trailer description.",
+  "features": [],
+  "popular": false
+}

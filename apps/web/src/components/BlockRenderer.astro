@@ -1,0 +1,32 @@
+---
+import { componentMap, type ComponentType } from '../cloudcannon/componentMap';
+
+interface Section {
+  _type: ComponentType;
+  [key: string]: unknown;
+}
+
+interface Props {
+  sections: Section[];
+}
+
+const { sections } = Astro.props;
+---
+
+<div
+  data-editable="array"
+  data-prop="sections"
+  data-component-key="_type"
+>
+  {sections.map((section) => {
+    const Component = componentMap[section._type] as any;
+    return (
+      <div
+        data-editable="array-item"
+        data-component={section._type}
+      >
+        <Component {...section} />
+      </div>
+    );
+  })}
+</div>

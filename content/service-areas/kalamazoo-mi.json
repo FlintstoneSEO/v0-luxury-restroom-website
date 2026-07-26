@@ -1,0 +1,35 @@
+{
+  "_schema": "service_area",
+  "slug": "kalamazoo-mi",
+  "city": "Kalamazoo",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Kalamazoo events range from weddings to regional gatherings where premium guest amenities and practical logistics are both important.",
+  "nearby": "Portage, Battle Creek, Mattawan, and Plainwell",
+  "venueNote": "We support venue and private-property setups with planning for access, utilities, and service windows.",
+  "useCases": [
+    "weddings",
+    "corporate events",
+    "community festivals",
+    "project-based rentals"
+  ],
+  "faqs": [
+    {
+      "q": "Do you provide restroom trailers in Kalamazoo?",
+      "a": "Yes, Kalamazoo is part of our extended service area."
+    },
+    {
+      "q": "Can you support upscale wedding and donor events?",
+      "a": "Yes, luxury trailers are ideal for polished guest-facing events."
+    },
+    {
+      "q": "Are weekend and multi-day rentals available?",
+      "a": "Yes, based on availability and event timing."
+    },
+    {
+      "q": "Do you coordinate setup with venue schedules?",
+      "a": "Yes, we plan around venue access and timeline requirements."
+    }
+  ]
+}

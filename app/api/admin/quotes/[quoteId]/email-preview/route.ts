@@ -2,25 +2,8 @@ import { NextResponse } from 'next/server';
 import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteSentTemplate } from '@/lib/email/templates';
-
-function getAppUrl(request: Request) {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
-  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
-
-  const vercelUrl = process.env.VERCEL_URL;
-  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, '');
-
-  const origin = request.headers.get('origin');
-  if (origin) return origin.replace(/\/$/, '');
-
-  const host = request.headers.get('host');
-  if (host) {
-    const proto = request.headers.get('x-forwarded-proto') || 'https';
-    return `${proto}://${host}`.replace(/\/$/, '');
-  }
-
-  return '';
-}
+import { formatLocalDateOnly } from '@/lib/date-only';
+import { getCustomerWorkflowOrigin } from '@/lib/app-origins';
 
 export async function GET(
   request: Request,
@@ -33,14 +16,7 @@ export async function GET(
 
   try {
     const supabase = createAdminClient();
-    const appUrl = getAppUrl(request);
-
-    if (!appUrl) {
-      return NextResponse.json(
-        { ok: false, message: 'Unable to determine app URL for preview links. Set NEXT_PUBLIC_APP_URL in the deployment environment.' },
-        { status: 500 }
-      );
-    }
+    const customerWorkflowOrigin = getCustomerWorkflowOrigin(request);
 
     const { data: quote, error } = await supabase
       .from('quote_requests')
@@ -87,7 +63,7 @@ export async function GET(
     ].filter(Boolean).join(', ');
 
     const formattedEventDate = quote.event_date
-      ? new Date(quote.event_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      ? formatLocalDateOnly(quote.event_date, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
       : 'TBD';
 
     const { data: quoteOptions } = await supabase
@@ -105,7 +81,7 @@ export async function GET(
       guestCount: String(quote.guest_count ?? 'TBD'),
       eventLocation: eventLocation || 'TBD',
       quoteTotal: quote.total_price ?? quote.total ?? 0,
-      approvalLink: `${appUrl}/quote/preview-token-not-active`,
+      approvalLink: `${customerWorkflowOrigin}/quote/preview-token-not-active`,
       customerNotes: quote.additional_notes,
       quoteOptions: quoteOptions ?? [],
     });

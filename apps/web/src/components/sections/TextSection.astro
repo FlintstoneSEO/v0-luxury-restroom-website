@@ -1,0 +1,33 @@
+---
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body: string;
+}
+
+const { eyebrow, heading, body } = Astro.props;
+---
+
+<section class="section-space bg-ivory">
+  <div class="content-shell-narrow text-center">
+    {eyebrow && (
+      <p class="eyebrow" data-editable="text" data-type="text" data-prop="eyebrow">{eyebrow}</p>
+    )}
+    <h2
+      class="section-heading mt-5"
+      data-editable="text"
+      data-type="text"
+      data-prop="heading"
+    >
+      {heading}
+    </h2>
+    <p
+      class="editorial-copy mx-auto mt-7 max-w-3xl text-lg"
+      data-editable="text"
+      data-type="text"
+      data-prop="body"
+    >
+      {body}
+    </p>
+  </div>
+</section>

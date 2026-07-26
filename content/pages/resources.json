@@ -1,0 +1,21 @@
+{
+  "_schema": "resource_index",
+  "seo": {
+    "title": "Resource Center | Planning Guides for Restroom Trailer Rentals",
+    "description": "Explore planning guides, checklists, and educational resources for restroom trailer rentals in Lansing and Mid-Michigan.",
+    "canonical": "/resources",
+    "noindex": false,
+    "schema": "none"
+  },
+  "featuredSlugs": [
+    "restroom-trailer-vs-porta-potty",
+    "how-many-restroom-trailers-for-wedding",
+    "restroom-trailer-setup-requirements",
+    "restroom-trailer-rental-cost-michigan"
+  ],
+  "serviceLinks": [
+    { "href": "/wedding-restroom-trailer-rentals", "label": "Wedding Restroom Trailer Rentals" },
+    { "href": "/festival-community-event-restroom-trailers", "label": "Festival & Community Event Restrooms" },
+    { "href": "/construction-long-term-restroom-trailer-rentals", "label": "Construction & Long-Term Rentals" }
+  ]
+}

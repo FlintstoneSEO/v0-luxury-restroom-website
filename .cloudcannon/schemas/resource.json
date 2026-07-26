@@ -1,0 +1,21 @@
+{
+  "_schema": "resource",
+  "draft": true,
+  "slug": "new-planning-resource",
+  "title": "New planning resource",
+  "metaTitle": "New Planning Resource | Signature Luxe",
+  "metaDescription": "Add a unique search description for this resource.",
+  "excerpt": "Add a concise summary for readers.",
+  "category": "Event Logistics",
+  "publishDate": "2026-07-26",
+  "updatedDate": "2026-07-26",
+  "heroImage": "/images/Special Event Trailer.png",
+  "heroImageAlt": "Luxury restroom trailer at a Michigan event",
+  "primaryKeyword": "restroom trailer planning",
+  "secondaryKeywords": [],
+  "relatedServicePages": [],
+  "relatedCityPages": [],
+  "relatedResources": [],
+  "faqs": [],
+  "sections": []
+}

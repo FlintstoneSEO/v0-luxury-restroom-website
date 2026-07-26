@@ -1,0 +1,109 @@
+{
+  "_schema": "service_area",
+  "slug": "grand-ledge-mi",
+  "city": "Grand Ledge",
+  "state": "MI",
+  "draft": false,
+  "priority": true,
+  "intro": "Grand Ledge events include river-area gatherings, weddings, and community celebrations that need dependable temporary facilities.",
+  "nearby": "Lansing, Delta Township, Eagle, and Portland",
+  "venueNote": "We coordinate placement for parks, private land, and mixed-surface sites.",
+  "useCases": [
+    "weddings and receptions",
+    "community festivals",
+    "private parties",
+    "contractor support"
+  ],
+  "faqs": [
+    {
+      "q": "Do you provide restroom trailers for Grand Ledge park and riverfront events?",
+      "a": "Yes, we support park-adjacent and outdoor gathering spaces throughout the Grand Ledge area."
+    },
+    {
+      "q": "Can you set up for private-property weddings in Grand Ledge?",
+      "a": "Yes. We assess access, utility connections, and trailer placement before confirming delivery."
+    },
+    {
+      "q": "Are your trailers a good fit for family reunions and milestone parties?",
+      "a": "Absolutely. Luxury trailers add comfort for family-centered events with mixed guest counts."
+    },
+    {
+      "q": "Can you coordinate around tighter neighborhood access points?",
+      "a": "Yes, we plan route and setup logistics in advance for residential streets and driveways."
+    },
+    {
+      "q": "Do you offer multi-day rentals for weekend events?",
+      "a": "Yes, we can schedule multi-day coverage and pickup timing based on your event plan."
+    }
+  ],
+  "localOverview": [
+    "Grand Ledge hosts outdoor gatherings near parks, on private land, and at wedding-friendly properties across the area.",
+    "We support community events that need elevated restroom options without sacrificing practical site setup."
+  ],
+  "weddingUseCase": [
+    "Grand Ledge wedding clients use luxury restroom trailers for rustic venues and private properties with limited permanent restrooms."
+  ],
+  "privateEventUseCase": [
+    "Backyard celebrations and rural gatherings benefit from trailer placement that preserves access and guest comfort."
+  ],
+  "corporateFestivalUseCase": [
+    "We support civic events, park-adjacent festivals, and local community programming with guest-ready facilities."
+  ],
+  "constructionLongTermUseCase": [
+    "For contractors and temporary operations, we provide long-term rentals with recurring service plans."
+  ],
+  "setupLogistics": [
+    "We coordinate around gravel drives, mixed terrain, and access routes common in Grand Ledge-area properties."
+  ],
+  "seasonalPlanning": [
+    "Spring rain can impact field and lawn access, so placement planning is handled in advance."
+  ],
+  "nearbyCommunities": [
+    "Lansing",
+    "Delta Township",
+    "Eagle",
+    "Portland",
+    "Oneida Township"
+  ],
+  "resourceLinks": [
+    {
+      "href": "/resources/outdoor-wedding-restroom-planning-michigan",
+      "label": "Outdoor Wedding Restroom Planning Guide"
+    }
+  ],
+  "serviceLinks": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Private Event Restroom Trailers"
+    },
+    {
+      "href": "/corporate-event-restroom-trailers",
+      "label": "Corporate Event Restroom Trailers"
+    },
+    {
+      "href": "/festival-community-event-restroom-trailers",
+      "label": "Festival & Community Event Restroom Trailers"
+    },
+    {
+      "href": "/construction-long-term-restroom-trailer-rentals",
+      "label": "Construction & Long-Term Restroom Trailer Rentals"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "trustNote": "From park events to private-land weddings, we focus on practical logistics and elevated guest comfort."
+}

@@ -8,36 +8,27 @@ import { SectionHeader } from "@/components/section-header"
 import { ServiceAreaGrid } from "@/components/service-area-grid"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
+import { getAllServiceAreas } from "@/lib/content/service-areas"
+import { getServiceAreaIndex } from "@/lib/content/index-pages"
 
-export const metadata: Metadata = {
-  title: "Service Areas | Luxury Restroom Trailer Rentals Michigan",
-  description:
-    "Signature Luxe Events serves Lansing, East Lansing, Okemos, Haslett, Grand Ledge, DeWitt, Holt, Mason, and surrounding Mid-Michigan communities with luxury restroom trailer rentals.",
+const indexContent = getServiceAreaIndex()
+const allAreas = getAllServiceAreas()
+const bySlug = new Map(allAreas.map((area) => [area.slug, area]))
+const toGridArea = (slug: string) => {
+  const area = bySlug.get(slug)
+  if (!area) throw new Error(`Missing service area for index: ${slug}`)
+  return { name: area.city, state: area.state, featured: indexContent.featuredSlugs.includes(slug), href: `/service-areas/${slug}` }
 }
-
-const primaryAreas = [
-  { name: "Lansing", state: "MI", featured: true, href: "/service-areas/lansing-mi" },
-  { name: "East Lansing", state: "MI", featured: true, href: "/service-areas/east-lansing-mi" },
-  { name: "Okemos", state: "MI", href: "/service-areas/okemos-mi" },
-  { name: "Haslett", state: "MI", href: "/service-areas/haslett-mi" },
-  { name: "Grand Ledge", state: "MI", href: "/service-areas/grand-ledge-mi" },
-  { name: "DeWitt", state: "MI", href: "/service-areas/dewitt-mi" },
-  { name: "Jackson", state: "MI", href: "/service-areas/jackson-mi" },
-  { name: "Howell", state: "MI", href: "/service-areas/howell-mi" },
-]
-
+const primaryAreas = indexContent.primarySlugs.map(toGridArea)
 const extendedAreas = [
-  { name: "Flint", state: "MI", href: "/service-areas/flint-mi" },
-  { name: "Ann Arbor", state: "MI", href: "/service-areas/ann-arbor-mi" },
-  { name: "Grand Rapids", state: "MI", href: "/service-areas/grand-rapids-mi" },
-  { name: "Charlotte", state: "MI", href: "/service-areas/charlotte-mi" },
-  { name: "Battle Creek", state: "MI", href: "/service-areas/battle-creek-mi" },
-  { name: "Kalamazoo", state: "MI", href: "/service-areas/kalamazoo-mi" },
-  { name: "Brighton", state: "MI", href: "/service-areas/brighton-mi" },
-  { name: "Novi", state: "MI" },
-  { name: "Livonia", state: "MI" },
-  { name: "Saginaw", state: "MI" },
-] 
+  ...indexContent.extendedSlugs.map(toGridArea),
+  ...indexContent.additionalMarkets.map((name) => ({ name, state: 'MI' })),
+]
+export const metadata: Metadata = {
+  title: indexContent.seo.title,
+  description: indexContent.seo.description,
+  alternates: { canonical: indexContent.seo.canonical },
+}
 
 export default function ServiceAreasPage() {
   return (

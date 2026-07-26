@@ -5,6 +5,7 @@ import { CalendarDays, ArrowRight } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
+import { getBlogPostImage } from '@/lib/blog-images'
 import { BLOG_FALLBACK_IMAGE, formatBlogDate, getSoroBlogPosts } from '@/lib/soro-blog'
 import { siteUrl } from '@/lib/seo'
 
@@ -64,7 +65,7 @@ export default async function BlogPage() {
                     <Link href={`/blog/${post.slug}`} className="block">
                       <div className="relative aspect-[16/10] overflow-hidden bg-gold/20">
                         <Image
-                          src={post.featuredImage || BLOG_FALLBACK_IMAGE}
+                          src={getBlogPostImage(post)}
                           alt={post.title}
                           fill
                           sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"

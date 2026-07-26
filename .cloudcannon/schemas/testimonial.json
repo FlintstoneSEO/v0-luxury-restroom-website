@@ -1,0 +1,11 @@
+{
+  "_schema": "testimonial",
+  "customerName": "Customer name",
+  "quote": "Add the approved testimonial.",
+  "eventType": null,
+  "eventLocation": null,
+  "image": null,
+  "featured": false,
+  "order": 0,
+  "published": false
+}

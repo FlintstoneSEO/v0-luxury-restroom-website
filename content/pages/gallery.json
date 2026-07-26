@@ -1,0 +1,177 @@
+{
+  "_schema": "gallery",
+  "slug": "gallery",
+  "seo": {
+    "title": "Gallery | Signature Luxe Events & Amenities",
+    "description": "View photos of our luxury restroom trailers, interiors, and event setups in Lansing and Mid-Michigan.",
+    "canonical": "/gallery",
+    "noindex": false,
+    "schema": "none"
+  },
+  "hero": {
+    "eyebrow": "Gallery",
+    "heading": "See Our Luxury Restroom Trailers",
+    "body": "Explore our climate-controlled trailers, modern interiors, and professional event setups across Lansing and Mid-Michigan.",
+    "primaryCta": {
+      "label": "Request Availability",
+      "href": "/request-quote"
+    },
+    "fallbackImage": {
+      "src": "/images/Wedding Trailer.png",
+      "alt": "Wedding restroom trailer rental setup in Mid-Michigan"
+    }
+  },
+  "images": [
+    {
+      "id": "1",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg",
+      "alt": "Luxury restroom trailer exterior in Lansing Michigan",
+      "category": "Exterior"
+    },
+    {
+      "id": "2",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
+      "alt": "Modern vanity station with succulent artwork inside restroom trailer",
+      "category": "Interior"
+    },
+    {
+      "id": "3",
+      "src": "/images/Wedding Trailer.png",
+      "alt": "Wedding restroom trailer rental setup in Mid-Michigan",
+      "category": "Weddings"
+    },
+    {
+      "id": "4",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg",
+      "alt": "Modern vanity station inside luxury restroom trailer",
+      "category": "Interior"
+    },
+    {
+      "id": "5",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03520-SllxtiCxRUBTroLepm40y033UcPvDf.jpg",
+      "alt": "Private flushing stall in restroom trailer",
+      "category": "Interior"
+    },
+    {
+      "id": "6",
+      "src": "/images/Construction Site Trailer.png",
+      "alt": "Restroom trailer stationed at an active construction project in Michigan",
+      "category": "Exterior"
+    },
+    {
+      "id": "7",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f8c856e0-44a2-4c9a-990c-09e671fee136-VkgBsnTDKck69SOzLmlIYiSb3zZeAS.png",
+      "alt": "Restroom trailer setup at private estate wedding",
+      "category": "Weddings"
+    },
+    {
+      "id": "8",
+      "src": "/images/MSU Tailgate Rental Restroom.png",
+      "alt": "Luxury restroom trailer setup for corporate and VIP event guests",
+      "category": "Events"
+    },
+    {
+      "id": "9",
+      "src": "/images/MSU Tailgate Rental Restroom.png",
+      "alt": "Luxury restroom trailer at poolside reception",
+      "category": "Events"
+    },
+    {
+      "id": "10",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03401-zJLPWwUHkUivbGQTOGaiePJW9U8rli.jpg",
+      "alt": "Men's restroom interior with urinal and toilet",
+      "category": "Interior"
+    },
+    {
+      "id": "11",
+      "src": "/images/Disaster Relief Trailer.png",
+      "alt": "Disaster response restroom trailer with support vehicles onsite",
+      "category": "Events"
+    },
+    {
+      "id": "12",
+      "src": "/images/Special Event Trailer.png",
+      "alt": "Climate controlled restroom trailer during an evening special event",
+      "category": "Exterior"
+    },
+    {
+      "id": "13",
+      "src": "/images/3 Station Pro/3Station.jpg",
+      "alt": "3 Station Pro luxury restroom trailer exterior view",
+      "category": "3 Station"
+    },
+    {
+      "id": "14",
+      "src": "/images/3 Station Pro/3Station1.jpg",
+      "alt": "3 Station Pro restroom interior with modern fixtures",
+      "category": "3 Station"
+    },
+    {
+      "id": "15",
+      "src": "/images/3 Station Pro/3Station2.jpg",
+      "alt": "3 Station Pro vanity station and amenities",
+      "category": "3 Station"
+    },
+    {
+      "id": "16",
+      "src": "/images/3 Station Pro/3Station3.jpg",
+      "alt": "3 Station Pro private flushing stalls",
+      "category": "3 Station"
+    },
+    {
+      "id": "17",
+      "src": "/images/3 Station Pro/3Station4.jpg",
+      "alt": "3 Station Pro climate control and lighting",
+      "category": "3 Station"
+    },
+    {
+      "id": "18",
+      "src": "/images/3 Station Pro/3Station5.jpg",
+      "alt": "3 Station Pro restroom trailer setup",
+      "category": "3 Station"
+    },
+    {
+      "id": "19",
+      "src": "/images/3 Station Pro/3Station5.webp",
+      "alt": "3 Station Pro luxury restroom features",
+      "category": "3 Station"
+    }
+  ],
+  "sections": [
+    {
+      "category": "Exterior",
+      "eyebrow": "Exterior Views",
+      "heading": "Professional Event Presentation",
+      "body": "Our trailers are designed to complement your event setting with a clean, professional appearance that blends seamlessly with your venue.",
+      "columns": 3
+    },
+    {
+      "category": "Interior",
+      "eyebrow": "Interior Details",
+      "heading": "Luxury Finishes Inside",
+      "body": "Step inside to discover modern vanity stations, private flushing stalls, climate control, and thoughtful details your guests will appreciate.",
+      "columns": 4
+    },
+    {
+      "category": "3 Station",
+      "eyebrow": "3 Station Pro",
+      "heading": "Premium 3-Station Restroom Trailer",
+      "body": "Our flagship 3-station restroom trailer offers the ultimate in luxury and convenience, featuring climate control, modern fixtures, and spacious interiors perfect for larger events.",
+      "columns": 3
+    }
+  ],
+  "featureOverride": {
+    "id": "6",
+    "mediaKey": "gallery_feature",
+    "fallbackImage": {
+      "src": "/images/Construction Site Trailer.png",
+      "alt": "Restroom trailer stationed at an active construction project in Michigan"
+    }
+  },
+  "cta": {
+    "heading": "Like What You See?",
+    "body": "Request availability for your upcoming event and experience the Signature Luxe difference.",
+    "label": "Request Availability",
+    "href": "/request-quote"
+  }
+}

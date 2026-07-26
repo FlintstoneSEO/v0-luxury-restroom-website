@@ -1,0 +1,45 @@
+---
+interface Props {
+  items: string[];
+  label?: string;
+}
+
+const { items, label = 'Signature Luxe service highlights' } = Astro.props;
+---
+
+<div class="overflow-hidden border-y border-midnight/12 bg-parchment py-5" role="region" aria-label={label}>
+  <p class="sr-only">{items.join(', ')}</p>
+  <div class="marquee-track flex w-max items-center" aria-hidden="true">
+    {[...items, ...items].map((item) => (
+      <span class="flex items-center">
+        <span class="px-7 text-xs font-semibold tracking-[0.17em] text-midnight uppercase md:px-10">{item}</span>
+        <span class="h-1.5 w-1.5 rotate-45 bg-gold"></span>
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee-track {
+    animation: marquee 28s linear infinite;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: none;
+    }
+
+    .marquee-track > :nth-child(n + 6) {
+      display: none;
+    }
+  }
+</style>

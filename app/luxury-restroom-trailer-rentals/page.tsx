@@ -24,184 +24,35 @@ import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { breadcrumbJsonLd, faqJsonLd, localBusinessJsonLd, serviceJsonLd } from "@/lib/seo-schema"
+import rawContent from "@/content/service-pages/luxury-restroom-trailers.json"
+import { defineServicePageData } from "@/lib/content/service-pages"
+import { getAllTrailers } from "@/lib/content/trailers"
 
-const title = "Luxury Restroom Trailer Rentals in Lansing, MI | Signature Luxe Events"
-const description =
-  "Book luxury restroom trailer rentals in Lansing, Mid-Michigan, and nearby communities with 2, 3, and 4-station options, delivery, setup, and service planning."
-const canonical = "https://www.signatureluxeevents.com/luxury-restroom-trailer-rentals"
+const content = defineServicePageData(rawContent)
+
+const { title, description, canonical } = content.seo
+
 export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical },
-  openGraph: { title, description, url: canonical },
+  title, description, alternates: { canonical },
+  openGraph: { title, description, url: canonical ?? undefined },
   twitter: { card: "summary_large_image", title, description },
 }
 
-const features = [
-  {
-    title: "Temperature Controlled",
-    description:
-      "Heating and air conditioning keep guests comfortable in any weather.",
-    icon: Thermometer,
-  },
-  {
-    title: "Private Flushing Stalls",
-    description:
-      "Full-size private stalls with real flushing toilets, not porta-potty style.",
-    icon: DoorOpen,
-  },
-  {
-    title: "Stylish Finishes",
-    description:
-      "Modern vanity stations with mirrors, countertops, and quality fixtures.",
-    icon: Sparkles,
-  },
-  {
-    title: "Fresh Water System",
-    description:
-      "Running water for hand washing with soap dispensers and paper products.",
-    icon: Droplets,
-  },
-  {
-    title: "Power Ready",
-    description:
-      "Interior lighting and climate control powered by standard 20 amp connection.",
-    icon: Zap,
-  },
-  {
-    title: "Practical Layouts",
-    description:
-      "Thoughtfully designed interiors for efficient guest flow and comfort.",
-    icon: Users,
-  },
-]
+const contentIcons = { Thermometer, DoorOpen, Sparkles, Droplets, Zap, Users }
 
-const trailerOptions = [
-  {
-    name: "2-Station Trailer",
-    capacity: "Up to 150 guests",
-    description:
-      "Compact option for events and job sites where space is limited. Recommended for gatherings with an expected guest count of up to 150 people.",
-    features: [
-      "2 private restroom stalls",
-      "Climate controlled interior",
-      "Hand washing stations",
-      "Compact footprint",
-      "Ideal for smaller venues",
-    ],
-  },
-  {
-    name: "3-Station Trailer",
-    capacity: "Up to 225 guests",
-    description:
-      "Compact and flexible option for events and job sites where space is important. Recommended for events expecting up to 225 guests.",
-    features: [
-      "3 private restroom stalls",
-      "Climate controlled interior",
-      "Expanded vanity area",
-      "Flexible configuration",
-      "Great for medium events",
-    ],
-    popular: true,
-  },
-  {
-    name: "4-Station Trailer",
-    capacity: "250+ guests",
-    description:
-      "A popular option for larger events. Compact enough for many event spaces while offering increased capacity. Recommended for events with 250+ guests.",
-    features: [
-      "4 private restroom stalls",
-      "Climate controlled interior",
-      "Dual vanity stations",
-      "Maximum capacity",
-      "Perfect for large gatherings",
-    ],
-  },
-]
+const features = content.data.features.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const setupRequirements = [
-  "20 amp power source within 100 feet",
-  "Water connection within 100 feet",
-  "Generator options available when power is not nearby",
-  "Fresh water tank options available when water is not nearby",
-  "Reasonably flat, level ground for placement",
-  "Adequate access for delivery vehicle",
-]
+const trailerOptions = getAllTrailers()
 
-const amenities = [
-  "Fully stocked with hand soap and paper essentials",
-  "Heating and air conditioning",
-  "Power access support within 100 feet",
-  "Fresh water hookup within 100 feet",
-  "Generator options available when needed",
-  "Fresh water tank options available when needed",
-]
+const setupRequirements = content.data.setupRequirements
 
-const serviceAreas = [
-  { name: "Lansing", href: "/service-areas/lansing-mi" },
-  { name: "East Lansing", href: "/service-areas/east-lansing-mi" },
-  { name: "Okemos", href: "/service-areas/okemos-mi" },
-  { name: "Haslett", href: "/service-areas/haslett-mi" },
-  { name: "Grand Ledge", href: "/service-areas/grand-ledge-mi" },
-  { name: "DeWitt", href: "/service-areas/dewitt-mi" },
-  { name: "Holt", href: "/service-areas/holt-mi" },
-  { name: "Mason", href: "/service-areas/mason-mi" },
-  { name: "Jackson", href: "/service-areas/jackson-mi" },
-  { name: "Howell", href: "/service-areas/howell-mi" },
-  { name: "Flint", href: "/service-areas/flint-mi" },
-  { name: "Ann Arbor", href: "/service-areas/ann-arbor-mi" },
-  { name: "Grand Rapids", href: "/service-areas/grand-rapids-mi" },
-]
+const amenities = content.data.amenities
 
-const faqs = [
-  {
-    question: "How far in advance should I book luxury restroom trailers in Lansing, MI?",
-    answer:
-      "For high-demand spring and fall weekends, booking early is recommended. We can often support shorter timelines when inventory allows.",
-  },
-  {
-    question: "Can you help me choose between a 2, 3, or 4-station trailer?",
-    answer:
-      "Yes. We recommend sizing based on guest count, event duration, and expected peak traffic windows.",
-  },
-  {
-    question: "Do you deliver outside Lansing?",
-    answer:
-      "Yes, we serve Mid-Michigan and surrounding communities including East Lansing, Okemos, Haslett, Grand Ledge, DeWitt, Jackson, Howell, Flint, Ann Arbor, and Grand Rapids.",
-  },
-  {
-    question: "What do you need from me for a quote?",
-    answer:
-      "Share your date, location, attendance estimate, and any setup notes so we can provide accurate options quickly.",
-  },
-]
+const serviceAreas = content.data.serviceAreas
 
-const interiorGallery = [
-  {
-    id: "int1",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
-    alt: "Modern vanity station with mirror and succulent decor",
-    category: "Vanity",
-  },
-  {
-    id: "int2",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg",
-    alt: "Bright vanity area with tree ring artwork",
-    category: "Vanity",
-  },
-  {
-    id: "int3",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03520-SllxtiCxRUBTroLepm40y033UcPvDf.jpg",
-    alt: "Private restroom stall with flushing toilet",
-    category: "Stall",
-  },
-  {
-    id: "int4",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03401-zJLPWwUHkUivbGQTOGaiePJW9U8rli.jpg",
-    alt: "Men's room with urinal and toilet",
-    category: "Interior",
-  },
-]
+const faqs = content.data.faqs
+
+const interiorGallery = content.data.interiorGallery
 
 export default function LuxuryRestroomTrailerRentalsPage() {
   const serviceSchema = serviceJsonLd("Luxury restroom trailer rental", canonical)

@@ -1,14 +1,26 @@
 {
-  "name": "my-project",
+  "name": "signature-luxe-platform",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.33.2",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
+  },
   "scripts": {
     "dev": "next dev",
+    "dev:web": "corepack pnpm --filter @signature-luxe/web dev",
     "build": "next build",
+    "build:web": "corepack pnpm --filter @signature-luxe/web build",
+    "build:all": "corepack pnpm build && corepack pnpm build:web",
+    "check:web": "corepack pnpm --filter @signature-luxe/web check",
     "start": "next start",
     "lint": "eslint .",
+    "verify:phase5": "node --experimental-strip-types scripts/verify-phase5-customer-workflows.mjs",
     "seo:audit-links": "node --experimental-strip-types scripts/audit-internal-links.ts",
-    "seo:audit-content": "node --experimental-strip-types scripts/audit-seo-content.ts"
+    "seo:audit-content": "node --experimental-strip-types scripts/audit-seo-content.ts",
+    "content:validate": "node scripts/validate-content.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -39,7 +51,6 @@
     "@radix-ui/react-toggle": "1.1.10",
     "@radix-ui/react-toggle-group": "1.1.11",
     "@radix-ui/react-tooltip": "1.2.8",
-    "@reach/combobox": "^0.18.0",
     "@react-google-maps/api": "^2.20.8",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "2.105.3",

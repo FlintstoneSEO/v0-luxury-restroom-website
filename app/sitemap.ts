@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { cityPages, finalRoutes, siteUrl } from '@/lib/seo'
-import { resources } from '@/lib/resources'
+import { getAllResources } from '@/lib/content/resources'
 import { getSoroBlogPosts } from '@/lib/soro-blog'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return { url: `${siteUrl}${route}`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority }
   })
   const cities = cityPages.map((city) => ({ url: `${siteUrl}/service-areas/${city.slug}`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 }))
-  const resourcePages = resources.map((resource) => ({ url: `${siteUrl}/resources/${resource.slug}`, lastModified: new Date(resource.updatedDate), changeFrequency: 'monthly' as const, priority: 0.7 }))
+  const resourcePages = getAllResources().map((resource) => ({ url: `${siteUrl}/resources/${resource.slug}`, lastModified: new Date(resource.updatedDate), changeFrequency: 'monthly' as const, priority: 0.7 }))
   const posts = await getSoroBlogPosts()
   const blogPages = posts.map((post) => ({
     url: `${siteUrl}/blog/${post.slug}`,

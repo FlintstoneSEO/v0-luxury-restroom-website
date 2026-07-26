@@ -1,0 +1,61 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import JsonLd from '../components/JsonLd.astro';
+import SeoHead from '../components/SeoHead.astro';
+import { organizationSchema } from '../lib/seo';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string | null;
+  image?: {
+    src: string;
+    alt: string;
+  } | null;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  image,
+  noindex = true,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#132330" />
+    <meta name="color-scheme" content="light" />
+    <SeoHead {title} {description} {canonical} {image} {noindex} />
+    <JsonLd data={organizationSchema()} />
+    <link rel="icon" href="/favicon.svg" />
+    <slot name="head" />
+  </head>
+  <body>
+    <a
+      class="fixed left-4 top-4 z-[100] -translate-y-32 bg-white px-4 py-3 font-bold text-midnight shadow-lg focus:translate-y-0"
+      href="#main-content"
+    >
+      Skip to content
+    </a>
+    <SiteHeader />
+    <main id="main-content" class="w-full max-w-full overflow-x-clip">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      if (window.inEditorMode) {
+        import('../cloudcannon/registerComponents').catch((error) => {
+          console.warn('CloudCannon component registration failed.', error);
+        });
+      }
+    </script>
+  </body>
+</html>

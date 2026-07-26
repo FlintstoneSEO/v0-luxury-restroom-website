@@ -1,0 +1,35 @@
+{
+  "_schema": "service_area",
+  "slug": "charlotte-mi",
+  "city": "Charlotte",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Charlotte hosts community events, family celebrations, and work sites that benefit from reliable restroom trailer planning.",
+  "nearby": "Lansing, Eaton Rapids, Olivet, and Grand Ledge",
+  "venueNote": "We help plan access and setup for both in-town and rural properties.",
+  "useCases": [
+    "community events",
+    "weddings",
+    "private celebrations",
+    "construction support"
+  ],
+  "faqs": [
+    {
+      "q": "Do you deliver restroom trailers to Charlotte, MI?",
+      "a": "Yes, we serve Charlotte and nearby communities."
+    },
+    {
+      "q": "Can you support farm and rural property events?",
+      "a": "Yes, we coordinate setup logistics for rural sites."
+    },
+    {
+      "q": "Do you provide multi-day rentals?",
+      "a": "Yes, including service planning for longer timelines."
+    },
+    {
+      "q": "Can I get a quote online?",
+      "a": "Yes, submit your event details through our quote form."
+    }
+  ]
+}

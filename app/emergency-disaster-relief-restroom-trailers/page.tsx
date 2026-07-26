@@ -20,122 +20,32 @@ import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import rawContent from "@/content/service-pages/emergency-response.json"
+import { defineServicePageData } from "@/lib/content/service-pages"
 
-const title =
-  "Emergency & Disaster Relief Restroom Trailer Rental in Michigan | Signature Luxe Events"
-const description =
-  "Coordinate emergency restroom trailer rental in Michigan for outages, disaster relief staging, and municipal temporary infrastructure needs in Lansing and Mid-Michigan."
-const canonical =
-  "https://www.signatureluxeevents.com/emergency-disaster-relief-restroom-trailers"
+const content = defineServicePageData(rawContent)
+
+const { title, description, canonical } = content.seo
+
 export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical },
-  openGraph: { title, description, url: canonical },
+  title, description, alternates: { canonical },
+  openGraph: { title, description, url: canonical ?? undefined },
   twitter: { card: "summary_large_image", title, description },
 }
 
-const responseFeatures = [
-  {
-    title: "Rapid Response",
-    description: "Quick deployment coordination when time matters most.",
-    icon: Clock,
-  },
-  {
-    title: "Reliable Operation",
-    description: "Dependable performance in demanding conditions.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Self-Contained",
-    description: "Generator and fresh water tank options available.",
-    icon: Zap,
-  },
-]
+const contentIcons = { Clock, ShieldCheck, Zap, Building, AlertTriangle, Tent }
 
-const applications = [
-  {
-    title: "Government & Municipal",
-    description:
-      "Restroom facilities for municipal projects, public works, and government operations during planned or unplanned disruptions.",
-    icon: Building,
-  },
-  {
-    title: "Disaster Relief",
-    description:
-      "Rapid deployment restroom solutions for emergency response and disaster recovery staging areas.",
-    icon: AlertTriangle,
-  },
-  {
-    title: "Emergency Response",
-    description:
-      "Support for first responders, emergency crews, and community assistance operations in the field.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Temporary Infrastructure",
-    description:
-      "Restroom support for temporary facilities, staging areas, community shelters, and outage scenarios.",
-    icon: Tent,
-  },
-]
+const responseFeatures = content.data.responseFeatures.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const governmentApplications = [
-  "Municipal construction projects",
-  "Public works operations",
-  "Park and recreation events",
-  "Public health response",
-  "Voting site support",
-  "Community programs",
-]
+const applications = content.data.applications.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const emergencyApplications = [
-  "Natural disaster response",
-  "Community evacuation support",
-  "First responder operations",
-  "Emergency shelter facilities",
-  "Recovery operations",
-  "Community assistance centers",
-]
+const governmentApplications = content.data.governmentApplications
 
-const capabilities = [
-  "Quick response and rapid deployment",
-  "Self-contained operation options",
-  "Generator power when needed",
-  "Fresh water tank availability",
-  "Climate-controlled interiors",
-  "Professional, clean facilities",
-  "Flexible short-term and multi-day rental terms",
-  "Coordination with emergency operations teams",
-]
+const emergencyApplications = content.data.emergencyApplications
 
-const emergencyFaqs = [
-  {
-    question: "Can you provide temporary restroom trailers during an active facility outage?",
-    answer:
-      "Yes. We support outage-related requests and coordinate delivery timing based on current availability and site access conditions.",
-  },
-  {
-    question: "Do you work with municipal or public works teams?",
-    answer:
-      "Yes. We regularly support municipalities and public-sector operations that need temporary restroom infrastructure during closures or service disruptions.",
-  },
-  {
-    question: "How quickly can an emergency rental be scheduled?",
-    answer:
-      "Scheduling depends on trailer availability, routing, and site readiness. We prioritize clear communication so you understand realistic timing options.",
-  },
-  {
-    question: "Can rentals be extended if recovery or repairs take longer than expected?",
-    answer:
-      "In many cases, yes. If your timeline changes, contact us early so we can review availability and discuss extension options.",
-  },
-  {
-    question: "What information helps you quote an emergency or disaster relief request?",
-    answer:
-      "Please provide location, desired start window, expected number of users, and known access or utility constraints. That helps us recommend the best available setup.",
-  },
-]
+const capabilities = content.data.capabilities
+
+const emergencyFaqs = content.data.emergencyFaqs
 
 export default function EmergencyDisasterReliefRestroomTrailersPage() {
   return (

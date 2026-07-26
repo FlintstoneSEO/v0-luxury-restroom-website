@@ -1,0 +1,91 @@
+{
+  "_schema": "service_area",
+  "slug": "holt-mi",
+  "city": "Holt",
+  "state": "MI",
+  "draft": false,
+  "priority": true,
+  "intro": "Signature Luxe Events & Amenities provides luxury restroom trailer rentals in Holt, MI for weddings, backyard celebrations, graduation parties, family reunions, and community events. Based in Lansing and serving Mid-Michigan, we bring clean, modern, climate-controlled restroom trailers that add comfort and convenience to outdoor gatherings. Whether your event is at a neighborhood home, local park, or private property, we coordinate delivery and setup based on your site conditions and timeline.",
+  "nearby": "Lansing, Mason, Delhi Township, Dimondale, Okemos, and East Lansing",
+  "venueNote": "Holt events often center on residential neighborhoods, backyard hosting, family celebrations, and park-based gatherings where practical placement and guest flow matter.",
+  "useCases": [
+    "Backyard parties",
+    "Graduation celebrations",
+    "Family reunions",
+    "Park and recreation events",
+    "Wedding receptions on private property",
+    "Lansing-area overflow events"
+  ],
+  "localOverview": [
+    "Holt events often take place at neighborhood homes and park-style gathering areas where hosts need practical restroom planning.",
+    "Luxury trailers add comfort while helping protect indoor facilities during higher-traffic celebrations."
+  ],
+  "weddingUseCase": [
+    "For Holt private-property weddings and receptions, luxury trailers provide elevated guest restroom support."
+  ],
+  "privateEventUseCase": [
+    "Backyard parties, graduation celebrations, and family reunions in Holt are common use cases for added restroom capacity."
+  ],
+  "corporateFestivalUseCase": [
+    "Community gatherings and park-centered Holt events benefit from clean, climate-controlled restroom options."
+  ],
+  "constructionLongTermUseCase": [
+    "We can support temporary facility and long-term project needs in Holt with recurring service schedules."
+  ],
+  "setupLogistics": [
+    "We confirm residential access, driveway approach, and trailer placement zones ahead of delivery."
+  ],
+  "seasonalPlanning": [
+    "Spring and summer Holt dates fill quickly for graduations and weddings, so advance planning is recommended."
+  ],
+  "resourceLinks": [
+    {
+      "href": "/resources/restroom-trailer-setup-requirements",
+      "label": "Restroom Trailer Setup Requirements"
+    }
+  ],
+  "serviceLinks": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Private Event Restroom Trailers"
+    }
+  ],
+  "faqs": [
+    {
+      "q": "Can you set up a trailer in Holt residential neighborhoods?",
+      "a": "Yes, we review driveway and placement access to support neighborhood events."
+    },
+    {
+      "q": "Do you offer Holt rentals for graduation parties?",
+      "a": "Yes. Graduation season is busy, so booking early is recommended."
+    },
+    {
+      "q": "Can you support Holt park or outdoor recreation events?",
+      "a": "Yes, we can coordinate setup planning for public or private outdoor sites."
+    },
+    {
+      "q": "Is Holt within your standard Mid-Michigan coverage?",
+      "a": "Yes, Holt is part of our core service area from Lansing."
+    },
+    {
+      "q": "What information is required for a Holt quote?",
+      "a": "We need your date, location, estimated guests, and utility details to recommend the right trailer."
+    }
+  ],
+  "nearbyCommunities": [
+    "Lansing",
+    "Mason",
+    "Delhi Township",
+    "Dimondale",
+    "Okemos",
+    "East Lansing"
+  ]
+}

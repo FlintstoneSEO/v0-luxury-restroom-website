@@ -1,0 +1,35 @@
+{
+  "_schema": "service_area",
+  "slug": "flint-mi",
+  "city": "Flint",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Flint-area events and projects often require dependable temporary infrastructure with clear scheduling and service planning.",
+  "nearby": "Grand Blanc, Burton, Davison, and Fenton",
+  "venueNote": "We coordinate placement for urban venues, community spaces, and private properties.",
+  "useCases": [
+    "community festivals",
+    "weddings",
+    "corporate functions",
+    "public works support"
+  ],
+  "faqs": [
+    {
+      "q": "Do you serve the Flint metro area?",
+      "a": "Yes, including nearby communities."
+    },
+    {
+      "q": "Can you support municipal-style events?",
+      "a": "Yes, we coordinate for larger public gatherings."
+    },
+    {
+      "q": "Is VIP presentation available?",
+      "a": "Yes, luxury units are ideal for guest-facing occasions."
+    },
+    {
+      "q": "Do you offer emergency rentals?",
+      "a": "Yes, based on current availability."
+    }
+  ]
+}

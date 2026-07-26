@@ -1,0 +1,74 @@
+---
+import ResponsiveImage from '../ResponsiveImage.astro';
+
+interface LinkItem {
+  title: string;
+  description: string;
+  label: string;
+  href: string;
+  image?: { src: string; alt: string } | null;
+}
+
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  image?: { src: string; alt: string } | null;
+  items?: LinkItem[];
+}
+
+const { eyebrow, heading, body, image, items = [] } = Astro.props;
+---
+
+<section class="section-space bg-white">
+  <div class="content-shell">
+    <div class:list={['grid gap-10', image?.src && 'items-end lg:grid-cols-[0.9fr_1.1fr]']}>
+      <div class="max-w-4xl">
+        {eyebrow && (
+          <p class="eyebrow" data-editable="text" data-type="text" data-prop="eyebrow">{eyebrow}</p>
+        )}
+        <h2 class="section-heading mt-5" data-editable="text" data-type="text" data-prop="heading">{heading}</h2>
+        {body && (
+          <p class="editorial-copy mt-7 max-w-2xl" data-editable="text" data-type="text" data-prop="body">{body}</p>
+        )}
+      </div>
+      {image?.src && (
+        <div class="relative min-h-64 overflow-hidden border border-midnight/12" data-editable="image" data-prop="image">
+          <ResponsiveImage
+            src={image.src}
+            alt={image.alt}
+            width={1200}
+            height={800}
+            sizes="(max-width: 1024px) 100vw, 55vw"
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
+      )}
+    </div>
+    <div class="mt-12 grid gap-px border border-midnight/12 bg-midnight/12 sm:grid-cols-2 lg:grid-cols-3" data-editable="array" data-prop="items">
+      {items.map((item) => (
+        <a class="group flex min-h-64 flex-col bg-ivory text-midnight no-underline transition-colors hover:bg-parchment" href={item.href} data-editable="array-item">
+          {item.image?.src && (
+            <div class="h-40 overflow-hidden" data-editable="image" data-prop="image">
+              <ResponsiveImage
+                src={item.image.src}
+                alt={item.image.alt}
+                width={720}
+                height={480}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+              />
+            </div>
+          )}
+          <div class="flex flex-1 flex-col p-7">
+            <h3 class="font-serif text-3xl font-medium leading-none" data-editable="text" data-type="text" data-prop="title">{item.title}</h3>
+            <p class="mt-4 text-sm leading-7 text-charcoal/68" data-editable="text" data-type="text" data-prop="description">{item.description}</p>
+            <span class="mt-auto inline-flex min-h-11 items-end pt-6 text-xs font-semibold tracking-[0.08em] text-gold" data-editable="text" data-type="text" data-prop="label">
+              {item.label} <span class="ml-2" aria-hidden="true">→</span>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

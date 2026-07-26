@@ -1,0 +1,96 @@
+---
+import business from '../../../../content/site/business.json';
+import footer from '../../../../content/site/footer.json';
+import ButtonLink from './ButtonLink.astro';
+import ResponsiveImage from './ResponsiveImage.astro';
+
+const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
+---
+
+<footer class="bg-midnight text-white">
+  <section class="relative isolate overflow-hidden border-b border-white/10 py-18 md:py-24" aria-labelledby="footer-cta-heading">
+    <div class="absolute inset-0 -z-10 opacity-30">
+      <ResponsiveImage
+        src="/images/Wedding Trailer.png"
+        alt=""
+        width={1536}
+        height={1024}
+        class="h-full w-full object-cover object-center"
+      />
+      <div class="image-wash"></div>
+    </div>
+    <div class="content-shell grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
+      <div class="max-w-4xl">
+        <p class="eyebrow text-champagne">Begin with the details</p>
+        <h2 id="footer-cta-heading" class="mt-5 max-w-4xl font-serif text-5xl font-medium leading-[0.92] tracking-[-0.045em] text-balance sm:text-6xl lg:text-7xl">
+          Let the practical parts feel beautifully considered.
+        </h2>
+      </div>
+      <ButtonLink href="/request-quote" label="Request a tailored quote" />
+    </div>
+  </section>
+
+  <div class="content-shell grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_0.8fr_1fr] lg:gap-9 lg:py-20">
+    <div>
+      <a class="inline-flex" href="/" aria-label="Signature Luxe home">
+        <ResponsiveImage
+          src="/images/logo.png"
+          alt=""
+          width={532}
+          height={235}
+          class="h-auto w-52 brightness-0 invert"
+        />
+      </a>
+      <p
+        class="mt-7 max-w-sm text-sm leading-7 text-white/62"
+        data-editable="text"
+        data-type="text"
+        data-prop="@data[footer].tagline"
+      >
+        {footer.tagline}
+      </p>
+      <address class="mt-7 flex flex-col items-start gap-1 text-sm not-italic text-white/72">
+        <span data-editable="text" data-type="text" data-prop="@data[business].serviceRegion">{business.serviceRegion}</span>
+        <a class="text-link min-h-9" href={`mailto:${business.email}`}>{business.email}</a>
+        <a class="text-link min-h-9" href={telephoneHref}>{business.phone}</a>
+      </address>
+    </div>
+
+    {footer.groups.map((group, index) => (
+      <nav aria-label={`${group.heading} links`}>
+        <h2 class="text-xs font-semibold tracking-[0.16em] text-champagne uppercase">{group.heading}</h2>
+        <ul class="mt-5 space-y-1" data-editable="array" data-prop={`@data[footer].groups.${index}.links`}>
+          {group.links.map((item) => (
+            <li data-editable="array-item">
+              <a class="text-link min-h-10 text-white/68" href={item.href} data-editable="text" data-type="text" data-prop="label">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    ))}
+
+    <div>
+      <h2 class="text-xs font-semibold tracking-[0.16em] text-champagne uppercase">Stay connected</h2>
+      <ul class="mt-5 space-y-1">
+        {footer.socials.map((social) => (
+          <li>
+            <a class="text-link min-h-10 text-white/68" href={social.href} target="_blank" rel="noopener noreferrer">
+              {social.label}
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-7 border-l border-champagne/50 pl-4 text-sm leading-6 text-white/55">{footer.serviceStatement}</p>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10 bg-ink/35">
+    <div class="content-shell flex flex-col gap-3 py-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
+      <p>Luxury restroom trailer rentals in Mid-Michigan</p>
+    </div>
+  </div>
+</footer>
