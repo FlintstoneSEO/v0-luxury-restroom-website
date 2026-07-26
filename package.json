@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.33.2",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
+  },
   "scripts": {
     "dev": "next dev",
     "dev:web": "corepack pnpm --filter @signature-luxe/web dev",
