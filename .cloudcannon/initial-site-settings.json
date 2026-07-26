@@ -6,8 +6,8 @@
     "rubyVersion": "3.4.8",
     "nodeVersion": "22",
     "denoVersion": "2.7.1",
-    "install_command": "pnpm install",
-    "build_command": "npx astro build",
+    "install_command": "npm install && pnpm i",
+    "build_command": "pnpm build",
     "output_path": "dist"
   }
 }
