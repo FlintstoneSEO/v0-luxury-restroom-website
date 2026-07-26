@@ -14,12 +14,12 @@ collections_config:
       - "**/*.{md,mdx}"
     disable_url: true
     schemas:
-      default:
+      page:
         path: .cloudcannon/schemas/page.md
         name: Marketing Page
     add_options:
       - name: Marketing Page
-        schema: default
+        schema: page
         icon: wysiwyg
         editor: content
     _enabled_editors:
@@ -40,6 +40,10 @@ collections_config:
       - "home.json"
     disable_url: true
     disable_add: true
+    schemas:
+      homepage:
+        path: .cloudcannon/schemas/homepage.json
+        name: Homepage
     _enabled_editors:
       - data
 
@@ -52,6 +56,10 @@ collections_config:
       - "gallery.json"
     disable_url: true
     disable_add: true
+    schemas:
+      gallery:
+        path: .cloudcannon/schemas/gallery.json
+        name: Gallery
     _enabled_editors:
       - data
 
@@ -65,6 +73,13 @@ collections_config:
       - "resources.json"
     disable_url: true
     disable_add: true
+    schemas:
+      resource_index:
+        path: .cloudcannon/schemas/resource-index.json
+        name: Resource Index
+      service_area_index:
+        path: .cloudcannon/schemas/service-area-index.json
+        name: Service Area Index
     _enabled_editors:
       - data
 
@@ -77,12 +92,12 @@ collections_config:
     icon: local_shipping
     disable_url: true
     schemas:
-      default:
+      trailer:
         path: .cloudcannon/schemas/trailer.json
         name: Trailer
     add_options:
       - name: Trailer
-        schema: default
+        schema: trailer
         icon: local_shipping
         editor: data
     _enabled_editors:
@@ -103,12 +118,12 @@ collections_config:
     icon: event_available
     disable_url: true
     schemas:
-      default:
+      event_type:
         path: .cloudcannon/schemas/event-type.json
         name: Event Type
     add_options:
       - name: Event Type
-        schema: default
+        schema: event_type
         icon: event_available
         editor: data
     _enabled_editors:
@@ -138,7 +153,7 @@ collections_config:
     disable_url: true
     disable_add: true
     schemas:
-      default:
+      service_page_data:
         path: .cloudcannon/schemas/service-page-data.json
         name: Service Page Data
     _enabled_editors:
@@ -152,12 +167,12 @@ collections_config:
     icon: location_on
     disable_url: true
     schemas:
-      default:
+      service_area:
         path: .cloudcannon/schemas/service-area.json
         name: Service Area
     add_options:
       - name: Service Area
-        schema: default
+        schema: service_area
         icon: location_on
         editor: data
     _enabled_editors:
@@ -188,12 +203,12 @@ collections_config:
     icon: help
     disable_url: true
     schemas:
-      default:
+      faq:
         path: .cloudcannon/schemas/faq.json
         name: FAQ
     add_options:
       - name: FAQ
-        schema: default
+        schema: faq
         icon: help
         editor: data
     _enabled_editors:
@@ -207,12 +222,12 @@ collections_config:
     icon: format_quote
     disable_url: true
     schemas:
-      default:
+      testimonial:
         path: .cloudcannon/schemas/testimonial.json
         name: Testimonial
     add_options:
       - name: Testimonial
-        schema: default
+        schema: testimonial
         icon: format_quote
         editor: data
     _enabled_editors:
@@ -226,12 +241,12 @@ collections_config:
     icon: library_books
     disable_url: true
     schemas:
-      default:
+      resource:
         path: .cloudcannon/schemas/resource.json
         name: Planning Resource
     add_options:
       - name: Planning Resource
-        schema: default
+        schema: resource
         icon: library_books
         editor: data
     _enabled_editors:
