@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-# CloudCannon sources this hook before running its automatic `npm install`.
+# CloudCannon sources this hook before running its automatic package install.
+# Allow pnpm to run native dependency build scripts required by packages such as sharp.
+export PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS=true
+export npm_config_dangerously_allow_all_builds=true
+
 # Older site snapshots can still contain this unused React 17-only package,
 # which makes npm 10 reject the dependency tree before the Astro build starts.
 if node -e "const p=require('./package.json'); process.exit(p.dependencies?.['@reach/combobox'] ? 0 : 1)"; then
