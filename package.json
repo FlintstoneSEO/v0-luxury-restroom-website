@@ -19,7 +19,8 @@
     "lint": "eslint .",
     "verify:phase5": "node --experimental-strip-types scripts/verify-phase5-customer-workflows.mjs",
     "seo:audit-links": "node --experimental-strip-types scripts/audit-internal-links.ts",
-    "seo:audit-content": "node --experimental-strip-types scripts/audit-seo-content.ts"
+    "seo:audit-content": "node --experimental-strip-types scripts/audit-seo-content.ts",
+    "content:validate": "node scripts/validate-content.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

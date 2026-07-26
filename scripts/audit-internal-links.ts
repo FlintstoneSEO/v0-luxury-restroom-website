@@ -1,13 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-// @ts-ignore - explicit .ts extension required for node --experimental-strip-types runtime
-import { finalRoutes, cityPages } from '../lib/seo.ts'
-// @ts-ignore - explicit .ts extension required for node --experimental-strip-types runtime
-import { resources } from '../lib/resources.ts'
+const routesData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content/site/routes.json'), 'utf8'))
+const finalRoutes = routesData.routes as string[]
+const cityPages = fs.readdirSync(path.join(process.cwd(), 'content/service-areas')).filter((file) => file.endsWith('.json')).map((file) => JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content/service-areas', file), 'utf8')))
+const resources = fs.readdirSync(path.join(process.cwd(), 'content/resources')).filter((file) => file.endsWith('.json')).map((file) => JSON.parse(fs.readFileSync(path.join(process.cwd(), 'content/resources', file), 'utf8')))
 
 const ROOT = process.cwd()
-const SCAN_DIRS = ['app', 'components', 'lib']
-const VALID_EXTENSIONS = new Set(['.ts', '.tsx'])
+const SCAN_DIRS = ['app', 'components', 'lib', 'content']
+const VALID_EXTENSIONS = new Set(['.ts', '.tsx', '.json', '.md', '.mdx'])
 const LOW_LINK_THRESHOLD = Number(process.env.SEO_AUDIT_LOW_THRESHOLD ?? 2)
 
 const LEGACY_URLS = [
@@ -47,7 +47,7 @@ function normalizeUrl(url: string): string {
 
 function findInternalLinks(content: string): string[] {
   // Matches href="/...", href='...', href={`/...`}, and plain string constants '/...'
-  const regex = /(?:href|to|item|urlPath|pathname)\s*[:=]\s*(?:\{\s*)?(["'`])(\/[A-Za-z0-9\-/_?=#.&]*)\1/g
+  const regex = /["']?(?:href|to|item|urlPath|pathname)["']?\s*[:=]\s*(?:\{\s*)?(["'`])(\/[A-Za-z0-9\-/_?=#.&]*)\1/g
   const matches: string[] = []
 
   for (const match of content.matchAll(regex)) {

@@ -1,41 +1,7 @@
-export const siteUrl = 'https://www.signatureluxeevents.com'
+import routes from '@/content/site/routes.json'
+import seoDefaults from '@/content/site/seo-defaults.json'
+import { getAllServiceAreas } from '@/lib/content/service-areas'
 
-export const finalRoutes = [
-  '/',
-  '/luxury-restroom-trailer-rentals',
-  '/wedding-restroom-trailer-rentals',
-  '/private-event-restroom-trailers',
-  '/corporate-event-restroom-trailers',
-  '/festival-community-event-restroom-trailers',
-  '/construction-long-term-restroom-trailer-rentals',
-  '/emergency-disaster-relief-restroom-trailers',
-  '/luxury-restroom-trailer-features',
-  '/service-areas',
-  '/faq',
-  '/resources',
-  '/blog',
-  '/request-quote',
-  '/gallery',
-  '/contact',
-  '/start-here',
-] as const
-
-export const cityPages = [
-  { slug: 'lansing-mi', city: 'Lansing' },
-  { slug: 'east-lansing-mi', city: 'East Lansing' },
-  { slug: 'okemos-mi', city: 'Okemos' },
-  { slug: 'haslett-mi', city: 'Haslett' },
-  { slug: 'grand-ledge-mi', city: 'Grand Ledge' },
-  { slug: 'dewitt-mi', city: 'DeWitt' },
-  { slug: 'holt-mi', city: 'Holt' },
-  { slug: 'mason-mi', city: 'Mason' },
-  { slug: 'jackson-mi', city: 'Jackson' },
-  { slug: 'howell-mi', city: 'Howell' },
-  { slug: 'flint-mi', city: 'Flint' },
-  { slug: 'grand-rapids-mi', city: 'Grand Rapids' },
-  { slug: 'ann-arbor-mi', city: 'Ann Arbor' },
-  { slug: 'brighton-mi', city: 'Brighton' },
-  { slug: 'charlotte-mi', city: 'Charlotte' },
-  { slug: 'battle-creek-mi', city: 'Battle Creek' },
-  { slug: 'kalamazoo-mi', city: 'Kalamazoo' },
-] as const
+export const siteUrl = seoDefaults.canonicalOrigin
+export const finalRoutes = routes.routes
+export const cityPages = getAllServiceAreas().map(({ slug, city }) => ({ slug, city }))

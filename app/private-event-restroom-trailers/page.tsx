@@ -24,149 +24,30 @@ import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { fetchSiteMedia, getSiteMediaMap, resolveSiteImage } from "@/lib/site-media"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import rawContent from "@/content/service-pages/private-events.json"
+import { defineServicePageData } from "@/lib/content/service-pages"
 
-const title =
-  "Private Event Restroom Trailer Rentals in Lansing & Mid-Michigan | Signature Luxe Events"
-const description =
-  "Private party restroom trailer rentals for graduations, reunions, birthdays, and backyard gatherings with property-friendly delivery and setup planning."
-const canonical =
-  "https://www.signatureluxeevents.com/private-event-restroom-trailers"
+const content = defineServicePageData(rawContent)
+
+const { title, description, canonical } = content.seo
+
 export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical },
-  openGraph: { title, description, url: canonical },
+  title, description, alternates: { canonical },
+  openGraph: { title, description, url: canonical ?? undefined },
   twitter: { card: "summary_large_image", title, description },
 }
 
-const eventFeatures = [
-  {
-    title: "Elegant Design",
-    description:
-      "Modern finishes and stylish interiors that complement any private event aesthetic.",
-    icon: Sparkles,
-  },
-  {
-    title: "Guest Comfort",
-    description:
-      "Climate-controlled interiors keep guests comfortable in any weather.",
-    icon: Thermometer,
-  },
-  {
-    title: "Private Stalls",
-    description:
-      "Full-size private stalls with real flushing toilets for a premium experience.",
-    icon: DoorOpen,
-  },
-  {
-    title: "Fresh Water",
-    description:
-      "Running water for hand washing with quality soap and paper products.",
-    icon: Droplets,
-  },
-]
+const contentIcons = { Sparkles, Thermometer, DoorOpen, Droplets, GraduationCap, Users, PartyPopper, Home }
 
-const eventTypes = [
-  {
-    title: "Graduation Parties",
-    description:
-      "Open-house style celebrations with rotating guests and dense arrival windows. We size trailers for high-volume turnout.",
-    icon: GraduationCap,
-  },
-  {
-    title: "Family Reunions",
-    description:
-      "All-day events at private properties and parks that benefit from dedicated restroom access away from the house.",
-    icon: Users,
-  },
-  {
-    title: "Birthday Celebrations",
-    description:
-      "Milestone birthdays and backyard parties where guest comfort is a priority and indoor traffic needs to be managed.",
-    icon: PartyPopper,
-  },
-  {
-    title: "Backyard Gatherings",
-    description:
-      "Large private property events where keeping guests out of the home improves the hosting experience for everyone.",
-    icon: Home,
-  },
-]
+const eventFeatures = content.data.eventFeatures.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const benefits = [
-  {
-    title: "Protect Your Indoor Bathrooms",
-    description:
-      "Keeping restroom traffic outside helps preserve your home interior and reduces post-event cleanup burden. This is especially valuable for high-volume celebrations.",
-  },
-  {
-    title: "Guest Count and Duration Planning",
-    description:
-      "A realistic guest estimate is the key input for selecting 2, 3, or 4-station units. We account for event length and likely peak usage windows to avoid undersizing.",
-  },
-  {
-    title: "Driveway and Yard Placement",
-    description:
-      "Most private sites require advance checks for access width, turning space, and stable placement surfaces. We review those details before delivery day.",
-  },
-]
+const eventTypes = content.data.eventTypes.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const eventGallery = [
-  {
-    id: "p1",
-    src: "/images/Special Event Trailer.png",
-    alt: "Restroom trailer at private backyard event",
-    category: "Events",
-  },
-  {
-    id: "p2",
-    src: "/images/Special Event Trailer.png",
-    alt: "Luxury restroom trailer setup at backyard party",
-    category: "Events",
-  },
-  {
-    id: "p3",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
-    alt: "Modern vanity station inside private event restroom trailer",
-    category: "Interior",
-  },
-  {
-    id: "p4",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03430-tFWoDUOQcCiO6n1GbK4NfiTkB8gEbx.jpg",
-    alt: "Bright vanity area in luxury restroom trailer",
-    category: "Interior",
-  },
-]
+const benefits = content.data.benefits
 
-const privateEventFaqs = [
-  {
-    question: "Can I rent a trailer for a graduation party at home?",
-    answer:
-      "Yes. Graduation open houses are a top use case, and we can recommend sizing based on your expected turnout.",
-  },
-  {
-    question: "Will this work in a driveway or backyard?",
-    answer:
-      "Usually yes. We confirm access and surface conditions ahead of delivery to ensure setup goes smoothly.",
-  },
-  {
-    question: "How far out should I reserve?",
-    answer:
-      "Peak weekends book sooner, so early booking is recommended. We can still check short-notice availability depending on inventory.",
-  },
-  {
-    question: "How do I know what size trailer I need?",
-    answer:
-      "Share your expected guest count and event duration and we will recommend the right station count. We account for all-day events with rotating guests differently than fixed-time gatherings.",
-  },
-  {
-    question: "Do you serve areas outside Lansing?",
-    answer:
-      "Yes. We deliver across Mid-Michigan and nearby cities including Jackson, Howell, Flint, Ann Arbor, and Grand Rapids.",
-  },
-]
+const eventGallery = content.data.eventGallery
 
-export const dynamic = "force-dynamic"
+const privateEventFaqs = content.data.privateEventFaqs
 
 export default async function PrivateEventRestroomTrailersPage() {
 

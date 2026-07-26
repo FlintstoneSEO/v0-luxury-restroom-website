@@ -26,87 +26,34 @@ import { LiteYouTubeEmbed } from "@/components/lite-youtube-embed"
 import type { Metadata } from "next"
 import { localBusinessJsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo-schema"
 import { fetchHomepageMedia, getHomepageMediaMap, resolveHomepageImage } from "@/lib/homepage-media"
+import { getHomepage } from "@/lib/content/pages"
 
 
 export const revalidate = 3600
 
+const homepageContent = getHomepage()
+
 export const metadata: Metadata = {
-  title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
-  description:
-    'Rent luxury restroom trailers in Lansing, MI for weddings, private events, corporate events, festivals, construction sites, and long-term needs.',
-  alternates: { canonical: '/' },
+  title: homepageContent.seo.title,
+  description: homepageContent.seo.description,
+  alternates: { canonical: homepageContent.seo.canonical ?? '/' },
+  robots: homepageContent.seo.noindex ? { index: false, follow: false } : undefined,
 }
 
-const features = [
-  { title: "Climate Controlled", icon: Thermometer },
-  { title: "Private Flushing Stalls", icon: DoorOpen },
-  { title: "Modern Vanity Stations", icon: Sparkles },
-  { title: "Fresh Water System", icon: Droplets },
-  { title: "Event Ready Presentation", icon: Presentation },
-  { title: "Power Access Support", icon: Zap },
-]
+const featureIcons = {
+  temperature: Thermometer,
+  door: DoorOpen,
+  sparkles: Sparkles,
+  water: Droplets,
+  presentation: Presentation,
+  power: Zap,
+}
 
-const processSteps = [
-  { number: 1, title: "Check Availability" },
-  { number: 2, title: "Share Your Event Details" },
-  { number: 3, title: "Receive a Custom Proposal" },
-  { number: 4, title: "Approve and Reserve Your Date" },
-]
+const features = homepageContent.features.map((feature) => ({ ...feature, icon: featureIcons[feature.icon] }))
+const processSteps = homepageContent.processSteps
+const galleryImages = homepageContent.galleryImages
+const serviceAreas = homepageContent.serviceAreas
 
-const galleryImages = [
-  { 
-    id: "1", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg",
-    alt: "Luxury restroom trailer exterior in Lansing Michigan", 
-    category: "Exterior" 
-  },
-  { 
-    id: "2", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion2-XnFvvRp9dg0l3UMsQjxxTXQ6sRYgSI.jpg",
-    alt: "Modern vanity station with succulent decor", 
-    category: "Interior" 
-  },
-  { 
-    id: "3", 
-    src: "/images/Wedding Trailer.png",
-    alt: "Wedding restroom trailer rental in Mid-Michigan", 
-    category: "Weddings" 
-  },
-  { 
-    id: "4", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion2-TjkXrrTaVwy3CswhDQSAdCK80Grr59.jpg",
-    alt: "4-Station vanity with succulent artwork", 
-    category: "Interior" 
-  },
-  { 
-    id: "5", 
-    src: "/images/Special Event Trailer.png",
-    alt: "Mobile restroom trailer for outdoor events", 
-    category: "Events" 
-  },
-  { 
-    id: "6", 
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion4-CFlX5FxXUKJ43DEnRyhr5BWnmbQ0p2.jpg",
-    alt: "2-Station interior with tree ring artwork", 
-    category: "Interior" 
-  },
-]
-
-const serviceAreas = [
-  "Lansing",
-  "East Lansing",
-  "Okemos",
-  "Haslett",
-  "Grand Ledge",
-  "DeWitt",
-  "Holt",
-  "Mason",
-  "Charlotte",
-  "Howell",
-  "Jackson",
-  "Flint",
-  "Ann Arbor",
-]
 
 export default async function HomePage() {
   const mediaRecords = await fetchHomepageMedia()
@@ -120,19 +67,23 @@ export default async function HomePage() {
   const specialEventsImage = resolveHomepageImage(mediaMap, "special_events")
   const trailerGalleryImage = resolveHomepageImage(mediaMap, "trailer_gallery")
 
-  const services = [
-    { title: "Weddings", description: "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.", href: "/wedding-restroom-trailer-rentals", imageSrc: weddingsImage.src, imageAlt: weddingsImage.alt, imageUnoptimized: weddingsImage.unoptimized },
-    { title: "Special Events", description: "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.", href: "/private-event-restroom-trailers", imageSrc: specialEventsImage.src, imageAlt: specialEventsImage.alt, imageUnoptimized: specialEventsImage.unoptimized },
-    { title: "Construction / Long-Term", description: "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.", href: "/construction-long-term-restroom-trailer-rentals", imageSrc: trailerGalleryImage.src, imageAlt: trailerGalleryImage.alt, imageUnoptimized: trailerGalleryImage.unoptimized },
-    { title: "Disaster Relief / Government", description: "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.", href: "/emergency-disaster-relief-restroom-trailers", imageSrc: festivalsImage.src, imageAlt: festivalsImage.alt, imageUnoptimized: festivalsImage.unoptimized },
-  ]
+  const homepageMedia = {
+    weddings: weddingsImage,
+    private_parties: privatePartiesImage,
+    corporate_events: corporateEventsImage,
+    festivals: festivalsImage,
+    special_events: specialEventsImage,
+    trailer_gallery: trailerGalleryImage,
+  }
+  const services = homepageContent.services.map((service) => {
+    const image = homepageMedia[service.mediaKey as keyof typeof homepageMedia]
+    return { ...service, imageSrc: image.src, imageAlt: image.alt, imageUnoptimized: image.unoptimized }
+  })
 
-  const eventScenarios = [
-    { ...weddingsImage, displayLabel: "Weddings" },
-    { ...privatePartiesImage, displayLabel: "Parties" },
-    { ...corporateEventsImage, displayLabel: "Corporate" },
-    { ...festivalsImage, displayLabel: "Festivals" },
-  ]
+  const eventScenarios = homepageContent.eventScenarios.map((scenario) => ({
+    ...homepageMedia[scenario.mediaKey as keyof typeof homepageMedia],
+    displayLabel: scenario.label,
+  }))
 
   const business = localBusinessJsonLd("Lansing")
   const website = websiteJsonLd()
@@ -146,7 +97,7 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(video) }} />
       <Header />
       <main>
-        <HomeHero heroImage={heroImage} />
+        <HomeHero heroImage={heroImage} content={homepageContent.hero} />
 
         {/* Event Scenarios Showcase */}
         <section data-home-next-section className="py-16 bg-white border-b border-cream">

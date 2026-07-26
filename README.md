@@ -72,3 +72,7 @@ To learn more, take a look at the following resources:
 - [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
 
 <a href="https://v0.app/chat/api/kiro/clone/FlintstoneSEO/v0-luxury-restroom-website" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+
+## CloudCannon headless content
+
+CloudCannon edits Git-backed public content only; Vercel continues to build and host the runtime Next.js application. See [the headless CMS guide](docs/cloudcannon-headless.md) for architecture, editor workflow, previewing, publishing, and security boundaries.

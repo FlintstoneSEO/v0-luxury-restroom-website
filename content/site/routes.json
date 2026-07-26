@@ -1,0 +1,9 @@
+{
+  "routes": [
+    "/", "/luxury-restroom-trailer-rentals", "/wedding-restroom-trailer-rentals",
+    "/private-event-restroom-trailers", "/corporate-event-restroom-trailers",
+    "/festival-community-event-restroom-trailers", "/construction-long-term-restroom-trailer-rentals",
+    "/emergency-disaster-relief-restroom-trailers", "/luxury-restroom-trailer-features",
+    "/service-areas", "/faq", "/resources", "/blog", "/request-quote", "/gallery", "/contact", "/start-here"
+  ]
+}

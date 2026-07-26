@@ -1,24 +1,30 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { ServicePageTemplate } from '@/components/service-page-template'
+import { getEventTypeOrThrow } from '@/lib/content/event-types'
 
-const title = 'Festival Restroom Trailer Rentals Lansing MI | Signature Luxe Events'
-const description = 'Plan festival restroom trailer rental in Michigan with support for crowd flow, line reduction, multi-day sanitation, and community event coordination in Lansing and Mid-Michigan.'
-const canonical = 'https://www.signatureluxeevents.com/festival-community-event-restroom-trailers'
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical }, twitter: { card: "summary_large_image", title, description } }
+const content = getEventTypeOrThrow('festivals-community-events')
+
+export const metadata: Metadata = {
+  title: content.seo.title,
+  description: content.seo.description,
+  alternates: { canonical: content.seo.canonical },
+  openGraph: { title: content.seo.title, description: content.seo.description, url: content.seo.canonical ?? content.urlPath },
+  twitter: { card: 'summary_large_image', title: content.seo.title, description: content.seo.description },
+}
 
 export default function Page() {
-  return <ServicePageTemplate pageTitle='Festival and Community Event Restroom Trailers' serviceName='Festival restroom trailer rental' urlPath='/festival-community-event-restroom-trailers' intro='Festival and community event schedules create predictable restroom surges. We help organizers across Lansing and Mid-Michigan plan trailer capacity, placement, and service timing for cleaner, smoother public events.' ctaTitle='Request a Quote for Festival and Community Event Restroom Trailers' sections={[
-    { heading: 'Restroom Trailer Planning for Public Events and Festivals', paragraphs: ['From city festivals and farmers markets to outdoor concerts and municipal celebrations, public events require restroom plans that match guest volume and event layout. We help estimate practical trailer needs based on attendance, program timing, and site conditions so organizers avoid underplanning.', 'Whether your event is in a downtown corridor, public park, or school-adjacent venue, planning early helps align delivery windows, setup access, and expected usage patterns before opening day.'] },
-    { heading: 'Reduce Lines During Peak Crowd Windows', paragraphs: ['Line management matters most during concentrated traffic periods such as lunch blocks, headline performances, and post-parade crowd movement. We help position units and recommend capacity with peak windows in mind to reduce bottlenecks and improve attendee flow.', 'For larger gatherings, distributing restrooms across entrance areas, activity zones, and central pathways can improve circulation and keep single locations from becoming overloaded.'] },
-    { heading: 'Multi-Day Service and Sanitation Scheduling', paragraphs: ['Weekend festivals and multi-day community events need service plans that maintain clean, dependable facilities through repeated high-volume use. We coordinate service intervals around your schedule so restroom conditions stay consistent from day one through closeout.', 'When events include early setup, late evening programming, or staggered attendance across multiple days, we can align sanitation timing to minimize disruption during active guest hours.'] },
-    { heading: 'Placement Near Vendors, Stages, and Activity Zones', paragraphs: ['Placement strategy affects both convenience and operations. We plan locations near food vendor rows, food truck zones, stage areas, and family activity spaces while preserving access for service vehicles and event staff.', 'Our team also reviews surfaces, route access, and utility considerations so setup supports both attendee convenience and day-to-day event operations.'] },
-    { heading: 'Support for Municipal and Community Event Organizers', paragraphs: ['We regularly support organizers coordinating with municipalities, parks departments, neighborhood associations, and volunteer committees. Clear communication on timing, access restrictions, and site contacts helps keep delivery and pickup on schedule.', 'If your event requires coordination across multiple stakeholders, we provide straightforward planning inputs so logistics remain organized and transparent.'] },
-    { heading: 'Serving Lansing and Mid-Michigan Festival Markets', paragraphs: ['We serve Lansing, East Lansing, and nearby Mid-Michigan communities for public events of varying scale. Common service areas include community parks, town centers, school grounds, and regional festival venues.', 'If you are searching for portable restroom trailer rental near you for a public gathering, share your date, location, and estimated attendance so we can provide an accurate availability-based quote.'] },
-  ]} faqs={[
-    { q: 'How many restroom trailers do we need for a city festival or community event?', a: 'The right quantity depends on total attendance, event duration, and when traffic peaks. We help estimate practical capacity after reviewing your schedule, headcount range, and site layout.' },
-    { q: 'Can you support multi-day festivals with recurring service?', a: 'Yes. We can build sanitation and service intervals into your rental plan for multi-day events so facilities stay clean and reliable throughout the full schedule.' },
-    { q: 'Do you coordinate placement for food truck areas, stages, and vendor rows?', a: 'Yes. We plan placement around high-traffic zones such as vendor and performance areas while preserving service access and crowd movement.' },
-    { q: 'Do you work with municipal and community event coordinators?', a: 'Absolutely. We regularly coordinate with city staff, parks teams, and local organizing committees to align on access windows and operational logistics.' },
-    { q: 'What details should we provide to get a quote for a Lansing or Mid-Michigan event?', a: 'Please include the event date, location, estimated attendance, event hours, and any known access or utility constraints. That helps us provide accurate recommendations and pricing.' },
-  ]} resourceImageSrc='/images/MSU Tailgate Rental Restroom.png' resourceImageAlt='Outdoor restroom trailer placement for community festival operations' resourceEyebrow='Festival Planning' resourceTitle='Helpful Resources for Community Event Organizers' resourceDescription='Review service areas, capacity planning pages, and event support resources for public gatherings.' />
+  return <ServicePageTemplate
+    pageTitle={content.pageTitle}
+    serviceName={content.serviceName}
+    urlPath={content.urlPath}
+    intro={content.intro}
+    ctaTitle={content.ctaTitle}
+    sections={content.sections}
+    faqs={content.faqs.map((faq) => ({ q: faq.question, a: faq.answer }))}
+    resourceImageSrc={content.resource.image.src}
+    resourceImageAlt={content.resource.image.alt}
+    resourceEyebrow={content.resource.eyebrow}
+    resourceTitle={content.resource.title}
+    resourceDescription={content.resource.description}
+  />
 }

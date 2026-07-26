@@ -3,16 +3,17 @@ import Link from 'next/link'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
-import { resources } from '@/lib/resources'
+import { getAllResources } from '@/lib/content/resources'
+import { getResourceIndex } from '@/lib/content/index-pages'
+
+const resources = getAllResources()
 import { siteUrl } from '@/lib/seo'
 
+const indexContent = getResourceIndex()
 export const metadata: Metadata = {
-  title: 'Resource Center | Planning Guides for Restroom Trailer Rentals',
-  description:
-    'Explore planning guides, checklists, and educational resources for restroom trailer rentals in Lansing and Mid-Michigan.',
-  alternates: {
-    canonical: '/resources',
-  },
+  title: indexContent.seo.title,
+  description: indexContent.seo.description,
+  alternates: { canonical: indexContent.seo.canonical },
 }
 
 const groupedResources = resources.reduce<Record<string, typeof resources>>((acc, resource) => {
@@ -21,22 +22,10 @@ const groupedResources = resources.reduce<Record<string, typeof resources>>((acc
 }, {})
 
 
-const featuredResourceSlugs = [
-  'restroom-trailer-vs-porta-potty',
-  'how-many-restroom-trailers-for-wedding',
-  'restroom-trailer-setup-requirements',
-  'restroom-trailer-rental-cost-michigan',
-]
-
-const featuredResources = featuredResourceSlugs
+const featuredResources = indexContent.featuredSlugs
   .map((slug) => resources.find((resource) => resource.slug === slug))
   .filter((resource): resource is (typeof resources)[number] => Boolean(resource))
-
-const serviceLinks = [
-  { href: '/wedding-restroom-trailer-rentals', label: 'Wedding Restroom Trailer Rentals' },
-  { href: '/festival-community-event-restroom-trailers', label: 'Festival & Community Event Restrooms' },
-  { href: '/construction-long-term-restroom-trailer-rentals', label: 'Construction & Long-Term Rentals' },
-]
+const serviceLinks = indexContent.serviceLinks
 
 export default function ResourcesPage() {
   return (

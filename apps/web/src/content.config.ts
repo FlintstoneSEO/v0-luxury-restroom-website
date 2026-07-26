@@ -157,7 +157,7 @@ const pageSections = z.discriminatedUnion('_type', [
 ]);
 
 const pages = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: '../../content/pages' }),
   schema: z.object({
     _schema: z.literal('page'),
     title: z.string().min(1),
@@ -169,51 +169,51 @@ const pages = defineCollection({
 });
 
 const trailers = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/trailers' }),
+  loader: glob({ pattern: '**/*.json', base: '../../content/trailers' }),
   schema: z.object({
+    _schema: z.literal('trailer'),
+    slug: z.string().min(1),
+    draft: z.boolean().default(true),
+    order: z.number().int().nonnegative(),
     name: z.string().min(1),
-    summary: z.string().min(1),
     capacity: z.string().min(1),
-    stations: z.number().int().positive(),
-    featuredImage: imageField,
-    gallery: z.array(imageField).default([]),
-    features: z.array(z.string()).default([]),
-    seo: seoFields,
-    draft: z.boolean().default(false),
+    description: z.string().min(1),
+    features: z.array(z.string()),
+    popular: z.boolean().default(false),
   }),
 });
 
 const eventTypes = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/event-types' }),
+  loader: glob({ pattern: '**/*.json', base: '../../content/event-types' }),
   schema: z.object({
-    name: z.string().min(1),
-    summary: z.string().min(1),
-    featuredImage: imageField,
-    relatedTrailers: z.array(z.string()).default([]),
-    faqs: z.array(z.string()).default([]),
-    sections: z.array(pageSections).default([]),
+    _schema: z.literal('event_type'),
+    slug: z.string().min(1),
+    draft: z.boolean().default(true),
     seo: seoFields,
-    draft: z.boolean().default(false),
+    pageTitle: z.string().min(1),
+    serviceName: z.string().min(1),
+    urlPath: z.string().min(1),
+    intro: z.string().min(1),
+    ctaTitle: z.string().min(1),
+    sections: z.array(z.object({ heading: z.string(), paragraphs: z.array(z.string()) })),
+    faqs: z.array(z.object({ question: z.string(), answer: z.string() })),
+    resource: z.object({ image: imageField, eyebrow: z.string(), title: z.string(), description: z.string() }),
   }),
 });
 
 const serviceAreas = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/service-areas' }),
+  loader: glob({ pattern: '**/*.json', base: '../../content/service-areas' }),
   schema: z.object({
-    city: z.string().min(1),
-    state: z.string().length(2),
-    summary: z.string().min(1),
-    nearbyAreas: z.array(z.string()).default([]),
-    featuredImage: imageField.nullish(),
-    faqs: z.array(z.string()).default([]),
-    seo: seoFields,
-    draft: z.boolean().default(false),
-  }),
+    _schema: z.literal('service_area'), slug: z.string(), city: z.string(), state: z.string().length(2),
+    draft: z.boolean().default(true), priority: z.boolean().default(false), intro: z.string(), nearby: z.string(),
+    venueNote: z.string(), useCases: z.array(z.string()), faqs: z.array(z.object({ q: z.string(), a: z.string() })),
+  }).passthrough(),
 });
 
 const faqs = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/faqs' }),
+  loader: glob({ pattern: '**/*.json', base: '../../content/faqs' }),
   schema: z.object({
+    _schema: z.literal('faq'),
     question: z.string().min(1),
     answer: z.string().min(1),
     category: z.string().min(1),
@@ -223,8 +223,9 @@ const faqs = defineCollection({
 });
 
 const testimonials = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/testimonials' }),
+  loader: glob({ pattern: '**/*.json', base: '../../content/testimonials' }),
   schema: z.object({
+    _schema: z.literal('testimonial').default('testimonial'),
     customerName: z.string().min(1),
     quote: z.string().min(1),
     eventType: z.string().nullish(),
@@ -232,22 +233,20 @@ const testimonials = defineCollection({
     image: imageField.nullish(),
     featured: z.boolean().default(false),
     order: z.number().int().nonnegative().default(0),
+    published: z.boolean().default(false),
   }),
 });
 
-const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+
+
+const resources = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: '../../content/resources' }),
   schema: z.object({
-    title: z.string().min(1),
-    excerpt: z.string().min(1),
-    publishedAt: z.coerce.date(),
-    updatedAt: z.coerce.date().nullish(),
-    author: z.string().min(1),
-    featuredImage: imageField,
-    categories: z.array(z.string()).default([]),
-    seo: seoFields,
-    draft: z.boolean().default(false),
-  }),
+    _schema: z.literal('resource'), draft: z.boolean().default(true), slug: z.string(), title: z.string(),
+    metaTitle: z.string(), metaDescription: z.string(), excerpt: z.string(), category: z.string(),
+    publishDate: z.string(), updatedDate: z.string(), heroImage: z.string(), heroImageAlt: z.string(),
+    sections: z.array(z.object({ heading: z.string(), content: z.array(z.string()) })),
+  }).passthrough(),
 });
 
 export const collections = {
@@ -257,5 +256,5 @@ export const collections = {
   serviceAreas,
   faqs,
   testimonials,
-  blog,
+  resources,
 };

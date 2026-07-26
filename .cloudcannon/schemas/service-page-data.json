@@ -1,0 +1,13 @@
+{
+  "_schema": "service_page_data",
+  "slug": "new-service-page",
+  "draft": true,
+  "seo": {
+    "title": "New Service Page | Signature Luxe",
+    "description": "Add a unique search description.",
+    "canonical": null,
+    "noindex": true,
+    "schema": "service"
+  },
+  "data": {}
+}

@@ -5,7 +5,10 @@ import { notFound } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
-import { resources, resourcesBySlug, sectionHeadingToId } from '@/lib/resources'
+import { sectionHeadingToId } from '@/lib/resources'
+import { getAllResources, getResourceBySlug } from '@/lib/content/resources'
+
+const resources = getAllResources()
 import { breadcrumbJsonLd, business } from '@/lib/seo-schema'
 
 export function generateStaticParams() {
@@ -14,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const resource = resourcesBySlug[slug]
+  const resource = getResourceBySlug(slug)
   if (!resource) return {}
 
   return {
@@ -36,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ResourceArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const resource = resourcesBySlug[slug]
+  const resource = getResourceBySlug(slug)
   if (!resource) notFound()
 
   const articleSchema = {

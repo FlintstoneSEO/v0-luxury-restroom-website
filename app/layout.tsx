@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Montserrat } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import './globals.css'
+import { getSiteSettings } from '@/lib/content/site'
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ['latin'],
@@ -18,27 +19,16 @@ const montserrat = Montserrat({
   display: 'swap',
 })
 
+const { business, seo } = getSiteSettings()
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.signatureluxeevents.com'),
-  title: {
-    default: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
-    template: '%s | Signature Luxe Events & Amenities',
-  },
-  description: 'Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, festivals, construction sites, and long-term use throughout Mid-Michigan.',
-  alternates: {
-    canonical: '/',
-  },
-  keywords: [
-    'luxury restroom trailer rental Lansing MI',
-    'restroom trailer rental Lansing MI',
-    'wedding restroom trailer rental Lansing MI',
-    'luxury portable restroom rental Michigan',
-    'mobile restroom trailer rental Michigan',
-    'event restroom trailer rental Lansing',
-    'restroom trailer rentals Mid-Michigan',
-  ],
-  authors: [{ name: 'Signature Luxe Events & Amenities' }],
-  creator: 'Signature Luxe Events & Amenities',
+  metadataBase: new URL(seo.canonicalOrigin),
+  title: { default: seo.defaultTitle, template: seo.titleTemplate },
+  description: seo.defaultDescription,
+  alternates: { canonical: '/' },
+  keywords: seo.keywords,
+  authors: [{ name: business.name }],
+  creator: business.name,
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -48,31 +38,19 @@ export const metadata: Metadata = {
     apple: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
   },
   openGraph: {
-    title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
-    description: 'Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, festivals, construction sites, and long-term use throughout Mid-Michigan.',
-    url: 'https://www.signatureluxeevents.com',
-    siteName: 'Signature Luxe Events & Amenities',
-    locale: 'en_US',
+    title: seo.defaultTitle,
+    description: seo.defaultDescription,
+    url: seo.canonicalOrigin,
+    siteName: seo.siteName,
+    locale: seo.locale,
     type: 'website',
-    images: [
-      {
-        url: '/images/Wedding Trailer.png',
-        width: 1200,
-        height: 630,
-        alt: 'Signature Luxe luxury restroom trailer at an outdoor Michigan wedding event',
-      },
-    ],
+    images: [{ url: seo.defaultImage.src, width: seo.defaultImage.width, height: seo.defaultImage.height, alt: seo.defaultImage.alt }],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events',
-    description: 'Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, festivals, construction sites, and long-term use throughout Mid-Michigan.',
-    images: ['/images/Wedding Trailer.png'],
+    card: 'summary_large_image', title: seo.defaultTitle,
+    description: seo.defaultDescription, images: [seo.defaultImage.src],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 }
 
 export const viewport: Viewport = {

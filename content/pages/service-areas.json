@@ -1,0 +1,14 @@
+{
+  "_schema": "service_area_index",
+  "seo": {
+    "title": "Service Areas | Luxury Restroom Trailer Rentals Michigan",
+    "description": "Signature Luxe Events serves Lansing, East Lansing, Okemos, Haslett, Grand Ledge, DeWitt, Holt, Mason, and surrounding Mid-Michigan communities with luxury restroom trailer rentals.",
+    "canonical": "/service-areas",
+    "noindex": false,
+    "schema": "service"
+  },
+  "primarySlugs": ["lansing-mi", "east-lansing-mi", "okemos-mi", "haslett-mi", "grand-ledge-mi", "dewitt-mi", "jackson-mi", "howell-mi"],
+  "featuredSlugs": ["lansing-mi", "east-lansing-mi"],
+  "extendedSlugs": ["flint-mi", "ann-arbor-mi", "grand-rapids-mi", "charlotte-mi", "battle-creek-mi", "kalamazoo-mi", "brighton-mi"],
+  "additionalMarkets": ["Novi", "Livonia", "Saginaw"]
+}
