@@ -1,0 +1,197 @@
+---
+import navigation from '../data/navigation.json';
+import business from '../data/business.json';
+import ButtonLink from './ButtonLink.astro';
+import ResponsiveImage from './ResponsiveImage.astro';
+
+const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
+---
+
+<header class="sticky top-0 z-50 border-b border-white/10 bg-midnight text-white shadow-[0_12px_40px_rgb(4_12_18/0.16)]">
+  <div class="hidden border-b border-white/10 lg:block">
+    <div class="content-shell flex min-h-9 items-center justify-between gap-6 text-[0.6875rem] tracking-[0.1em] text-white/65">
+      <p
+        data-editable="text"
+        data-type="text"
+        data-prop="@data[navigation].utilityMessage"
+      >
+        {navigation.utilityMessage}
+      </p>
+      <div class="flex items-center gap-5">
+        <a class="hover:text-champagne" href={`mailto:${business.email}`}>{business.email}</a>
+        <span aria-hidden="true" class="h-3 w-px bg-white/20"></span>
+        <a class="hover:text-champagne" href={telephoneHref}>{business.phone}</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-shell grid min-h-20 grid-cols-[auto_1fr_auto] items-center gap-5 lg:min-h-24 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+    <a class="relative z-10 inline-flex items-center" href="/" aria-label="Signature Luxe home">
+      <ResponsiveImage
+        src="/images/logo.png"
+        alt=""
+        width={532}
+        height={235}
+        loading="eager"
+        fetchpriority="high"
+        class="h-auto w-42 brightness-0 invert sm:w-48"
+      />
+    </a>
+
+    <nav class="hidden justify-self-center lg:block" aria-label="Primary navigation">
+      <ul
+        class="flex items-center gap-1"
+        data-editable="array"
+        data-prop="@data[navigation].primary"
+      >
+        {navigation.primary.map((item) => (
+          <li data-editable="array-item">
+            {item.children ? (
+              <details class="nav-disclosure relative">
+                <summary class="flex min-h-12 cursor-pointer list-none items-center gap-1.5 px-3 text-[0.78rem] font-medium tracking-[0.035em] text-white/80 hover:text-white">
+                  <span data-editable="text" data-type="text" data-prop="label">{item.label}</span>
+                  <svg aria-hidden="true" class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none">
+                    <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </summary>
+                <div class="absolute left-1/2 top-full w-72 -translate-x-1/2 pt-3">
+                  <ul class="border border-white/10 bg-midnight p-2 shadow-deep">
+                    {item.children.map((child) => (
+                      <li>
+                        <a class="block px-4 py-3 text-sm text-white/72 hover:bg-white/7 hover:text-champagne" href={child.href}>
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </details>
+            ) : (
+              <a
+                href={item.href}
+                class="inline-flex min-h-12 items-center px-3 text-[0.78rem] font-medium tracking-[0.035em] text-white/80 hover:text-white"
+                data-editable="text"
+                data-type="text"
+                data-prop="label"
+              >
+                {item.label}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="hidden lg:block">
+      <ButtonLink href={navigation.cta.href} label={navigation.cta.label} />
+    </div>
+
+    <button
+      id="menu-open"
+      class="inline-flex h-12 w-12 items-center justify-center justify-self-end border border-white/20 text-white lg:hidden"
+      type="button"
+      aria-label="Open navigation"
+      aria-haspopup="dialog"
+      aria-controls="mobile-navigation"
+      aria-expanded="false"
+    >
+      <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+        <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+      </svg>
+    </button>
+  </div>
+
+  <dialog id="mobile-navigation" class="m-0 ml-auto h-dvh max-h-none w-full max-w-md border-0 bg-midnight p-0 text-white backdrop:bg-ink/70">
+    <div class="flex min-h-full flex-col">
+      <div class="flex min-h-20 items-center justify-between border-b border-white/10 px-5">
+        <span class="font-serif text-2xl text-white">Signature Luxe</span>
+        <button id="menu-close" class="inline-flex h-12 w-12 items-center justify-center border border-white/20" type="button" aria-label="Close navigation">
+          <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+            <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto px-5 py-8" aria-label="Mobile navigation">
+        <ul class="divide-y divide-white/10">
+          {navigation.primary.map((item) => (
+            <li>
+              {item.children ? (
+                <details>
+                  <summary class="flex min-h-15 cursor-pointer list-none items-center justify-between py-3 font-serif text-3xl">
+                    {item.label}
+                    <span aria-hidden="true" class="font-sans text-lg text-champagne">+</span>
+                  </summary>
+                  <ul class="pb-5 pl-4">
+                    {item.children.map((child) => (
+                      <li><a class="flex min-h-12 items-center text-sm text-white/70 hover:text-champagne" href={child.href}>{child.label}</a></li>
+                    ))}
+                  </ul>
+                </details>
+              ) : (
+                <a class="flex min-h-15 items-center py-3 font-serif text-3xl hover:text-champagne" href={item.href}>{item.label}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="border-t border-white/10 p-5">
+        <ButtonLink href={navigation.cta.href} label={navigation.cta.label} class="w-full" />
+        <a class="mt-3 flex min-h-11 items-center justify-center text-sm text-white/65" href={telephoneHref}>{business.phone}</a>
+      </div>
+    </div>
+  </dialog>
+</header>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#mobile-navigation');
+  const openButton = document.querySelector<HTMLButtonElement>('#menu-open');
+  const closeButton = document.querySelector<HTMLButtonElement>('#menu-close');
+
+  const closeMenu = () => {
+    dialog?.close();
+  };
+
+  openButton?.addEventListener('click', () => {
+    dialog?.showModal();
+    document.body.dataset.menuOpen = 'true';
+    openButton.setAttribute('aria-expanded', 'true');
+  });
+  closeButton?.addEventListener('click', closeMenu);
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) closeMenu();
+  });
+  dialog?.addEventListener('close', () => {
+    document.body.dataset.menuOpen = 'false';
+    openButton?.setAttribute('aria-expanded', 'false');
+    openButton?.focus();
+  });
+  dialog?.addEventListener('cancel', () => {
+    document.body.dataset.menuOpen = 'false';
+  });
+  dialog?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+
+  document.querySelectorAll<HTMLDetailsElement>('.nav-disclosure').forEach((disclosure) => {
+    disclosure.addEventListener('toggle', () => {
+      if (!disclosure.open) return;
+      document.querySelectorAll<HTMLDetailsElement>('.nav-disclosure[open]').forEach((other) => {
+        if (other !== disclosure) other.open = false;
+      });
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    document.querySelectorAll<HTMLDetailsElement>('.nav-disclosure[open]').forEach((disclosure) => {
+      if (!disclosure.contains(target)) disclosure.open = false;
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll<HTMLDetailsElement>('.nav-disclosure[open]').forEach((disclosure) => {
+      disclosure.open = false;
+      disclosure.querySelector<HTMLElement>('summary')?.focus();
+    });
+  });
+</script>

@@ -1,0 +1,32 @@
+---
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  align?: 'left' | 'center';
+  level?: 'h1' | 'h2';
+  id?: string;
+}
+
+const {
+  eyebrow,
+  heading,
+  body,
+  align = 'left',
+  level = 'h2',
+  id,
+} = Astro.props;
+const Heading = level;
+---
+
+<div class:list={['max-w-4xl', align === 'center' && 'mx-auto text-center']}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Heading id={id} class:list={[level === 'h1' ? 'display-heading' : 'section-heading', eyebrow && 'mt-5']}>
+    {heading}
+  </Heading>
+  {body && (
+    <p class:list={['editorial-copy mt-7 max-w-2xl', align === 'center' && 'mx-auto']}>
+      {body}
+    </p>
+  )}
+</div>

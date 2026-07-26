@@ -1,0 +1,7 @@
+---
+question: "How far in advance should I reserve a restroom trailer?"
+answer: "We recommend reserving your restroom trailer as early as possible, especially for peak wedding season (May through October). Popular dates can book several months in advance. However, we also accommodate last-minute requests when availability allows. Contact us to check availability for your date."
+category: "general"
+order: 10
+featured: true
+---

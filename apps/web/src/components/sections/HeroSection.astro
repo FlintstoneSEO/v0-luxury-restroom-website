@@ -1,0 +1,77 @@
+---
+import ButtonLink from '../ButtonLink.astro';
+import ResponsiveImage from '../ResponsiveImage.astro';
+
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  image?: { src: string; alt: string } | null;
+  primaryCta?: { label: string; href: string } | null;
+  secondaryCta?: { label: string; href: string } | null;
+}
+
+const { eyebrow, heading, body, image, primaryCta, secondaryCta } = Astro.props;
+---
+
+<section class="relative isolate flex min-h-[48rem] items-center overflow-hidden bg-midnight py-24 text-white md:min-h-[52rem] md:py-32">
+  {image?.src && (
+    <div class="absolute inset-0 -z-10" data-editable="image" data-prop="image">
+      <ResponsiveImage
+        src={image.src}
+        alt={image.alt}
+        width={1536}
+        height={1024}
+        loading="eager"
+        fetchpriority="high"
+        sizes="100vw"
+        class="h-full w-full scale-[1.015] object-cover object-center"
+      />
+      <div class="absolute inset-0 bg-[linear-gradient(180deg,rgb(5_14_20/0.5),rgb(5_14_20/0.74)),radial-gradient(circle_at_50%_40%,transparent_0%,rgb(5_14_20/0.42)_70%)]"></div>
+    </div>
+  )}
+  {!image?.src && (
+    <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_25%,rgb(210_194_174/0.16),transparent_34rem)]"></div>
+  )}
+
+  <div class="content-shell text-center">
+    {eyebrow && (
+      <p class="eyebrow justify-center text-champagne" data-editable="text" data-type="text" data-prop="eyebrow">
+        {eyebrow}
+      </p>
+    )}
+    <h1
+      class="mx-auto mt-6 max-w-6xl font-serif text-[clamp(4rem,8.5vw,8.5rem)] font-medium leading-[0.86] tracking-[-0.055em] text-balance"
+      data-editable="text"
+      data-type="text"
+      data-prop="heading"
+    >
+      {heading}
+    </h1>
+    {body && (
+      <p
+        class="mx-auto mt-8 max-w-2xl text-base leading-7 text-white/76 md:text-lg md:leading-8"
+        data-editable="text"
+        data-type="text"
+        data-prop="body"
+      >
+        {body}
+      </p>
+    )}
+    {(primaryCta?.label || secondaryCta?.label) && (
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        {primaryCta?.label && (
+          <ButtonLink href={primaryCta.href} label={primaryCta.label} dataProp="primaryCta.label" />
+        )}
+        {secondaryCta?.label && (
+          <ButtonLink
+            href={secondaryCta.href}
+            label={secondaryCta.label}
+            variant="secondary"
+            dataProp="secondaryCta.label"
+          />
+        )}
+      </div>
+    )}
+  </div>
+</section>

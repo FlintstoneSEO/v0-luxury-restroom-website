@@ -1,0 +1,78 @@
+---
+import ResponsiveImage from './ResponsiveImage.astro';
+
+interface Item {
+  title: string;
+  description: string;
+  image: {
+    src: string;
+    alt: string;
+  };
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="experience-accordion flex flex-col gap-3 lg:h-[38rem] lg:flex-row">
+  {items.map((item, index) => (
+    <details class="experience-panel group relative min-h-80 overflow-hidden bg-midnight text-white lg:min-h-0" open={index === 0}>
+      <summary class="absolute inset-0 z-20 flex cursor-pointer list-none items-end p-6 focus-visible:outline-offset-[-5px] sm:p-8">
+        <span class="flex w-full items-end justify-between gap-5">
+          <span class="max-w-md font-serif text-3xl font-medium leading-none tracking-[-0.035em] sm:text-4xl">{item.title}</span>
+          <span aria-hidden="true" class="flex h-11 w-11 shrink-0 items-center justify-center border border-white/35 text-xl transition-transform duration-300 group-open:rotate-45">+</span>
+        </span>
+      </summary>
+      <ResponsiveImage
+        src={item.image.src}
+        alt={item.image.alt}
+        width={1536}
+        height={1024}
+        sizes="(min-width: 1024px) 55vw, 100vw"
+        class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      <div class="image-wash"></div>
+      <p class="absolute bottom-27 left-6 z-10 max-w-md pr-6 text-sm leading-7 text-white/75 opacity-0 transition-opacity duration-300 group-open:opacity-100 sm:left-8">
+        {item.description}
+      </p>
+    </details>
+  ))}
+</div>
+
+<style>
+  .experience-panel {
+    flex: 1 1 0%;
+    transition: flex-grow 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .experience-panel[open] {
+    flex-grow: 3.2;
+  }
+
+  .experience-panel summary::-webkit-details-marker {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .experience-panel {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.experience-accordion').forEach((accordion) => {
+    const panels = [...accordion.querySelectorAll<HTMLDetailsElement>('.experience-panel')];
+    panels.forEach((panel) => {
+      panel.addEventListener('toggle', () => {
+        if (!panel.open) return;
+        panels.forEach((other) => {
+          if (other !== panel) other.open = false;
+        });
+      });
+    });
+  });
+</script>

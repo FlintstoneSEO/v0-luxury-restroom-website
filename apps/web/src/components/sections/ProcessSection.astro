@@ -1,0 +1,44 @@
+---
+interface Step {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  steps?: Step[];
+}
+
+const { eyebrow, heading, body, steps = [] } = Astro.props;
+---
+
+<section class="section-space bg-white">
+  <div class="content-shell">
+    <div class="max-w-4xl">
+      {eyebrow && (
+        <p class="eyebrow" data-editable="text" data-type="text" data-prop="eyebrow">{eyebrow}</p>
+      )}
+      <h2 class="section-heading mt-5" data-editable="text" data-type="text" data-prop="heading">{heading}</h2>
+      {body && (
+        <p class="editorial-copy mt-7 max-w-2xl" data-editable="text" data-type="text" data-prop="body">{body}</p>
+      )}
+    </div>
+    <ol class="mt-14 grid border-y border-midnight/15 md:grid-cols-2 lg:grid-cols-4" data-editable="array" data-prop="steps">
+      {steps.map((step, index) => (
+        <li class="relative border-midnight/12 px-1 py-8 md:px-7 md:nth-[2n]:border-l lg:border-l lg:first:border-l-0" data-editable="array-item">
+          <span class="text-xs font-semibold tracking-[0.16em] text-gold" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <h3 class="mt-5 font-serif text-3xl font-medium leading-none text-midnight" data-editable="text" data-type="text" data-prop="title">
+            {step.title}
+          </h3>
+          <p class="mt-4 text-sm leading-7 text-charcoal/65" data-editable="text" data-type="text" data-prop="description">
+            {step.description}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

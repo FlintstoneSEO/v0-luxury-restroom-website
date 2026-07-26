@@ -12,14 +12,14 @@ function isQuoteApproved(quote: QuoteRequestRow) {
   );
 }
 
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(_request: Request, { params }: { params: Promise<{ quoteId: string }> }) {
   const adminAuth = await requireAdminUser();
   if (!adminAuth.ok) return adminAuth.response;
-  const { id } = await params;
+  const { quoteId } = await params;
 
   try {
     const supabase = createAdminClient();
-    const { data: quote, error } = await supabase.from('quote_requests').select('*').eq('id', id).single();
+    const { data: quote, error } = await supabase.from('quote_requests').select('*').eq('id', quoteId).single();
 
     if (error || !quote) {
       return NextResponse.json({ message: 'Quote not found' }, { status: 404 });
@@ -54,7 +54,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
       agreement_provider_reference_id: result.signatureRequestId,
       agreement_document_url: result.signingUrl ?? null,
       updated_at: now,
-    }).eq('id', id).select('*').single();
+    }).eq('id', quoteId).select('*').single();
 
     if (updateError) throw updateError;
 

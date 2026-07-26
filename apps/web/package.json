@@ -1,0 +1,31 @@
+{
+  "name": "@signature-luxe/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "verify:pilot": "node scripts/verify-pilot.mjs",
+    "verify:phase3": "node scripts/verify-phase3.mjs",
+    "verify:phase4": "node scripts/verify-phase4.mjs"
+  },
+  "dependencies": {
+    "@cloudcannon/editable-regions": "^0.0.18",
+    "@fontsource-variable/cormorant-garamond": "^5.2.8",
+    "@fontsource-variable/geist": "^5.2.8",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^5.16.9",
+    "gsap": "^3.13.0",
+    "tailwindcss": "^4.2.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.7.3"
+  }
+}

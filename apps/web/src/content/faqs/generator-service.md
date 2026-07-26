@@ -1,0 +1,7 @@
+---
+question: "Can you provide a generator?"
+answer: "Yes, we can arrange generator service for events where standard power is not accessible. Let us know about your power situation when requesting availability and we'll include generator options in your proposal if needed."
+category: "setup"
+order: 40
+featured: false
+---

@@ -1,0 +1,7 @@
+---
+question: "Do your restroom trailers need power?"
+answer: "Yes, our trailers require a standard 20 amp power source within 100 feet for climate control and interior lighting. If power isn't available at your location, we can discuss generator rental options to power the trailer."
+category: "setup"
+order: 20
+featured: true
+---

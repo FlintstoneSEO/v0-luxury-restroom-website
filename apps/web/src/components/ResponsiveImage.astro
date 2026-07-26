@@ -1,0 +1,41 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  class?: string;
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  sizes?: string;
+  dataEditable?: boolean;
+  dataProp?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  class: className,
+  loading = 'lazy',
+  fetchpriority = 'auto',
+  sizes = '100vw',
+  dataEditable = false,
+  dataProp,
+} = Astro.props;
+---
+
+<img
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  class={className}
+  loading={loading}
+  decoding="async"
+  fetchpriority={fetchpriority}
+  sizes={sizes}
+  data-editable={dataEditable ? 'image' : undefined}
+  data-prop={dataEditable ? dataProp : undefined}
+/>

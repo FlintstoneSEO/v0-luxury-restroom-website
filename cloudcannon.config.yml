@@ -1,20 +1,1058 @@
+version: latest
+
 paths:
-  static: ''
-  uploads: uploads
-timezone: America/New_York
-markdown:
-  engine: commonmark
-  options: {}
+  static: public
+  uploads: public/images
+
 collections_config:
   pages:
-    path: ''
+    path: apps/web/src/content/pages
+    name: Pages
+    description: Public marketing pages and reusable page sections.
     icon: wysiwyg
-  app:
-    path: app
-    icon: api
-  components:
-    path: components
-    icon: comment
-  docs:
-    path: docs
-    icon: docs
+    url: /[slug]
+    schemas:
+      default:
+        path: .cloudcannon/schemas/page.md
+        name: Marketing Page
+        new_preview_url: /migration-pilot
+    add_options:
+      - name: Marketing Page
+        schema: default
+        icon: wysiwyg
+        editor: visual
+    _enabled_editors:
+      - visual
+      - content
+      - data
+    _inputs:
+      sections:
+        type: array
+        comment: Reorder these sections to change the page flow.
+        options:
+          structures: _structures.page_sections
+  trailers:
+    path: apps/web/src/content/trailers
+    name: Trailers
+    description: Trailer descriptions, specifications, features, and galleries.
+    icon: local_shipping
+    disable_url: true
+    schemas:
+      default:
+        path: .cloudcannon/schemas/trailer.md
+        name: Trailer
+    _enabled_editors:
+      - content
+      - data
+    _inputs:
+      gallery:
+        type: array
+        options:
+          structures: _structures.images
+      features:
+        type: array
+      features[*]:
+        type: text
+  event_types:
+    path: apps/web/src/content/event-types
+    name: Event Types
+    description: Weddings, private parties, corporate events, festivals, and related services.
+    icon: event_available
+    disable_url: true
+    schemas:
+      default:
+        path: .cloudcannon/schemas/event-type.md
+        name: Event Type
+    add_options:
+      - name: Event Type
+        schema: default
+        icon: event_available
+        editor: content
+    _enabled_editors:
+      - content
+      - data
+    _inputs:
+      sections:
+        type: array
+        options:
+          structures: _structures.page_sections
+      relatedTrailers:
+        type: array
+      relatedTrailers[*]:
+        type: text
+      faqs:
+        type: array
+      faqs[*]:
+        type: text
+  service_areas:
+    path: apps/web/src/content/service-areas
+    name: Service Areas
+    description: Local service-area pages and nearby-area relationships.
+    icon: location_on
+    disable_url: true
+    schemas:
+      default:
+        path: .cloudcannon/schemas/service-area.md
+        name: Service Area
+    add_options:
+      - name: Service Area
+        schema: default
+        icon: location_on
+        editor: content
+    _enabled_editors:
+      - content
+      - data
+    _inputs:
+      nearbyAreas:
+        type: array
+      nearbyAreas[*]:
+        type: text
+      faqs:
+        type: array
+      faqs[*]:
+        type: text
+  faqs:
+    path: apps/web/src/content/faqs
+    name: FAQs
+    description: Reusable customer questions and answers.
+    icon: help
+    disable_url: true
+    schemas:
+      default:
+        path: .cloudcannon/schemas/faq.md
+        name: FAQ
+    _enabled_editors:
+      - data
+  testimonials:
+    path: apps/web/src/content/testimonials
+    name: Testimonials
+    description: Approved customer testimonials and optional event context.
+    icon: format_quote
+    disable_url: true
+    schemas:
+      default:
+        path: .cloudcannon/schemas/testimonial.md
+        name: Testimonial
+    _enabled_editors:
+      - data
+  blog:
+    path: apps/web/src/content/blog
+    name: Blog
+    description: Educational articles and planning resources.
+    icon: post_add
+    disable_url: true
+    schemas:
+      default:
+        path: .cloudcannon/schemas/blog-post.md
+        name: Blog Post
+    add_options:
+      - name: Blog Post
+        schema: default
+        icon: post_add
+        editor: content
+    _enabled_editors:
+      - content
+      - data
+    _inputs:
+      categories:
+        type: array
+      categories[*]:
+        type: text
+  data:
+    path: apps/web/src/data
+    name: Site Settings
+    description: Navigation, footer, business information, and default SEO values.
+    icon: settings
+    glob:
+      - "*.json"
+    disable_url: true
+    disable_add: true
+    _enabled_editors:
+      - data
+
+collection_groups:
+  - heading: Website
+    collections:
+      - pages
+      - event_types
+      - trailers
+      - service_areas
+      - blog
+  - heading: Reusable Content
+    collections:
+      - faqs
+      - testimonials
+      - data
+
+data_config:
+  navigation:
+    path: apps/web/src/data/navigation.json
+  footer:
+    path: apps/web/src/data/footer.json
+  business:
+    path: apps/web/src/data/business.json
+  seo_defaults:
+    path: apps/web/src/data/seo-defaults.json
+
+file_config:
+  - glob: apps/web/src/data/navigation.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: menu
+      primary:
+        type: array
+        options:
+          structures: _structures.navigation_links
+      cta:
+        type: object
+        options:
+          preview:
+            icon: arrow_forward
+  - glob: apps/web/src/data/footer.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: account_tree
+      tagline:
+        type: textarea
+      groups:
+        type: array
+        options:
+          structures: _structures.footer_groups
+      serviceStatement:
+        type: textarea
+      socials:
+        type: array
+        options:
+          structures: _structures.links
+  - glob: apps/web/src/data/business.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: business
+      phone:
+        type: text
+        comment: Keep this consistent with Google Business Profile and customer emails.
+      email:
+        type: email
+  - glob: apps/web/src/data/seo-defaults.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: search
+      defaultDescription:
+        type: textarea
+      canonicalOrigin:
+        type: url
+      defaultImage:
+        type: image
+
+_select_data:
+  section_icons:
+    - name: Calendar
+      id: calendar
+    - name: Clock
+      id: clock
+    - name: Location
+      id: location
+    - name: Power
+      id: power
+    - name: Water
+      id: water
+    - name: Guests
+      id: guests
+    - name: Climate Control
+      id: temperature
+    - name: Premium Finish
+      id: sparkles
+    - name: Delivery and Setup
+      id: delivery
+
+_inputs:
+  _schema:
+    type: text
+    hidden: true
+  title:
+    type: text
+  name:
+    type: text
+  description:
+    type: textarea
+  serviceRegion:
+    type: text
+  eyebrow:
+    type: text
+  heading:
+    type: text
+  label:
+    type: text
+  href:
+    type: text
+    comment: Use a site path such as /request-quote or a complete external URL.
+  summary:
+    type: textarea
+  excerpt:
+    type: textarea
+  body:
+    type: markdown
+    options:
+      bold: true
+      italic: true
+      link: true
+      bulletedlist: true
+      numberedlist: true
+      blockquote: true
+      format: p h2 h3 h4
+      image: true
+      removeformat: true
+  answer:
+    type: textarea
+  question:
+    type: text
+  category:
+    type: text
+  quote:
+    type: textarea
+  draft:
+    type: switch
+    comment: Draft entries are excluded from the public build.
+  featured:
+    type: switch
+  stations:
+    type: number
+  order:
+    type: number
+  state:
+    type: text
+    comment: Use the two-letter state abbreviation.
+  publishedAt:
+    type: datetime
+  updatedAt:
+    type: datetime
+  featuredImage:
+    type: object
+    options:
+      preview:
+        icon: image
+  image:
+    type: object
+    options:
+      preview:
+        icon: image
+  src:
+    type: image
+  alt:
+    type: text
+    comment: Describe the image for visitors who cannot see it.
+  seo:
+    type: object
+    options:
+      preview:
+        icon: search
+  seo.title:
+    type: text
+    comment: Aim for a unique, readable search title.
+  seo.description:
+    type: textarea
+    comment: Summarize the page in roughly 120–160 characters.
+  seo.canonical:
+    type: url
+  seo.image:
+    type: object
+    options:
+      preview:
+        icon: image
+  seo.noindex:
+    type: switch
+    comment: Prevent search engines from indexing this entry.
+  seo.schema:
+    type: select
+    comment: Adds the matching structured data to this public page.
+    options:
+      values:
+        - name: None
+          id: none
+        - name: FAQ page
+          id: faq_page
+        - name: Service page
+          id: service
+      value_key: id
+      preview:
+        text:
+          - key: name
+  seo.serviceName:
+    type: text
+    comment: Required only when the structured data type is Service page.
+
+_structures:
+  navigation_links:
+    style: modal
+    values:
+      - label: Navigation link
+        icon: link
+        picker_preview:
+          text:
+            - Navigation link
+          icon:
+            - link
+        preview:
+          text:
+            - key: label
+            - Navigation link
+          subtext:
+            - key: href
+          icon:
+            - link
+        value:
+          label: Link label
+          href: /
+        _inputs:
+          label:
+            type: text
+          href:
+            type: text
+          children:
+            type: array
+            comment: Optional links shown inside this navigation menu.
+            options:
+              structures: _structures.links
+  footer_groups:
+    style: modal
+    values:
+      - label: Footer link group
+        icon: account_tree
+        picker_preview:
+          text:
+            - Footer link group
+          icon:
+            - account_tree
+        preview:
+          text:
+            - key: heading
+            - Footer link group
+          icon:
+            - account_tree
+        value:
+          heading: Explore
+          links:
+            - label: Link label
+              href: /
+        _inputs:
+          heading:
+            type: text
+          links:
+            type: array
+            options:
+              structures: _structures.links
+  links:
+    style: modal
+    values:
+      - label: Link
+        icon: link
+        picker_preview:
+          text:
+            - Link
+          icon:
+            - link
+        preview:
+          text:
+            - key: label
+            - Link
+          subtext:
+            - key: href
+          icon:
+            - link
+        value:
+          label: Link label
+          href: /
+        _inputs:
+          label:
+            type: text
+          href:
+            type: text
+  images:
+    style: modal
+    values:
+      - label: Image
+        icon: image
+        picker_preview:
+          text:
+            - Image
+          icon:
+            - image
+        preview:
+          text:
+            - key: alt
+            - Image
+          image:
+            - key: src
+          icon:
+            - image
+        value:
+          src:
+          alt:
+        _inputs:
+          src:
+            type: image
+          alt:
+            type: text
+            comment: Describe the image for visitors who cannot see it.
+  feature_items:
+    style: modal
+    values:
+      - label: Planning detail
+        icon: view_module
+        picker_preview:
+          text:
+            - Planning detail
+          icon:
+            - view_module
+        preview:
+          text:
+            - key: title
+            - Planning detail
+          subtext:
+            - key: description
+          icon:
+            - view_module
+        value:
+          icon: calendar
+          title: Planning detail
+          description: Explain what information the customer should provide.
+        _inputs:
+          icon:
+            type: select
+            options:
+              values: _select_data.section_icons
+              value_key: id
+              preview:
+                text:
+                  - key: name
+          title:
+            type: text
+          description:
+            type: textarea
+  requirement_items:
+    style: modal
+    values:
+      - label: Site requirement
+        icon: checklist
+        picker_preview:
+          text:
+            - Site requirement
+          icon:
+            - checklist
+        preview:
+          text:
+            - key: text
+            - Site requirement
+          icon:
+            - checklist
+        value:
+          text: Add a site requirement.
+        _inputs:
+          text:
+            type: text
+  process_steps:
+    style: modal
+    values:
+      - label: Process step
+        icon: format_list_numbered
+        picker_preview:
+          text:
+            - Process step
+          icon:
+            - format_list_numbered
+        preview:
+          text:
+            - key: title
+            - Process step
+          subtext:
+            - key: description
+          icon:
+            - format_list_numbered
+        value:
+          title: Process step
+          description: Explain what happens during this step.
+        _inputs:
+          title:
+            type: text
+          description:
+            type: textarea
+  faq_items:
+    style: modal
+    values:
+      - label: Frequently asked question
+        icon: help
+        picker_preview:
+          text:
+            - Frequently asked question
+          icon:
+            - help
+        preview:
+          text:
+            - key: question
+            - Frequently asked question
+          icon:
+            - help
+        value:
+          question: Add a customer question.
+          answer: Add a clear, factual answer.
+        _inputs:
+          question:
+            type: text
+          answer:
+            type: textarea
+  paragraph_items:
+    style: modal
+    values:
+      - label: Paragraph
+        icon: notes
+        picker_preview:
+          text:
+            - Paragraph
+          icon:
+            - notes
+        preview:
+          text:
+            - key: text
+            - Paragraph
+          icon:
+            - notes
+        value:
+          text: Add supporting copy.
+        _inputs:
+          text:
+            type: textarea
+  editorial_items:
+    style: modal
+    values:
+      - label: Editorial section
+        icon: article
+        picker_preview:
+          text:
+            - Editorial section
+          icon:
+            - article
+        preview:
+          text:
+            - key: heading
+            - Editorial section
+          icon:
+            - article
+        value:
+          heading: Section heading
+          paragraphs:
+            - text: Add supporting copy.
+        _inputs:
+          heading:
+            type: text
+          paragraphs:
+            type: array
+            options:
+              structures: _structures.paragraph_items
+  link_grid_items:
+    style: modal
+    values:
+      - label: Related link
+        icon: link
+        picker_preview:
+          text:
+            - Related link
+          icon:
+            - link
+        preview:
+          text:
+            - key: title
+            - Related link
+          subtext:
+            - key: href
+          image:
+            - key: image.src
+          icon:
+            - link
+        value:
+          title: Related page
+          description: Explain why this page is useful.
+          label: View page
+          href: /
+          image:
+            src:
+            alt:
+        _inputs:
+          title:
+            type: text
+          description:
+            type: textarea
+          label:
+            type: text
+          href:
+            type: text
+          image:
+            type: object
+            options:
+              preview:
+                icon: image
+  page_sections:
+    style: modal
+    values:
+      - label: Hero
+        icon: web_asset
+        picker_preview:
+          text:
+            - Hero
+          icon:
+            - web_asset
+        preview:
+          text:
+            - key: heading
+            - Hero
+          image:
+            - key: image.src
+          icon:
+            - web_asset
+        value:
+          _type: hero
+          eyebrow:
+          heading: Page heading
+          body:
+          image:
+            src:
+            alt:
+          primaryCta:
+            label: Request a Quote
+            href: /request-quote
+          secondaryCta:
+            label:
+            href:
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          image:
+            type: object
+            options:
+              preview:
+                icon: image
+          primaryCta:
+            type: object
+            options:
+              preview:
+                icon: ads_click
+          secondaryCta:
+            type: object
+            options:
+              preview:
+                icon: ads_click
+      - label: Text Section
+        icon: article
+        picker_preview:
+          text:
+            - Text Section
+          icon:
+            - article
+        preview:
+          text:
+            - key: heading
+            - Text Section
+          icon:
+            - article
+        value:
+          _type: text_section
+          eyebrow:
+          heading: Section heading
+          body: Add section copy.
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+      - label: Feature Grid
+        icon: view_module
+        picker_preview:
+          text:
+            - Feature Grid
+          icon:
+            - view_module
+        preview:
+          text:
+            - key: heading
+            - Feature Grid
+          icon:
+            - view_module
+        value:
+          _type: feature_grid
+          eyebrow:
+          heading: Section heading
+          body:
+          items: []
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          items:
+            type: array
+            options:
+              structures: _structures.feature_items
+      - label: Site Requirements
+        icon: checklist
+        picker_preview:
+          text:
+            - Site Requirements
+          icon:
+            - checklist
+        preview:
+          text:
+            - key: heading
+            - Site Requirements
+          icon:
+            - checklist
+        value:
+          _type: requirements
+          eyebrow: Setup Requirements
+          heading: What Your Site Needs
+          body:
+          items: []
+          aside:
+            heading: Need help with your setup?
+            body: Tell us what you know and our team will help with the rest.
+            label: Request Availability
+            href: /request-quote
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          items:
+            type: array
+            options:
+              structures: _structures.requirement_items
+          aside:
+            type: object
+            options:
+              preview:
+                icon: ads_click
+      - label: Process
+        icon: format_list_numbered
+        picker_preview:
+          text:
+            - Process
+          icon:
+            - format_list_numbered
+        preview:
+          text:
+            - key: heading
+            - Process
+          icon:
+            - format_list_numbered
+        value:
+          _type: process
+          eyebrow:
+          heading: How the process works
+          body:
+          steps: []
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          steps:
+            type: array
+            options:
+              structures: _structures.process_steps
+      - label: Reusable FAQ List
+        icon: help
+        picker_preview:
+          text:
+            - Reusable FAQ List
+          icon:
+            - help
+        preview:
+          text:
+            - key: heading
+            - Reusable FAQ List
+          icon:
+            - help
+        value:
+          _type: faq_list
+          eyebrow: FAQ
+          heading: Frequently Asked Questions
+          body:
+          category:
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          category:
+            type: text
+            comment: Leave blank to show every reusable FAQ.
+      - label: Page-specific FAQs
+        icon: help
+        picker_preview:
+          text:
+            - Page-specific FAQs
+          icon:
+            - help
+        preview:
+          text:
+            - key: heading
+            - Page-specific FAQs
+          icon:
+            - help
+        value:
+          _type: inline_faqs
+          eyebrow: FAQ
+          heading: Frequently Asked Questions
+          body:
+          items: []
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          items:
+            type: array
+            options:
+              structures: _structures.faq_items
+      - label: Editorial Sections
+        icon: article
+        picker_preview:
+          text:
+            - Editorial Sections
+          icon:
+            - article
+        preview:
+          text:
+            - key: heading
+            - Editorial Sections
+          icon:
+            - article
+        value:
+          _type: editorial_sections
+          eyebrow:
+          heading: Planning details
+          body:
+          items: []
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          items:
+            type: array
+            options:
+              structures: _structures.editorial_items
+      - label: Related Link Grid
+        icon: view_module
+        picker_preview:
+          text:
+            - Related Link Grid
+          icon:
+            - view_module
+        preview:
+          text:
+            - key: heading
+            - Related Link Grid
+          image:
+            - key: image.src
+          icon:
+            - view_module
+        value:
+          _type: link_grid
+          eyebrow:
+          heading: Helpful resources
+          body:
+          image:
+            src:
+            alt:
+          items: []
+        _inputs:
+          eyebrow:
+            type: text
+          heading:
+            type: text
+          body:
+            type: textarea
+          image:
+            type: object
+            options:
+              preview:
+                icon: image
+          items:
+            type: array
+            options:
+              structures: _structures.link_grid_items
+      - label: Call to Action
+        icon: ads_click
+        picker_preview:
+          text:
+            - Call to Action
+          icon:
+            - ads_click
+        preview:
+          text:
+            - key: heading
+            - Call to Action
+          icon:
+            - ads_click
+        value:
+          _type: cta
+          heading: Ready to plan your event?
+          body:
+          label: Request a Quote
+          href: /request-quote
+        _inputs:
+          heading:
+            type: text
+          body:
+            type: textarea
+          label:
+            type: text
+          href:
+            type: text
+
+markdown:
+  engine: commonmark
+  options:
+    table: true
+
+_editables:
+  content:
+    blockquote: true
+    bold: true
+    bulletedlist: true
+    format: p h1 h2 h3 h4 h5 h6
+    image: true
+    italic: true
+    link: true
+    numberedlist: true
+    removeformat: true
+    table: true

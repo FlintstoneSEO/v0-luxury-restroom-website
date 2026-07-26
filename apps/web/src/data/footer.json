@@ -1,0 +1,58 @@
+{
+  "tagline": "Considered amenities for celebrations, gatherings, and essential projects throughout Mid-Michigan.",
+  "groups": [
+    {
+      "heading": "Explore",
+      "links": [
+        {
+          "label": "Our Restrooms",
+          "href": "/luxury-restroom-trailer-rentals"
+        },
+        {
+          "label": "Gallery",
+          "href": "/gallery"
+        },
+        {
+          "label": "Service Areas",
+          "href": "/service-areas"
+        },
+        {
+          "label": "Start Here",
+          "href": "/start-here"
+        }
+      ]
+    },
+    {
+      "heading": "Plan",
+      "links": [
+        {
+          "label": "Request a Quote",
+          "href": "/request-quote"
+        },
+        {
+          "label": "Frequently Asked Questions",
+          "href": "/faq"
+        },
+        {
+          "label": "Planning Resources",
+          "href": "/resources"
+        },
+        {
+          "label": "Contact",
+          "href": "/contact"
+        }
+      ]
+    }
+  ],
+  "serviceStatement": "Serving Lansing, East Lansing, Okemos, Haslett, Grand Ledge, DeWitt, and surrounding Mid-Michigan communities.",
+  "socials": [
+    {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/signatureluxe_events"
+    },
+    {
+      "label": "Facebook",
+      "href": "https://www.facebook.com/signatureluxeevents"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlockRenderer from '../components/BlockRenderer.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { breadcrumbSchema, faqPageSchema, serviceSchema } from '../lib/seo';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', ({ data }) => !data.draft);
+
+  return pages.map((page) => ({
+    params: { slug: page.id.replace(/\.(md|mdx)$/, '') },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+const hasBodyContent = (page.body ?? '').trim().length > 0;
+const routePath = `/${page.id.replace(/\.(md|mdx)$/, '')}`;
+const reusableFaqs = (await getCollection('faqs'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map(({ data }) => ({ question: data.question, answer: data.answer }));
+const inlineFaqs = page.data.sections
+  .filter((section) => section._type === 'inline_faqs')
+  .flatMap((section) => section.items);
+const schemas = [];
+
+if (page.data.seo.schema === 'faq_page') {
+  schemas.push(faqPageSchema(reusableFaqs));
+}
+
+if (page.data.seo.schema === 'service' && page.data.seo.serviceName) {
+  schemas.push(serviceSchema(page.data.seo.serviceName, routePath));
+  if (inlineFaqs.length) {
+    schemas.push(faqPageSchema(inlineFaqs));
+  }
+}
+
+if (page.data.seo.schema !== 'none') {
+  schemas.push(breadcrumbSchema(page.data.title, routePath));
+}
+---
+
+<BaseLayout
+  title={page.data.seo.title}
+  description={page.data.seo.description}
+  canonical={page.data.seo.canonical}
+  image={page.data.seo.image}
+  noindex={page.data.seo.noindex}
+>
+  {schemas.map((schema) => <JsonLd slot="head" data={schema} />)}
+  <article>
+    <BlockRenderer sections={page.data.sections} />
+    {hasBodyContent && (
+      <div
+        class="content-shell prose prose-lg py-16"
+        data-editable="text"
+        data-type="block"
+        data-prop="@content"
+      >
+        <Content />
+      </div>
+    )}
+  </article>
+</BaseLayout>

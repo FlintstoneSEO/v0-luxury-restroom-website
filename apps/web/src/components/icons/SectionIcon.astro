@@ -1,0 +1,32 @@
+---
+interface Props {
+  name: 'calendar' | 'clock' | 'location' | 'power' | 'water' | 'guests' | 'temperature' | 'sparkles' | 'delivery';
+}
+
+const { name } = Astro.props;
+
+const paths: Record<Props['name'], string[]> = {
+  calendar: ['M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z'],
+  clock: ['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z', 'M12 7v5l3 2'],
+  location: ['M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z', 'M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z'],
+  power: ['M13 2 5 14h7l-1 8 8-12h-7l1-8Z'],
+  water: ['M12 2s7 7 7 12a7 7 0 0 1-14 0c0-5 7-12 7-12Z'],
+  guests: ['M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2', 'M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'M17 11a3 3 0 0 0 0-6', 'M21 21v-2a4 4 0 0 0-3-3.87'],
+  temperature: ['M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0Z'],
+  sparkles: ['m12 3-1.2 3.2L8 7.5l2.8 1.3L12 12l1.2-3.2L16 7.5l-2.8-1.3L12 3Z', 'm6 13-.8 2.2L3 16l2.2.8L6 19l.8-2.2L9 16l-2.2-.8L6 13Z', 'm18 14-1 2.7-2.5 1.1 2.5 1.1 1 2.6 1-2.6 2.5-1.1-2.5-1.1L18 14Z'],
+  delivery: ['M3 6h11v10H3z', 'M14 10h4l3 3v3h-7z', 'M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z', 'M18 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z'],
+};
+---
+
+<svg
+  aria-hidden="true"
+  class="h-6 w-6"
+  fill="none"
+  viewBox="0 0 24 24"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  {paths[name].map((path) => <path d={path} />)}
+</svg>

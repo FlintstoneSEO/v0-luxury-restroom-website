@@ -4,13 +4,13 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { createSquareDepositInvoice } from '@/lib/integrations/square';
 import type { QuoteRequestRow } from '@/lib/quotes/types';
 
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(_request: Request, { params }: { params: Promise<{ quoteId: string }> }) {
   const adminAuth = await requireAdminUser();
   if (!adminAuth.ok) return adminAuth.response;
-  const { id } = await params;
+  const { quoteId } = await params;
   try {
     const supabase = createAdminClient();
-    const { data: quote, error } = await supabase.from('quote_requests').select('*').eq('id', id).single();
+    const { data: quote, error } = await supabase.from('quote_requests').select('*').eq('id', quoteId).single();
     if (error || !quote) return NextResponse.json({ message: 'Quote not found' }, { status: 404 });
     if (quote.agreement_status !== 'signed') return NextResponse.json({ message: 'Agreement must be signed before sending a deposit invoice' }, { status: 409 });
     if (quote.deposit_status === 'paid') return NextResponse.json({ message: 'Deposit is already paid' }, { status: 409 });
@@ -25,7 +25,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
       deposit_status: 'invoice_sent',
       status: 'deposit_pending',
       updated_at: now,
-    }).eq('id', id).select('*').single();
+    }).eq('id', quoteId).select('*').single();
     if (updateError) throw updateError;
     return NextResponse.json({ quote: updated, invoice_id: invoice.invoiceId, invoice_url: invoice.publicUrl });
   } catch (error) {

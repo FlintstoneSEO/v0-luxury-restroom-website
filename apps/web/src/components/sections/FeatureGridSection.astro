@@ -1,0 +1,55 @@
+---
+import SectionIcon from '../icons/SectionIcon.astro';
+
+interface Item {
+  icon: 'calendar' | 'clock' | 'location' | 'power' | 'water' | 'guests' | 'temperature' | 'sparkles' | 'delivery';
+  title: string;
+  description: string;
+}
+
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  items?: Item[];
+}
+
+const { eyebrow, heading, body, items = [] } = Astro.props;
+---
+
+<section class="section-space bg-parchment">
+  <div class="content-shell">
+    <div class="max-w-4xl">
+      {eyebrow && (
+        <p class="eyebrow" data-editable="text" data-type="text" data-prop="eyebrow">{eyebrow}</p>
+      )}
+      <h2 class="section-heading mt-5" data-editable="text" data-type="text" data-prop="heading">
+        {heading}
+      </h2>
+      {body && (
+        <p class="editorial-copy mt-7 max-w-2xl" data-editable="text" data-type="text" data-prop="body">
+          {body}
+        </p>
+      )}
+    </div>
+    <ul
+      class="mt-14 grid gap-px overflow-hidden border border-midnight/12 bg-midnight/12 sm:grid-cols-2 lg:grid-cols-3"
+      data-editable="array"
+      data-prop="items"
+    >
+      {items.map((item) => (
+        <li class="group bg-ivory p-7 transition-colors duration-300 hover:bg-white sm:p-9" data-editable="array-item">
+          <span class="inline-flex h-12 w-12 items-center justify-center border border-midnight/15 text-gold transition-colors group-hover:bg-midnight group-hover:text-champagne">
+            <SectionIcon name={item.icon} />
+          </span>
+          <h3 class="mt-7 font-serif text-3xl font-medium leading-none text-midnight" data-editable="text" data-type="text" data-prop="title">
+            {item.title}
+          </h3>
+          <p class="mt-4 text-sm leading-7 text-charcoal/65" data-editable="text" data-type="text" data-prop="description">
+            {item.description}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

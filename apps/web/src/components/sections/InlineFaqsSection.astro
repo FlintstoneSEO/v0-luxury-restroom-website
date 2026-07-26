@@ -1,0 +1,40 @@
+---
+interface Faq {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  items?: Faq[];
+}
+
+const { eyebrow, heading, body, items = [] } = Astro.props;
+---
+
+<section class="section-space bg-parchment" data-inline-faqs>
+  <div class="content-shell-narrow">
+    {eyebrow && (
+      <p class="eyebrow" data-editable="text" data-type="text" data-prop="eyebrow">{eyebrow}</p>
+    )}
+    <h2 class="section-heading mt-5" data-editable="text" data-type="text" data-prop="heading">{heading}</h2>
+    {body && (
+      <p class="editorial-copy mt-7 max-w-2xl" data-editable="text" data-type="text" data-prop="body">{body}</p>
+    )}
+    <div class="mt-12 border-t border-midnight/15" data-editable="array" data-prop="items">
+      {items.map((faq) => (
+        <details class="group border-b border-midnight/15" data-editable="array-item">
+          <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-serif text-2xl font-medium leading-tight text-midnight marker:hidden md:text-3xl">
+            <span data-editable="text" data-type="text" data-prop="question">{faq.question}</span>
+            <span class="grid h-10 w-10 shrink-0 place-items-center border border-midnight/18 text-gold transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+          </summary>
+          <p class="max-w-3xl pb-7 pr-12 text-base leading-8 text-charcoal/70" data-editable="text" data-type="text" data-prop="answer">
+            {faq.answer}
+          </p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

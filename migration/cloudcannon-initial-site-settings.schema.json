@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "hosted",
+        "headless"
+      ],
+      "description": "The mode for this site. `hosted` sites are built and hosted by CloudCannon. `headless` sites are not built or hosted.",
+      "title": "mode",
+      "markdownDescription": "The mode for this site. `hosted` sites are built and hosted by CloudCannon. `headless` sites are not built or hosted."
+    },
+    "ssg": {
+      "description": "The Static Site Generator used by this site.",
+      "type": "string",
+      "enum": [
+        "hugo",
+        "jekyll",
+        "eleventy",
+        "astro",
+        "lume",
+        "mkdocs",
+        "nextjs",
+        "sveltekit",
+        "bridgetown",
+        "docusaurus",
+        "gatsby",
+        "hexo",
+        "nuxtjs",
+        "sphinx",
+        "static",
+        "legacy",
+        "other"
+      ],
+      "title": "ssg",
+      "markdownDescription": "The Static Site Generator used by this site."
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "install_command": {
+          "description": "Command to install dependencies before building.",
+          "type": "string",
+          "title": "install_command",
+          "markdownDescription": "Command to install dependencies before building."
+        },
+        "build_command": {
+          "description": "Command to build the site.",
+          "type": "string",
+          "title": "build_command",
+          "markdownDescription": "Command to build the site."
+        },
+        "output_path": {
+          "description": "Path to the built site output directory.",
+          "type": "string",
+          "title": "output_path",
+          "markdownDescription": "Path to the built site output directory."
+        },
+        "environment_variables": {
+          "description": "Environment variables to set during the build process.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "The name of the environment variable.",
+                "title": "key",
+                "markdownDescription": "The name of the environment variable."
+              },
+              "value": {
+                "type": "string",
+                "description": "The value of the environment variable.",
+                "title": "value",
+                "markdownDescription": "The value of the environment variable."
+              }
+            },
+            "required": [
+              "key",
+              "value"
+            ],
+            "additionalProperties": false,
+            "description": "A single environment variable as a key-value pair.",
+            "title": "environment_variables[*]",
+            "markdownDescription": "A single environment variable as a key-value pair."
+          },
+          "title": "environment_variables",
+          "markdownDescription": "Environment variables to set during the build process."
+        },
+        "preserve_output": {
+          "description": "Keep the output directory between builds instead of clearing it.",
+          "type": "boolean",
+          "title": "preserve_output",
+          "markdownDescription": "Keep the output directory between builds instead of clearing it."
+        },
+        "include_git": {
+          "description": "Include the .git folder in the build environment.",
+          "type": "boolean",
+          "title": "include_git",
+          "markdownDescription": "Include the .git folder in the build environment."
+        },
+        "manually_configure_urls": {
+          "description": "Disable automatic URL configuration for the SSG.",
+          "type": "boolean",
+          "title": "manually_configure_urls",
+          "markdownDescription": "Disable automatic URL configuration for the SSG."
+        },
+        "preserved_paths": {
+          "description": "Newline-separated list of paths to preserve between builds.",
+          "type": "string",
+          "title": "preserved_paths",
+          "markdownDescription": "Newline-separated list of paths to preserve between builds."
+        },
+        "node_version": {
+          "description": "Node.js version to use for the build.",
+          "type": "string",
+          "title": "node_version",
+          "markdownDescription": "Node.js version to use for the build."
+        },
+        "ruby_version": {
+          "description": "Ruby version to use for the build.",
+          "type": "string",
+          "title": "ruby_version",
+          "markdownDescription": "Ruby version to use for the build."
+        },
+        "hugo_version": {
+          "description": "Hugo version to use for the build.",
+          "type": "string",
+          "title": "hugo_version",
+          "markdownDescription": "Hugo version to use for the build."
+        },
+        "deno_version": {
+          "description": "Deno version to use for the build.",
+          "type": "string",
+          "title": "deno_version",
+          "markdownDescription": "Deno version to use for the build."
+        }
+      },
+      "additionalProperties": false,
+      "title": "Build",
+      "description": "Build configuration. Ignored when `mode` is `headless`.",
+      "markdownDescription": "Build configuration. Ignored when `mode` is `headless`."
+    }
+  },
+  "additionalProperties": false,
+  "title": "Initial Site Settings",
+  "description": "Configuration for the `.cloudcannon/initial-site-settings.json` file. Defines build settings and site mode for new sites.",
+  "$id": "https://github.com/cloudcannon/configuration-types/releases/latest/download/cloudcannon-initial-site-settings.schema.json",
+  "markdownDescription": "Configuration for the `.cloudcannon/initial-site-settings.json` file. Defines build settings and site mode for new sites."
+}
