@@ -1,7 +1,0 @@
----
-question: "Can the trailer be used if there is no water source nearby?"
-answer: "Yes. We offer fresh water tank options for locations without a water hookup. The tank is filled before your event and provides sufficient water for hand washing and flushing throughout your event."
-category: "setup"
-order: 50
-featured: false
----

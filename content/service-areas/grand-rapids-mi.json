@@ -1,0 +1,106 @@
+{
+  "_schema": "service_area",
+  "slug": "grand-rapids-mi",
+  "city": "Grand Rapids",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Grand Rapids has a strong event market with weddings, corporate activations, and regional gatherings that need elevated restroom options.",
+  "nearby": "Wyoming, Kentwood, Ada, and Walker",
+  "venueNote": "We coordinate around busier venue calendars and structured load-in schedules.",
+  "useCases": [
+    "wedding receptions",
+    "corporate galas",
+    "donor events",
+    "community festivals",
+    "temporary project support"
+  ],
+  "faqs": [
+    {
+      "q": "Do you deliver to Grand Rapids event venues?",
+      "a": "Yes, throughout the greater Grand Rapids area."
+    },
+    {
+      "q": "Can you support upscale corporate events?",
+      "a": "Yes, including VIP-focused restroom planning."
+    },
+    {
+      "q": "How early should we reserve?",
+      "a": "Early booking is best for prime weekend dates."
+    },
+    {
+      "q": "Do you handle setup logistics?",
+      "a": "Yes, including placement and utility coordination."
+    }
+  ],
+  "localOverview": [
+    "Grand Rapids is a larger event market with frequent corporate programs, weddings, donor events, and festival-driven community gatherings.",
+    "Our team supports schedules that require reliable logistics across busy venue calendars."
+  ],
+  "weddingUseCase": [
+    "Grand Rapids weddings use luxury trailers for downtown, venue, and private-estate receptions with premium guest expectations."
+  ],
+  "privateEventUseCase": [
+    "Private hosts and nonprofit teams rely on trailers for clean, upscale restroom access at larger gatherings."
+  ],
+  "corporateFestivalUseCase": [
+    "We support corporate activations, community festivals, and donor events with professional restroom operations."
+  ],
+  "constructionLongTermUseCase": [
+    "Long-term rentals are available for project sites and temporary facilities in the greater Grand Rapids market."
+  ],
+  "setupLogistics": [
+    "We plan delivery windows, load-in sequencing, and utility checks to keep operations smooth on high-traffic event days."
+  ],
+  "seasonalPlanning": [
+    "Prime summer and fall weekends in Grand Rapids should be reserved early."
+  ],
+  "nearbyCommunities": [
+    "Wyoming",
+    "Kentwood",
+    "Ada",
+    "Walker",
+    "Cascade Township"
+  ],
+  "resourceLinks": [
+    {
+      "href": "/resources/festival-restroom-planning-guide",
+      "label": "Festival Restroom Planning Guide"
+    }
+  ],
+  "serviceLinks": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Private Event Restroom Trailers"
+    },
+    {
+      "href": "/corporate-event-restroom-trailers",
+      "label": "Corporate Event Restroom Trailers"
+    },
+    {
+      "href": "/festival-community-event-restroom-trailers",
+      "label": "Festival & Community Event Restroom Trailers"
+    },
+    {
+      "href": "/construction-long-term-restroom-trailer-rentals",
+      "label": "Construction & Long-Term Restroom Trailer Rentals"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "trustNote": "Grand Rapids clients count on us for scalable planning, polished trailers, and dependable execution."
+}

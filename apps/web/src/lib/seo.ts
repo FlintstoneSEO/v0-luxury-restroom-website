@@ -1,4 +1,4 @@
-import seoDefaults from '../data/seo-defaults.json';
+import seoDefaults from '../../../../content/site/seo-defaults.json';
 
 export interface SeoImage {
   src: string;
@@ -36,10 +36,7 @@ export function resolveSeo(input: SeoInput): ResolvedSeo {
     ? toAbsoluteUrl(input.canonical)
     : seoDefaults.canonicalOrigin;
   const image = input.image ?? {
-    src: seoDefaults.defaultImage,
-    alt: 'Signature Luxe luxury restroom trailer at an evening Michigan event',
-    width: 1536,
-    height: 1024,
+    ...seoDefaults.defaultImage,
   };
 
   return {
@@ -60,7 +57,7 @@ export function organizationSchema() {
     '@type': 'Organization',
     name: 'Signature Luxe Events & Amenities',
     url: seoDefaults.canonicalOrigin,
-    image: toAbsoluteUrl(seoDefaults.defaultImage),
+    image: toAbsoluteUrl(seoDefaults.defaultImage.src),
     email: 'info@signatureluxeevents.com',
     telephone: '+1-517-295-0107',
     areaServed: {

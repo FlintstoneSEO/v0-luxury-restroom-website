@@ -1,0 +1,46 @@
+{
+  "tagline": "Luxury restroom trailer rentals for weddings, private parties, corporate events, construction sites, and long-term needs throughout Lansing and Mid-Michigan.",
+  "location": "Based in Lansing, MI",
+  "hours": ["Mon - Fri: 9:00 am - 5:00 pm", "Saturday: 8:00 am - 3:00 pm", "Sunday: Closed"],
+  "groups": [
+    {
+      "heading": "Quick Links",
+      "links": [
+        { "label": "Home", "href": "/" },
+        { "label": "Start Here", "href": "/start-here" },
+        { "label": "Our Restrooms", "href": "/luxury-restroom-trailer-rentals" },
+        { "label": "Service Areas", "href": "/service-areas" },
+        { "label": "Gallery", "href": "/gallery" },
+        { "label": "FAQ", "href": "/faq" },
+        { "label": "Resources", "href": "/resources" },
+        { "label": "Blog", "href": "/blog" },
+        { "label": "Contact", "href": "/contact" }
+      ]
+    },
+    {
+      "heading": "Event Types",
+      "links": [
+        { "label": "Weddings", "href": "/wedding-restroom-trailer-rentals" },
+        { "label": "Special Events", "href": "/private-event-restroom-trailers" },
+        { "label": "Construction / Long-Term", "href": "/construction-long-term-restroom-trailer-rentals" },
+        { "label": "Disaster Relief / Government", "href": "/emergency-disaster-relief-restroom-trailers" }
+      ],
+      "cta": { "label": "Check Availability", "href": "/request-quote" }
+    }
+  ],
+  "serviceAreas": [
+    { "label": "Lansing", "href": "/service-areas/lansing-mi" },
+    { "label": "East Lansing", "href": "/service-areas/east-lansing-mi" },
+    { "label": "Okemos", "href": "/service-areas/okemos-mi" },
+    { "label": "Haslett", "href": "/service-areas/haslett-mi" },
+    { "label": "Grand Ledge", "href": "/service-areas/grand-ledge-mi" },
+    { "label": "DeWitt", "href": "/service-areas/dewitt-mi" }
+  ],
+  "serviceStatement": "Providing luxury restroom trailer rentals throughout Lansing, East Lansing, Okemos, Haslett, Grand Ledge, DeWitt, Holt, Mason, and surrounding Mid-Michigan communities.",
+  "socials": [
+    { "label": "Facebook", "href": "https://www.facebook.com/signatureluxeevents" },
+    { "label": "Instagram", "href": "https://www.instagram.com/signatureluxe_events" }
+  ],
+  "copyrightName": "Signature Luxe Events & Amenities",
+  "credit": { "label": "Flintstone SEO", "href": "https://www.flintstoneseo.com" }
+}

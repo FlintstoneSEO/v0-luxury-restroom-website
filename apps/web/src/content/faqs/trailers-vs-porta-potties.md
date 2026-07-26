@@ -1,7 +1,0 @@
----
-question: "Are restroom trailers better than porta-potties for weddings?"
-answer: "For most couples, yes. Our luxury restroom trailers offer a completely different experience than standard porta-potties. With climate control, private flushing stalls, running water, modern vanity stations, and quality finishes, your guests enjoy a clean, comfortable, and upscale restroom experience that matches the elegance of your special day."
-category: "amenities"
-order: 110
-featured: false
----

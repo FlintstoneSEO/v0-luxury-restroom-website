@@ -2,27 +2,27 @@ version: latest
 
 paths:
   static: public
-  uploads: public/images
+  uploads: public/images/uploads
 
 collections_config:
   pages:
-    path: apps/web/src/content/pages
+    path: content/pages
     name: Pages
     description: Public marketing pages and reusable page sections.
     icon: wysiwyg
-    url: /[slug]
+    glob:
+      - "**/*.{md,mdx}"
+    disable_url: true
     schemas:
       default:
         path: .cloudcannon/schemas/page.md
         name: Marketing Page
-        new_preview_url: /migration-pilot
     add_options:
       - name: Marketing Page
         schema: default
         icon: wysiwyg
-        editor: visual
+        editor: content
     _enabled_editors:
-      - visual
       - content
       - data
     _inputs:
@@ -31,140 +31,222 @@ collections_config:
         comment: Reorder these sections to change the page flow.
         options:
           structures: _structures.page_sections
+  homepage:
+    path: content/pages
+    name: Homepage
+    description: Homepage SEO and hero content used by the production Next.js route.
+    icon: home
+    glob:
+      - "home.json"
+    disable_url: true
+    disable_add: true
+    _enabled_editors:
+      - data
+
+  gallery:
+    path: content/pages
+    name: Gallery
+    description: Gallery page copy, categories, captions, and public image references.
+    icon: photo_library
+    glob:
+      - "gallery.json"
+    disable_url: true
+    disable_add: true
+    _enabled_editors:
+      - data
+
+  listing_pages:
+    path: content/pages
+    name: Listing Pages
+    description: Structured settings for service-area and resource listing pages.
+    icon: view_list
+    glob:
+      - "service-areas.json"
+      - "resources.json"
+    disable_url: true
+    disable_add: true
+    _enabled_editors:
+      - data
+
   trailers:
-    path: apps/web/src/content/trailers
+    path: content/trailers
     name: Trailers
+    glob:
+      - "*.json"
     description: Trailer descriptions, specifications, features, and galleries.
     icon: local_shipping
     disable_url: true
     schemas:
       default:
-        path: .cloudcannon/schemas/trailer.md
+        path: .cloudcannon/schemas/trailer.json
         name: Trailer
+    add_options:
+      - name: Trailer
+        schema: default
+        icon: local_shipping
+        editor: data
     _enabled_editors:
-      - content
       - data
     _inputs:
-      gallery:
-        type: array
-        options:
-          structures: _structures.images
       features:
         type: array
       features[*]:
         type: text
+      popular:
+        type: switch
   event_types:
-    path: apps/web/src/content/event-types
+    path: content/event-types
     name: Event Types
+    glob:
+      - "*.json"
     description: Weddings, private parties, corporate events, festivals, and related services.
     icon: event_available
     disable_url: true
     schemas:
       default:
-        path: .cloudcannon/schemas/event-type.md
+        path: .cloudcannon/schemas/event-type.json
         name: Event Type
     add_options:
       - name: Event Type
         schema: default
         icon: event_available
-        editor: content
+        editor: data
     _enabled_editors:
-      - content
       - data
     _inputs:
       sections:
         type: array
-        options:
-          structures: _structures.page_sections
-      relatedTrailers:
+        comment: Reorder these editorial sections to change the page flow.
+      sections[*].paragraphs:
         type: array
-      relatedTrailers[*]:
-        type: text
       faqs:
         type: array
-      faqs[*]:
-        type: text
+        options:
+          structures: _structures.faq_items
+      resource.image:
+        type: object
+        options:
+          preview:
+            icon: image
+  service_pages:
+    path: content/service-pages
+    name: Service Page Data
+    description: Structured production content for bespoke wedding, event, fleet, construction, and emergency routes.
+    icon: article
+    glob:
+      - "*.json"
+    disable_url: true
+    disable_add: true
+    schemas:
+      default:
+        path: .cloudcannon/schemas/service-page-data.json
+        name: Service Page Data
+    _enabled_editors:
+      - data
   service_areas:
-    path: apps/web/src/content/service-areas
+    path: content/service-areas
+    glob:
+      - "*.json"
     name: Service Areas
     description: Local service-area pages and nearby-area relationships.
     icon: location_on
     disable_url: true
     schemas:
       default:
-        path: .cloudcannon/schemas/service-area.md
+        path: .cloudcannon/schemas/service-area.json
         name: Service Area
     add_options:
       - name: Service Area
         schema: default
         icon: location_on
-        editor: content
+        editor: data
     _enabled_editors:
-      - content
       - data
     _inputs:
-      nearbyAreas:
+      nearbyCommunities:
         type: array
-      nearbyAreas[*]:
+      nearbyCommunities[*]:
         type: text
       faqs:
         type: array
-      faqs[*]:
-        type: text
+        options:
+          structures: _structures.faq_items
+      resourceLinks:
+        type: array
+        options:
+          structures: _structures.links
+      serviceLinks:
+        type: array
+        options:
+          structures: _structures.links
   faqs:
-    path: apps/web/src/content/faqs
+    path: content/faqs
     name: FAQs
+    glob:
+      - "*.json"
     description: Reusable customer questions and answers.
     icon: help
     disable_url: true
     schemas:
       default:
-        path: .cloudcannon/schemas/faq.md
+        path: .cloudcannon/schemas/faq.json
         name: FAQ
+    add_options:
+      - name: FAQ
+        schema: default
+        icon: help
+        editor: data
     _enabled_editors:
       - data
   testimonials:
-    path: apps/web/src/content/testimonials
+    path: content/testimonials
     name: Testimonials
+    glob:
+      - "*.json"
     description: Approved customer testimonials and optional event context.
     icon: format_quote
     disable_url: true
     schemas:
       default:
-        path: .cloudcannon/schemas/testimonial.md
+        path: .cloudcannon/schemas/testimonial.json
         name: Testimonial
+    add_options:
+      - name: Testimonial
+        schema: default
+        icon: format_quote
+        editor: data
     _enabled_editors:
       - data
-  blog:
-    path: apps/web/src/content/blog
-    name: Blog
-    description: Educational articles and planning resources.
-    icon: post_add
+  resources:
+    path: content/resources
+    glob:
+      - "*.json"
+    name: Resources
+    description: Long-form planning guides and educational resources.
+    icon: library_books
     disable_url: true
     schemas:
       default:
-        path: .cloudcannon/schemas/blog-post.md
-        name: Blog Post
+        path: .cloudcannon/schemas/resource.json
+        name: Planning Resource
     add_options:
-      - name: Blog Post
+      - name: Planning Resource
         schema: default
-        icon: post_add
-        editor: content
+        icon: library_books
+        editor: data
     _enabled_editors:
-      - content
       - data
-    _inputs:
-      categories:
-        type: array
-      categories[*]:
-        type: text
+
   data:
-    path: apps/web/src/data
+    path: content/site
     name: Site Settings
     description: Navigation, footer, business information, and default SEO values.
     icon: settings
     glob:
-      - "*.json"
+      - "business.json"
+      - "footer.json"
+      - "navigation.json"
+      - "seo-defaults.json"
     disable_url: true
     disable_add: true
     _enabled_editors:
@@ -173,11 +255,15 @@ collections_config:
 collection_groups:
   - heading: Website
     collections:
+      - homepage
+      - gallery
+      - listing_pages
       - pages
       - event_types
       - trailers
       - service_areas
-      - blog
+      - resources
+      - service_pages
   - heading: Reusable Content
     collections:
       - faqs
@@ -186,16 +272,16 @@ collection_groups:
 
 data_config:
   navigation:
-    path: apps/web/src/data/navigation.json
+    path: content/site/navigation.json
   footer:
-    path: apps/web/src/data/footer.json
+    path: content/site/footer.json
   business:
-    path: apps/web/src/data/business.json
+    path: content/site/business.json
   seo_defaults:
-    path: apps/web/src/data/seo-defaults.json
+    path: content/site/seo-defaults.json
 
 file_config:
-  - glob: apps/web/src/data/navigation.json
+  - glob: content/site/navigation.json
     _inputs:
       $:
         type: object
@@ -211,7 +297,7 @@ file_config:
         options:
           preview:
             icon: arrow_forward
-  - glob: apps/web/src/data/footer.json
+  - glob: content/site/footer.json
     _inputs:
       $:
         type: object
@@ -230,7 +316,7 @@ file_config:
         type: array
         options:
           structures: _structures.links
-  - glob: apps/web/src/data/business.json
+  - glob: content/site/business.json
     _inputs:
       $:
         type: object
@@ -242,7 +328,7 @@ file_config:
         comment: Keep this consistent with Google Business Profile and customer emails.
       email:
         type: email
-  - glob: apps/web/src/data/seo-defaults.json
+  - glob: content/site/seo-defaults.json
     _inputs:
       $:
         type: object
@@ -327,6 +413,9 @@ _inputs:
     comment: Draft entries are excluded from the public build.
   featured:
     type: switch
+  published:
+    type: switch
+    comment: Only approved testimonials marked published appear on the website.
   stations:
     type: number
   order:
@@ -334,6 +423,14 @@ _inputs:
   state:
     type: text
     comment: Use the two-letter state abbreviation.
+  heroImage:
+    type: image
+  heroImageAlt:
+    type: text
+    comment: Describe the image for visitors who cannot see it.
+  priority:
+    type: switch
+    comment: Priority cities require the expanded local planning fields.
   publishedAt:
     type: datetime
   updatedAt:

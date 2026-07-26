@@ -1,0 +1,17 @@
+{
+  "_schema": "service_area",
+  "slug": "new-city-mi",
+  "city": "New City",
+  "state": "MI",
+  "draft": true,
+  "priority": false,
+  "intro": "Add a unique local introduction.",
+  "nearby": "List nearby communities.",
+  "venueNote": "Add useful local venue and site-planning context.",
+  "useCases": [],
+  "faqs": [],
+  "nearbyCommunities": [],
+  "resourceLinks": [],
+  "serviceLinks": [],
+  "trustNote": ""
+}

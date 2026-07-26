@@ -1,9 +1,0 @@
-{
-  "ssg": "astro",
-  "build": {
-    "install_command": "corepack pnpm install --frozen-lockfile",
-    "build_command": "corepack pnpm build:web",
-    "output_path": "apps/web/dist",
-    "node_version": "22"
-  }
-}

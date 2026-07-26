@@ -1,0 +1,105 @@
+{
+  "_schema": "service_area",
+  "slug": "ann-arbor-mi",
+  "city": "Ann Arbor",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Ann Arbor events include formal weddings, university-adjacent gatherings, and private celebrations that prioritize guest experience.",
+  "nearby": "Ypsilanti, Saline, Dexter, and Chelsea",
+  "venueNote": "We help coordinate tight access windows and polished event presentation expectations.",
+  "useCases": [
+    "weddings",
+    "private estate parties",
+    "corporate and donor events",
+    "community gatherings"
+  ],
+  "faqs": [
+    {
+      "q": "Do you provide service in Ann Arbor?",
+      "a": "Yes, across Ann Arbor and nearby communities."
+    },
+    {
+      "q": "Can this support upscale events?",
+      "a": "Yes, luxury trailers are designed for elevated guest comfort."
+    },
+    {
+      "q": "Do you assist with capacity planning?",
+      "a": "Yes, we recommend sizing by attendance and timeline."
+    },
+    {
+      "q": "Can I book for a weekend plus setup day?",
+      "a": "Yes, scheduling can be customized."
+    }
+  ],
+  "localOverview": [
+    "Ann Arbor events combine university-adjacent programming, arts/community gatherings, weddings, and private estate celebrations.",
+    "We provide premium restroom solutions that match high guest expectations and curated event design."
+  ],
+  "weddingUseCase": [
+    "Ann Arbor wedding planners often choose luxury trailers for estate venues, tented receptions, and weekend wedding schedules."
+  ],
+  "privateEventUseCase": [
+    "Private hosts use trailers for donor dinners, graduation celebrations, and upscale backyard events."
+  ],
+  "corporateFestivalUseCase": [
+    "From campus-adjacent events to arts and community programs, we deliver polished restroom support with strong coordination."
+  ],
+  "constructionLongTermUseCase": [
+    "For temporary facilities, we can support long-term timelines with scheduled service."
+  ],
+  "setupLogistics": [
+    "We coordinate tighter access windows, utility planning, and guest-facing placement at formal venues."
+  ],
+  "seasonalPlanning": [
+    "University calendar weekends and fall event season can create faster booking cycles."
+  ],
+  "nearbyCommunities": [
+    "Ypsilanti",
+    "Saline",
+    "Dexter",
+    "Chelsea",
+    "Pittsfield Township"
+  ],
+  "resourceLinks": [
+    {
+      "href": "/resources/restroom-trailer-vs-porta-potty",
+      "label": "Restroom Trailer vs Porta Potty"
+    }
+  ],
+  "serviceLinks": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Private Event Restroom Trailers"
+    },
+    {
+      "href": "/corporate-event-restroom-trailers",
+      "label": "Corporate Event Restroom Trailers"
+    },
+    {
+      "href": "/festival-community-event-restroom-trailers",
+      "label": "Festival & Community Event Restroom Trailers"
+    },
+    {
+      "href": "/construction-long-term-restroom-trailer-rentals",
+      "label": "Construction & Long-Term Restroom Trailer Rentals"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "trustNote": "Ann Arbor clients value our attention to presentation details, timing, and planner-friendly communication."
+}

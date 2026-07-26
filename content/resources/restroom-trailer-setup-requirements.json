@@ -1,0 +1,98 @@
+{
+  "_schema": "resource",
+  "draft": false,
+  "slug": "restroom-trailer-setup-requirements",
+  "title": "Restroom Trailer Setup Requirements: Power, Water, and Placement",
+  "metaTitle": "Restroom Trailer Setup Requirements | Power, Water, Placement",
+  "metaDescription": "Learn the key setup requirements for restroom trailers in Lansing and Mid-Michigan, including power, water, placement, and delivery access.",
+  "excerpt": "A practical setup checklist to prepare your event site for smooth restroom trailer delivery and operation.",
+  "category": "Event Logistics",
+  "publishDate": "2026-05-09",
+  "updatedDate": "2026-05-09",
+  "heroImage": "/images/Special Event Trailer.png",
+  "heroImageAlt": "Restroom trailer positioned with utility setup at an event site",
+  "primaryKeyword": "restroom trailer setup requirements",
+  "secondaryKeywords": [
+    "restroom trailer power requirements",
+    "event trailer placement checklist"
+  ],
+  "relatedServicePages": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Event Logistics Support"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here: Site Planning"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "relatedCityPages": [
+    {
+      "href": "/service-areas/dewitt-mi",
+      "label": "DeWitt Service Area"
+    },
+    {
+      "href": "/service-areas/grand-ledge-mi",
+      "label": "Grand Ledge Service Area"
+    }
+  ],
+  "relatedResources": [
+    {
+      "href": "/resources/festival-restroom-planning-guide",
+      "label": "Festival Restroom Planning Guide"
+    },
+    {
+      "href": "/resources/construction-restroom-trailer-rental-guide",
+      "label": "Construction Restroom Trailer Rental Guide"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do all restroom trailers need external power?",
+      "answer": "Power planning varies by trailer and service plan. Confirm available power options early with your provider."
+    },
+    {
+      "question": "Is on-site water always required?",
+      "answer": "Requirements vary by unit and setup. Review water access during site planning so the correct configuration is reserved."
+    },
+    {
+      "question": "How much space should I leave for placement?",
+      "answer": "Space needs depend on trailer size, towing access, and safe guest circulation around entry steps."
+    },
+    {
+      "question": "Can trailers be placed on grass?",
+      "answer": "Often yes, if the surface is stable and weather conditions allow safe delivery and leveling."
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Power Planning",
+      "content": [
+        "Confirm what power is available at your venue before finalizing equipment. This step prevents day-of delays and helps align trailer selection with site reality.",
+        "If your event is in a rural Mid-Michigan location, discuss backup options and cable routing early to protect both safety and aesthetics."
+      ]
+    },
+    {
+      "heading": "Water and Service Access",
+      "content": [
+        "Water planning should include both source location and hose path so guest areas remain clean and unobstructed. Your logistics plan should also account for service access during the event window.",
+        "Signature Luxe Events & Amenities coordinates these details with hosts, planners, and venues to reduce surprises during install."
+      ]
+    },
+    {
+      "heading": "Placement and Delivery Path",
+      "content": [
+        "Choose a level, accessible placement area with room for entry/exit traffic and nighttime visibility. Avoid blocking emergency lanes, catering routes, or vendor staging zones.",
+        "Finalize access notes in the Start Here planning guide and confirm your event-specific setup plan through the quote request form."
+      ]
+    }
+  ]
+}

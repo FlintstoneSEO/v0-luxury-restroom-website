@@ -1,0 +1,167 @@
+{
+  "_schema": "homepage",
+  "slug": "home",
+  "draft": false,
+  "seo": {
+    "title": "Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events",
+    "description": "Rent luxury restroom trailers in Lansing, MI for weddings, private events, corporate events, festivals, construction sites, and long-term needs.",
+    "canonical": "/",
+    "noindex": false,
+    "schema": "service"
+  },
+  "hero": {
+    "eyebrow": "Luxury Restroom Trailer Rentals",
+    "heading": "Luxury Restroom Trailer Rentals in Lansing, MI",
+    "body": "Clean, modern, climate-controlled restroom trailers for weddings, private parties, corporate events, construction sites, and more throughout Lansing and Mid-Michigan.",
+    "primaryCta": {
+      "label": "Request Availability",
+      "href": "/request-availability"
+    },
+    "secondaryCta": {
+      "label": "View Our Restrooms",
+      "href": "/luxury-restroom-trailer-rentals"
+    },
+    "location": "Based in Lansing, MI. Serving Mid-Michigan within a 2-hour radius."
+  },
+  "features": [
+    {
+      "title": "Climate Controlled",
+      "icon": "temperature"
+    },
+    {
+      "title": "Private Flushing Stalls",
+      "icon": "door"
+    },
+    {
+      "title": "Modern Vanity Stations",
+      "icon": "sparkles"
+    },
+    {
+      "title": "Fresh Water System",
+      "icon": "water"
+    },
+    {
+      "title": "Event Ready Presentation",
+      "icon": "presentation"
+    },
+    {
+      "title": "Power Access Support",
+      "icon": "power"
+    }
+  ],
+  "processSteps": [
+    {
+      "number": 1,
+      "title": "Check Availability"
+    },
+    {
+      "number": 2,
+      "title": "Share Your Event Details"
+    },
+    {
+      "number": 3,
+      "title": "Receive a Custom Proposal"
+    },
+    {
+      "number": 4,
+      "title": "Approve and Reserve Your Date"
+    }
+  ],
+  "services": [
+    {
+      "title": "Weddings",
+      "description": "Elegant restroom trailers for outdoor weddings, backyard celebrations, barn venues, and private estates throughout Mid-Michigan.",
+      "href": "/wedding-restroom-trailer-rentals",
+      "mediaKey": "weddings"
+    },
+    {
+      "title": "Special Events",
+      "description": "Premium solutions for private parties, corporate events, fundraisers, festivals, and community gatherings.",
+      "href": "/private-event-restroom-trailers",
+      "mediaKey": "special_events"
+    },
+    {
+      "title": "Construction / Long-Term",
+      "description": "Reliable restroom trailers for construction sites, commercial projects, and extended rental needs.",
+      "href": "/construction-long-term-restroom-trailer-rentals",
+      "mediaKey": "trailer_gallery"
+    },
+    {
+      "title": "Disaster Relief / Government",
+      "description": "Dependable restroom solutions for emergency response, municipal projects, and temporary infrastructure.",
+      "href": "/emergency-disaster-relief-restroom-trailers",
+      "mediaKey": "festivals"
+    }
+  ],
+  "eventScenarios": [
+    {
+      "label": "Weddings",
+      "mediaKey": "weddings"
+    },
+    {
+      "label": "Parties",
+      "mediaKey": "private_parties"
+    },
+    {
+      "label": "Corporate",
+      "mediaKey": "corporate_events"
+    },
+    {
+      "label": "Festivals",
+      "mediaKey": "festivals"
+    }
+  ],
+  "serviceAreas": [
+    "Lansing",
+    "East Lansing",
+    "Okemos",
+    "Haslett",
+    "Grand Ledge",
+    "DeWitt",
+    "Holt",
+    "Mason",
+    "Charlotte",
+    "Howell",
+    "Jackson",
+    "Flint",
+    "Ann Arbor"
+  ],
+  "galleryImages": [
+    {
+      "id": "1",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg",
+      "alt": "Luxury restroom trailer exterior in Lansing Michigan",
+      "category": "Exterior"
+    },
+    {
+      "id": "2",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion2-XnFvvRp9dg0l3UMsQjxxTXQ6sRYgSI.jpg",
+      "alt": "Modern vanity station with succulent decor",
+      "category": "Interior"
+    },
+    {
+      "id": "3",
+      "src": "/images/Wedding Trailer.png",
+      "alt": "Wedding restroom trailer rental in Mid-Michigan",
+      "category": "Weddings"
+    },
+    {
+      "id": "4",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion2-TjkXrrTaVwy3CswhDQSAdCK80Grr59.jpg",
+      "alt": "4-Station vanity with succulent artwork",
+      "category": "Interior"
+    },
+    {
+      "id": "5",
+      "src": "/images/Special Event Trailer.png",
+      "alt": "Mobile restroom trailer for outdoor events",
+      "category": "Events"
+    },
+    {
+      "id": "6",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion4-CFlX5FxXUKJ43DEnRyhr5BWnmbQ0p2.jpg",
+      "alt": "2-Station interior with tree ring artwork",
+      "category": "Interior"
+    }
+  ]
+}

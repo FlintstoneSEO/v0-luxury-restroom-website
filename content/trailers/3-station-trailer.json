@@ -1,0 +1,17 @@
+{
+  "_schema": "trailer",
+  "slug": "3-station-trailer",
+  "draft": false,
+  "order": 2,
+  "name": "3-Station Trailer",
+  "capacity": "Up to 225 guests",
+  "description": "Compact and flexible option for events and job sites where space is important. Recommended for events expecting up to 225 guests.",
+  "features": [
+    "3 private restroom stalls",
+    "Climate controlled interior",
+    "Expanded vanity area",
+    "Flexible configuration",
+    "Great for medium events"
+  ],
+  "popular": true
+}

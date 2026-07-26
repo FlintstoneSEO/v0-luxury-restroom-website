@@ -1,0 +1,27 @@
+{
+  "_schema": "event_type",
+  "slug": "new-event-type",
+  "draft": true,
+  "seo": {
+    "title": "New Event Service | Signature Luxe",
+    "description": "Add a unique search description for this event service.",
+    "canonical": null,
+    "noindex": true,
+    "schema": "service"
+  },
+  "pageTitle": "New event service",
+  "serviceName": "Event restroom trailer rental",
+  "urlPath": "/new-event-type",
+  "intro": "Add the event-service introduction.",
+  "ctaTitle": "Request an Event Quote",
+  "sections": [
+    { "heading": "Planning information", "paragraphs": ["Add useful planning information."] }
+  ],
+  "faqs": [],
+  "resource": {
+    "image": { "src": "/images/Special Event Trailer.png", "alt": "Luxury restroom trailer at a Michigan event" },
+    "eyebrow": "Planning Resources",
+    "title": "Helpful Event Resources",
+    "description": "Review related planning information."
+  }
+}

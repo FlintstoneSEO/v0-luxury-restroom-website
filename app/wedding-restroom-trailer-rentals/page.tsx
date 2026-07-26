@@ -20,138 +20,30 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
+import rawContent from "@/content/service-pages/weddings.json"
+import { defineServicePageData } from "@/lib/content/service-pages"
 
-const title =
-  "Wedding Restroom Trailer Rentals in Lansing & Mid-Michigan | Signature Luxe Events"
-const description =
-  "Luxury wedding restroom trailer rentals for outdoor weddings, barn venues, estates, and backyard receptions across Lansing and Mid-Michigan with guest-first planning."
-const canonical =
-  "https://www.signatureluxeevents.com/wedding-restroom-trailer-rentals"
+const content = defineServicePageData(rawContent)
+
+const { title, description, canonical } = content.seo
+
 export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical },
-  openGraph: { title, description, url: canonical },
+  title, description, alternates: { canonical },
+  openGraph: { title, description, url: canonical ?? undefined },
   twitter: { card: "summary_large_image", title, description },
 }
 
-const weddingFeatures = [
-  {
-    title: "Elegant Design",
-    description:
-      "Modern finishes and stylish interiors that complement your wedding aesthetic.",
-    icon: Sparkles,
-  },
-  {
-    title: "Guest Comfort",
-    description:
-      "Climate-controlled interiors keep guests comfortable in any weather.",
-    icon: Thermometer,
-  },
-  {
-    title: "Private Stalls",
-    description:
-      "Full-size private stalls with real flushing toilets for a premium experience.",
-    icon: DoorOpen,
-  },
-  {
-    title: "Fresh Water",
-    description:
-      "Running water for hand washing with quality soap and paper products.",
-    icon: Droplets,
-  },
-]
+const contentIcons = { Sparkles, Thermometer, DoorOpen, Droplets }
 
-const venueTypes = [
-  "Outdoor weddings",
-  "Backyard celebrations",
-  "Barn weddings",
-  "Vineyard venues",
-  "Private estates",
-  "Farm weddings",
-  "Garden ceremonies",
-  "Rustic venues",
-  "Lakeside weddings",
-  "Tent receptions",
-]
+const weddingFeatures = content.data.weddingFeatures.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const weddingBenefits = [
-  {
-    title: "Designed for Wedding Flow",
-    description:
-      "Wedding timelines create traffic spikes after the ceremony, during cocktail hour, and before dinner. We size trailer options around those peaks so the reception keeps moving and lines stay manageable.",
-  },
-  {
-    title: "Guest Comfort in Formal Attire",
-    description:
-      "Wedding guests in suits, gowns, and heels expect more than a standard portable unit. Luxury trailers with flushing toilets, private stalls, sinks, mirrors, and lighting create a cleaner and more comfortable experience.",
-  },
-  {
-    title: "Photo-Friendly Placement",
-    description:
-      "Restroom placement affects more than convenience. We help select a setup spot that supports guest access while staying out of key photo angles, bar lines, and entertainment zones.",
-  },
-  {
-    title: "Protect Your Venue or Property",
-    description:
-      "Keep guests out of your home or venue&apos;s restrooms. Our trailers handle the traffic while your property stays pristine throughout the celebration.",
-  },
-]
+const venueTypes = content.data.venueTypes
 
-const weddingGallery = [
-  {
-    id: "w1",
-    src: "/images/Wedding Trailer.png",
-    alt: "Wedding restroom trailer rental Lansing Michigan",
-    category: "Weddings",
-  },
-  {
-    id: "w2",
-    src: "/images/Wedding Trailer.png",
-    alt: "Luxury restroom trailer at elegant wedding reception",
-    category: "Weddings",
-  },
-  {
-    id: "w3",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f8c856e0-44a2-4c9a-990c-09e671fee136-VkgBsnTDKck69SOzLmlIYiSb3zZeAS.png",
-    alt: "Restroom trailer at garden estate wedding",
-    category: "Weddings",
-  },
-  {
-    id: "w4",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
-    alt: "Modern vanity station wedding restroom trailer",
-    category: "Interior",
-  },
-]
+const weddingBenefits = content.data.weddingBenefits
 
-const weddingFaqs = [
-  {
-    question: "How far in advance should we book wedding restroom trailers?",
-    answer:
-      "For popular spring and fall dates, 2 to 4 months is ideal. We can also check shorter timelines based on current inventory and route availability.",
-  },
-  {
-    question: "Can you deliver to barn venues and private properties?",
-    answer:
-      "Yes. We frequently plan deliveries for barns, estates, and backyard weddings, including access and placement checks before delivery.",
-  },
-  {
-    question: "How do you size trailers for reception flow?",
-    answer:
-      "We estimate based on guest count, event duration, and traffic peaks during cocktail hour, dinner, and dancing transitions.",
-  },
-  {
-    question: "Can we place the trailer away from ceremony photos?",
-    answer:
-      "Absolutely. We help identify practical placement that supports guest convenience while protecting key photo and decor sightlines.",
-  },
-  {
-    question: "Do you serve outside Lansing?",
-    answer:
-      "Yes. We serve Mid-Michigan and nearby regional markets including East Lansing, Okemos, Haslett, Jackson, Howell, Flint, Ann Arbor, and Grand Rapids.",
-  },
-]
+const weddingGallery = content.data.weddingGallery
+
+const weddingFaqs = content.data.weddingFaqs
 
 export default function WeddingRestroomTrailerRentalsPage() {
   return (
