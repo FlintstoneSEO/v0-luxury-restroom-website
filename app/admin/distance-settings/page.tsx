@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
+import { AdminPageHeader } from '@/components/admin/admin-page-header'
 
 export default function DistanceSettingsPage() {
   const [originAddress, setOriginAddress] = useState('4463 Helmsway Dr, Lansing, MI 48911')
@@ -29,12 +30,11 @@ export default function DistanceSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-4xl font-serif font-bold text-[#2d3a47] mb-2">Distance Calculation Settings</h1>
-        <p className="text-muted-foreground">
-          Configure the business origin address for distance calculations.
-        </p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Configuration"
+        title="Distance Calculation Settings"
+        description="Review the business origin address used for distance calculations."
+      />
         
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6 space-y-6 max-w-2xl">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

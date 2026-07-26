@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Admin Login | Signature Luxe',
+  title: 'Admin Login',
   robots: {
     index: false,
     follow: false,

@@ -1,0 +1,92 @@
+{
+  "_schema": "service_area",
+  "slug": "mason-mi",
+  "city": "Mason",
+  "state": "MI",
+  "draft": false,
+  "priority": true,
+  "intro": "Signature Luxe Events & Amenities offers luxury restroom trailer rentals in Mason, MI for fairground-style events, rural property weddings, outdoor receptions, expos, and private celebrations. Based in Lansing and serving Mid-Michigan, we provide polished, climate-controlled restroom trailers that improve comfort for both formal and high-volume events. We plan each Mason rental around property access, guest count, and timeline to keep setup efficient and event-ready.",
+  "nearby": "Lansing, Holt, Leslie, Dansville, Okemos, Williamston, and Eaton Rapids",
+  "venueNote": "Mason planning often involves Ingham County Fairgrounds-style events, horse shows, open houses, and larger outdoor gatherings that need reliable restroom capacity.",
+  "useCases": [
+    "Fairground and expo events",
+    "Rural property weddings",
+    "Outdoor receptions",
+    "Horse shows and agricultural gatherings",
+    "Community open houses",
+    "Large private birthday celebrations"
+  ],
+  "localOverview": [
+    "Mason serves fairground-style events, rural properties, and local community gatherings that often need dependable restroom capacity.",
+    "We provide polished restroom trailer setups tailored to both formal and high-volume outdoor schedules."
+  ],
+  "weddingUseCase": [
+    "For Mason rural weddings and private-property receptions, luxury restroom trailers support guest comfort where permanent facilities are limited."
+  ],
+  "privateEventUseCase": [
+    "Private parties and family celebrations in Mason often use trailers to reduce traffic through home interiors."
+  ],
+  "corporateFestivalUseCase": [
+    "Fairground events, community open houses, and expo-style Mason schedules benefit from guest-ready restroom logistics."
+  ],
+  "constructionLongTermUseCase": [
+    "Mason-area project sites can use long-term restroom trailer rentals with recurring service planning."
+  ],
+  "setupLogistics": [
+    "We evaluate route access, mixed surfaces, and utility distances for both in-town and rural-edge Mason properties."
+  ],
+  "seasonalPlanning": [
+    "Spring through early fall is peak event season in Mason, so reserving early improves date and unit availability."
+  ],
+  "resourceLinks": [
+    {
+      "href": "/resources/outdoor-wedding-restroom-planning-michigan",
+      "label": "Outdoor Wedding Restroom Planning Guide"
+    }
+  ],
+  "serviceLinks": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/festival-community-event-restroom-trailers",
+      "label": "Festival & Community Event Restroom Trailers"
+    }
+  ],
+  "faqs": [
+    {
+      "q": "Do you provide trailer rentals for fairground-style events in Mason?",
+      "a": "Yes, we support larger community and event-ground gatherings in the Mason area."
+    },
+    {
+      "q": "Can trailers be placed on rural properties for weddings?",
+      "a": "Yes. We assess access routes, grade, and placement surfaces before delivery."
+    },
+    {
+      "q": "Are your trailers suitable for larger guest-count events?",
+      "a": "Yes, especially our 4-station units for higher-traffic schedules."
+    },
+    {
+      "q": "Do you serve surrounding Mason communities like Leslie and Dansville?",
+      "a": "Yes, we cover Mason and nearby Mid-Michigan communities."
+    },
+    {
+      "q": "Can you support multi-day Mason events such as expos or shows?",
+      "a": "Yes, we offer multi-day rentals with planning for service intervals as needed."
+    }
+  ],
+  "nearbyCommunities": [
+    "Lansing",
+    "Holt",
+    "Leslie",
+    "Dansville",
+    "Okemos",
+    "Williamston",
+    "Eaton Rapids"
+  ]
+}

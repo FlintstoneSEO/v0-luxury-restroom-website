@@ -1,8 +1,10 @@
 import { createClient } from '@/lib/supabase/server';
+import { AdminErrorState } from '@/components/admin/admin-feedback';
+import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import PricingSettingsForm from '@/components/admin/pricing-settings-form';
 
 export const metadata = {
-  title: 'Pricing Settings | Admin | Signature Luxe',
+  title: 'Pricing Settings',
   description: 'Manage pricing settings for quote calculations',
 };
 
@@ -27,10 +29,12 @@ export default async function AdminSettingsPage() {
     console.error('Error fetching settings:', error);
     return (
       <div className="space-y-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-red-800">Error Loading Settings</h2>
-          <p className="text-red-600 mt-2">Unable to load pricing settings. Please try again later.</p>
-        </div>
+        <AdminPageHeader
+          eyebrow="Configuration"
+          title="Pricing Settings"
+          description="Manage the pricing rules used for automatic quote calculations."
+        />
+        <AdminErrorState description="Unable to load pricing settings. Please try again later." />
       </div>
     );
   }
@@ -47,12 +51,11 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-4xl font-serif font-bold text-[#2d3a47] mb-2">Pricing Settings</h1>
-        <p className="text-muted-foreground">
-          Manage the pricing rules used for automatic quote calculations.
-        </p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Configuration"
+        title="Pricing Settings"
+        description="Manage the pricing rules used for automatic quote calculations."
+      />
 
       <PricingSettingsForm settings={settings || []} groupedSettings={groupedSettings} />
     </div>

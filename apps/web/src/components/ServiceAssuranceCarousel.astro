@@ -1,0 +1,60 @@
+---
+interface Item {
+  title: string;
+  body: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="assurance-carousel bg-midnight text-white" aria-roledescription="carousel" aria-label="Service assurances">
+  <div class="grid min-h-[30rem] lg:grid-cols-[0.72fr_1.28fr]">
+    <div class="relative hidden overflow-hidden lg:block">
+      <img src="/images/3 Station Pro/3Station3.jpg" alt="Interior of a Signature Luxe restroom trailer" width="3586" height="5379" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+      <div class="image-wash"></div>
+    </div>
+    <div class="flex flex-col justify-between p-7 sm:p-12 lg:p-16">
+      <p class="eyebrow text-champagne">What thoughtful service means</p>
+      <div class="mt-16">
+        {items.map((item, index) => (
+          <article class:list={['assurance-slide', index !== 0 && 'hidden']} data-slide={index}>
+            <p class="font-serif text-4xl font-medium leading-[1.02] tracking-[-0.035em] text-balance sm:text-5xl">{item.title}</p>
+            <p class="mt-6 max-w-xl text-base leading-8 text-white/65">{item.body}</p>
+          </article>
+        ))}
+      </div>
+      <div class="mt-14 flex items-center justify-between border-t border-white/15 pt-6">
+        <p class="text-xs tracking-[0.14em] text-white/50 uppercase">
+          <span data-carousel-current>01</span> / {String(items.length).padStart(2, '0')}
+        </p>
+        <div class="flex gap-2">
+          <button class="carousel-previous inline-flex h-12 w-12 items-center justify-center border border-white/25 hover:border-champagne hover:text-champagne" type="button" aria-label="Previous service assurance">←</button>
+          <button class="carousel-next inline-flex h-12 w-12 items-center justify-center border border-white/25 hover:border-champagne hover:text-champagne" type="button" aria-label="Next service assurance">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.assurance-carousel').forEach((carousel) => {
+    const slides = [...carousel.querySelectorAll<HTMLElement>('.assurance-slide')];
+    const currentLabel = carousel.querySelector<HTMLElement>('[data-carousel-current]');
+    let current = 0;
+
+    const show = (next: number) => {
+      current = (next + slides.length) % slides.length;
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('hidden', index !== current);
+      });
+      if (currentLabel) currentLabel.textContent = String(current + 1).padStart(2, '0');
+    };
+
+    carousel.querySelector('.carousel-previous')?.addEventListener('click', () => show(current - 1));
+    carousel.querySelector('.carousel-next')?.addEventListener('click', () => show(current + 1));
+  });
+</script>

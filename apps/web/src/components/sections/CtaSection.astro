@@ -1,0 +1,28 @@
+---
+import ButtonLink from '../ButtonLink.astro';
+
+interface Props {
+  heading: string;
+  body?: string | null;
+  label: string;
+  href: string;
+}
+
+const { heading, body, label, href } = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-champagne py-20 md:py-28">
+  <div aria-hidden="true" class="absolute -right-20 -top-36 h-96 w-96 rounded-full border border-midnight/10"></div>
+  <div aria-hidden="true" class="absolute -right-5 -top-20 h-72 w-72 rounded-full border border-midnight/10"></div>
+  <div class="content-shell relative grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
+    <div class="max-w-4xl">
+      <h2 class="font-serif text-5xl font-medium leading-[0.92] tracking-[-0.045em] text-midnight text-balance sm:text-6xl lg:text-7xl" data-editable="text" data-type="text" data-prop="heading">
+        {heading}
+      </h2>
+      {body && (
+        <p class="mt-6 max-w-2xl text-base leading-7 text-charcoal/70" data-editable="text" data-type="text" data-prop="body">{body}</p>
+      )}
+    </div>
+    <ButtonLink href={href} label={label} variant="tertiary" dataProp="label" />
+  </div>
+</section>

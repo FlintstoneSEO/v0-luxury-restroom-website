@@ -1,7 +1,7 @@
 "use client"
 
-import { useActionState, useState } from "react"
-import type { ChangeEvent } from "react"
+import { useActionState, useId, useState } from "react"
+import type { ChangeEvent, KeyboardEvent } from "react"
 import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,9 +17,7 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { CheckCircle } from "lucide-react"
 import { submitRequestAvailability, RequestAvailabilityState } from "@/app/actions/request-availability"
-import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from "@reach/combobox"
 import usePlacesAutocomplete from "use-places-autocomplete"
-import "@reach/combobox/styles.css"
 
 const eventTypes = [
   { value: "wedding", label: "Wedding" },
@@ -51,6 +49,9 @@ function AddressAutocomplete({
   onAddressSelect: (address: string) => void
   error?: string[]
 }) {
+  const listboxId = useId()
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(-1)
   const {
     ready,
     suggestions: { status, data },
@@ -66,39 +67,93 @@ function AddressAutocomplete({
   const handleSelect = async (description: string) => {
     setValue(description, false)
     clearSuggestions()
+    setIsOpen(false)
+    setActiveIndex(-1)
     onAddressSelect(description)
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value
     setValue(nextValue)
+    setIsOpen(true)
+    setActiveIndex(-1)
     onAddressSelect(nextValue)
   }
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (status !== "OK" || data.length === 0) return
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault()
+      setIsOpen(true)
+      setActiveIndex((current) => (current + 1) % data.length)
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault()
+      setIsOpen(true)
+      setActiveIndex((current) => (current <= 0 ? data.length - 1 : current - 1))
+    } else if (event.key === "Enter" && isOpen && activeIndex >= 0) {
+      event.preventDefault()
+      void handleSelect(data[activeIndex].description)
+    } else if (event.key === "Escape") {
+      setIsOpen(false)
+      setActiveIndex(-1)
+    }
+  }
+
+  const showSuggestions = isOpen && status === "OK" && data.length > 0
+
   return (
     <div className="relative">
-      <Combobox onSelect={handleSelect}>
-        <ComboboxInput
-          value={value}
-          onChange={handleChange}
-          disabled={!ready}
-          placeholder="Search for your event address..."
-          className={`w-full px-3 py-2 border rounded-md bg-background text-base md:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d3a47] disabled:cursor-not-allowed disabled:opacity-50 ${
-            error ? "border-red-500" : "border-input"
-          }`}
-        />
-        {status === "OK" && (
-          <ComboboxPopover>
-            <ComboboxList>
-              {data.map(({ place_id, description }) => (
-                <ComboboxOption key={place_id} value={description}>
-                  {description}
-                </ComboboxOption>
-              ))}
-            </ComboboxList>
-          </ComboboxPopover>
-        )}
-      </Combobox>
+      <input
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onFocus={() => setIsOpen(true)}
+        onBlur={() => {
+          setIsOpen(false)
+          setActiveIndex(-1)
+        }}
+        disabled={!ready}
+        placeholder="Search for your event address..."
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={showSuggestions}
+        aria-controls={listboxId}
+        aria-activedescendant={
+          showSuggestions && activeIndex >= 0
+            ? `${listboxId}-option-${activeIndex}`
+            : undefined
+        }
+        className={`w-full px-3 py-2 border rounded-md bg-background text-base md:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d3a47] disabled:cursor-not-allowed disabled:opacity-50 ${
+          error ? "border-red-500" : "border-input"
+        }`}
+      />
+      {showSuggestions && (
+        <ul
+          id={listboxId}
+          role="listbox"
+          className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-input bg-background py-1 text-sm shadow-md"
+        >
+          {data.map(({ place_id, description }, index) => (
+            <li
+              id={`${listboxId}-option-${index}`}
+              key={place_id}
+              role="option"
+              aria-selected={index === activeIndex}
+              className={`cursor-pointer px-3 py-2 ${
+                index === activeIndex ? "bg-accent text-accent-foreground" : "hover:bg-accent"
+              }`}
+              onMouseEnter={() => setActiveIndex(index)}
+              onPointerDown={(event) => {
+                event.preventDefault()
+                void handleSelect(description)
+              }}
+            >
+              {description}
+            </li>
+          ))}
+        </ul>
+      )}
       {error && <p className="text-sm text-red-600 mt-1">{error[0]}</p>}
     </div>
   )

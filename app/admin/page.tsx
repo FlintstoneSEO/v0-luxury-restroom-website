@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'Quote Requests | Admin | Signature Luxe',
+  title: 'Quote Requests',
   description: 'View and manage quote requests for Signature Luxe Events & Amenities',
   robots: {
     index: false,

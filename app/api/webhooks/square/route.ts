@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getInvoicePaidAmount, verifySquareWebhook } from '@/lib/integrations/square';
+import { getAdminAppOrigin } from '@/lib/app-origins';
 
 function findQuoteId(invoice: any) {
   const customField = invoice?.custom_fields?.find((field: any) => field.label === 'quote_id')?.value;
@@ -11,7 +12,7 @@ function findQuoteId(invoice: any) {
 
 export async function POST(request: Request) {
   const rawBody = await request.text();
-  const notificationUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? new URL(request.url).origin}/api/webhooks/square`;
+  const notificationUrl = `${getAdminAppOrigin(request)}/api/webhooks/square`;
   if (!verifySquareWebhook(rawBody, request.headers.get('x-square-hmacsha256-signature'), notificationUrl)) {
     return NextResponse.json({ message: 'Invalid signature' }, { status: 401 });
   }

@@ -1,0 +1,35 @@
+{
+  "_schema": "service_area",
+  "slug": "battle-creek-mi",
+  "city": "Battle Creek",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Battle Creek events and temporary operations often require clean, dependable restroom access with clear logistics planning.",
+  "nearby": "Marshall, Springfield, Albion, and Kalamazoo",
+  "venueNote": "We coordinate delivery windows and placement for public events, venues, and job sites.",
+  "useCases": [
+    "festivals",
+    "corporate events",
+    "weddings",
+    "temporary facilities"
+  ],
+  "faqs": [
+    {
+      "q": "Is Battle Creek in your delivery area?",
+      "a": "Yes, based on current routing and availability."
+    },
+    {
+      "q": "Can you support public and community events?",
+      "a": "Yes, we help plan capacity and setup for larger gatherings."
+    },
+    {
+      "q": "Do you offer construction and long-term options?",
+      "a": "Yes, long-term rentals are available for project needs."
+    },
+    {
+      "q": "Can emergency requests be accommodated?",
+      "a": "Yes, subject to current trailer availability."
+    }
+  ]
+}

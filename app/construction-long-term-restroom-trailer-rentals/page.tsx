@@ -22,138 +22,32 @@ import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import rawContent from "@/content/service-pages/construction-long-term.json"
+import { defineServicePageData } from "@/lib/content/service-pages"
 
-const title =
-  "Construction & Long-Term Restroom Trailer Rental in Michigan | Signature Luxe Events"
-const description =
-  "Schedule construction restroom trailer rental in Michigan for job sites, remodels, and outages with long-term service planning across Lansing and Mid-Michigan."
-const canonical =
-  "https://www.signatureluxeevents.com/construction-long-term-restroom-trailer-rentals"
+const content = defineServicePageData(rawContent)
+
+const { title, description, canonical } = content.seo
+
 export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical },
-  openGraph: { title, description, url: canonical },
+  title, description, alternates: { canonical },
+  openGraph: { title, description, url: canonical ?? undefined },
   twitter: { card: "summary_large_image", title, description },
 }
 
-const solutionFeatures = [
-  {
-    title: "Climate Controlled",
-    description: "Heating and AC for year-round crew comfort.",
-    icon: Thermometer,
-  },
-  {
-    title: "Durable & Reliable",
-    description: "Built to handle job site conditions every day.",
-    icon: Shield,
-  },
-  {
-    title: "Flexible Terms",
-    description: "Weekly, monthly, or project-based rentals.",
-    icon: Clock,
-  },
-]
+const contentIcons = { Thermometer, Shield, Clock, HardHat, Building2, Wrench, CalendarDays }
 
-const solutions = [
-  {
-    title: "Construction Sites",
-    description:
-      "From commercial buildouts and site expansions to major renovations, construction teams need clean restrooms close to active work areas.",
-    icon: HardHat,
-  },
-  {
-    title: "Commercial Projects",
-    description:
-      "Professional restroom solutions for commercial developments, phased renovations, and office remodels.",
-    icon: Building2,
-  },
-  {
-    title: "Property Renovations",
-    description:
-      "Keep restrooms available during home remodels and renovation projects so staff and occupants maintain continuity.",
-    icon: Wrench,
-  },
-  {
-    title: "Long-Term Needs",
-    description:
-      "Extended rental options for ongoing projects and temporary facility requirements spanning weeks or months.",
-    icon: CalendarDays,
-  },
-]
+const solutionFeatures = content.data.solutionFeatures.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const setupRequirements = [
-  "20 amp power within 100 feet (or generator option)",
-  "Water connection within 100 feet (or tank option)",
-  "Reasonably flat, accessible ground",
-  "Adequate space for delivery vehicle access",
-]
+const solutions = content.data.solutions.map((item) => ({ ...item, icon: contentIcons[item.icon as keyof typeof contentIcons] }))
 
-const benefits = [
-  "Cleaner than standard portable restrooms",
-  "Climate-controlled comfort year-round",
-  "Running water for hand washing",
-  "Private flushing stalls",
-  "Professional appearance on-site",
-  "Flexible weekly, monthly, or project terms",
-  "Servicing available for extended rentals",
-  "Easy extension or early return",
-]
+const setupRequirements = content.data.setupRequirements
 
-const siteGallery = [
-  {
-    id: "c1",
-    src: "/images/Construction Site Trailer.png",
-    alt: "Restroom trailer at construction site with workers",
-    category: "Construction",
-  },
-  {
-    id: "c2",
-    src: "/images/Construction Site Trailer.png",
-    alt: "Restroom trailer at active construction site",
-    category: "Construction",
-  },
-  {
-    id: "c3",
-    src: "/images/Construction Site Trailer.png",
-    alt: "Restroom trailer positioned at job site entrance",
-    category: "Construction",
-  },
-  {
-    id: "c4",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg",
-    alt: "Professional exterior view of restroom trailer",
-    category: "Exterior",
-  },
-]
+const benefits = content.data.benefits
 
-const constructionFaqs = [
-  {
-    question: "Can I rent a restroom trailer for a multi-month construction project?",
-    answer:
-      "Yes. We support long-term rentals and can align service scheduling with the expected duration of your project.",
-  },
-  {
-    question: "How do you determine the right setup for our crew size?",
-    answer:
-      "We review crew count, shift patterns, and site traffic to recommend practical capacity and service cadence for your project.",
-  },
-  {
-    question: "Can this be used during a building renovation or restroom outage?",
-    answer:
-      "Absolutely. Temporary restroom trailers are commonly used when permanent facilities are under renovation, offline, or otherwise unavailable.",
-  },
-  {
-    question: "What site requirements should contractors confirm before delivery?",
-    answer:
-      "Please confirm access routes, placement area, and available utilities. We review those details during planning to help avoid setup delays.",
-  },
-  {
-    question: "Do you provide construction restroom trailer rental outside Lansing?",
-    answer:
-      "Yes. We serve Lansing and broader Mid-Michigan communities, with scheduling based on route and project logistics.",
-  },
-]
+const siteGallery = content.data.siteGallery
+
+const constructionFaqs = content.data.constructionFaqs
 
 export default function ConstructionLongTermRestroomTrailerRentalsPage() {
   return (

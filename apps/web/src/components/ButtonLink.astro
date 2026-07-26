@@ -1,0 +1,37 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  dataProp?: string;
+  external?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  label,
+  variant = 'primary',
+  dataProp,
+  external = false,
+  class: className,
+} = Astro.props;
+---
+
+<a
+  class:list={[`button-${variant}`, className]}
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+>
+  <span
+    data-editable={dataProp ? 'text' : undefined}
+    data-type={dataProp ? 'text' : undefined}
+    data-prop={dataProp}
+  >
+    {label}
+  </span>
+  <svg aria-hidden="true" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="none">
+    <path d="M4 10h11M11 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+</a>

@@ -3,7 +3,7 @@ import PricingSettingsEditor from '@/components/admin/pricing-settings-editor';
 import { DEFAULT_PRICING } from '@/lib/pricing-engine';
 
 export const metadata = {
-  title: 'Pricing Settings | Admin | Signature Luxe',
+  title: 'Pricing Settings',
   description: 'Manage centralized pricing rules for quote calculations',
 };
 

@@ -1,0 +1,105 @@
+{
+  "_schema": "service_area",
+  "slug": "jackson-mi",
+  "city": "Jackson",
+  "state": "MI",
+  "draft": false,
+  "priority": false,
+  "intro": "Jackson hosts regional events, private gatherings, and temporary project needs that benefit from luxury restroom access.",
+  "nearby": "Spring Arbor, Michigan Center, Napoleon, and Grass Lake",
+  "venueNote": "We coordinate timing and placement for both city and rural properties.",
+  "useCases": [
+    "wedding weekends",
+    "community events",
+    "corporate gatherings",
+    "facility outage support"
+  ],
+  "faqs": [
+    {
+      "q": "Do you deliver to Jackson County?",
+      "a": "Yes, we serve Jackson and nearby communities."
+    },
+    {
+      "q": "Can you help for temporary outages?",
+      "a": "Yes, we support short-term temporary needs."
+    },
+    {
+      "q": "Are trailers suitable for donor events?",
+      "a": "Yes, they are ideal for polished guest-facing events."
+    },
+    {
+      "q": "How do I request pricing?",
+      "a": "Submit your event date, location, and headcount through the quote form."
+    }
+  ],
+  "localOverview": [
+    "Jackson serves as a regional hub for weddings, private property events, and community programs that need dependable restroom trailer support.",
+    "We help align facility planning with venue expectations and event-day operations."
+  ],
+  "weddingUseCase": [
+    "For Jackson wedding weekends, we coordinate arrival and setup to match rehearsal and reception schedules."
+  ],
+  "privateEventUseCase": [
+    "Private land events and family celebrations often use trailers to reduce strain on existing facilities."
+  ],
+  "corporateFestivalUseCase": [
+    "Community events, donor-facing functions, and business gatherings in Jackson benefit from polished restroom presentation."
+  ],
+  "constructionLongTermUseCase": [
+    "We support facility outages and project timelines with long-term trailer rental options."
+  ],
+  "setupLogistics": [
+    "Our pre-delivery process covers access path, power/water planning, and staging for smooth setup."
+  ],
+  "seasonalPlanning": [
+    "Peak wedding and festival dates in Jackson are typically late spring through early fall."
+  ],
+  "nearbyCommunities": [
+    "Spring Arbor",
+    "Michigan Center",
+    "Napoleon",
+    "Grass Lake",
+    "Parma"
+  ],
+  "resourceLinks": [
+    {
+      "href": "/resources/restroom-trailer-setup-requirements",
+      "label": "Restroom Trailer Setup Requirements"
+    }
+  ],
+  "serviceLinks": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Private Event Restroom Trailers"
+    },
+    {
+      "href": "/corporate-event-restroom-trailers",
+      "label": "Corporate Event Restroom Trailers"
+    },
+    {
+      "href": "/festival-community-event-restroom-trailers",
+      "label": "Festival & Community Event Restroom Trailers"
+    },
+    {
+      "href": "/construction-long-term-restroom-trailer-rentals",
+      "label": "Construction & Long-Term Restroom Trailer Rentals"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "trustNote": "Jackson clients choose us for responsive planning, clean units, and reliable service timing."
+}

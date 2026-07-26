@@ -5,15 +5,7 @@ import { generateApprovalToken, hashApprovalToken } from '@/lib/quote-approval';
 import { sendEmail } from '@/lib/email/client';
 import { quoteSentTemplate } from '@/lib/email/templates';
 import { formatLocalDateOnly } from '@/lib/date-only';
-
-function getAppUrl(request: Request) {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
-  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
-  const origin = request.headers.get('origin');
-  if (origin) return origin.replace(/\/$/, '');
-  const host = request.headers.get('host');
-  return host ? `${request.headers.get('x-forwarded-proto') || 'https'}://${host}`.replace(/\/$/, '') : '';
-}
+import { getCustomerWorkflowOrigin } from '@/lib/app-origins';
 
 export async function POST(request: Request, { params }: { params: Promise<{ quoteId: string }> }) {
   const adminAuth = await requireAdminUser();
@@ -27,8 +19,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
     return NextResponse.json({ ok: false, message: 'A valid test_recipient_email is required.' }, { status: 400 });
   }
 
-  const appUrl = getAppUrl(request);
-  if (!appUrl) return NextResponse.json({ ok: false, message: 'Unable to determine app URL.' }, { status: 500 });
+  const customerWorkflowOrigin = getCustomerWorkflowOrigin(request);
 
   const supabase = createAdminClient();
   let testQuoteId = quoteId;
@@ -64,7 +55,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
     .single();
   if (tokenError || !tokenRecord) return NextResponse.json({ ok: false, message: 'Failed to create approval token.' }, { status: 500 });
 
-  const approvalLink = `${appUrl}/quote/${token}`;
+  const approvalLink = `${customerWorkflowOrigin}/quote/${token}`;
   const eventLocation = [testQuote.event_address, testQuote.city, testQuote.state && testQuote.zip_code ? `${testQuote.state} ${testQuote.zip_code}` : testQuote.state || testQuote.zip_code].filter(Boolean).join(', ');
   const formattedEventDate = testQuote.event_date ? formatLocalDateOnly(testQuote.event_date, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'TBD';
   const { data: quoteOptions } = await supabase.from('quote_options').select('id, option_label, option_description, total_price, is_recommended, status').eq('quote_request_id', testQuote.id).neq('status', 'deleted').order('is_recommended', { ascending: false }).order('created_at', { ascending: true });

@@ -1,0 +1,8 @@
+{
+  "_schema": "faq",
+  "question": "Add the customer question.",
+  "answer": "Add a clear answer.",
+  "category": "general",
+  "order": 0,
+  "featured": false
+}

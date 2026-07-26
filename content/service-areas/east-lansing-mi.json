@@ -1,0 +1,113 @@
+{
+  "_schema": "service_area",
+  "slug": "east-lansing-mi",
+  "city": "East Lansing",
+  "state": "MI",
+  "draft": false,
+  "priority": true,
+  "intro": "Signature Luxe Events & Amenities provides luxury restroom trailer rentals in East Lansing, MI for graduation parties, wedding receptions, alumni gatherings, private events, and corporate functions. Based in Lansing and serving Mid-Michigan, we deliver polished, climate-controlled restroom trailers with professional setup and responsive communication. East Lansing schedules are often tied to university-season demand, so we help clients plan utility access, placement, and delivery timing early.",
+  "nearby": "Lansing, Okemos, Haslett, Meridian Township, Bath, Williamston, and DeWitt",
+  "venueNote": "East Lansing planning often centers on MSU football weekends, graduation celebrations, and campus-area events. We support private properties and reception venues without implying university affiliation.",
+  "useCases": [
+    "MSU tailgate weekends",
+    "Graduation parties and alumni reunions",
+    "Campus-area private events",
+    "Wedding receptions",
+    "Community and neighborhood events",
+    "Corporate and donor-facing gatherings"
+  ],
+  "faqs": [
+    {
+      "q": "Do you provide restroom trailers for MSU football weekends?",
+      "a": "Yes, we support East Lansing tailgate and game-weekend events based on availability."
+    },
+    {
+      "q": "Can you accommodate graduation party demand in East Lansing?",
+      "a": "Yes, and earlier booking is strongly recommended for peak graduation windows."
+    },
+    {
+      "q": "Do you work with campus-area private homes and venues?",
+      "a": "Yes. We plan setup based on local access constraints and event timelines."
+    },
+    {
+      "q": "Are your trailers suitable for formal receptions?",
+      "a": "Yes. Our luxury trailers are clean, modern, and guest-ready for upscale events."
+    },
+    {
+      "q": "Can you help determine trailer size for East Lansing events?",
+      "a": "Absolutely. We recommend the 2-, 3-, or 4-station option based on guest count and duration."
+    }
+  ],
+  "localOverview": [
+    "East Lansing demand is heavily shaped by the MSU calendar, from graduation weekends to alumni gatherings and donor-facing receptions.",
+    "Campus-adjacent homes, clubs, and private venues often need premium restroom support that can fit tighter delivery windows."
+  ],
+  "weddingUseCase": [
+    "For wedding weekends near East Lansing, we coordinate delivery timing around rehearsal, ceremony, and reception plans."
+  ],
+  "privateEventUseCase": [
+    "Graduation parties and alumni reunions are common private-event use cases where extra restroom capacity improves hosting flow."
+  ],
+  "corporateFestivalUseCase": [
+    "University-related events, nonprofit receptions, and community programs benefit from polished guest restroom options."
+  ],
+  "constructionLongTermUseCase": [
+    "We also support temporary facilities for longer projects and seasonal operations near East Lansing."
+  ],
+  "setupLogistics": [
+    "Our team confirms driveway approach, trailer placement, and utility options before delivery day."
+  ],
+  "seasonalPlanning": [
+    "MSU graduation and football-season weekends can book quickly, so earlier planning helps secure preferred dates."
+  ],
+  "nearbyCommunities": [
+    "Lansing",
+    "Okemos",
+    "Haslett",
+    "Meridian Township",
+    "Bath",
+    "Williamston",
+    "DeWitt"
+  ],
+  "resourceLinks": [
+    {
+      "href": "/resources/how-many-restroom-trailers-for-wedding",
+      "label": "How Many Restroom Trailers Do You Need for a Wedding?"
+    }
+  ],
+  "serviceLinks": [
+    {
+      "href": "/luxury-restroom-trailer-rentals",
+      "label": "Luxury Restroom Trailer Rentals"
+    },
+    {
+      "href": "/wedding-restroom-trailer-rentals",
+      "label": "Wedding Restroom Trailer Rentals"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Private Event Restroom Trailers"
+    },
+    {
+      "href": "/corporate-event-restroom-trailers",
+      "label": "Corporate Event Restroom Trailers"
+    },
+    {
+      "href": "/festival-community-event-restroom-trailers",
+      "label": "Festival & Community Event Restroom Trailers"
+    },
+    {
+      "href": "/construction-long-term-restroom-trailer-rentals",
+      "label": "Construction & Long-Term Restroom Trailer Rentals"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "trustNote": "We are experienced with East Lansing timelines and campus-adjacent logistics where communication and precision matter."
+}

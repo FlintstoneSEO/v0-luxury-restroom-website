@@ -1,0 +1,23 @@
+{
+  "siteName": "Signature Luxe Events & Amenities",
+  "defaultTitle": "Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events",
+  "titleTemplate": "%s | Signature Luxe Events & Amenities",
+  "defaultDescription": "Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, festivals, construction sites, and long-term use throughout Mid-Michigan.",
+  "canonicalOrigin": "https://www.signatureluxeevents.com",
+  "defaultImage": {
+    "src": "/images/Wedding Trailer.png",
+    "alt": "Signature Luxe luxury restroom trailer at an outdoor Michigan wedding event",
+    "width": 1200,
+    "height": 630
+  },
+  "keywords": [
+    "luxury restroom trailer rental Lansing MI",
+    "restroom trailer rental Lansing MI",
+    "wedding restroom trailer rental Lansing MI",
+    "luxury portable restroom rental Michigan",
+    "mobile restroom trailer rental Michigan",
+    "event restroom trailer rental Lansing",
+    "restroom trailer rentals Mid-Michigan"
+  ],
+  "locale": "en_US"
+}

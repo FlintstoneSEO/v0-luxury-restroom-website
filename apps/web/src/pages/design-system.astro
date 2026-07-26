@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ButtonLink from '../components/ButtonLink.astro';
+import CtaSection from '../components/sections/CtaSection.astro';
+import EditorialCard from '../components/EditorialCard.astro';
+import EditorialMarquee from '../components/EditorialMarquee.astro';
+import ExperienceAccordion from '../components/ExperienceAccordion.astro';
+import HeroSection from '../components/sections/HeroSection.astro';
+import MotionGallery from '../components/MotionGallery.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceAssuranceCarousel from '../components/ServiceAssuranceCarousel.astro';
+
+const experienceItems = [
+  {
+    title: 'Weddings',
+    description: 'A polished, climate-controlled experience designed to feel at home beside thoughtful venues and beautifully planned celebrations.',
+    image: {
+      src: '/images/Wedding Trailer.png',
+      alt: 'Signature Luxe restroom trailer at an evening wedding reception',
+    },
+  },
+  {
+    title: 'Private gatherings',
+    description: 'A comfortable guest amenity for private properties, milestone celebrations, and outdoor entertaining across Mid-Michigan.',
+    image: {
+      src: '/images/Special Event Trailer.png',
+      alt: 'Restroom trailer prepared for a private outdoor event',
+    },
+  },
+  {
+    title: 'Professional settings',
+    description: 'Clean presentation and practical capacity for corporate functions, long-term projects, and community events.',
+    image: {
+      src: '/images/MSU Tailgate Rental Restroom.png',
+      alt: 'Luxury restroom trailer serving a large outdoor gathering',
+    },
+  },
+];
+
+const galleryItems = [
+  {
+    title: 'Arrival with intention',
+    description: 'Placement, access, timing, and utility needs are reviewed before delivery so the site plan feels composed.',
+    image: {
+      src: '/images/3 Station Pro/3Station.jpg',
+      alt: 'Exterior of a three-station Signature Luxe restroom trailer',
+      width: 555,
+      height: 420,
+    },
+  },
+  {
+    title: 'Comfort within',
+    description: 'Finished interiors, private spaces, and climate control create an experience beyond a standard temporary restroom.',
+    image: {
+      src: '/images/3 Station Pro/3Station3.jpg',
+      alt: 'Finished interior of a Signature Luxe restroom trailer',
+      width: 3586,
+      height: 5379,
+    },
+  },
+  {
+    title: 'Ready for the occasion',
+    description: 'The final presentation is designed to complement the event rather than interrupt it.',
+    image: {
+      src: '/images/3 Station Pro/3Station5.jpg',
+      alt: 'Prepared sink and vanity inside a luxury restroom trailer',
+      width: 3468,
+      height: 5202,
+    },
+  },
+];
+
+const assurances = [
+  {
+    title: 'Recommendations shaped around the event—not a generic package.',
+    body: 'Guest count, event duration, location, access, and utility availability inform the trailer and service plan.',
+  },
+  {
+    title: 'Site details reviewed before delivery day.',
+    body: 'The planning process accounts for placement, turning space, ground conditions, and connections so setup is predictable.',
+  },
+  {
+    title: 'A clear path from inquiry to confirmed details.',
+    body: 'Customers receive a tailored quote after the team reviews the date, location, and practical requirements.',
+  },
+];
+---
+
+<BaseLayout
+  title="Signature Luxe Public Design System"
+  description="A private preview of the Signature Luxe Astro public component system."
+  canonical="/design-system"
+  noindex={true}
+>
+  <HeroSection
+    eyebrow="Signature Luxe Events & Amenities"
+    heading="The essential detail, beautifully considered."
+    body="Premium restroom trailers for gatherings that deserve the same care behind the scenes as they receive out front."
+    image={{
+      src: '/images/Wedding Trailer.png',
+      alt: 'Signature Luxe restroom trailer at an elegant evening wedding',
+    }}
+    primaryCta={{ label: 'Check availability', href: '/request-quote' }}
+    secondaryCta={{ label: 'Explore the collection', href: '/luxury-restroom-trailer-rentals' }}
+  />
+
+  <EditorialMarquee
+    items={['Climate controlled', 'Private interiors', 'Mid-Michigan service', 'Thoughtful placement', 'Tailored planning']}
+  />
+
+  <section class="section-space bg-ivory" aria-labelledby="showcase-bento-heading">
+    <div class="content-shell">
+      <SectionHeading
+        id="showcase-bento-heading"
+        eyebrow="Comfort, considered"
+        heading="More than a practical necessity."
+        body="Every element of the experience—from placement to presentation—is approached as part of the event itself."
+      />
+
+      <div class="mt-14 grid auto-rows-[15rem] grid-flow-dense gap-3 lg:grid-cols-12 lg:grid-rows-2" data-bento-grid>
+        <EditorialCard class="group min-h-[32rem] lg:col-span-6 lg:row-span-2">
+          <ResponsiveImage
+            src="/images/3 Station Pro/3Station2.jpg"
+            alt="Warmly finished restroom trailer interior"
+            width={3498}
+            height={5247}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div class="image-wash"></div>
+          <div class="absolute inset-x-0 bottom-0 z-10 p-7 text-white sm:p-9">
+            <p class="font-serif text-4xl font-medium leading-none">An interior guests remember for the right reasons.</p>
+          </div>
+        </EditorialCard>
+
+        <EditorialCard class="flex flex-col justify-between bg-midnight p-7 text-white lg:col-span-3" data-bento-item>
+          <span class="text-xs font-semibold tracking-[0.16em] text-champagne uppercase">Comfort</span>
+          <p class="font-serif text-3xl font-medium leading-none">Climate-controlled interiors</p>
+        </EditorialCard>
+
+        <EditorialCard class="flex flex-col justify-between bg-champagne p-7 lg:col-span-3" data-bento-item>
+          <span class="text-xs font-semibold tracking-[0.16em] text-midnight/55 uppercase">Planning</span>
+          <p class="font-serif text-3xl font-medium leading-none text-midnight">Site details reviewed early</p>
+        </EditorialCard>
+
+        <EditorialCard class="group grid overflow-hidden bg-white sm:grid-cols-[1fr_1.2fr] lg:col-span-6" data-bento-item>
+          <div class="flex flex-col justify-between p-7">
+            <span class="text-xs font-semibold tracking-[0.16em] text-gold uppercase">Presentation</span>
+            <p class="font-serif text-3xl font-medium leading-none text-midnight">Polished from arrival to departure</p>
+          </div>
+          <div class="relative min-h-52 overflow-hidden">
+            <ResponsiveImage
+              src="/images/3 Station Pro/3Station4.jpg"
+              alt="Polished vanity inside a restroom trailer"
+              width={3424}
+              height={5136}
+              sizes="(min-width: 1024px) 28vw, 100vw"
+              class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
+        </EditorialCard>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-space bg-parchment" aria-labelledby="occasion-heading">
+    <div class="content-shell">
+      <div class="mb-14 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading
+          id="occasion-heading"
+          eyebrow="Designed for the setting"
+          heading="One standard of care. Many occasions."
+          body="The presentation adapts to the event while the fundamentals—comfort, cleanliness, and thoughtful planning—stay consistent."
+        />
+        <ButtonLink href="/luxury-restroom-trailer-rentals" label="View restroom trailers" variant="tertiary" />
+      </div>
+      <ExperienceAccordion items={experienceItems} />
+    </div>
+  </section>
+
+  <MotionGallery
+    eyebrow="A composed process"
+    heading="Confidence, before the trailer arrives."
+    body="The strongest event experiences feel effortless because the operational details were considered early."
+    items={galleryItems}
+  />
+
+  <section class="section-space bg-parchment">
+    <div class="content-shell">
+      <ServiceAssuranceCarousel items={assurances} />
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Tell us what you are planning."
+    body="Share the date, location, estimated guest count, and site details. The Signature Luxe team will review your needs and prepare a tailored quote."
+    label="Start your request"
+    href="/request-quote"
+  />
+</BaseLayout>

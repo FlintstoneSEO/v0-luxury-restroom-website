@@ -1,0 +1,134 @@
+---
+import ResponsiveImage from './ResponsiveImage.astro';
+
+interface Item {
+  title: string;
+  description: string;
+  image: {
+    src: string;
+    alt: string;
+    width?: number;
+    height?: number;
+  };
+}
+
+interface Props {
+  eyebrow: string;
+  heading: string;
+  body: string;
+  items: Item[];
+}
+
+const { eyebrow, heading, body, items } = Astro.props;
+---
+
+<section class="motion-gallery section-space bg-ivory" data-motion-gallery>
+  <div class="content-shell grid gap-14 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
+    <div class="motion-gallery-heading h-fit lg:pt-10">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 class="section-heading mt-5">{heading}</h2>
+      <p class="editorial-copy mt-7 max-w-lg">{body}</p>
+    </div>
+    <div class="grid gap-8">
+      {items.map((item, index) => (
+        <article class="motion-gallery-card sticky top-30 overflow-hidden bg-midnight text-white shadow-deep" style={`z-index:${index + 1};`}>
+          <div class="aspect-[4/3] overflow-hidden">
+            <ResponsiveImage
+              src={item.image.src}
+              alt={item.image.alt}
+              width={item.image.width ?? 1536}
+              height={item.image.height ?? 1024}
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              class="motion-gallery-image h-full w-full object-cover"
+            />
+          </div>
+          <div class="grid gap-4 p-6 sm:grid-cols-[1fr_1.2fr] sm:p-8">
+            <h3 class="font-serif text-3xl font-medium leading-none">{item.title}</h3>
+            <p class="text-sm leading-7 text-white/62">{item.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktop = window.matchMedia('(min-width: 1024px)');
+
+  if (!reducedMotion.matches && desktop.matches) {
+    const galleries = document.querySelectorAll<HTMLElement>('[data-motion-gallery]');
+    if (galleries.length) {
+      Promise.all([
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+      ]).then(([gsapModule, scrollTriggerModule]) => {
+        const gsap = gsapModule.default;
+        const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+        gsap.registerPlugin(ScrollTrigger);
+
+        galleries.forEach((gallery) => {
+          const heading = gallery.querySelector('.motion-gallery-heading');
+          const cards = gallery.querySelectorAll('.motion-gallery-card');
+          const images = gallery.querySelectorAll('.motion-gallery-image');
+
+          if (heading) {
+            ScrollTrigger.create({
+              trigger: gallery,
+              start: 'top 128px',
+              end: 'bottom bottom',
+              pin: heading,
+              pinSpacing: false,
+            });
+          }
+
+          cards.forEach((card, index) => {
+            gsap.fromTo(card, {
+              y: 60,
+              scale: 0.94,
+            }, {
+              y: 0,
+              scale: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                end: 'top 42%',
+                scrub: 0.5,
+              },
+            });
+
+            if (index < cards.length - 1) {
+              gsap.to(card, {
+                scale: 0.96,
+                opacity: 0.55,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: cards[index + 1],
+                  start: 'top 80%',
+                  end: 'top 35%',
+                  scrub: 0.5,
+                },
+              });
+            }
+          });
+
+          images.forEach((image) => {
+            gsap.fromTo(image, { scale: 1.08 }, {
+              scale: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: image,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 0.5,
+              },
+            });
+          });
+        });
+      }).catch((error) => {
+        console.warn('Optional motion enhancement could not load.', error);
+      });
+    }
+  }
+</script>

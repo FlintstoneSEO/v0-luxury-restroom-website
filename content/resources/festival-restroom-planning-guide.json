@@ -1,0 +1,98 @@
+{
+  "_schema": "resource",
+  "draft": false,
+  "slug": "festival-restroom-planning-guide",
+  "title": "Festival Restroom Planning Guide for Community Events",
+  "metaTitle": "Festival Restroom Planning Guide | Lansing & Mid-Michigan",
+  "metaDescription": "Plan restroom trailers for festivals and community events with practical guidance on crowd flow, placement, staffing coordination, and setup readiness.",
+  "excerpt": "A field-ready checklist for community event teams managing restroom logistics in Michigan.",
+  "category": "Event Logistics",
+  "publishDate": "2026-05-09",
+  "updatedDate": "2026-05-09",
+  "heroImage": "/images/Special Event Trailer.png",
+  "heroImageAlt": "Community festival restroom trailer setup in Michigan",
+  "primaryKeyword": "festival restroom planning",
+  "secondaryKeywords": [
+    "community event restroom guide",
+    "festival restroom trailer placement"
+  ],
+  "relatedServicePages": [
+    {
+      "href": "/festival-community-event-restroom-trailers",
+      "label": "Festival & Community Event Restroom Trailers"
+    },
+    {
+      "href": "/private-event-restroom-trailers",
+      "label": "Special Event Services"
+    },
+    {
+      "href": "/start-here",
+      "label": "Start Here: Event Planning"
+    },
+    {
+      "href": "/request-quote",
+      "label": "Request a Quote"
+    }
+  ],
+  "relatedCityPages": [
+    {
+      "href": "/service-areas/lansing-mi",
+      "label": "Lansing Service Area"
+    },
+    {
+      "href": "/service-areas/east-lansing-mi",
+      "label": "East Lansing Service Area"
+    }
+  ],
+  "relatedResources": [
+    {
+      "href": "/resources/restroom-trailer-setup-requirements",
+      "label": "Restroom Trailer Setup Requirements"
+    },
+    {
+      "href": "/resources/restroom-trailer-vs-porta-potty",
+      "label": "Restroom Trailer vs Porta Potty"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Where should trailers be placed at festivals?",
+      "answer": "Prioritize high-traffic but non-congested areas near major pathways and gathering zones."
+    },
+    {
+      "question": "How can organizers reduce restroom lines?",
+      "answer": "Distribute restroom access across the site and align placement with expected crowd surges."
+    },
+    {
+      "question": "Should events include accessible paths and signage?",
+      "answer": "Yes. Clear wayfinding and accessible routes are essential for guest usability and safety."
+    },
+    {
+      "question": "Can restroom planning be phased by event day schedule?",
+      "answer": "Yes. Planning around opening rush, headline acts, and closing windows improves operations."
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Map Crowd Patterns Before Choosing Locations",
+      "content": [
+        "Use your site map and programming schedule to anticipate where people will cluster throughout the day.",
+        "Restroom placement should support both convenience and circulation so lines do not disrupt vendor, stage, or emergency access."
+      ]
+    },
+    {
+      "heading": "Align Operations Teams Early",
+      "content": [
+        "Coordinate setup notes with operations leads, public safety contacts, and venue representatives before event week.",
+        "Signature Luxe Events & Amenities helps teams in Lansing and Mid-Michigan align placement and setup logistics with real-world event flow."
+      ]
+    },
+    {
+      "heading": "Build a Scalable Plan",
+      "content": [
+        "Community event requirements vary each year. Final recommendations depend on guest count, event duration, location, trailer size, and setup needs.",
+        "Use the Start Here planning guide and quote request form to build a practical, event-specific restroom strategy."
+      ]
+    }
+  ]
+}

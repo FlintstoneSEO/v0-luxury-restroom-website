@@ -1,0 +1,54 @@
+---
+interface EditorialItem {
+  heading: string;
+  paragraphs: { text: string }[];
+}
+
+interface Props {
+  eyebrow?: string | null;
+  heading: string;
+  body?: string | null;
+  items?: EditorialItem[];
+}
+
+const { eyebrow, heading, body, items = [] } = Astro.props;
+---
+
+<section class="section-space bg-ivory">
+  <div class="content-shell">
+    <div class="max-w-4xl">
+      {eyebrow && (
+        <p class="eyebrow" data-editable="text" data-type="text" data-prop="eyebrow">{eyebrow}</p>
+      )}
+      <h2 class="section-heading mt-5" data-editable="text" data-type="text" data-prop="heading">{heading}</h2>
+      {body && (
+        <p class="editorial-copy mt-7 max-w-2xl" data-editable="text" data-type="text" data-prop="body">{body}</p>
+      )}
+    </div>
+    <div class="mt-14 grid border-t border-midnight/15 lg:grid-cols-2" data-editable="array" data-prop="items">
+      {items.map((item, index) => (
+        <article
+          class:list={[
+            'border-b border-midnight/15 py-10 lg:px-10',
+            index % 2 === 0 ? 'lg:border-r lg:pl-0' : 'lg:pr-0',
+          ]}
+          data-editable="array-item"
+        >
+          <p class="text-xs font-semibold tracking-[0.18em] text-gold" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </p>
+          <h3 class="mt-5 font-serif text-4xl font-medium leading-none text-midnight" data-editable="text" data-type="text" data-prop="heading">
+            {item.heading}
+          </h3>
+          <div class="mt-6 space-y-4 text-base leading-8 text-charcoal/70" data-editable="array" data-prop="paragraphs">
+            {item.paragraphs.map((paragraph) => (
+              <p data-editable="array-item">
+                <span data-editable="text" data-type="text" data-prop="text">{paragraph.text}</span>
+              </p>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,5 +1,6 @@
 import { formatCurrency } from '@/lib/pricing-engine';
 import { escapeHtml } from '@/lib/escape-html';
+import { getPublicSiteOrigin } from '@/lib/app-origins';
 
 export type QuoteEmailOptionSummary = {
   id?: string;
@@ -21,17 +22,7 @@ type BrandedEmailInput = {
   footerLines: string[];
 };
 
-function getPublicAppUrl() {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
-  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
-
-  const vercelUrl = process.env.VERCEL_URL;
-  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, '');
-
-  return 'https://www.signatureluxeevents.com';
-}
-
-const LOGO_URL = `${getPublicAppUrl()}/images/logo.png`;
+const LOGO_URL = `${getPublicSiteOrigin()}/images/logo.png`;
 
 function renderBrandedCustomerEmail(input: BrandedEmailInput) {
   const preheader = escapeHtml(input.preheader || '');
