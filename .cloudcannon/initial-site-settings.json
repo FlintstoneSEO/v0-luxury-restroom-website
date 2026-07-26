@@ -6,7 +6,7 @@
     "rubyVersion": "3.4.8",
     "nodeVersion": "22",
     "denoVersion": "2.7.1",
-    "install_command": "npm install",
+    "install_command": "npm install --legacy-peer-deps",
     "build_command": "npm run build",
     "output_path": "dist"
   }
