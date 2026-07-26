@@ -20,9 +20,11 @@ import {
 
 import { formatLocalDateOnly, parseLocalDateOnly } from '@/lib/date-only';
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { CheckCircle2, Clock, AlertCircle, FileCheck, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, Plus, Mail, SquarePen, FileSignature, Eye, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, Plus, Mail, SquarePen, FileSignature, Eye, AlertTriangle } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { AdminStatusBadge } from '@/components/admin/admin-status-badge';
+import { formatAdminStatus } from '@/lib/quotes/status';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
@@ -59,39 +61,6 @@ const pipelineBucketConfig: Array<{
   { key: 'booked', label: 'Booked', description: 'Confirmed or completed', icon: CheckCircle2 },
   { key: 'closed_lost', label: 'Closed / Lost', description: 'Declined, cancelled, or expired quotes', icon: AlertCircle },
 ];
-
-function getStatusColor(status: string) {
-  const colors: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
-    pending_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <Clock className="w-4 h-4" /> },
-    new: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <Clock className="w-4 h-4" /> },
-    under_review: { bg: 'bg-[#ded2c4]/35', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <Clock className="w-4 h-4" /> },
-    draft_quote: { bg: 'bg-white', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <FileCheck className="w-4 h-4" /> },
-    quote_sent: { bg: 'bg-[#2d3a47]/10', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/40', icon: <FileCheck className="w-4 h-4" /> },
-    sent_to_customer: { bg: 'bg-[#2d3a47]/10', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/40', icon: <FileCheck className="w-4 h-4" /> },
-    customer_approved: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    change_requested: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <AlertCircle className="w-4 h-4" /> },
-    agreement_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <FileCheck className="w-4 h-4" /> },
-    agreement_sent: { bg: 'bg-[#2d3a47]/10', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <FileCheck className="w-4 h-4" /> },
-    agreement_signed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    deposit_pending: { bg: 'bg-[#ded2c4]/25', text: 'text-[#2d3a47]', border: 'border border-[#8a7a68]', icon: <CreditCard className="w-4 h-4" /> },
-    deposit_paid: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CreditCard className="w-4 h-4" /> },
-    booked: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    confirmed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    completed: { bg: 'bg-[#2d3a47]', text: 'text-white', border: 'border border-[#2d3a47]', icon: <CheckCircle2 className="w-4 h-4" /> },
-    cancelled: { bg: 'bg-white', text: 'text-[#4b5563]', border: 'border border-[#2d3a47]/40', icon: <AlertCircle className="w-4 h-4" /> },
-    declined: { bg: 'bg-white', text: 'text-[#4b5563]', border: 'border border-[#2d3a47]/40', icon: <AlertCircle className="w-4 h-4" /> },
-    expired: { bg: 'bg-white', text: 'text-[#4b5563]', border: 'border border-[#2d3a47]/40', icon: <Clock className="w-4 h-4" /> },
-  };
-  return colors[status] || { bg: 'bg-white', text: 'text-[#2d3a47]', border: 'border border-[#2d3a47]/40', icon: <Clock className="w-4 h-4" /> };
-}
-
-
-function formatStatus(status: string) {
-  return status
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
 
 function getQuoteViewLabel(quote: QuoteRequest) {
   if (!quote.quote_sent_at) return null;
@@ -418,7 +387,7 @@ export default function QuoteRequestsDashboard({
                 <SelectItem value="all">All Statuses</SelectItem>
                 {QUOTE_STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
-                    {formatStatus(status)}
+                    {formatAdminStatus(status, 'quote')}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -452,7 +421,7 @@ export default function QuoteRequestsDashboard({
                 <SelectItem value="all">All Agreements</SelectItem>
                 {AGREEMENT_TRACKING_STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
-                    {formatStatus(status)}
+                    {formatAdminStatus(status, 'agreement')}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -469,7 +438,7 @@ export default function QuoteRequestsDashboard({
                 <SelectItem value="all">All Deposits</SelectItem>
                 {DEPOSIT_TRACKING_STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
-                    {formatStatus(status)}
+                    {formatAdminStatus(status, 'deposit')}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -595,9 +564,6 @@ export default function QuoteRequestsDashboard({
           ) : (
             <div className="divide-y divide-[#8a7a68]/70">
               {selectedQuotes.map((quote) => {
-                const statusColor = getStatusColor(quote.status);
-                const agreementColor = getStatusColor(quote.agreement_status);
-                const depositColor = getStatusColor(quote.deposit_status);
                 const canSendQuote = isQuoteSendable(quote.status);
                 const canSendAgreement = isAgreementSendable(quote.status);
                 const fallbackDistance = hasFallbackDistanceCalculation(quote);
@@ -643,15 +609,9 @@ export default function QuoteRequestsDashboard({
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${statusColor.bg} ${statusColor.text} ${statusColor.border}`}>
-                            {statusColor.icon}<span>Quote: {formatStatus(quote.status)}</span>
-                          </span>
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${agreementColor.bg} ${agreementColor.text} ${agreementColor.border}`}>
-                            {agreementColor.icon}<span>Agreement: {formatStatus(quote.agreement_status)}</span>
-                          </span>
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${depositColor.bg} ${depositColor.text} ${depositColor.border}`}>
-                            {depositColor.icon}<span>Deposit: {formatStatus(quote.deposit_status)}</span>
-                          </span>
+                          <AdminStatusBadge status={quote.status} family="quote" prefix="Quote" />
+                          <AdminStatusBadge status={quote.agreement_status} family="agreement" prefix="Agreement" />
+                          <AdminStatusBadge status={quote.deposit_status} family="deposit" prefix="Deposit" />
                           {quote.is_test_quote && (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900 border border-amber-500">TEST QUOTE</span>
                           )}
@@ -704,7 +664,7 @@ export default function QuoteRequestsDashboard({
                 <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Customer Details</h4>
                 <p className="text-sm text-[#2d3a47]"><strong>Email:</strong> {selectedQuote.email}</p>
                 <p className="text-sm text-[#2d3a47]"><strong>Phone:</strong> {selectedQuote.phone}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Status:</strong> {formatStatus(selectedQuote.status)}</p>
+                <p className="text-sm text-[#2d3a47]"><strong>Status:</strong> {formatAdminStatus(selectedQuote.status, 'quote')}</p>
                 {(selectedQuote.quote_options?.length ?? 0) > 0 && (
                   <p className="text-sm text-[#2d3a47]"><strong>Quote Options:</strong> {selectedQuote.quote_options?.find((option) => option.id === selectedQuote.selected_quote_option_id || option.status === 'selected')?.option_label ?? `${selectedQuote.quote_options?.length} options`}</p>
                 )}
@@ -731,8 +691,8 @@ export default function QuoteRequestsDashboard({
 
               <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
                 <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Agreement & Deposit</h4>
-                <p className="text-sm text-[#2d3a47]"><strong>Agreement:</strong> {formatStatus(selectedQuote.agreement_status)}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Deposit:</strong> {formatStatus(selectedQuote.deposit_status)}</p>
+                <p className="text-sm text-[#2d3a47]"><strong>Agreement:</strong> {formatAdminStatus(selectedQuote.agreement_status, 'agreement')}</p>
+                <p className="text-sm text-[#2d3a47]"><strong>Deposit:</strong> {formatAdminStatus(selectedQuote.deposit_status, 'deposit')}</p>
                 <p className="text-sm text-[#2d3a47]"><strong>Deposit Amount:</strong> {formatCurrency(selectedQuote.deposit_amount || 0)}</p>
               </div>
 

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { AdminPageHeader } from '@/components/admin/admin-page-header';
+import { AdminSaveState } from '@/components/admin/admin-feedback';
 
 const FIELDS: Array<{ key: string; label: string; help?: string }> = [
   { key: 'base_price_100_guests', label: 'Base Price (Up to 100 guests)' },
@@ -29,6 +31,7 @@ export default function PricingSettingsEditor({ initialSettings, initialAddons }
   const [values, setValues] = useState<Record<string, number>>(initialSettings);
   const [addons, setAddons] = useState<string>(initialAddons || '[]');
   const [message, setMessage] = useState('');
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [saving, setSaving] = useState(false);
 
   const update = (key: string, raw: string) => setValues((p) => ({ ...p, [key]: Number(raw) || 0 }));
@@ -36,6 +39,7 @@ export default function PricingSettingsEditor({ initialSettings, initialAddons }
   const save = async () => {
     setSaving(true);
     setMessage('');
+    setSaveState('saving');
     try {
       JSON.parse(addons);
       const res = await fetch('/api/admin/pricing', {
@@ -45,19 +49,24 @@ export default function PricingSettingsEditor({ initialSettings, initialAddons }
       });
       if (!res.ok) throw new Error('Unable to save settings');
       setMessage('Pricing settings saved.');
+      setSaveState('success');
       router.refresh();
     } catch {
       setMessage('Failed to save settings. Ensure optional add-ons JSON is valid.');
+      setSaveState('error');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#ded2c4]/20 py-10 px-4">
-      <div className="mx-auto max-w-5xl rounded-xl border border-[#ded2c4] bg-white p-6 space-y-6">
-        <h1 className="text-3xl font-serif font-bold text-[#2d3a47]">Admin Pricing Settings</h1>
-        <p className="text-sm text-[#2d3a47]/80">Centralized pricing rules used by quote calculation helper.</p>
+    <div className="space-y-6">
+      <AdminPageHeader
+        eyebrow="Configuration"
+        title="Pricing"
+        description="Centralized pricing rules used by the quote calculation helper."
+      />
+      <div className="rounded-xl border border-[#ded2c4] bg-white p-5 sm:p-6 space-y-6">
 
         <div className="grid gap-4 md:grid-cols-2">
           {FIELDS.map((field) => (
@@ -76,7 +85,7 @@ export default function PricingSettingsEditor({ initialSettings, initialAddons }
         <Button onClick={save} disabled={saving} className="bg-[#2d3a47] hover:bg-[#2d3a47]/90 text-white">
           {saving ? 'Saving...' : 'Save Pricing Settings'}
         </Button>
-        {message && <p className="text-sm text-[#2d3a47]">{message}</p>}
+        <AdminSaveState state={saveState} message={message || undefined} />
       </div>
     </div>
   );

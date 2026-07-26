@@ -6,13 +6,16 @@ Set these locally in `.env.local` and in your deployment environment:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` (server-only)
-- `NEXT_PUBLIC_APP_URL` (used for customer quote approval links)
+- `PUBLIC_SITE_URL` (public Astro origin)
+- `ADMIN_APP_URL` (protected Next.js origin)
+- `CUSTOMER_WORKFLOW_URL` (Next.js origin or proxy origin for `/quote/**`)
 
 Optional but commonly required:
 
 - `RESEND_API_KEY`
 - `EMAIL_PROVIDER=resend`
 - `EMAIL_FROM`
+- `NEXT_PUBLIC_APP_URL` (legacy migration fallback only)
 
 ## 2) Create an admin user
 1. Open Supabase Dashboard → **Authentication** → **Users**.
@@ -38,7 +41,7 @@ You can set this in the Auth user editor (User Metadata) in the Supabase Dashboa
 
 ## 5) Access admin after deployment
 1. Set the same environment variables in your hosting provider.
-2. Ensure `NEXT_PUBLIC_APP_URL` matches production URL (for example `https://yourdomain.com`).
+2. Ensure `ADMIN_APP_URL` matches the protected Next.js deployment and `CUSTOMER_WORKFLOW_URL` matches the origin used in customer quote links.
 3. Open `https://yourdomain.com/admin/login` and sign in.
 
 ## 6) Test login quickly

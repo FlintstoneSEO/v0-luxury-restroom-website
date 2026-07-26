@@ -4,6 +4,7 @@ import { hashApprovalToken, isTokenExpired } from '@/lib/quote-approval';
 import { quoteCustomerResponseSchema } from '@/lib/quotes/schema';
 import { sendEmail } from '@/lib/email/client';
 import { escapeHtml } from '@/lib/escape-html';
+import { getAdminAppOrigin } from '@/lib/app-origins';
 
 export async function POST(
   request: Request,
@@ -209,7 +210,7 @@ export async function POST(
 
     // Send notification email to admin
     const statusDisplay = response_type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-    const adminQuoteUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/admin/quotes/${quote.id}`;
+    const adminQuoteUrl = `${getAdminAppOrigin(request)}/admin/quotes/${quote.id}`;
     await sendEmail({
       to: process.env.EMAIL_FROM || 'info@signatureluxeevents.com',
       subject: `Quote ${quote.quote_number || quote.id.slice(0, 8)}: Customer ${statusDisplay}`,

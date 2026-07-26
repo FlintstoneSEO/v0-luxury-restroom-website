@@ -1,6 +1,10 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { hashApprovalToken, isTokenExpired } from '@/lib/quote-approval';
 import QuoteApprovalClient from './quote-approval-client';
+import { getPublicSiteOrigin } from '@/lib/app-origins';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata = {
   title: 'Quote Review | Signature Luxe Events & Amenities',
@@ -16,6 +20,7 @@ interface QuoteApprovalPageProps {
 
 export default async function QuoteApprovalPage({ params }: QuoteApprovalPageProps) {
   const { token } = await params;
+  const publicSiteOrigin = getPublicSiteOrigin();
 
   // Hash the token to look it up
   const tokenHash = hashApprovalToken(token);
@@ -34,6 +39,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       <QuoteLinkError
         title="Invalid Quote Link"
         message="This quote link is invalid or could not be verified. Please check the link or contact us for assistance."
+        homeHref={publicSiteOrigin}
       />
     );
   }
@@ -44,6 +50,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       <QuoteLinkError
         title="Expired Quote Link"
         message="This quote link has expired. Please contact us to request a new quote."
+        homeHref={publicSiteOrigin}
       />
     );
   }
@@ -95,6 +102,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       <QuoteLinkError
         title="Quote Not Found"
         message="We could not find the quote associated with this link. Please contact us for assistance."
+        homeHref={publicSiteOrigin}
       />
     );
   }
@@ -147,11 +155,20 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       token={token}
       alreadyResponded={alreadyResponded}
       options={options ?? []}
+      publicSiteOrigin={publicSiteOrigin}
     />
   );
 }
 
-function QuoteLinkError({ title, message }: { title: string; message: string }) {
+function QuoteLinkError({
+  title,
+  message,
+  homeHref,
+}: {
+  title: string;
+  message: string;
+  homeHref: string;
+}) {
   return (
     <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center border border-[#d8c7a3]/40">
@@ -163,7 +180,7 @@ function QuoteLinkError({ title, message }: { title: string; message: string }) 
         <h1 className="text-2xl font-serif font-bold text-[#2d3a47] mb-4">{title}</h1>
         <p className="text-muted-foreground mb-6">{message}</p>
         <a
-          href="/"
+          href={homeHref}
           className="inline-block bg-[#2d3a47] text-white px-6 py-3 rounded-md hover:bg-[#2d3a47]/90 transition-colors"
         >
           Return Home

@@ -1,5 +1,7 @@
 # Phased implementation plan
 
+> Numbering note: this document predates the phase names in the root `AGENTS.md`. The customer-facing workflow boundary requested as AGENTS.md Phase 5 is documented in `phase-5-customer-workflow-boundary.md` and corresponds to the quote-request/customer-approval work described below as Phases 8 and 9.
+
 Each phase should be a small reviewable PR with explicit scope, routes, risk, rollback, security, SEO, validation, and follow-up.
 
 ## Phase 0: audit and safeguards

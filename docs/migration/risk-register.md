@@ -4,7 +4,7 @@ Scoring: likelihood and impact are Low, Medium, or High. Owners are proposed rol
 
 | ID | Risk | Likelihood | Impact | Mitigation / gate | Owner |
 |---|---|---|---|---|---|
-| R1 | Existing quote links break after domain split | Medium | High | Preserve `/quote/**` through path proxy or stable workflow origin; test emailed links | Platform |
+| R1 | Existing quote links break after domain split | Medium | High | Phase 5 origin/proxy contract implemented; preserve `/quote/**` plus `/api/quote/**` as one routing unit and test emailed links at cutover | Platform |
 | R2 | Service-role key enters Astro/client bundle | Low | High | No operational imports in `apps/web`; bundle/env scan; explicit env allowlist | Security |
 | R3 | Quote calculation diverges between apps | Medium | High | One server-owned API/calculation implementation; contract tests | Backend |
 | R4 | Quote action and JSON API behave differently | High | High | Reconcile emails/responses before Astro form cutover | Backend |
@@ -55,4 +55,3 @@ The public deployment must not switch while any of these remain unresolved:
 ## Review cadence
 
 Review this register at the start and end of every migration PR. New risks receive an ID; mitigated risks remain recorded with evidence rather than being deleted.
-

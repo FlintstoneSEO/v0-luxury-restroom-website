@@ -23,6 +23,13 @@ Migration documentation:
 - [Admin redesign plan](docs/migration/admin-redesign-plan.md)
 - [Phased implementation plan](docs/migration/phased-implementation-plan.md)
 - [Risk register](docs/migration/risk-register.md)
+- [Phase 5 customer-workflow boundary](docs/migration/phase-5-customer-workflow-boundary.md)
+
+## Customer workflow boundary
+
+Quote requests, customer quote review, approval responses, calculations, agreements, deposits, and provider webhooks remain in Next.js during the Astro migration. Configure `PUBLIC_SITE_URL`, `ADMIN_APP_URL`, and `CUSTOMER_WORKFLOW_URL` as separate server-side origins before splitting deployments. The legacy `NEXT_PUBLIC_APP_URL` remains a temporary fallback.
+
+The customer token page and `/api/quote/**` must be routed to the same Next.js deployment. See the Phase 5 boundary document for the full proxy and rollback contract.
 
 ## Built with v0
 

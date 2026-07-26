@@ -5,6 +5,7 @@ import { generateApprovalToken, hashApprovalToken } from '@/lib/quote-approval';
 import { sendEmail } from '@/lib/email/client';
 import { quoteSentTemplate } from '@/lib/email/templates';
 import { formatLocalDateOnly } from '@/lib/date-only';
+import { getCustomerWorkflowOrigin } from '@/lib/app-origins';
 
 // Statuses that allow sending a quote
 const SENDABLE_STATUSES = [
@@ -16,25 +17,6 @@ const SENDABLE_STATUSES = [
   'change_requested',
   'quote_sent', // Allow re-sending
 ];
-
-function getAppUrl(request: Request) {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
-  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
-
-  const vercelUrl = process.env.VERCEL_URL;
-  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, '');
-
-  const origin = request.headers.get('origin');
-  if (origin) return origin.replace(/\/$/, '');
-
-  const host = request.headers.get('host');
-  if (host) {
-    const proto = request.headers.get('x-forwarded-proto') || 'https';
-    return `${proto}://${host}`.replace(/\/$/, '');
-  }
-
-  return '';
-}
 
 export async function POST(
   request: Request,
@@ -48,13 +30,7 @@ export async function POST(
   try {
     const supabase = createAdminClient();
 
-    const appUrl = getAppUrl(request);
-    if (!appUrl) {
-      return NextResponse.json(
-        { ok: false, message: 'Unable to determine app URL for approval links. Set NEXT_PUBLIC_APP_URL in the deployment environment.' },
-        { status: 500 }
-      );
-    }
+    const customerWorkflowOrigin = getCustomerWorkflowOrigin(request);
 
     // Fetch the quote with current and legacy fallback fields
     const { data: quote, error } = await supabase
@@ -148,7 +124,7 @@ export async function POST(
       );
     }
 
-    const approvalLink = `${appUrl}/quote/${token}`;
+    const approvalLink = `${customerWorkflowOrigin}/quote/${token}`;
 
     // Format event location with legacy fallback
     const eventLocation = [
