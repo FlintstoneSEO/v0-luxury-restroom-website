@@ -11,7 +11,6 @@ import {
   LogOut,
   MapPinned,
   Menu,
-  Settings,
   SlidersHorizontal,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -29,24 +28,27 @@ import { cn } from '@/lib/utils';
 
 const navigation = [
   { href: '/admin', label: 'Dashboard', icon: BarChart3, match: 'quotes' },
-  { href: '/admin/pricing', label: 'Pricing', icon: SlidersHorizontal },
+  { href: '/admin/pricing', label: 'Pricing & Settings', icon: SlidersHorizontal },
   { href: '/admin/site-media', label: 'Media', icon: ImageIcon },
-  { href: '/admin/settings', label: 'Settings', icon: Settings },
   { href: '/admin/distance-settings', label: 'Distance', icon: MapPinned },
 ] as const;
 
 const routeLabels: Record<string, string> = {
   admin: 'Dashboard',
   quotes: 'Quotes',
-  pricing: 'Pricing',
+  pricing: 'Pricing & Settings',
   'site-media': 'Media',
-  settings: 'Settings',
+  settings: 'Pricing & Settings',
   'distance-settings': 'Distance',
 };
 
 function isActiveRoute(pathname: string, item: (typeof navigation)[number]) {
   if (item.href === '/admin') {
     return pathname === '/admin' || pathname.startsWith('/admin/quotes/');
+  }
+
+  if (item.href === '/admin/pricing') {
+    return pathname === '/admin/pricing' || pathname.startsWith('/admin/pricing/') || pathname === '/admin/settings';
   }
 
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
