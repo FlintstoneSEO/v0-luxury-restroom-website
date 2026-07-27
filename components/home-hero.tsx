@@ -1,5 +1,3 @@
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, MapPin } from "lucide-react"
@@ -19,15 +17,6 @@ type HomeHeroProps = {
 }
 
 export function HomeHero({ heroImage, content }: HomeHeroProps) {
-  const handleScrollToNextSection = () => {
-    const nextSection =
-      document.querySelector<HTMLElement>("[data-home-next-section]") ||
-      document.querySelector<HTMLElement>("main section:nth-of-type(2)") ||
-      document.querySelector<HTMLElement>("#after-hero")
-
-    nextSection?.scrollIntoView({ behavior: "smooth", block: "start" })
-  }
-
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden md:items-end">
       {/* Background Image Container */}
@@ -38,7 +27,8 @@ export function HomeHero({ heroImage, content }: HomeHeroProps) {
             alt={heroImage.alt}
             unoptimized={heroImage.unoptimized}
             fill
-            priority
+            preload
+            quality={80}
             sizes="100vw"
             className="object-cover object-center motion-safe:md:animate-hero-ken-burns motion-reduce:scale-100 motion-reduce:animate-none"
           />
@@ -50,8 +40,8 @@ export function HomeHero({ heroImage, content }: HomeHeroProps) {
         {/* Subtle side vignette for depth */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#1f2a36]/30 via-transparent to-[#1f2a36]/30" />
 
-        {/* Decorative glow */}
-        <div className="pointer-events-none absolute -right-20 bottom-1/3 h-[28rem] w-[28rem] rounded-full bg-[#DED2C4]/20 blur-3xl motion-safe:md:animate-gold-pulse motion-reduce:animate-none" />
+        {/* Static radial glow avoids a large animated blur layer. */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_65%,rgba(222,210,196,0.16),transparent_32%)]" />
       </div>
 
       {/* Content - elevated on mobile, anchored lower again on desktop */}
@@ -100,16 +90,15 @@ export function HomeHero({ heroImage, content }: HomeHeroProps) {
       </div>
 
       {/* Scroll indicator */}
-      <button
-        type="button"
+      <a
+        href="#homepage-events"
         aria-label="Scroll to next section"
-        onClick={handleScrollToNextSection}
         className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform motion-safe:animate-[bounce-subtle_2s_ease-in-out_infinite] hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto motion-reduce:animate-none"
       >
         <div className="flex h-12 w-8 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm overflow-hidden">
           <div className="h-3 w-1.5 rounded-full bg-[#DED2C4] motion-safe:animate-scroll-wheel motion-reduce:animate-none" />
         </div>
-      </button>
+      </a>
     </section>
   )
 }

@@ -1,4 +1,5 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { unstable_cache } from 'next/cache';
 
 export interface SiteMediaRecord {
   id: string;
@@ -43,7 +44,7 @@ function isSupabaseImage(url?: string | null) {
   }
 }
 
-export async function fetchSiteMedia(pageSlug?: string) {
+async function fetchSiteMediaUncached(pageSlug?: string) {
   const supabase = getPublicSiteMediaClient();
   let query = supabase
     .from('site_media')
@@ -64,6 +65,12 @@ export async function fetchSiteMedia(pageSlug?: string) {
 
   return (data || []) as SiteMediaRecord[];
 }
+
+export const fetchSiteMedia = unstable_cache(
+  fetchSiteMediaUncached,
+  ['public-site-media'],
+  { revalidate: 3600, tags: ['site-media'] }
+);
 
 export async function fetchAllSiteMedia() {
   const { createClient } = await import('@/lib/supabase/server');
@@ -107,6 +114,22 @@ export function resolveSiteImage(
     alt: record?.alt_text || fallback.alt,
     label: record?.label || fallback.label,
     caption: record?.caption || '',
-    unoptimized: isSupabase,
+    unoptimized: shouldBypassImageOptimization(src),
   };
+}
+
+function shouldBypassImageOptimization(src: string) {
+  if (src.startsWith('data:') || src.startsWith('blob:')) return true;
+
+  const pathname = src.startsWith('/')
+    ? src
+    : (() => {
+        try {
+          return new URL(src).pathname;
+        } catch {
+          return src;
+        }
+      })();
+
+  return /\.(?:gif|svg|ico)$/i.test(pathname);
 }

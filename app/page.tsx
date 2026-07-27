@@ -18,7 +18,6 @@ import { SectionHeader } from "@/components/section-header"
 import { ServiceCard } from "@/components/service-card"
 import { FeatureGrid } from "@/components/feature-grid"
 import { ProcessSteps } from "@/components/process-steps"
-import { GalleryGrid } from "@/components/gallery-grid"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import { HomeHero } from "@/components/home-hero"
@@ -100,7 +99,7 @@ export default async function HomePage() {
         <HomeHero heroImage={heroImage} content={homepageContent.hero} />
 
         {/* Event Scenarios Showcase */}
-        <section data-home-next-section className="py-16 bg-white border-b border-cream">
+        <section id="homepage-events" className="scroll-mt-24 py-16 bg-white border-b border-cream">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="text-center mb-10">
               <span className="text-sm font-semibold uppercase tracking-widest text-navy">
@@ -119,7 +118,8 @@ export default async function HomePage() {
                     unoptimized={scenario.unoptimized}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    quality={78}
+                    sizes="(max-width: 768px) calc(50vw - 24px), (max-width: 1280px) calc(25vw - 24px), 296px"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
                   <div className="absolute bottom-4 left-4">
@@ -130,7 +130,7 @@ export default async function HomePage() {
                 </div>
               ))}
 
-            <div className="mt-6 max-w-md mx-auto">
+            <div className="col-span-full mt-6 w-full max-w-md mx-auto">
               <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-gold/30 shadow-md">
                 <Image
                   src={trailerGalleryImage.src}
@@ -138,7 +138,8 @@ export default async function HomePage() {
                   unoptimized={trailerGalleryImage.unoptimized}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 448px"
+                  quality={78}
+                  sizes="(max-width: 768px) calc(100vw - 32px), 448px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent" />
                 <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-gold text-navy text-xs font-semibold uppercase tracking-wide">
@@ -237,42 +238,23 @@ export default async function HomePage() {
             {/* 2-Station Trailer */}
             <div className="mt-16">
               <div className="grid gap-8 lg:grid-cols-2 items-center">
-                <div className="order-1 lg:order-1 grid grid-cols-2 gap-4">
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                <div className="order-1 lg:order-1">
+                  <div className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
                     <Image
                       src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion-ZzVBLsh7CDCrCrvb4zy74VpKu6WLfM.jpg"
                       alt="2-Station trailer exterior"
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      quality={78}
+                      sizes="(max-width: 1024px) calc(100vw - 32px), 50vw"
                     />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion4-CFlX5FxXUKJ43DEnRyhr5BWnmbQ0p2.jpg"
-                      alt="2-Station interior with vanity and stall"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion2-XnFvvRp9dg0l3UMsQjxxTXQ6sRYgSI.jpg"
-                      alt="2-Station vanity with succulent decor"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion1-4GfdXllyd7ETnO32bWZUfthPIJilPs.jpg"
-                      alt="2-Station private stall with artwork"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+                    <Link
+                      href="/luxury-restroom-trailer-rentals#interior-details"
+                      className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                    >
+                      View interior &amp; exterior gallery
+                    </Link>
                   </div>
                 </div>
                 <div className="order-2 lg:order-2">
@@ -355,42 +337,23 @@ export default async function HomePage() {
                     </Button>
                   </div>
                 </div>
-                <div className="order-1 lg:order-2 grid grid-cols-2 gap-4">
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                <div className="order-1 lg:order-2">
+                  <div className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
                     <Image
                       src="/images/3 Station Pro/3Station.jpg"
                       alt="3-Station trailer exterior"
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      quality={78}
+                      sizes="(max-width: 1024px) calc(100vw - 32px), 50vw"
                     />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="/images/3 Station Pro/3Station1.jpg"
-                      alt="3-Station interior overview"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="/images/3 Station Pro/3Station2.jpg"
-                      alt="3-Station vanity with modern amenities"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="/images/3 Station Pro/3Station3.jpg"
-                      alt="3-Station private stall"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+                    <Link
+                      href="/luxury-restroom-trailer-rentals#interior-details"
+                      className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                    >
+                      View interior &amp; exterior gallery
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -399,42 +362,23 @@ export default async function HomePage() {
             {/* 4-Station Trailer */}
             <div className="mt-20">
               <div className="grid gap-8 lg:grid-cols-2 items-center">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
+                <div>
+                  <div className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
                     <Image
                       src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion-reeAizT4CMrw1A2cNJMJrJzkCyVzvD.jpg"
                       alt="4-Station trailer exterior"
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      quality={78}
+                      sizes="(max-width: 1024px) calc(100vw - 32px), 50vw"
                     />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion1-Vgb2lLAmjazOrZaf0jRCtPD6XnwkZr.jpg"
-                      alt="4-Station interior overview"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion2-TjkXrrTaVwy3CswhDQSAdCK80Grr59.jpg"
-                      alt="4-Station vanity with succulent artwork"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
-                  </div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion3-2zdfq5PwGMaOVIZemEogYgoK88AZVC.jpg"
-                      alt="4-Station private stall"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
+                    <Link
+                      href="/luxury-restroom-trailer-rentals#interior-details"
+                      className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                    >
+                      View interior &amp; exterior gallery
+                    </Link>
                   </div>
                 </div>
                 <div>
@@ -561,7 +505,29 @@ export default async function HomePage() {
               description="Take a closer look at our climate-controlled restroom trailers, modern interiors, and professional event setups."
             />
             <div className="mt-12">
-              <GalleryGrid images={galleryImages} columns={3} />
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {galleryImages.slice(0, 3).map((image) => (
+                  <Link
+                    key={image.id}
+                    href="/gallery"
+                    className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      quality={78}
+                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 33vw"
+                    />
+                    {image.category && (
+                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs text-navy">
+                        {image.category}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
             </div>
             <div className="mt-10 text-center">
               <Button asChild className="bg-navy hover:bg-navy/90 text-white">

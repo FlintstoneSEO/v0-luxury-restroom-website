@@ -7,14 +7,12 @@ import { getSiteSettings } from '@/lib/content/site'
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
   variable: '--font-serif',
   display: 'swap',
 })
 
 const montserrat = Montserrat({ 
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
   variable: '--font-sans',
   display: 'swap',
 })
