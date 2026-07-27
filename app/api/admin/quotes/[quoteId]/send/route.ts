@@ -4,7 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { generateApprovalToken, hashApprovalToken } from '@/lib/quote-approval';
 import { sendEmail } from '@/lib/email/client';
 import { quoteSentTemplate } from '@/lib/email/templates';
-import { formatLocalDateOnly } from '@/lib/date-only';
+import { formatLocalDateOnly, parseLocalDateOnly } from '@/lib/date-only';
 import { getCustomerWorkflowOrigin } from '@/lib/app-origins';
 
 // Statuses that allow sending a quote
@@ -17,6 +17,22 @@ const SENDABLE_STATUSES = [
   'change_requested',
   'quote_sent', // Allow re-sending
 ];
+
+const ONE_DAY_MS = 1000 * 60 * 60 * 24;
+const STANDARD_APPROVAL_CUTOFF_DAYS = 10;
+
+function getQuoteExpiration(eventDateValue: string, now = new Date()): Date {
+  const eventDate = parseLocalDateOnly(eventDateValue);
+  const standardExpiration = new Date(eventDate);
+  standardExpiration.setDate(standardExpiration.getDate() - STANDARD_APPROVAL_CUTOFF_DAYS);
+
+  // Quotes sent 10 days or fewer before the event remain valid for 24 hours.
+  if (standardExpiration.getTime() <= now.getTime()) {
+    return new Date(now.getTime() + ONE_DAY_MS);
+  }
+
+  return standardExpiration;
+}
 
 export async function POST(
   request: Request,
@@ -75,6 +91,13 @@ export async function POST(
       );
     }
 
+    if (!quote.event_date) {
+      return NextResponse.json(
+        { ok: false, message: 'Quote is missing an event date.' },
+        { status: 400 }
+      );
+    }
+
     // Check if quote can be sent
     if (!SENDABLE_STATUSES.includes(quote.status)) {
       return NextResponse.json(
@@ -83,10 +106,12 @@ export async function POST(
       );
     }
 
-    // Generate approval token and persist token before sending email
+    // Generate approval token and persist token before sending email.
+    // Standard quotes expire 10 days before the event. Quotes sent 10 days
+    // or fewer before the event expire 24 hours after they are sent.
     const token = generateApprovalToken();
     const tokenHash = hashApprovalToken(token);
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 10).toISOString(); // 10 days
+    const expiresAt = getQuoteExpiration(quote.event_date).toISOString();
 
     const { data: tokenRecord, error: tokenError } = await supabase
       .from('quote_approval_tokens')
