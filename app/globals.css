@@ -129,6 +129,10 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -235,11 +239,22 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .animate-hero-ken-burns,
   .animate-hero-enter,
   .animate-gold-pulse,
   .animate-scroll-wheel,
   .animate-bounce-subtle {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .animate-hero-ken-burns,
+  .animate-gold-pulse {
     animation: none !important;
   }
 }

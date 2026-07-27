@@ -7,6 +7,8 @@ const soroFeaturedImageHostnames = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Allow production checks to run alongside `next dev`, which writes to `.next`.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   async headers() {
     return [
       {
@@ -57,6 +59,10 @@ const nextConfig = {
     ]
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
+    qualities: [75, 78, 80],
+    minimumCacheTTL: 3600,
+    deviceSizes: [360, 640, 750, 828, 1080, 1200, 1440, 1920],
     remotePatterns: [
       {
         protocol: 'https',

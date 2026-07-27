@@ -1,17 +1,8 @@
-"use client"
-
-import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, ChevronDown } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { MobileNavigation } from "@/components/layout/mobile-navigation"
 import navigationContent from "@/content/site/navigation.json"
 
 export type NavigationItem = {
@@ -26,23 +17,23 @@ function DesktopNavItems({ items }: { items: NavigationItem[] }) {
     <>
       {items.map((item) =>
         item.children ? (
-          <DropdownMenu key={item.label}>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 whitespace-nowrap px-2 py-2 text-sm font-medium text-charcoal hover:text-navy transition-colors xl:px-3 2xl:text-base">
+          <details key={item.label} className="group relative">
+            <summary className="flex cursor-pointer list-none items-center gap-1 whitespace-nowrap px-2 py-2 text-sm font-medium text-charcoal transition-colors hover:text-navy focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/50 xl:px-3 2xl:text-base [&::-webkit-details-marker]:hidden">
                 {item.label}
-                <ChevronDown className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="w-56">
+                <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+            </summary>
+            <div className="absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 rounded-md border border-border bg-white p-1 shadow-lg">
               {item.children.map((child) => (
-                <DropdownMenuItem key={child.label} asChild>
-                  <Link href={child.href} className="w-full cursor-pointer">
+                  <Link
+                    key={child.label}
+                    href={child.href}
+                    className="block w-full rounded-sm px-2 py-1.5 text-sm text-charcoal outline-none transition-colors hover:bg-cream hover:text-navy focus-visible:bg-cream"
+                  >
                     {child.label}
                   </Link>
-                </DropdownMenuItem>
               ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </div>
+          </details>
         ) : (
           <Link
             key={item.label}
@@ -61,7 +52,6 @@ export function Header() {
   const { primary: navigation, cta, logo } = navigationContent
   const leftNavigation = navigation.slice(0, 4)
   const rightNavigation = navigation.slice(4)
-  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
@@ -80,6 +70,7 @@ export function Header() {
               width={300}
               height={98}
               className="h-24 w-auto max-w-[320px]"
+              sizes="300px"
             />
           </Link>
 
@@ -103,80 +94,11 @@ export function Header() {
             width={260}
             height={85}
             className="h-[4.5rem] w-auto max-w-[260px]"
+            sizes="260px"
           />
         </Link>
 
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <div className="xl:hidden">
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Open menu">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-          </div>
-          <SheetContent side="right" className="w-full max-w-sm bg-white p-0">
-            <div className="flex flex-col h-full">
-              <div className="flex flex-col items-center justify-center p-6 border-b relative">
-                <SheetClose asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    aria-label="Close menu"
-                    className="absolute top-4 right-4"
-                  >
-                    <X className="h-6 w-6" />
-                  </Button>
-                </SheetClose>
-                <Image
-                  src={logo.src}
-                  alt={logo.alt}
-                  width={240}
-                  height={78}
-                  className="h-20 w-auto"
-                />
-              </div>
-              <nav className="flex flex-col p-4 gap-1 flex-1 overflow-y-auto">
-                {navigation.map((item) =>
-                  item.children ? (
-                    <div key={item.label} className="py-2">
-                      <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                        {item.label}
-                      </span>
-                      <div className="mt-2 flex flex-col gap-1 pl-4">
-                        {item.children.map((child) => (
-                          <SheetClose key={child.label} asChild>
-                            <Link
-                              href={child.href}
-                              className="py-2 text-charcoal hover:text-navy transition-colors"
-                            >
-                              {child.label}
-                            </Link>
-                          </SheetClose>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <SheetClose key={item.label} asChild>
-                      <Link
-                        href={item.href}
-                        className="py-3 text-charcoal hover:text-navy transition-colors border-b border-border/50"
-                      >
-                        {item.label}
-                      </Link>
-                    </SheetClose>
-                  )
-                )}
-              </nav>
-              <div className="p-4 border-t">
-                <SheetClose asChild>
-                  <Button asChild className="w-full bg-navy hover:bg-navy/90 text-white">
-                    <Link href={cta.href}>{cta.label}</Link>
-                  </Button>
-                </SheetClose>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+        <MobileNavigation navigation={navigation} cta={cta} logo={logo} />
       </div>
     </header>
   )
