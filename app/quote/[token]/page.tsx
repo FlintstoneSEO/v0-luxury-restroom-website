@@ -18,16 +18,25 @@ interface QuoteApprovalPageProps {
   params: Promise<{ token: string }>;
 }
 
+function formatExpirationDate(expiresAt: string) {
+  return new Date(expiresAt).toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+}
+
 export default async function QuoteApprovalPage({ params }: QuoteApprovalPageProps) {
   const { token } = await params;
   const publicSiteOrigin = getPublicSiteOrigin();
 
-  // Hash the token to look it up
   const tokenHash = hashApprovalToken(token);
-
   const supabase = createAdminClient();
 
-  // Find the approval token
   const { data: tokenRecord, error: tokenError } = await supabase
     .from('quote_approval_tokens')
     .select('id, quote_request_id, expires_at, used_at, first_viewed_at, last_viewed_at, view_count')
@@ -44,18 +53,16 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
     );
   }
 
-  // Check if token is expired
   if (isTokenExpired(tokenRecord.expires_at)) {
     return (
       <QuoteLinkError
         title="Expired Quote Link"
-        message="This quote link has expired. Please contact us to request a new quote."
+        message="This quote is no longer available for approval. Please contact Signature Luxe to confirm availability and request an updated quote."
         homeHref={publicSiteOrigin}
       />
     );
   }
 
-  // Fetch the quote
   const { data: quote, error: quoteError } = await supabase
     .from('quote_requests')
     .select(`
@@ -146,17 +153,32 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
   delete publicQuote.quote_viewed_at;
   delete publicQuote.quote_view_count;
 
-  // Check if already responded
   const alreadyResponded = tokenRecord.used_at !== null;
+  const hasRushFee = Number(quote.rush_booking_fee ?? 0) > 0 || (options ?? []).some((option) => Number(option.rush_booking_fee ?? 0) > 0);
 
   return (
-    <QuoteApprovalClient
-      quote={publicQuote}
-      token={token}
-      alreadyResponded={alreadyResponded}
-      options={options ?? []}
-      publicSiteOrigin={publicSiteOrigin}
-    />
+    <div className="min-h-screen bg-[#f8f7f5]">
+      <div className="border-b border-[#d8c7a3]/50 bg-[#fff8e8] px-4 py-4 text-[#2d3a47]">
+        <div className="mx-auto max-w-3xl">
+          <p className="font-semibold">Approval deadline: {formatExpirationDate(tokenRecord.expires_at)}</p>
+          <p className="mt-1 text-sm">
+            This quote must be approved before the deadline shown above. After that time, please contact us to confirm availability.
+          </p>
+          {hasRushFee && (
+            <p className="mt-2 text-sm font-medium">
+              This event qualifies as a rush booking, and a $250 rush booking fee is included in the quote summary.
+            </p>
+          )}
+        </div>
+      </div>
+      <QuoteApprovalClient
+        quote={publicQuote}
+        token={token}
+        alreadyResponded={alreadyResponded}
+        options={options ?? []}
+        publicSiteOrigin={publicSiteOrigin}
+      />
+    </div>
   );
 }
 
