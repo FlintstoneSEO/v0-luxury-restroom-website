@@ -96,7 +96,12 @@ export interface QuoteOption {
   rush_booking_fee: number;
   subtotal: number;
   discount_amount: number;
+  pretax_total: number;
+  taxable_amount: number;
+  tax_rate: number;
+  sales_tax_amount: number;
   total_price: number;
+  deposit_percentage: number;
   deposit_amount: number;
   final_balance: number;
   calculated_breakdown?: Record<string, unknown> | null;
@@ -151,6 +156,11 @@ export interface QuoteRequest {
   subtotal?: number;
   total_price?: number;
   discount_amount?: number;
+  pretax_total?: number;
+  taxable_amount?: number;
+  tax_rate?: number;
+  sales_tax_amount?: number;
+  deposit_percentage?: number;
 
   // Deposit tracking
   deposit_amount?: number;
@@ -251,6 +261,11 @@ export interface QuoteRequestRow {
   subtotal?: number;
   total_price?: number;
   discount_amount?: number;
+  pretax_total?: number;
+  taxable_amount?: number;
+  tax_rate?: number;
+  sales_tax_amount?: number;
+  deposit_percentage?: number;
   deposit_amount?: number;
   deposit_status: DepositTrackingStatus;
   deposit_due_date?: string;
@@ -342,6 +357,11 @@ export function mapQuoteRequestRow(row: QuoteRequestRow): QuoteRequest {
     subtotal: row.subtotal,
     total_price: row.total_price,
     discount_amount: row.discount_amount,
+    pretax_total: row.pretax_total,
+    taxable_amount: row.taxable_amount,
+    tax_rate: row.tax_rate,
+    sales_tax_amount: row.sales_tax_amount,
+    deposit_percentage: row.deposit_percentage,
     deposit_amount: row.deposit_amount,
     deposit_status: row.deposit_status,
     deposit_due_date: row.deposit_due_date,

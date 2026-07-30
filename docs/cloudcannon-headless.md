@@ -76,7 +76,7 @@ Do not move these into `content/**`: admin users, authentication, quote requests
 
 ## Files editors should not change
 
-Editors should use only `content/**` and approved public uploads. They should not change `app/admin/**`, `app/api/**`, `middleware.ts`, `lib/supabase/**`, operational libraries, migrations, environment files, package files, build configuration, or CloudCannon schemas/configuration without engineering review.
+Editors should use only `content/**` and approved public uploads. They should not change `app/admin/**`, `app/api/**`, `proxy.ts`, `lib/supabase/**`, operational libraries, migrations, environment files, package files, build configuration, or CloudCannon schemas/configuration without engineering review.
 
 ## CloudCannon dashboard setup
 

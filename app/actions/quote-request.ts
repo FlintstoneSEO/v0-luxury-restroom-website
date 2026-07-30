@@ -144,7 +144,13 @@ export async function submitQuoteRequest(
         damage_waiver_fee: priceBreakdown.damage_waiver_fee,
         rush_booking_fee: priceBreakdown.rush_booking_fee,
         subtotal: priceBreakdown.subtotal,
+        discount_amount: priceBreakdown.discount_amount,
+        pretax_total: priceBreakdown.pretax_total,
+        taxable_amount: priceBreakdown.taxable_amount,
+        tax_rate: priceBreakdown.tax_rate,
+        sales_tax_amount: priceBreakdown.sales_tax_amount,
         total_price: priceBreakdown.total_price,
+        deposit_percentage: priceBreakdown.deposit_percentage,
         status: "pending_review",
         deposit_amount: priceBreakdown.deposit_amount,
         deposit_status: "due",
@@ -246,8 +252,10 @@ export async function submitQuoteRequest(
             ${priceBreakdown.travel_fee > 0 ? `<p><strong>Travel Fee:</strong> $${priceBreakdown.travel_fee.toFixed(2)}</p>` : ''}
             ${priceBreakdown.utility_fee > 0 ? `<p><strong>Utility Fee:</strong> $${priceBreakdown.utility_fee.toFixed(2)}</p>` : ''}
             ${priceBreakdown.after_hours_fee > 0 ? `<p><strong>After Hours Fee:</strong> $${priceBreakdown.after_hours_fee.toFixed(2)}</p>` : ''}
-            <p><strong>Total Price:</strong> $${priceBreakdown.total_price.toFixed(2)}</p>
-            <p><strong>Deposit (25%):</strong> $${priceBreakdown.deposit_amount.toFixed(2)}</p>
+            <p><strong>Service Subtotal:</strong> $${priceBreakdown.subtotal.toFixed(2)}</p>
+            <p><strong>Michigan Sales Tax (${(priceBreakdown.tax_rate * 100).toFixed(0)}%):</strong> $${priceBreakdown.sales_tax_amount.toFixed(2)}</p>
+            <p><strong>Total Including Sales Tax:</strong> $${priceBreakdown.total_price.toFixed(2)}</p>
+            <p><strong>Deposit (${priceBreakdown.deposit_percentage.toFixed(0)}%):</strong> $${priceBreakdown.deposit_amount.toFixed(2)}</p>
             <p><strong>Final Balance:</strong> $${priceBreakdown.final_balance.toFixed(2)}</p>
             <hr />
             <h3>Admin Links</h3>

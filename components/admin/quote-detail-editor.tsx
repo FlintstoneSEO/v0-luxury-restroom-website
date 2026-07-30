@@ -34,12 +34,14 @@ import {
 } from '@/components/ui/dialog';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { QuoteRequest, QuoteOption, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { DEFAULT_PRICING } from '@/lib/pricing-engine';
+import { calculateQuoteFinancials, DEFAULT_PRICING } from '@/lib/pricing-engine';
+import { isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
 
 interface QuoteDetailEditorProps {
   quote: QuoteRequest;
   depositPercentage?: number;
+  salesTaxPercentage?: number;
 }
 
 type TestQuoteSendResult = {
@@ -70,7 +72,14 @@ type QuoteOptionForm = {
   damage_waiver_fee: number;
   rush_booking_fee: number;
   discount_amount: number;
+  pretax_total: number;
+  taxable_amount: number;
+  tax_rate: number;
+  sales_tax_amount: number;
+  total_price: number;
+  deposit_percentage: number;
   deposit_amount: number;
+  final_balance: number;
 };
 
 function buildOptionForm(option?: QuoteOption, quote?: QuoteRequest): QuoteOptionForm {
@@ -89,7 +98,14 @@ function buildOptionForm(option?: QuoteOption, quote?: QuoteRequest): QuoteOptio
     damage_waiver_fee: option?.damage_waiver_fee ?? quote?.damage_waiver_fee ?? 0,
     rush_booking_fee: option?.rush_booking_fee ?? quote?.rush_booking_fee ?? 0,
     discount_amount: option?.discount_amount ?? quote?.discount_amount ?? 0,
+    pretax_total: option?.pretax_total ?? quote?.pretax_total ?? 0,
+    taxable_amount: option?.taxable_amount ?? quote?.taxable_amount ?? 0,
+    tax_rate: option?.tax_rate ?? quote?.tax_rate ?? 0,
+    sales_tax_amount: option?.sales_tax_amount ?? quote?.sales_tax_amount ?? 0,
+    total_price: option?.total_price ?? quote?.total_price ?? 0,
+    deposit_percentage: option?.deposit_percentage ?? quote?.deposit_percentage ?? 0,
     deposit_amount: option?.deposit_amount ?? quote?.deposit_amount ?? 0,
+    final_balance: option?.final_balance ?? quote?.final_balance ?? 0,
   };
 }
 
@@ -110,15 +126,10 @@ function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }
 
-function roundMoney(value: number) {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
-}
-
-function getQuoteDepositPercentage(quote: QuoteRequest, configuredDepositPercentage?: number) {
-  if (Number.isFinite(configuredDepositPercentage) && Number(configuredDepositPercentage) >= 0) {
-    return Number(configuredDepositPercentage);
+function getStoredDepositPercentage(quote: QuoteRequest) {
+  if (Number.isFinite(quote.deposit_percentage) && Number(quote.deposit_percentage) >= 0) {
+    return Number(quote.deposit_percentage);
   }
-
   const details = quote.calculated_breakdown?.details;
   const breakdownPercentage = typeof details === 'object' && details !== null
     ? Number((details as Record<string, unknown>).deposit_percentage)
@@ -129,6 +140,20 @@ function getQuoteDepositPercentage(quote: QuoteRequest, configuredDepositPercent
   }
 
   return DEFAULT_PRICING.deposit_percentage;
+}
+
+function getStoredSalesTaxPercentage(quote: QuoteRequest) {
+  if (Number.isFinite(quote.tax_rate) && Number(quote.tax_rate) >= 0) {
+    return Number(quote.tax_rate) * 100;
+  }
+  const details = quote.calculated_breakdown?.details;
+  const breakdownPercentage = typeof details === 'object' && details !== null
+    ? Number((details as Record<string, unknown>).sales_tax_percentage)
+    : Number.NaN;
+
+  return Number.isFinite(breakdownPercentage)
+    ? breakdownPercentage
+    : DEFAULT_PRICING.sales_tax_percentage;
 }
 
 type PricingInput = {
@@ -142,21 +167,16 @@ type PricingInput = {
   discount_amount: number;
 };
 
-function calculatePricingTotals(input: PricingInput, depositPercentage: number) {
-  const subtotal = roundMoney(
-    (input.base_price || 0) +
-      (input.travel_fee || 0) +
-      (input.utility_fee || 0) +
-      (input.after_hours_fee || 0) +
-      (input.cleaning_fee || 0) +
-      (input.damage_waiver_fee || 0) +
-      (input.rush_booking_fee || 0)
-  );
-  const total = roundMoney(Math.max(0, subtotal - (input.discount_amount || 0)));
-  const depositAmount = roundMoney((total * depositPercentage) / 100);
-  const finalBalance = roundMoney(Math.max(0, total - depositAmount));
-
-  return { subtotal, total, depositAmount, finalBalance };
+function calculatePricingTotals(
+  input: PricingInput,
+  salesTaxPercentage: number,
+  depositPercentage: number
+) {
+  return calculateQuoteFinancials({
+    ...input,
+    sales_tax_percentage: salesTaxPercentage,
+    deposit_percentage: depositPercentage,
+  });
 }
 
 function formatDateTime(value?: string | null) {
@@ -213,7 +233,11 @@ function getDistanceCalculationMessage(quote: QuoteRequest) {
   return 'Distance used fallback mileage. Verify travel fee manually.';
 }
 
-export default function QuoteDetailEditor({ quote, depositPercentage: configuredDepositPercentage }: QuoteDetailEditorProps) {
+export default function QuoteDetailEditor({
+  quote,
+  depositPercentage: configuredDepositPercentage,
+  salesTaxPercentage: configuredSalesTaxPercentage,
+}: QuoteDetailEditorProps) {
   const router = useRouter();
   const [form, setForm] = useState({
     // Customer
@@ -246,7 +270,12 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
     rush_booking_fee: quote.rush_booking_fee ?? 0,
     subtotal: quote.subtotal ?? 0,
     discount_amount: quote.discount_amount ?? 0,
+    pretax_total: quote.pretax_total ?? 0,
+    taxable_amount: quote.taxable_amount ?? 0,
+    tax_rate: quote.tax_rate ?? 0,
+    sales_tax_amount: quote.sales_tax_amount ?? 0,
     total_price: quote.total_price ?? 0,
+    deposit_percentage: quote.deposit_percentage ?? 0,
     deposit_amount: quote.deposit_amount ?? 0,
     final_balance: quote.final_balance ?? 0,
     quote_expires_at: toDateInputValue(quote.quote_expires_at),
@@ -307,7 +336,19 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
     action: () => Promise<void>;
   } | null>(null);
 
-  const depositPercentage = getQuoteDepositPercentage(quote, configuredDepositPercentage);
+  const financiallyLocked = isQuoteFinanciallyLocked(quote);
+  const storedDepositPercentage = getStoredDepositPercentage(quote);
+  const storedSalesTaxPercentage = getStoredSalesTaxPercentage(quote);
+  const depositPercentage = financiallyLocked
+    ? storedDepositPercentage
+    : Number.isFinite(configuredDepositPercentage)
+      ? Number(configuredDepositPercentage)
+      : DEFAULT_PRICING.deposit_percentage;
+  const salesTaxPercentage = financiallyLocked
+    ? storedSalesTaxPercentage
+    : Number.isFinite(configuredSalesTaxPercentage)
+      ? Number(configuredSalesTaxPercentage)
+      : DEFAULT_PRICING.sales_tax_percentage;
 
   // Calculate subtotal, total, deposit, and final balance
   const recalculatePricing = useCallback(() => {
@@ -320,31 +361,8 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
       damage_waiver_fee: form.damage_waiver_fee,
       rush_booking_fee: form.rush_booking_fee,
       discount_amount: form.discount_amount,
-    }, depositPercentage);
-  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, depositPercentage]);
-
-  // Auto-calculate when pricing fields change
-  useEffect(() => {
-    if (!form.is_manual_override) {
-      const { subtotal, total, depositAmount, finalBalance } = recalculatePricing();
-      setForm(prev => ({
-        ...prev,
-        subtotal,
-        total_price: total,
-        deposit_amount: depositAmount,
-        final_balance: finalBalance,
-      }));
-    }
-  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, form.is_manual_override, recalculatePricing]);
-
-
-  useEffect(() => {
-    const { depositAmount } = calculatePricingTotals(optionForm, depositPercentage);
-    setOptionForm(prev => ({
-      ...prev,
-      deposit_amount: depositAmount,
-    }));
-  }, [optionForm.base_price, optionForm.travel_fee, optionForm.utility_fee, optionForm.after_hours_fee, optionForm.cleaning_fee, optionForm.damage_waiver_fee, optionForm.rush_booking_fee, optionForm.discount_amount, depositPercentage]);
+    }, salesTaxPercentage, depositPercentage);
+  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, salesTaxPercentage, depositPercentage]);
 
   const applyQuoteToForm = (updatedQuote: QuoteRequest, options?: { markRecalculated?: boolean }) => {
     if (options?.markRecalculated) {
@@ -377,7 +395,12 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
       damage_waiver_fee: updatedQuote.damage_waiver_fee ?? 0,
       rush_booking_fee: updatedQuote.rush_booking_fee ?? 0,
       subtotal: updatedQuote.subtotal ?? 0,
+      pretax_total: updatedQuote.pretax_total ?? 0,
+      taxable_amount: updatedQuote.taxable_amount ?? 0,
+      tax_rate: updatedQuote.tax_rate ?? 0,
+      sales_tax_amount: updatedQuote.sales_tax_amount ?? 0,
       total_price: updatedQuote.total_price ?? 0,
+      deposit_percentage: updatedQuote.deposit_percentage ?? 0,
       deposit_amount: updatedQuote.deposit_amount ?? 0,
       final_balance: updatedQuote.final_balance ?? 0,
       quote_expires_at: toDateInputValue(updatedQuote.quote_expires_at),
@@ -506,7 +529,10 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
       const res = await fetch(`/api/admin/quotes/${quote.id}/recalculate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ force: form.is_manual_override }),
+        body: JSON.stringify({
+          force: form.is_manual_override,
+          revise: financiallyLocked,
+        }),
       });
 
       const body = await res.json();
@@ -571,8 +597,27 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
   }, [quote.id]);
 
   useEffect(() => {
-    void loadQuoteOptions();
-  }, [loadQuoteOptions]);
+    let active = true;
+
+    fetch(`/api/admin/quotes/${quote.id}/options`, { method: 'GET' })
+      .then(async (res) => {
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.message || 'Failed to load quote options');
+        if (active) setQuoteOptions(body.options ?? []);
+      })
+      .catch((error) => {
+        if (active) {
+          setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to load quote options.' });
+        }
+      })
+      .finally(() => {
+        if (active) setLoadingOptions(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [quote.id]);
 
   const openOptionDialog = (option?: QuoteOption) => {
     setOptionForm(buildOptionForm(option, quote));
@@ -593,8 +638,7 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
       cleaning_fee: form.cleaning_fee,
       damage_waiver_fee: form.damage_waiver_fee,
       rush_booking_fee: form.rush_booking_fee,
-      discount_amount: form.discount_amount,
-      deposit_amount: calculatePricingTotals(form, depositPercentage).depositAmount,
+      ...calculatePricingTotals(form, salesTaxPercentage, depositPercentage),
     });
     setOptionDialogOpen(true);
   };
@@ -754,8 +798,24 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
   };
 
   const calculatedPricing = form.is_manual_override
-    ? { subtotal: form.subtotal, total: form.total_price, depositAmount: form.deposit_amount, finalBalance: form.final_balance }
+    ? {
+        subtotal: form.subtotal,
+        discount_amount: form.discount_amount,
+        pretax_total: form.pretax_total,
+        taxable_amount: form.taxable_amount,
+        tax_rate: form.tax_rate,
+        sales_tax_amount: form.sales_tax_amount,
+        total_price: form.total_price,
+        deposit_percentage: form.deposit_percentage,
+        deposit_amount: form.deposit_amount,
+        final_balance: form.final_balance,
+      }
     : recalculatePricing();
+  const calculatedOptionPricing = calculatePricingTotals(
+    optionForm,
+    salesTaxPercentage,
+    depositPercentage,
+  );
   const fallbackDistance = hasFallbackDistanceCalculation(distanceReviewQuote);
   const distanceMessage = getDistanceCalculationMessage(distanceReviewQuote);
   const quoteDetailsChanged =
@@ -801,7 +861,7 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
           </div>
           <div className="text-right">
             <p className="text-3xl font-bold text-[#2d3a47]">
-              {formatCurrency(form.total_price)}
+              {formatCurrency(calculatedPricing.total_price)}
             </p>
             <p className="text-sm text-muted-foreground">Total Quote</p>
           </div>
@@ -1015,8 +1075,14 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
               className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20"
               onClick={() => setConfirmDialog({
                 open: true,
-                title: form.is_manual_override ? 'Save & Replace Manual Pricing?' : 'Save & Recalculate Pricing?',
-                description: form.is_manual_override
+                title: financiallyLocked
+                  ? 'Start a Financial Revision?'
+                  : form.is_manual_override
+                    ? 'Save & Replace Manual Pricing?'
+                    : 'Save & Recalculate Pricing?',
+                description: financiallyLocked
+                  ? 'This expires unused customer approval links, recalculates the quote using current 6% tax and 40% deposit settings, and returns it to draft. You must review and resend it before the customer can act.'
+                  : form.is_manual_override
                   ? 'This will save the current form values, rerun server-side pricing, replace manual pricing values, and turn off Manual Override.'
                   : 'This will save the current form values, then rerun server-side pricing and update mileage and calculated pricing fields.',
                 action: handleSaveAndRecalculatePricing,
@@ -1024,7 +1090,7 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
               disabled={recalculatingQuote}
             >
               {recalculatingQuote ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RotateCcw className="w-4 h-4 mr-2" />}
-              Save & Recalculate Pricing
+              {financiallyLocked ? 'Start Financial Revision' : 'Save & Recalculate Pricing'}
             </Button>
             <div className="flex items-center gap-2">
             <Checkbox
@@ -1048,7 +1114,13 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
             <p>Manual Override is enabled. Saving and recalculating requires confirmation before calculated pricing replaces manual values.</p>
           </div>
         )}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {financiallyLocked && (
+          <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950" role="status">
+            <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            <p>Customer-facing pricing is locked. Non-financial details may still be saved. Use Start Financial Revision to apply current tax and deposit rules.</p>
+          </div>
+        )}
+        <fieldset disabled={financiallyLocked} className="grid grid-cols-2 gap-4 disabled:opacity-70 md:grid-cols-4">
           <Field>
             <FieldLabel htmlFor="base_price">Base Price</FieldLabel>
             <Input
@@ -1129,26 +1201,19 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
               onChange={(e) => setForm({ ...form, discount_amount: parseFloat(e.target.value) || 0 })}
             />
           </Field>
-        </div>
+        </fieldset>
 
-        <div className="mt-6 p-4 bg-[#2d3a47]/5 rounded-lg">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Subtotal:</span>
-              <span className="ml-2 font-semibold">{formatCurrency(calculatedPricing.subtotal)}</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Total:</span>
-              <span className="ml-2 font-bold text-[#2d3a47]">{formatCurrency(calculatedPricing.total)}</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Deposit:</span>
-              <span className="ml-2 font-semibold">{formatCurrency(calculatedPricing.depositAmount)}</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Final Balance:</span>
-              <span className="ml-2 font-semibold">{formatCurrency(calculatedPricing.finalBalance)}</span>
-            </div>
+        <div className="mt-6 rounded-lg bg-[#2d3a47]/5 p-4">
+          <div className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
+            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Service Subtotal</span><span className="whitespace-nowrap font-semibold">{formatCurrency(calculatedPricing.subtotal)}</span></div>
+            {calculatedPricing.discount_amount > 0 && (
+              <div className="flex justify-between gap-4 text-green-700"><span>Discount</span><span className="whitespace-nowrap font-semibold">-{formatCurrency(calculatedPricing.discount_amount)}</span></div>
+            )}
+            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Pretax Total</span><span className="whitespace-nowrap font-semibold">{formatCurrency(calculatedPricing.pretax_total)}</span></div>
+            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Michigan Sales Tax ({(calculatedPricing.tax_rate * 100).toFixed(0)}%)</span><span className="whitespace-nowrap font-semibold">{formatCurrency(calculatedPricing.sales_tax_amount)}</span></div>
+            <div className="flex justify-between gap-4 border-t border-[#2d3a47]/15 pt-2 font-bold text-[#2d3a47]"><span>Total Including Sales Tax</span><span className="whitespace-nowrap">{formatCurrency(calculatedPricing.total_price)}</span></div>
+            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Deposit Required ({calculatedPricing.deposit_percentage.toFixed(0)}%)</span><span className="whitespace-nowrap font-semibold">{formatCurrency(calculatedPricing.deposit_amount)}</span></div>
+            <div className="flex justify-between gap-4"><span className="text-muted-foreground">Balance Due</span><span className="whitespace-nowrap font-semibold">{formatCurrency(calculatedPricing.final_balance)}</span></div>
           </div>
         </div>
 
@@ -1159,9 +1224,11 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
               id="deposit_amount"
               type="number"
               step="0.01"
-              value={form.deposit_amount}
-              onChange={(e) => setForm({ ...form, deposit_amount: parseFloat(e.target.value) || 0 })}
+              value={calculatedPricing.deposit_amount}
+              readOnly
+              aria-describedby="deposit-derived-help"
             />
+            <p id="deposit-derived-help" className="mt-1 text-xs text-muted-foreground">Calculated from the tax-inclusive total.</p>
           </Field>
           <Field>
             <FieldLabel htmlFor="quote_expires_at">Quote Expires</FieldLabel>
@@ -1183,10 +1250,10 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
             <p className="text-sm text-muted-foreground">Create multiple pricing options for the same event so the customer can choose one during approval.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => openOptionDialog()}>
+            <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => openOptionDialog()} disabled={financiallyLocked}>
               <Plus className="mr-2 h-4 w-4" /> Add Option
             </Button>
-            <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={duplicateCurrentQuoteAsOption}>
+            <Button type="button" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={duplicateCurrentQuoteAsOption} disabled={financiallyLocked}>
               <Copy className="mr-2 h-4 w-4" /> Duplicate Current Quote as Option
             </Button>
           </div>
@@ -1236,21 +1303,24 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
                   <span>Damage Waiver: <strong>{formatCurrency(option.damage_waiver_fee || 0)}</strong></span>
                   <span>Rush Booking: <strong>{formatCurrency(option.rush_booking_fee || 0)}</strong></span>
                   <span>Discount: <strong>-{formatCurrency(option.discount_amount || 0)}</strong></span>
-                  <span>Deposit: <strong>{formatCurrency(option.deposit_amount || 0)}</strong></span>
-                  <span className="col-span-2">Final Balance: <strong>{formatCurrency(option.final_balance || 0)}</strong></span>
+                  <span>Pretax Total: <strong>{formatCurrency(option.pretax_total || 0)}</strong></span>
+                  <span>Tax ({((option.tax_rate || 0) * 100).toFixed(0)}%): <strong>{formatCurrency(option.sales_tax_amount || 0)}</strong></span>
+                  <span>Total: <strong>{formatCurrency(option.total_price || 0)}</strong></span>
+                  <span>Deposit ({Number(option.deposit_percentage || 0).toFixed(0)}%): <strong>{formatCurrency(option.deposit_amount || 0)}</strong></span>
+                  <span className="col-span-2">Balance Due: <strong>{formatCurrency(option.final_balance || 0)}</strong></span>
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => openOptionDialog(option)}>
+                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => openOptionDialog(option)} disabled={financiallyLocked}>
                     <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit Option
                   </Button>
-                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => recalculateOption(option.id)} disabled={recalculatingOptionId === option.id}>
+                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => recalculateOption(option.id)} disabled={financiallyLocked || recalculatingOptionId === option.id}>
                     {recalculatingOptionId === option.id ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="mr-1.5 h-3.5 w-3.5" />} Recalculate Option
                   </Button>
-                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => markRecommended(option.id)} disabled={option.is_recommended}>
+                  <Button type="button" size="sm" variant="outline" className="border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20" onClick={() => markRecommended(option.id)} disabled={financiallyLocked || option.is_recommended}>
                     <Star className="mr-1.5 h-3.5 w-3.5" /> Mark Recommended
                   </Button>
-                  <Button type="button" size="sm" variant="outline" className="border-red-200 text-red-700 hover:bg-red-50" onClick={() => setConfirmDialog({ open: true, title: 'Delete Quote Option', description: `Delete ${option.option_label}? This cannot be undone.`, action: () => deleteOption(option.id) })} disabled={option.status === 'selected'}>
+                  <Button type="button" size="sm" variant="outline" className="border-red-200 text-red-700 hover:bg-red-50" onClick={() => setConfirmDialog({ open: true, title: 'Delete Quote Option', description: `Delete ${option.option_label}? This cannot be undone.`, action: () => deleteOption(option.id) })} disabled={financiallyLocked || option.status === 'selected'}>
                     <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Delete Option
                   </Button>
                 </div>
@@ -1703,7 +1773,6 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
               ['damage_waiver_fee', 'Damage Waiver'],
               ['rush_booking_fee', 'Rush Booking Fee'],
               ['discount_amount', 'Discount'],
-              ['deposit_amount', 'Deposit Amount'],
             ].map(([field, label]) => (
               <Field key={field}>
                 <FieldLabel htmlFor={`option_${field}`}>{label}</FieldLabel>
@@ -1716,6 +1785,13 @@ export default function QuoteDetailEditor({ quote, depositPercentage: configured
                 />
               </Field>
             ))}
+            <div className="md:col-span-2 grid gap-2 rounded-lg bg-[#2d3a47]/5 p-4 text-sm sm:grid-cols-2">
+              <div className="flex justify-between gap-4"><span>Pretax Total</span><strong className="whitespace-nowrap">{formatCurrency(calculatedOptionPricing.pretax_total)}</strong></div>
+              <div className="flex justify-between gap-4"><span>Michigan Sales Tax ({(calculatedOptionPricing.tax_rate * 100).toFixed(0)}%)</span><strong className="whitespace-nowrap">{formatCurrency(calculatedOptionPricing.sales_tax_amount)}</strong></div>
+              <div className="flex justify-between gap-4"><span>Total Including Tax</span><strong className="whitespace-nowrap">{formatCurrency(calculatedOptionPricing.total_price)}</strong></div>
+              <div className="flex justify-between gap-4"><span>Deposit ({calculatedOptionPricing.deposit_percentage.toFixed(0)}%)</span><strong className="whitespace-nowrap">{formatCurrency(calculatedOptionPricing.deposit_amount)}</strong></div>
+              <div className="flex justify-between gap-4 sm:col-span-2"><span>Balance Due</span><strong className="whitespace-nowrap">{formatCurrency(calculatedOptionPricing.final_balance)}</strong></div>
+            </div>
           </div>
 
           <DialogFooter>

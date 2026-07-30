@@ -77,7 +77,7 @@ export async function POST(
 
     const { data: quoteOptions, error: optionsError } = await supabase
       .from('quote_options')
-      .select('id, option_label, option_description, base_price, travel_fee, utility_fee, after_hours_fee, cleaning_fee, damage_waiver_fee, rush_booking_fee, subtotal, discount_amount, total_price, deposit_amount, final_balance')
+      .select('id, option_label, option_description, base_price, travel_fee, utility_fee, after_hours_fee, cleaning_fee, damage_waiver_fee, rush_booking_fee, subtotal, discount_amount, pretax_total, taxable_amount, tax_rate, sales_tax_amount, total_price, deposit_percentage, deposit_amount, final_balance, calculated_breakdown')
       .eq('quote_request_id', quote.id)
       .neq('status', 'deleted');
 
@@ -153,9 +153,15 @@ export async function POST(
         updateData.rush_booking_fee = selectedOption.rush_booking_fee;
         updateData.subtotal = selectedOption.subtotal;
         updateData.discount_amount = selectedOption.discount_amount;
+        updateData.pretax_total = selectedOption.pretax_total;
+        updateData.taxable_amount = selectedOption.taxable_amount;
+        updateData.tax_rate = selectedOption.tax_rate;
+        updateData.sales_tax_amount = selectedOption.sales_tax_amount;
         updateData.total_price = selectedOption.total_price;
+        updateData.deposit_percentage = selectedOption.deposit_percentage;
         updateData.deposit_amount = selectedOption.deposit_amount;
         updateData.final_balance = selectedOption.final_balance;
+        updateData.calculated_breakdown = selectedOption.calculated_breakdown;
       }
     }
 

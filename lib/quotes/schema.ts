@@ -62,12 +62,9 @@ export const quoteRequestUpdateSchema = z.object({
   cleaning_fee: nonNegativeMoney.optional(),
   damage_waiver_fee: nonNegativeMoney.optional(),
   rush_booking_fee: nonNegativeMoney.optional(),
-  subtotal: nonNegativeMoney.optional(),
-  total_price: nonNegativeMoney.optional(),
   discount_amount: nonNegativeMoney.optional(),
   
   // Deposit tracking
-  deposit_amount: nonNegativeMoney.optional(),
   deposit_status: z.enum(DEPOSIT_TRACKING_STATUSES).optional(),
   deposit_due_date: optionalDateInput.optional(),
   deposit_paid_at: optionalDateTimeInput.optional(),
@@ -81,7 +78,6 @@ export const quoteRequestUpdateSchema = z.object({
   square_final_invoice_url: z.union([z.string().url(), z.literal(''), z.null()]).optional(),
   
   // Balance and expiration
-  final_balance: nonNegativeMoney.optional(),
   final_balance_paid_at: optionalDateTimeInput.optional(),
   quote_expires_at: optionalDateInput.optional(),
   
@@ -126,11 +122,7 @@ export const quoteOptionInputSchema = z.object({
   cleaning_fee: nonNegativeMoney.optional(),
   damage_waiver_fee: nonNegativeMoney.optional(),
   rush_booking_fee: nonNegativeMoney.optional(),
-  subtotal: nonNegativeMoney.optional(),
   discount_amount: nonNegativeMoney.optional(),
-  total_price: nonNegativeMoney.optional(),
-  deposit_amount: nonNegativeMoney.optional(),
-  final_balance: nonNegativeMoney.optional(),
   needs_manual_distance_review: z.boolean().optional(),
 });
 
@@ -158,7 +150,6 @@ export const quoteAgreementUpdateSchema = z.object({
 export const quoteDepositUpdateSchema = z.object({
   id: z.string().uuid('Valid ID required'),
   deposit_status: z.enum(DEPOSIT_TRACKING_STATUSES),
-  deposit_amount: nonNegativeMoney.optional(),
   deposit_payment_link: z.string().url().optional(),
   deposit_due_date: dateString.optional(),
   deposit_paid_at: z.string().datetime().optional(),

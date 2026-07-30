@@ -45,7 +45,8 @@ const defaultSettingValues: Record<string, number> = {
   extra_day_fee: 275,
   after_hours_hourly_rate: 75,
   after_hours_cutoff_hour: 22,
-  deposit_percentage: 25,
+  sales_tax_percentage: 6,
+  deposit_percentage: 40,
 };
 
 const settingLabels: Record<string, string> = {
@@ -63,6 +64,7 @@ const settingLabels: Record<string, string> = {
   extra_day_fee: 'Extra Day Fee',
   after_hours_hourly_rate: 'Hourly rate after cutoff',
   after_hours_cutoff_hour: 'Cutoff hour (24h format)',
+  sales_tax_percentage: 'Michigan sales tax percentage',
   deposit_percentage: 'Deposit percentage',
 };
 
@@ -96,7 +98,7 @@ export default function PricingSettingsForm({ settings, groupedSettings: _groupe
     utilities: mergedSettings.filter(s => ['generator_fee', 'water_fee'].includes(s.setting_key)),
     serviceFees: mergedSettings.filter(s => ['cleaning_fee', 'damage_waiver_fee', 'rush_booking_fee', 'extra_day_fee'].includes(s.setting_key)),
     afterHours: mergedSettings.filter(s => s.setting_key.startsWith('after_hours')),
-    deposit: mergedSettings.filter(s => s.setting_key === 'deposit_percentage'),
+    deposit: mergedSettings.filter(s => ['sales_tax_percentage', 'deposit_percentage'].includes(s.setting_key)),
   };
   const [formValues, setFormValues] = useState<Record<string, number>>(
     mergedSettings.reduce((acc, setting) => {

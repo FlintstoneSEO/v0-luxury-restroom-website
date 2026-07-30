@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
       }
 
       // Check if user is admin
-      if (!data.user?.user_metadata?.is_admin) {
+      if (!data.user?.app_metadata?.is_admin) {
         setError('You do not have admin access. Contact support for assistance.');
         // Sign out non-admin
         await supabase.auth.signOut();

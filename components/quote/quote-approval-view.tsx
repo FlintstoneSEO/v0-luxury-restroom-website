@@ -9,6 +9,11 @@ export default function QuoteApprovalView({ token, quote }: { token: string; quo
   const [comments, setComments] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const salesTaxAmount = Number(quote.sales_tax_amount ?? 0);
+  const taxRate = Number(quote.tax_rate ?? 0);
+  const depositPercentage = quote.deposit_percentage == null
+    ? null
+    : Number(quote.deposit_percentage);
 
   const submit = async (decision: 'approve' | 'request_changes' | 'decline') => {
     setLoading(true);
@@ -32,8 +37,15 @@ export default function QuoteApprovalView({ token, quote }: { token: string; quo
         <div className="rounded-lg border border-[#ded2c4] p-4 space-y-2 text-sm">
           <div className="flex justify-between"><span>Event Date</span><span>{quote.event_date ?? '—'}</span></div>
           <div className="flex justify-between"><span>Event Type</span><span>{quote.event_type ?? '—'}</span></div>
-          <div className="flex justify-between"><span>Total</span><span>{formatCurrency(Number(quote.total_price ?? 0))}</span></div>
-          <div className="flex justify-between"><span>Deposit</span><span>{formatCurrency(Number(quote.deposit_amount ?? 0))}</span></div>
+          <div className="flex justify-between"><span>Pre-tax Total</span><span>{formatCurrency(Number(quote.pretax_total ?? quote.total_price ?? 0))}</span></div>
+          {salesTaxAmount > 0 && (
+            <div className="flex justify-between">
+              <span>Michigan Sales Tax ({(taxRate * 100).toFixed(0)}%)</span>
+              <span>{formatCurrency(salesTaxAmount)}</span>
+            </div>
+          )}
+          <div className="flex justify-between"><span>Total{salesTaxAmount > 0 ? ' Including Tax' : ''}</span><span>{formatCurrency(Number(quote.total_price ?? 0))}</span></div>
+          <div className="flex justify-between"><span>Deposit{depositPercentage == null ? '' : ` (${depositPercentage.toFixed(0)}%)`}</span><span>{formatCurrency(Number(quote.deposit_amount ?? 0))}</span></div>
           <div className="flex justify-between font-semibold"><span>Final Balance</span><span>{formatCurrency(Number(quote.final_balance ?? 0))}</span></div>
         </div>
 

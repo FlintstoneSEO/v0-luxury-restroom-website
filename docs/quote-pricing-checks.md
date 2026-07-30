@@ -15,7 +15,8 @@
 - rush_booking_fee: 250
 - cleaning_fee: 125
 - extra_day_fee: 275
-- deposit_percentage: 25
+- sales_tax_percentage: 6
+- deposit_percentage: 40
 
 ## Settings merge rule
 Pricing settings always start from defaults. Supabase `pricing_settings` values only override known numeric keys with finite numbers. Unknown keys, null, undefined, and NaN are ignored.
@@ -51,9 +52,20 @@ Cutoff is 22:00. After-hours are rounded **up** to the next whole hour and cappe
 ## Rush booking rule
 If event date is within 14 days from quote calculation date, add rush booking fee.
 
-## Deposit rule
-`deposit_amount = total_price * 25%`
+## Tax and deposit rules
+`pretax_total = max(0, subtotal - discount_amount)`
+
+`sales_tax_amount = roundCurrency(pretax_total * 6%)`
+
+`total_price = pretax_total + sales_tax_amount`
+
+`deposit_amount = total_price * 40%`
+
 `final_balance = total_price - deposit_amount`
+
+Discounts are applied before tax. Existing customer-facing quotes with a stored
+zero tax rate remain grandfathered and are not recalculated when viewed,
+approved, or paid.
 
 ## Distance calculation behavior
 - Origin: `4463 Helmsway Dr, Lansing, MI 48911`

@@ -54,6 +54,7 @@ export interface PricingSettings {
   rush_booking_fee: number;
   cleaning_fee: number;
   extra_day_fee: number;
+  sales_tax_percentage: number;
   deposit_percentage: number;
 }
 
@@ -75,7 +76,13 @@ export interface PriceBreakdown {
   damage_waiver_fee: number;
   rush_booking_fee: number;
   subtotal: number;
+  discount_amount: number;
+  pretax_total: number;
+  taxable_amount: number;
+  tax_rate: number;
+  sales_tax_amount: number;
   total_price: number;
+  deposit_percentage: number;
   deposit_amount: number;
   final_balance: number;
   line_items: QuoteLineItem[];
@@ -136,7 +143,13 @@ export interface QuoteRequest extends QuoteFormData, QuoteApprovalToken, QuoteAg
   damage_waiver_fee: number;
   rush_booking_fee: number;
   subtotal: number;
+  discount_amount: number;
+  pretax_total: number;
+  taxable_amount: number;
+  tax_rate: number;
+  sales_tax_amount: number;
   total_price: number;
+  deposit_percentage: number;
   deposit_amount: number;
   final_balance: number;
   calculated_breakdown: PriceBreakdown;

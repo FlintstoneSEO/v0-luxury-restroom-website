@@ -1,4 +1,5 @@
 import { defaultPricing } from '@/lib/pricing/defaultPricing';
+import { calculateQuoteFinancials } from '@/lib/pricing-engine';
 
 export interface CalculateQuoteInput {
   guestCount: number;
@@ -6,8 +7,6 @@ export interface CalculateQuoteInput {
   deliveryFee?: number;
   addOnsTotal?: number;
   discount?: number;
-  tax?: number;
-  depositAmount?: number;
 }
 
 export interface CalculatedQuoteTotals {
@@ -31,25 +30,23 @@ export function calculateQuote(input: CalculateQuoteInput): CalculatedQuoteTotal
   const deliveryFee = input.deliveryFee ?? defaultPricing.deliveryFee;
   const addOnsTotal = input.addOnsTotal ?? 0;
   const discount = input.discount ?? 0;
-  const tax = input.tax ?? 0;
-
-  const subtotal = basePrice + deliveryFee + addOnsTotal - discount;
-  const total = Math.max(0, subtotal + tax);
-
-  const depositAmount =
-    input.depositAmount ??
-    Math.min(total, Math.max(defaultPricing.defaultDepositAmount, Number((total * defaultPricing.defaultDepositPercentage).toFixed(2))));
-
-  const remainingBalance = Math.max(0, Number((total - depositAmount).toFixed(2)));
+  const financials = calculateQuoteFinancials({
+    base_price: basePrice,
+    travel_fee: deliveryFee,
+    utility_fee: addOnsTotal,
+    discount_amount: discount,
+    sales_tax_percentage: defaultPricing.salesTaxPercentage,
+    deposit_percentage: defaultPricing.defaultDepositPercentage * 100,
+  });
 
   return {
     basePrice,
     deliveryFee,
     addOnsTotal,
     discount,
-    tax,
-    total: Number(total.toFixed(2)),
-    depositAmount: Number(depositAmount.toFixed(2)),
-    remainingBalance,
+    tax: financials.sales_tax_amount,
+    total: financials.total_price,
+    depositAmount: financials.deposit_amount,
+    remainingBalance: financials.final_balance,
   };
 }

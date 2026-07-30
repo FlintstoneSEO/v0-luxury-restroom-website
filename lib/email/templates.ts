@@ -6,6 +6,10 @@ export type QuoteEmailOptionSummary = {
   id?: string;
   option_label: string;
   option_description?: string | null;
+  subtotal: number;
+  pretax_total: number;
+  tax_rate: number;
+  sales_tax_amount: number;
   total_price: number;
   is_recommended?: boolean;
 };
@@ -113,6 +117,10 @@ export function quoteSentTemplate(input: {
   eventType: string;
   guestCount: string;
   eventLocation: string;
+  quoteSubtotal: number;
+  quotePretaxTotal: number;
+  quoteTaxRate: number;
+  quoteSalesTaxAmount: number;
   quoteTotal: number;
   approvalLink: string;
   customerNotes?: string | null;
@@ -127,6 +135,7 @@ export function quoteSentTemplate(input: {
   const customerNotes = input.customerNotes?.trim();
   const quoteOptions = input.quoteOptions?.filter((option) => option.option_label?.trim()) ?? [];
   const hasMultipleOptions = quoteOptions.length > 1;
+  const hasQuoteSalesTax = input.quoteTaxRate > 0 || input.quoteSalesTaxAmount > 0;
   const safeCustomerNotes = customerNotes ? escapeHtml(customerNotes) : '';
   const customerNotesHtml = safeCustomerNotes
     ? `<p style="margin:0 0 6px;font-size:14px;"><strong>Customer Notes:</strong> <span style="white-space:pre-wrap;">${safeCustomerNotes}</span></p>`
@@ -140,9 +149,21 @@ export function quoteSentTemplate(input: {
     ...(hasMultipleOptions
       ? [
           'Quote Options:',
-          ...quoteOptions.map((option) => `${option.option_label}${option.option_description ? `: ${option.option_description}` : ''} — Total ${formatCurrency(option.total_price)}`),
+          ...quoteOptions.map((option) => {
+            const hasSalesTax = option.tax_rate > 0 || option.sales_tax_amount > 0;
+            return `${option.option_label}${option.option_description ? `: ${option.option_description}` : ''} — ${hasSalesTax ? `Michigan Sales Tax (${(option.tax_rate * 100).toFixed(0)}%): ${formatCurrency(option.sales_tax_amount)} — ` : ''}Total${hasSalesTax ? ' Including Sales Tax' : ''}: ${formatCurrency(option.total_price)}`;
+          }),
         ]
-      : [`Estimated Total: ${formatCurrency(input.quoteTotal)}`]),
+      : [
+          `Subtotal: ${formatCurrency(input.quoteSubtotal)}`,
+          ...(hasQuoteSalesTax
+            ? [
+                `Pretax Total: ${formatCurrency(input.quotePretaxTotal)}`,
+                `Michigan Sales Tax (${(input.quoteTaxRate * 100).toFixed(0)}%): ${formatCurrency(input.quoteSalesTaxAmount)}`,
+                `Estimated Total Including Sales Tax: ${formatCurrency(input.quoteTotal)}`,
+              ]
+            : [`Estimated Total: ${formatCurrency(input.quoteTotal)}`]),
+        ]),
   ];
 
   const { html, logoUrl } = renderBrandedCustomerEmail({
@@ -161,8 +182,15 @@ export function quoteSentTemplate(input: {
       ${customerNotesHtml}
       ${hasMultipleOptions ? `<div style="margin-top:10px;border-top:1px solid #ded2c4;padding-top:10px;">
         <p style="margin:0 0 8px;font-size:14px;"><strong>Quote Options:</strong></p>
-        ${quoteOptions.map((option) => `<p style="margin:0 0 6px;font-size:14px;"><strong>${escapeHtml(option.option_label)}${option.is_recommended ? ' (Recommended)' : ''}:</strong> ${option.option_description ? `${escapeHtml(option.option_description)} — ` : ''}Total ${formatCurrency(option.total_price)}</p>`).join('')}
-      </div>` : `<p style="margin:0;font-size:14px;"><strong>Estimated Total:</strong> ${formatCurrency(input.quoteTotal)}</p>`}
+        ${quoteOptions.map((option) => {
+          const hasSalesTax = option.tax_rate > 0 || option.sales_tax_amount > 0;
+          return `<div style="margin:0 0 10px;font-size:14px;"><p style="margin:0 0 4px;"><strong>${escapeHtml(option.option_label)}${option.is_recommended ? ' (Recommended)' : ''}</strong>${option.option_description ? ` — ${escapeHtml(option.option_description)}` : ''}</p>${hasSalesTax ? `<p style="margin:0 0 4px;">Michigan Sales Tax (${(option.tax_rate * 100).toFixed(0)}%): ${formatCurrency(option.sales_tax_amount)}</p>` : ''}<p style="margin:0;"><strong>Total${hasSalesTax ? ' Including Sales Tax' : ''}:</strong> ${formatCurrency(option.total_price)}</p></div>`;
+        }).join('')}
+      </div>` : `<div style="margin-top:10px;border-top:1px solid #ded2c4;padding-top:10px;font-size:14px;">
+        <p style="margin:0 0 4px;"><strong>Subtotal:</strong> ${formatCurrency(input.quoteSubtotal)}</p>
+        ${hasQuoteSalesTax ? `<p style="margin:0 0 4px;"><strong>Pretax Total:</strong> ${formatCurrency(input.quotePretaxTotal)}</p><p style="margin:0 0 4px;"><strong>Michigan Sales Tax (${(input.quoteTaxRate * 100).toFixed(0)}%):</strong> ${formatCurrency(input.quoteSalesTaxAmount)}</p>` : ''}
+        <p style="margin:0;"><strong>Estimated Total${hasQuoteSalesTax ? ' Including Sales Tax' : ''}:</strong> ${formatCurrency(input.quoteTotal)}</p>
+      </div>`}
     `,
     ctaLabel: hasMultipleOptions ? 'Review Quote Options' : 'Review Quote & Respond',
     ctaUrl: input.approvalLink,

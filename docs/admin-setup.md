@@ -22,16 +22,19 @@ Optional but commonly required:
 2. Create a user (email/password) or invite the admin user.
 3. Confirm the user can sign in.
 
-## 3) Set `is_admin` metadata
-In Supabase Auth user metadata, set:
+## 3) Set protected `is_admin` app metadata
+Do not use user metadata for authorization because users can edit it. In the
+Supabase SQL editor, set the protected app metadata for the intended admin:
 
-```json
-{
-  "is_admin": true
-}
+```sql
+update auth.users
+set raw_app_meta_data =
+  coalesce(raw_app_meta_data, '{}'::jsonb) || '{"is_admin": true}'::jsonb
+where email = 'admin@example.com';
 ```
 
-You can set this in the Auth user editor (User Metadata) in the Supabase Dashboard.
+Replace the example email and confirm exactly one row was updated. The user
+must sign out and back in afterward so the refreshed token contains the claim.
 
 ## 4) Access admin locally
 1. Run `npm run dev`.
@@ -46,7 +49,7 @@ You can set this in the Auth user editor (User Metadata) in the Supabase Dashboa
 
 ## 6) Test login quickly
 - Non-admin user should be redirected away from `/admin`.
-- Admin user (`is_admin: true`) should access `/admin` and quote detail pages.
+- Admin user (`app_metadata.is_admin: true`) should access `/admin` and quote detail pages.
 
 ## 7) Troubleshooting redirects
 If you are redirected to `/admin/login` repeatedly:
@@ -55,7 +58,7 @@ If you are redirected to `/admin/login` repeatedly:
 - Verify the user is authenticated in Supabase Auth.
 
 If you are redirected to `/` from admin routes:
-- User is authenticated but missing `user_metadata.is_admin = true`.
+- User is authenticated but missing `app_metadata.is_admin = true`, or has not signed in again since it was assigned.
 
 If `/admin` shows setup issues in production:
 - Missing Supabase public env vars are blocking admin route protection.

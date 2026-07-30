@@ -42,7 +42,7 @@ export async function createSquareDepositInvoice(quote: QuoteRequestRow) {
         delivery_method: 'EMAIL',
         payment_requests: [{ request_type: 'BALANCE', due_date: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10), fixed_amount_requested_money: { amount, currency: 'USD' } }],
         title: `Signature Luxe deposit - Quote ${quote.quote_number ?? quote.id.slice(0, 8)}`,
-        description: `Deposit invoice for Signature Luxe rental agreement. quote_id:${quote.id}`,
+        description: `Deposit invoice for Signature Luxe rental agreement. quote_number:${quote.quote_number ?? quote.id}; quote_id:${quote.id}; pretax_total:${Number(quote.pretax_total ?? 0).toFixed(2)}; sales_tax:${Number(quote.sales_tax_amount ?? 0).toFixed(2)}; total:${Number(quote.total_price ?? 0).toFixed(2)}; deposit_percentage:${Number(quote.deposit_percentage ?? 0)}; deposit:${Number(quote.deposit_amount ?? 0).toFixed(2)}`,
         accepted_payment_methods: { card: true, square_gift_card: false, bank_account: false, buy_now_pay_later: false, cash_app_pay: false },
         custom_fields: [{ label: 'quote_id', value: quote.id }],
       },

@@ -58,7 +58,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
   const approvalLink = `${customerWorkflowOrigin}/quote/${token}`;
   const eventLocation = [testQuote.event_address, testQuote.city, testQuote.state && testQuote.zip_code ? `${testQuote.state} ${testQuote.zip_code}` : testQuote.state || testQuote.zip_code].filter(Boolean).join(', ');
   const formattedEventDate = testQuote.event_date ? formatLocalDateOnly(testQuote.event_date, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'TBD';
-  const { data: quoteOptions } = await supabase.from('quote_options').select('id, option_label, option_description, total_price, is_recommended, status').eq('quote_request_id', testQuote.id).neq('status', 'deleted').order('is_recommended', { ascending: false }).order('created_at', { ascending: true });
+  const { data: quoteOptions } = await supabase.from('quote_options').select('id, option_label, option_description, subtotal, pretax_total, tax_rate, sales_tax_amount, total_price, is_recommended, status').eq('quote_request_id', testQuote.id).neq('status', 'deleted').order('is_recommended', { ascending: false }).order('created_at', { ascending: true });
 
   const emailTemplate = quoteSentTemplate({
     customerName: testQuote.customer_name || 'Test Customer',
@@ -66,6 +66,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
     eventType: testQuote.event_type || 'TBD',
     guestCount: String(testQuote.guest_count ?? 'TBD'),
     eventLocation: eventLocation || 'TBD',
+    quoteSubtotal: Number(testQuote.subtotal ?? testQuote.total_price ?? 0),
+    quotePretaxTotal: Number(testQuote.pretax_total ?? testQuote.total_price ?? 0),
+    quoteTaxRate: Number(testQuote.tax_rate ?? 0),
+    quoteSalesTaxAmount: Number(testQuote.sales_tax_amount ?? 0),
     quoteTotal: testQuote.total_price ?? 0,
     approvalLink,
     customerNotes: `This is a test quote for internal testing only. ${testQuote.customer_notes || ''}`.trim(),

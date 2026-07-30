@@ -10,7 +10,7 @@ function getSupabaseSetupError() {
   return 'Admin authentication is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.';
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAdminPage = pathname.startsWith('/admin');
@@ -86,7 +86,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
-  if (user.user_metadata?.is_admin !== true) {
+  if (user.app_metadata?.is_admin !== true) {
     if (isAdminApi) {
       return NextResponse.json({ ok: false, error: 'Admin access required' }, { status: 403 });
     }

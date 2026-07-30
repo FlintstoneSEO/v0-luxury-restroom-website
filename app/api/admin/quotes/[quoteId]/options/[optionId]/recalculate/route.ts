@@ -3,6 +3,7 @@ import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { recalculateQuoteOption } from '@/lib/quotes/quote-options';
 import { QuoteFormData } from '@/lib/types/quote';
+import { financialLockMessage, isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 
 export async function POST(_request: Request, { params }: { params: Promise<{ quoteId: string; optionId: string }> }) {
   const adminAuth = await requireAdminUser();
@@ -13,11 +14,14 @@ export async function POST(_request: Request, { params }: { params: Promise<{ qu
 
   const { data: quote, error: quoteError } = await supabase
     .from('quote_requests')
-    .select('customer_name, phone, email, event_date, event_type, guest_count, event_address, city, state, zip_code, event_start_time, event_end_time, has_power, has_water, additional_notes')
+    .select('customer_name, phone, email, event_date, event_type, guest_count, event_address, city, state, zip_code, event_start_time, event_end_time, has_power, has_water, additional_notes, status, quote_sent_at, approved_at, customer_response_at, customer_response_type, agreement_status, deposit_status')
     .eq('id', quoteId)
     .single();
 
   if (quoteError || !quote) return NextResponse.json({ ok: false, message: 'Quote not found' }, { status: 404 });
+  if (isQuoteFinanciallyLocked(quote)) {
+    return NextResponse.json({ ok: false, message: financialLockMessage() }, { status: 409 });
+  }
 
   const { data: option, error: optionError } = await supabase
     .from('quote_options')

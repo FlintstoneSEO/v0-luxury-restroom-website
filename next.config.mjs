@@ -1,3 +1,8 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url))
+
 const soroFeaturedImageHostnames = [
   'app.trysoro.com',
   'cdn.trysoro.com',
@@ -9,6 +14,9 @@ const soroFeaturedImageHostnames = [
 const nextConfig = {
   // Allow production checks to run alongside `next dev`, which writes to `.next`.
   distDir: process.env.NEXT_DIST_DIR || '.next',
+  turbopack: {
+    root: projectRoot,
+  },
   async headers() {
     return [
       {

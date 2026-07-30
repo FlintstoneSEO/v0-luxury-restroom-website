@@ -31,6 +31,11 @@ interface Quote {
   subtotal?: number;
   total_price?: number;
   discount_amount?: number;
+  pretax_total?: number;
+  taxable_amount?: number;
+  tax_rate?: number;
+  sales_tax_amount?: number;
+  deposit_percentage?: number;
   deposit_amount?: number;
   final_balance?: number;
   customer_notes?: string;
@@ -56,7 +61,12 @@ interface QuoteOption {
   rush_booking_fee: number;
   subtotal: number;
   discount_amount: number;
+  pretax_total: number;
+  taxable_amount: number;
+  tax_rate: number;
+  sales_tax_amount: number;
   total_price: number;
+  deposit_percentage: number;
   deposit_amount: number;
   final_balance: number;
   needs_manual_distance_review: boolean;
@@ -218,7 +228,12 @@ export default function QuoteApprovalClient({
     rush_booking_fee: quote.rush_booking_fee ?? 0,
     subtotal: quote.subtotal ?? 0,
     discount_amount: quote.discount_amount ?? 0,
+    pretax_total: quote.pretax_total ?? quote.total_price ?? 0,
+    taxable_amount: quote.taxable_amount ?? 0,
+    tax_rate: quote.tax_rate ?? 0,
+    sales_tax_amount: quote.sales_tax_amount ?? 0,
     total_price: quote.total_price ?? 0,
+    deposit_percentage: quote.deposit_percentage ?? 0,
     deposit_amount: quote.deposit_amount ?? 0,
     final_balance: quote.final_balance ?? 0,
     needs_manual_distance_review: false,
@@ -313,6 +328,7 @@ export default function QuoteApprovalClient({
           <div className="space-y-4" role={hasOptions ? 'radiogroup' : undefined} aria-label={hasOptions ? 'Choose your quote option' : undefined}>
             {pricingOptions.map((option) => {
               const selected = selectedOptionId === option.id;
+              const hasSalesTax = Number(option.tax_rate || 0) > 0 || Number(option.sales_tax_amount || 0) > 0;
               return (
                 <label
                   key={option.id}
@@ -356,23 +372,31 @@ export default function QuoteApprovalClient({
                         {option.damage_waiver_fee > 0 && <PriceRow label="Damage Waiver" amount={option.damage_waiver_fee} />}
                         {option.rush_booking_fee > 0 && <PriceRow label="Rush Booking Fee" amount={option.rush_booking_fee} />}
                         {option.discount_amount > 0 && <PriceRow label="Discount" amount={option.discount_amount} isDiscount />}
+                        <PriceRow label="Service Subtotal" amount={option.subtotal || 0} />
+                        {hasSalesTax && <PriceRow label="Pretax Total" amount={option.pretax_total || 0} />}
+                        {hasSalesTax && (
+                          <PriceRow
+                            label={`Michigan Sales Tax (${((option.tax_rate || 0) * 100).toFixed(0)}%)`}
+                            amount={option.sales_tax_amount || 0}
+                          />
+                        )}
                       </div>
 
                       <div className="mt-4 border-t border-gray-200 pt-4">
                         <div className="flex justify-between text-lg font-bold text-[#2d3a47]">
-                          <span>Total</span>
-                          <span>{formatCurrency(option.total_price || 0)}</span>
+                          <span>{hasSalesTax ? 'Total Including Sales Tax' : 'Total'}</span>
+                          <span className="whitespace-nowrap">{formatCurrency(option.total_price || 0)}</span>
                         </div>
                       </div>
 
                       <div className="mt-4 rounded-lg bg-[#2d3a47]/5 p-4 space-y-2">
                         <div className="flex justify-between">
-                          <span className="font-medium">Deposit Required</span>
-                          <span className="font-semibold">{formatCurrency(option.deposit_amount || 0)}</span>
+                          <span className="font-medium">Deposit Required{option.deposit_percentage > 0 ? ` (${option.deposit_percentage.toFixed(0)}%)` : ''}</span>
+                          <span className="whitespace-nowrap font-semibold">{formatCurrency(option.deposit_amount || 0)}</span>
                         </div>
                         <div className="flex justify-between text-sm text-muted-foreground">
                           <span>Balance Due at Event</span>
-                          <span>{formatCurrency(option.final_balance || 0)}</span>
+                          <span className="whitespace-nowrap">{formatCurrency(option.final_balance || 0)}</span>
                         </div>
                       </div>
                     </div>
@@ -381,6 +405,11 @@ export default function QuoteApprovalClient({
               );
             })}
           </div>
+          {pricingOptions.some((option) => Number(option.tax_rate || 0) > 0 || Number(option.sales_tax_amount || 0) > 0) && (
+            <p className="mt-4 rounded-lg bg-[#2d3a47]/5 p-3 text-sm text-[#2d3a47]">
+              Michigan sales tax is calculated at 6% and is included in the total shown.
+            </p>
+          )}
         </div>
 
         {/* Customer Notes */}
