@@ -7,7 +7,8 @@
   /* Signature Luxe Brand Colors */
   --navy: #2d3a47;
   --gold: #d2c2ae;
-  --gold-text: #8c6e4d;
+  /* Darkened for reliable small-text contrast on cream and white surfaces. */
+  --gold-text: #755839;
   --cream: #f8f5f1;
   --white: #ffffff;
   --charcoal: #1f2933;
@@ -61,7 +62,8 @@
   --secondary: var(--navy);
   --secondary-foreground: var(--cream);
   --muted: var(--navy);
-  --muted-foreground: var(--gray);
+  /* The light-mode gray is too dark on a navy surface. */
+  --muted-foreground: #d9e0e6;
   --accent: var(--gold);
   --accent-foreground: var(--charcoal);
   --destructive: oklch(0.396 0.141 25.723);
@@ -138,6 +140,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-size: 1rem;
+    line-height: 1.5;
   }
 }
 
@@ -217,6 +221,23 @@
 }
 
 @layer utilities {
+  /*
+   * Quote and operations screens contain dense, decision-critical information.
+   * Raise Tailwind's compact utility steps only in those contexts so the public
+   * marketing layout keeps its intentional type scale.
+   */
+  .admin-typography :where(.text-xs),
+  .quote-typography :where(.text-xs) {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .admin-typography :where(.text-sm),
+  .quote-typography :where(.text-sm) {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
   .animate-hero-ken-burns {
     animation: hero-ken-burns 26s ease-in-out infinite alternate;
   }

@@ -162,7 +162,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
   const hasRushFee = Number(quote.rush_booking_fee ?? 0) > 0 || (options ?? []).some((option) => Number(option.rush_booking_fee ?? 0) > 0);
 
   return (
-    <div className="min-h-screen bg-[#f8f7f5]">
+    <div className="quote-typography min-h-screen bg-[#f8f7f5]">
       <div className="border-b border-[#d8c7a3]/50 bg-[#fff8e8] px-4 py-4 text-[#2d3a47]">
         <div className="mx-auto max-w-3xl">
           <p className="font-semibold">Approval deadline: {formatExpirationDate(tokenRecord.expires_at)}</p>
@@ -197,7 +197,7 @@ function QuoteLinkError({
   homeHref: string;
 }) {
   return (
-    <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center p-4">
+    <div className="quote-typography min-h-screen bg-[#f8f7f5] flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center border border-[#d8c7a3]/40">
         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#d8c7a3]/20 text-[#2d3a47]">
           <span className="font-serif text-2xl" aria-hidden="true">

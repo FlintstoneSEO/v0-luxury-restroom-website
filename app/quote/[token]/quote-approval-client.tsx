@@ -186,7 +186,7 @@ export default function QuoteApprovalClient({
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center p-4">
+      <div className="quote-typography min-h-screen bg-[#f8f7f5] flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
@@ -241,12 +241,12 @@ export default function QuoteApprovalClient({
   const pricingOptions = hasOptions ? visibleOptions : [singleQuoteOption];
 
   return (
-    <div className="min-h-screen bg-[#f8f7f5]">
+    <div className="quote-typography min-h-screen bg-[#f8f7f5]">
       {/* Header */}
       <header className="bg-[#2d3a47] text-white py-6">
         <div className="max-w-3xl mx-auto px-4">
           <h1 className="text-2xl font-serif font-bold">Signature Luxe Events & Amenities</h1>
-          <p className="text-[#ded2c4] mt-1">Your Quote Review</p>
+          <p className="mt-1 text-[#f3eadf]">Your Quote Review</p>
         </div>
       </header>
 
