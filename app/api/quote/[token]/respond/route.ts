@@ -63,7 +63,7 @@ export async function POST(
     // Get the quote for notifications
     const { data: quote } = await supabase
       .from('quote_requests')
-      .select('id, quote_number, customer_name, email, status')
+      .select('id, quote_number, customer_name, email, status, event_date, is_test_quote')
       .eq('id', tokenRecord.quote_request_id)
       .single();
 
@@ -97,139 +97,84 @@ export async function POST(
         { status: 400 }
       );
     }
-    let newStatus: string;
-    let agreementStatus: string | undefined;
+    const { data: responseRows, error: responseError } = await supabase.rpc(
+      'submit_quote_response',
+      {
+        p_token_id: tokenRecord.id,
+        p_quote_id: tokenRecord.quote_request_id,
+        p_response_type: response_type,
+        p_comments: comments || '',
+        p_selected_quote_option_id: selected_quote_option_id ?? null,
+        p_now: now,
+      },
+    );
 
-    switch (response_type) {
-      case 'approved':
-        newStatus = 'customer_approved';
-        agreementStatus = 'ready_to_send';
-        break;
-      case 'change_requested':
-        newStatus = 'change_requested';
-        break;
-      case 'declined':
-        newStatus = 'declined';
-        break;
-      default:
-        newStatus = quote.status;
-    }
-
-    const { data: usedTokenRows, error: usedTokenError } = await supabase
-      .from('quote_approval_tokens')
-      .update({ used_at: now })
-      .eq('id', tokenRecord.id)
-      .is('used_at', null)
-      .select('id');
-
-    if (usedTokenError || usedTokenRows?.length !== 1) {
-      return NextResponse.json(
-        { ok: false, message: 'You have already responded to this quote' },
-        { status: 409 }
-      );
-    }
-
-    // Update the quote
-    const updateData: Record<string, unknown> = {
-      status: newStatus,
-      customer_response: comments || null,
-      customer_response_type: response_type,
-      customer_response_at: now,
-      updated_at: now,
-    };
-
-    if (response_type === 'approved') {
-      updateData.approved_at = now;
-      updateData.agreement_status = agreementStatus;
-
-      if (selectedOption) {
-        updateData.selected_quote_option_id = selectedOption.id;
-        updateData.base_price = selectedOption.base_price;
-        updateData.travel_fee = selectedOption.travel_fee;
-        updateData.utility_fee = selectedOption.utility_fee;
-        updateData.after_hours_fee = selectedOption.after_hours_fee;
-        updateData.cleaning_fee = selectedOption.cleaning_fee;
-        updateData.damage_waiver_fee = selectedOption.damage_waiver_fee;
-        updateData.rush_booking_fee = selectedOption.rush_booking_fee;
-        updateData.subtotal = selectedOption.subtotal;
-        updateData.discount_amount = selectedOption.discount_amount;
-        updateData.pretax_total = selectedOption.pretax_total;
-        updateData.taxable_amount = selectedOption.taxable_amount;
-        updateData.tax_rate = selectedOption.tax_rate;
-        updateData.sales_tax_amount = selectedOption.sales_tax_amount;
-        updateData.total_price = selectedOption.total_price;
-        updateData.deposit_percentage = selectedOption.deposit_percentage;
-        updateData.deposit_amount = selectedOption.deposit_amount;
-        updateData.final_balance = selectedOption.final_balance;
-        updateData.calculated_breakdown = selectedOption.calculated_breakdown;
+    if (responseError) {
+      console.error('[quote-respond] Transaction error:', responseError);
+      const isDateConflict =
+        responseError.code === '23505' ||
+        responseError.message.includes('EVENT_DATE_ALREADY_BOOKED');
+      if (isDateConflict) {
+        return NextResponse.json(
+          {
+            ok: false,
+            code: 'EVENT_DATE_ALREADY_BOOKED',
+            message: 'This event date is no longer available. Please contact Signature Luxe to discuss another date.',
+          },
+          { status: 409 },
+        );
       }
-    }
-
-    const { error: updateError } = await supabase
-      .from('quote_requests')
-      .update(updateData)
-      .eq('id', tokenRecord.quote_request_id);
-
-    if (updateError) {
-      console.error('[quote-respond] Update error:', updateError);
       return NextResponse.json(
         { ok: false, message: 'Failed to save response' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
-    if (response_type === 'approved' && selectedOption) {
-      await supabase.from('quote_options').update({ status: 'selected', updated_at: now }).eq('id', selectedOption.id);
-      await supabase
-        .from('quote_options')
-        .update({ status: 'not_selected', updated_at: now })
-        .eq('quote_request_id', tokenRecord.quote_request_id)
-        .neq('id', selectedOption.id)
-        .neq('status', 'deleted');
+    const result = responseRows?.[0] as
+      | { result_ok: boolean; result_code: string | null; result_message: string }
+      | undefined;
+
+    if (!result?.result_ok) {
+      const status =
+        result?.result_code === 'EVENT_DATE_ALREADY_BOOKED' ||
+        result?.result_code === 'TOKEN_ALREADY_USED'
+          ? 409
+          : result?.result_code === 'QUOTE_NOT_FOUND' ||
+              result?.result_code === 'INVALID_TOKEN'
+            ? 404
+            : 400;
+      return NextResponse.json(
+        {
+          ok: false,
+          ...(result?.result_code ? { code: result.result_code } : {}),
+          message: result?.result_message || 'Failed to save response',
+        },
+        { status },
+      );
     }
-
-    const selectedOptionNote = selectedOption
-      ? `Customer approved ${selectedOption.option_label}${selectedOption.option_description ? `: ${selectedOption.option_description}` : ''}`
-      : null;
-
-    const responseEventType = {
-      approved: 'quote_approved',
-      change_requested: 'quote_change_requested',
-      declined: 'quote_declined',
-    }[response_type];
-
-    await supabase.from('quote_link_events').insert({
-      quote_request_id: tokenRecord.quote_request_id,
-      token_id: tokenRecord.id,
-      event_type: responseEventType,
-    });
-
-    // Insert status history
-    await supabase.from('quote_status_history').insert({
-      quote_request_id: tokenRecord.quote_request_id,
-      old_status: quote.status,
-      new_status: newStatus,
-      changed_at: now,
-      changed_by: 'customer',
-      note: selectedOptionNote || comments || `Customer ${response_type.replace('_', ' ')}`,
-    });
 
     // Send notification email to admin
     const statusDisplay = response_type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
     const adminQuoteUrl = `${getAdminAppOrigin(request)}/admin/quotes/${quote.id}`;
-    await sendEmail({
-      to: process.env.EMAIL_FROM || 'info@signatureluxeevents.com',
-      subject: `Quote ${quote.quote_number || quote.id.slice(0, 8)}: Customer ${statusDisplay}`,
-      html: `
-        <h2>Customer Quote Response</h2>
-        <p><strong>Quote:</strong> ${escapeHtml(quote.quote_number || quote.id)}</p>
-        <p><strong>Customer:</strong> ${escapeHtml(quote.customer_name)} (${escapeHtml(quote.email)})</p>
-        <p><strong>Response:</strong> ${escapeHtml(statusDisplay)}</p>
-        ${selectedOption ? `<p><strong>Selected Option:</strong> ${escapeHtml(selectedOption.option_label)}${selectedOption.option_description ? `: ${escapeHtml(selectedOption.option_description)}` : ''}</p>` : ''}
-        ${comments ? `<p><strong>Comments:</strong> ${escapeHtml(comments)}</p>` : ''}
-        <p><a href="${escapeHtml(adminQuoteUrl)}">View in Admin Dashboard</a></p>
-      `,
-    });
+    try {
+      await sendEmail({
+        to: process.env.EMAIL_FROM || 'info@signatureluxeevents.com',
+        subject: `Quote ${quote.quote_number || quote.id.slice(0, 8)}: Customer ${statusDisplay}`,
+        html: `
+          <h2>Customer Quote Response</h2>
+          <p><strong>Quote:</strong> ${escapeHtml(quote.quote_number || quote.id)}</p>
+          <p><strong>Customer:</strong> ${escapeHtml(quote.customer_name)} (${escapeHtml(quote.email)})</p>
+          <p><strong>Response:</strong> ${escapeHtml(statusDisplay)}</p>
+          ${selectedOption ? `<p><strong>Selected Option:</strong> ${escapeHtml(selectedOption.option_label)}${selectedOption.option_description ? `: ${escapeHtml(selectedOption.option_description)}` : ''}</p>` : ''}
+          ${comments ? `<p><strong>Comments:</strong> ${escapeHtml(comments)}</p>` : ''}
+          <p><a href="${escapeHtml(adminQuoteUrl)}">View in Admin Dashboard</a></p>
+        `,
+      });
+    } catch (emailError) {
+      // The response is already committed atomically. Do not tell the customer
+      // it failed or invite a duplicate submission because an admin alert failed.
+      console.error('[quote-respond] Admin notification error:', emailError);
+    }
 
     return NextResponse.json({ ok: true, message: 'Response submitted successfully' });
   } catch (error) {

@@ -20,11 +20,16 @@ import {
 
 import { formatLocalDateOnly, parseLocalDateOnly } from '@/lib/date-only';
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { CheckCircle2, Clock, AlertCircle, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, Plus, Mail, SquarePen, FileSignature, Eye, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, CalendarCheck, Plus, Mail, SquarePen, FileSignature, Eye, AlertTriangle } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { AdminStatusBadge } from '@/components/admin/admin-status-badge';
 import { formatAdminStatus } from '@/lib/quotes/status';
+import {
+  getAvailabilitySummaries,
+  type SameDateRequestSummary,
+} from '@/lib/availability';
+import { DashboardBookingSection } from '@/components/admin/booking-calendar';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
@@ -44,6 +49,12 @@ type PipelineColumn =
   | 'closed_lost';
 type PipelineBucket = PipelineColumn | 'all';
 type TestQuoteFilter = 'hide' | 'show' | 'only';
+type AvailabilityFilter =
+  | 'all'
+  | 'multiple_requests'
+  | 'date_already_booked'
+  | 'booked_dates'
+  | 'booking_conflicts';
 
 const pipelineBucketConfig: Array<{
   key: PipelineBucket;
@@ -117,6 +128,78 @@ function getPipelineColumn(status: string): PipelineColumn {
   return 'under_review';
 }
 
+function DateAvailabilityBadges({
+  quoteId,
+  summary,
+  onFilter,
+}: {
+  quoteId: string;
+  summary?: SameDateRequestSummary<QuoteRequest>;
+  onFilter: (filter: AvailabilityFilter) => void;
+}) {
+  if (!summary) return null;
+
+  const badges: Array<{
+    key: string;
+    label: string;
+    filter: AvailabilityFilter;
+    className: string;
+    icon: LucideIcon;
+  }> = [];
+
+  if (summary.hasBookingConflict) {
+    badges.push({
+      key: 'conflict',
+      label: 'Booking conflict',
+      filter: 'booking_conflicts',
+      className: 'border-red-600 bg-red-100 text-red-900',
+      icon: AlertTriangle,
+    });
+  } else if (summary.bookingOwner?.id === quoteId) {
+    badges.push({
+      key: 'owner',
+      label: 'Booked date',
+      filter: 'booked_dates',
+      className: 'border-emerald-600 bg-emerald-100 text-emerald-900',
+      icon: CalendarCheck,
+    });
+  } else if (summary.bookingOwner) {
+    badges.push({
+      key: 'unavailable',
+      label: 'Date already booked',
+      filter: 'date_already_booked',
+      className: 'border-red-500 bg-red-50 text-red-900',
+      icon: AlertCircle,
+    });
+  }
+
+  if (summary.hasMultipleRequests) {
+    badges.push({
+      key: 'multiple',
+      label: `${summary.activeRequestCount} requests for this date`,
+      filter: 'multiple_requests',
+      className: 'border-amber-500 bg-amber-100 text-amber-950',
+      icon: Users,
+    });
+  }
+
+  return badges.map((badge) => (
+    <button
+      key={badge.key}
+      type="button"
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 ${badge.className}`}
+      onClick={(event) => {
+        event.stopPropagation();
+        onFilter(badge.filter);
+      }}
+      aria-label={`${badge.label}. Filter dashboard by this availability state.`}
+    >
+      <badge.icon className="size-3.5" aria-hidden="true" />
+      {badge.label}
+    </button>
+  ));
+}
+
 export default function QuoteRequestsDashboard({
   initialQuotes,
   source,
@@ -132,6 +215,7 @@ export default function QuoteRequestsDashboard({
   const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null);
   const [activePipelineBucket, setActivePipelineBucket] = useState<PipelineBucket>('new_requests');
   const [testQuoteFilter, setTestQuoteFilter] = useState<TestQuoteFilter>('hide');
+  const [availabilityFilter, setAvailabilityFilter] = useState<AvailabilityFilter>('all');
   const [creatingTestQuote, setCreatingTestQuote] = useState(false);
 
   const handleRowClick = (quoteId: string) => {
@@ -170,7 +254,7 @@ export default function QuoteRequestsDashboard({
 
   // Summary card counts
   const summaryCounts = useMemo(() => {
-    const metricQuotes = initialQuotes.filter((q) => testQuoteFilter !== 'hide' || !q.is_test_quote);
+    const metricQuotes = initialQuotes.filter((q) => !q.is_test_quote);
     const pending = metricQuotes.filter((q) => q.status === 'pending_review').length;
     const underReview = metricQuotes.filter((q) => ['under_review', 'draft_quote', 'change_requested'].includes(q.status)).length;
     const quoteSent = metricQuotes.filter((q) => q.status === 'quote_sent' || q.status === 'sent_to_customer').length;
@@ -197,7 +281,12 @@ export default function QuoteRequestsDashboard({
       )
       .reduce((sum, quote) => sum + (quote.total_price || 0), 0);
     return { pending, underReview, quoteSent, approved, upcoming, estimatedPipelineRevenue };
-  }, [initialQuotes, testQuoteFilter]);
+  }, [initialQuotes]);
+
+  const availabilitySummaries = useMemo(
+    () => getAvailabilitySummaries(initialQuotes),
+    [initialQuotes],
+  );
 
   const filteredQuotes = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -214,6 +303,24 @@ export default function QuoteRequestsDashboard({
       if (eventTypeFilter !== 'all' && quoteEventType !== eventTypeFilter) return false;
       if (agreementFilter !== 'all' && quoteAgreementStatus !== agreementFilter) return false;
       if (depositFilter !== 'all' && quoteDepositStatus !== depositFilter) return false;
+
+      const availability = availabilitySummaries.get(quote.event_date);
+      if (
+        availabilityFilter === 'multiple_requests' &&
+        !availability?.hasMultipleRequests
+      ) return false;
+      if (
+        availabilityFilter === 'date_already_booked' &&
+        (!availability?.bookingOwner || availability.bookingOwner.id === quote.id)
+      ) return false;
+      if (
+        availabilityFilter === 'booked_dates' &&
+        availability?.bookingOwner?.id !== quote.id
+      ) return false;
+      if (
+        availabilityFilter === 'booking_conflicts' &&
+        !availability?.hasBookingConflict
+      ) return false;
 
       if (!normalizedSearch) return true;
 
@@ -252,7 +359,7 @@ export default function QuoteRequestsDashboard({
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
-  }, [initialQuotes, search, statusFilter, eventTypeFilter, agreementFilter, depositFilter, sortBy, testQuoteFilter]);
+  }, [initialQuotes, search, statusFilter, eventTypeFilter, agreementFilter, depositFilter, sortBy, testQuoteFilter, availabilityFilter, availabilitySummaries]);
 
   const pipelineColumns = useMemo(() => {
     const base: Record<PipelineColumn, QuoteRequest[]> = {
@@ -351,6 +458,8 @@ export default function QuoteRequestsDashboard({
           </div>
         ))}
       </div>
+
+      <DashboardBookingSection quotes={initialQuotes} />
 
       {/* Full-width Filters */}
       <section className="bg-white rounded-xl border border-[#8a7a68] p-4 md:p-5 shadow-sm space-y-5" aria-labelledby="quote-filters-heading">
@@ -455,6 +564,22 @@ export default function QuoteRequestsDashboard({
                 <SelectItem value="hide">Hide Test Quotes</SelectItem>
                 <SelectItem value="show">Show Test Quotes</SelectItem>
                 <SelectItem value="only">Test Quotes Only</SelectItem>
+              </SelectContent>
+            </Select>
+          </label>
+
+          <label className="block space-y-1.5">
+            <span className="text-sm font-semibold text-[#2d3a47]">Date Availability</span>
+            <Select value={availabilityFilter} onValueChange={(value) => setAvailabilityFilter(value as AvailabilityFilter)}>
+              <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by date availability">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="multiple_requests">Multiple Requests</SelectItem>
+                <SelectItem value="date_already_booked">Date Already Booked</SelectItem>
+                <SelectItem value="booked_dates">Booked Dates</SelectItem>
+                <SelectItem value="booking_conflicts">Booking Conflicts</SelectItem>
               </SelectContent>
             </Select>
           </label>
@@ -569,6 +694,7 @@ export default function QuoteRequestsDashboard({
                 const optionCount = quote.quote_options?.length ?? 0;
                 const selectedOption = quote.quote_options?.find((option) => option.id === quote.selected_quote_option_id || option.status === 'selected');
                 const quoteViewLabel = getQuoteViewLabel(quote);
+                const dateAvailability = availabilitySummaries.get(quote.event_date);
 
                 return (
                   <article
@@ -611,6 +737,11 @@ export default function QuoteRequestsDashboard({
                           <AdminStatusBadge status={quote.status} family="quote" prefix="Quote" />
                           <AdminStatusBadge status={quote.agreement_status} family="agreement" prefix="Agreement" />
                           <AdminStatusBadge status={quote.deposit_status} family="deposit" prefix="Deposit" />
+                          <DateAvailabilityBadges
+                            quoteId={quote.id}
+                            summary={dateAvailability}
+                            onFilter={setAvailabilityFilter}
+                          />
                           {quote.is_test_quote && (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900 border border-amber-500">TEST QUOTE</span>
                           )}

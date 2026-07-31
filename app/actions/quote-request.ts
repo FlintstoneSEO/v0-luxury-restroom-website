@@ -8,6 +8,11 @@ import { Resend } from 'resend'
 import { quoteRequestConfirmationTemplate } from '@/lib/email/templates'
 import { escapeHtml } from '@/lib/escape-html'
 import { getAdminAppOrigin, getPublicSiteOrigin } from '@/lib/app-origins'
+import {
+  checkEventDateAvailability,
+  EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+} from '@/lib/availability-server'
+import { getMinimumEventDate, isDateOnlyBefore } from '@/lib/date-only'
 
 // Initialize Resend (will gracefully fail if API key not set)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
@@ -60,6 +65,12 @@ export async function submitQuoteRequest(
 
   // Validation
   const errors = validateQuoteFormData(data)
+  if (
+    data.event_date &&
+    isDateOnlyBefore(data.event_date, getMinimumEventDate())
+  ) {
+    errors.event_date = ['Please select a date at least 7 days from today']
+  }
 
   if (Object.keys(errors).length > 0) {
     return {
@@ -71,8 +82,6 @@ export async function submitQuoteRequest(
 
   try {
     console.log('[quote-request] action version', QUOTE_ACTION_VERSION)
-
-    const { distanceMiles, priceBreakdown, distanceCalculationStatus, distanceCalculationMessage } = await buildQuoteCalculation(data)
 
     // Insert quote request with server-only service role client (bypasses anon RLS)
     let supabaseAdmin
@@ -91,6 +100,20 @@ export async function submitQuoteRequest(
         message: 'We could not save your quote request right now. Please contact us directly while we resolve this.',
       }
     }
+
+    const initialAvailability = await checkEventDateAvailability(
+      supabaseAdmin,
+      data.event_date,
+    )
+    if (!initialAvailability.available) {
+      return {
+        success: false,
+        message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+        errors: { event_date: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
+      }
+    }
+
+    const { distanceMiles, priceBreakdown, distanceCalculationStatus, distanceCalculationMessage } = await buildQuoteCalculation(data)
 
     const normalizedEmail = data.email.trim().toLowerCase()
     const normalizedAddress = data.event_address.trim()
@@ -116,6 +139,18 @@ export async function submitQuoteRequest(
     }
 
     const needsManualDistanceReview = distanceCalculationStatus === 'fallback'
+
+    const finalAvailability = await checkEventDateAvailability(
+      supabaseAdmin,
+      data.event_date,
+    )
+    if (!finalAvailability.available) {
+      return {
+        success: false,
+        message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+        errors: { event_date: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
+      }
+    }
 
     const { data: insertedQuote, error } = await supabaseAdmin
       .from("quote_requests")
@@ -171,6 +206,16 @@ export async function submitQuoteRequest(
     }
 
     if (error) {
+      if (
+        error.code === 'P0001' &&
+        error.message.includes('EVENT_DATE_ALREADY_BOOKED')
+      ) {
+        return {
+          success: false,
+          message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+          errors: { event_date: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
+        }
+      }
       console.error("[quote-request] insert error", {
         code: error.code,
         message: error.message,

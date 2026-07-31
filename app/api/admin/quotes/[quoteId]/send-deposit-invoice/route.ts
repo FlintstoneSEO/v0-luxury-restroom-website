@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { createSquareDepositInvoice } from '@/lib/integrations/square';
 import type { QuoteRequestRow } from '@/lib/quotes/types';
 import { isFinancialSnapshotConsistent } from '@/lib/pricing-engine';
+import { checkEventDateAvailability } from '@/lib/availability-server';
 
 export async function POST(_request: Request, { params }: { params: Promise<{ quoteId: string }> }) {
   const adminAuth = await requireAdminUser();
@@ -28,6 +29,23 @@ export async function POST(_request: Request, { params }: { params: Promise<{ qu
         { message: 'Quote totals are inconsistent. Review and correct the financial snapshot before sending a deposit invoice.' },
         { status: 409 }
       );
+    }
+
+    if (!quote.is_test_quote) {
+      const availability = await checkEventDateAvailability(
+        supabase,
+        quote.event_date,
+        { excludeQuoteId: quote.id },
+      );
+      if (!availability.available) {
+        return NextResponse.json(
+          {
+            code: 'EVENT_DATE_ALREADY_BOOKED',
+            message: 'Another quote already owns this event date. The deposit invoice was not created.',
+          },
+          { status: 409 },
+        );
+      }
     }
 
     const invoice = await createSquareDepositInvoice(quote as QuoteRequestRow);

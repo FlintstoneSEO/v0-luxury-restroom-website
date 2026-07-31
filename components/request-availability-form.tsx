@@ -18,6 +18,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { CheckCircle } from "lucide-react"
 import { submitRequestAvailability, RequestAvailabilityState } from "@/app/actions/request-availability"
 import usePlacesAutocomplete from "use-places-autocomplete"
+import { AvailabilityDatePicker } from "@/components/availability-date-picker"
 
 const eventTypes = [
   { value: "wedding", label: "Wedding" },
@@ -269,10 +270,7 @@ export function RequestAvailabilityForm() {
       <div className="grid gap-6 sm:grid-cols-2">
         <Field>
           <FieldLabel htmlFor="eventDate">Event Date *</FieldLabel>
-          <Input id="eventDate" name="eventDate" type="date" required />
-          {state.errors?.eventDate && (
-            <p className="text-sm text-red-600 mt-1">{state.errors.eventDate[0]}</p>
-          )}
+          <AvailabilityDatePicker error={state.errors?.eventDate?.[0]} />
         </Field>
         <Field>
           <FieldLabel htmlFor="eventType">Event Type *</FieldLabel>

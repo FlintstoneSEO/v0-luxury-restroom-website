@@ -222,9 +222,11 @@ export function calculateAfterHoursFee(endTime: string, settings: PricingSetting
 }
 
 export function calculateRushBookingFee(eventDate: string, now = new Date(), settings: PricingSettings = DEFAULT_PRICING): { fee: number; daysOut: number | null } {
-  const parsed = new Date(eventDate);
+  const parsed = parseLocalDateOnly(eventDate);
   if (Number.isNaN(parsed.getTime())) return { fee: 0, daysOut: null };
-  const daysOut = Math.ceil((parsed.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const eventOrdinal = Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+  const todayOrdinal = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const daysOut = Math.round((eventOrdinal - todayOrdinal) / (1000 * 60 * 60 * 24));
   return { fee: daysOut <= RUSH_BOOKING_WINDOW_DAYS ? settings.rush_booking_fee : 0, daysOut };
 }
 

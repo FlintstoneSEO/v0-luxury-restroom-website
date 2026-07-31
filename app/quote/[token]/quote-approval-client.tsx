@@ -125,6 +125,7 @@ export default function QuoteApprovalClient({
   const [submitted, setSubmitted] = useState(alreadyResponded);
   const [messageSent, setMessageSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [availabilityConflict, setAvailabilityConflict] = useState(false);
   const visibleOptions = options.filter((option) => option.status !== 'deleted');
   const hasOptions = visibleOptions.length > 0;
   const [selectedOptionId, setSelectedOptionId] = useState<string>(visibleOptions.find((option) => option.is_recommended)?.id ?? visibleOptions[0]?.id ?? '');
@@ -149,6 +150,7 @@ export default function QuoteApprovalClient({
 
     setSubmitting(true);
     setError(null);
+    setAvailabilityConflict(false);
 
     try {
       const isMessage = response === 'message';
@@ -167,6 +169,13 @@ export default function QuoteApprovalClient({
       const body = await res.json();
 
       if (!res.ok) {
+        if (body.code === 'EVENT_DATE_ALREADY_BOOKED') {
+          setAvailabilityConflict(true);
+          setError(
+            'This event date was booked before your approval was completed. Please contact Signature Luxe so we can help with another available date.',
+          );
+          return;
+        }
         throw new Error(body.message || 'Failed to submit response');
       }
 
@@ -433,6 +442,21 @@ export default function QuoteApprovalClient({
             </div>
           )}
 
+          {availabilityConflict && (
+            <div
+              role="alert"
+              className="mb-6 rounded-lg border-2 border-red-300 bg-red-50 p-5 text-red-900"
+            >
+              <p className="font-semibold">This event date is no longer available.</p>
+              <p className="mt-1 text-sm">
+                This event date was booked before your approval was completed. Please contact Signature Luxe so we can help with another available date.
+              </p>
+              <p className="mt-2 text-sm">
+                You can still request changes, ask a question, or decline this quote below.
+              </p>
+            </div>
+          )}
+
           <div className="mb-4 rounded-lg border border-[#d2c2ae] bg-[#f8f5f1] p-4 text-sm text-[#2d3a47]">
             Have a question before approving? Send us a message and your quote link will remain active.
           </div>
@@ -503,7 +527,7 @@ export default function QuoteApprovalClient({
                 rows={4}
               />
 
-              {error && (
+              {error && !availabilityConflict && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                   {error}
                 </div>
