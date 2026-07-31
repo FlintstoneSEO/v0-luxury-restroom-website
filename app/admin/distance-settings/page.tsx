@@ -66,7 +66,7 @@ export default function DistanceSettingsPage() {
             <h3 className="font-semibold text-[#2d3a47] mb-2">How to Update:</h3>
             <ol className="text-[#2d3a47] text-sm space-y-2 list-decimal list-inside">
               <li>Go to your project settings</li>
-              <li>Navigate to the "Vars" section</li>
+              <li>Navigate to the &quot;Vars&quot; section</li>
               <li>Find or create the <code className="bg-[#ded2c4]/30 px-1">BUSINESS_ORIGIN_ADDRESS</code> variable</li>
               <li>Update the value to your desired address</li>
               <li>Save and restart your app</li>

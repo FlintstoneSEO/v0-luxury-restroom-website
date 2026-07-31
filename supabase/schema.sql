@@ -28,6 +28,10 @@ create table if not exists quote_requests (
   damage_waiver_fee numeric,
   rush_booking_fee numeric,
   subtotal numeric,
+  pretax_total numeric not null default 0,
+  taxable_amount numeric not null default 0,
+  tax_rate numeric not null default 0,
+  sales_tax_amount numeric not null default 0,
   total_price numeric,
 
   status text default 'pending_review',
@@ -47,6 +51,7 @@ create table if not exists quote_requests (
   agreement_provider_reference_id text,
 
   deposit_amount numeric,
+  deposit_percentage numeric not null default 0,
   deposit_status text default 'due',
   deposit_due_date date,
   deposit_paid_at timestamptz,
@@ -96,7 +101,12 @@ create table if not exists quote_options (
   rush_booking_fee numeric not null default 0,
   subtotal numeric not null default 0,
   discount_amount numeric not null default 0,
+  pretax_total numeric not null default 0,
+  taxable_amount numeric not null default 0,
+  tax_rate numeric not null default 0,
+  sales_tax_amount numeric not null default 0,
   total_price numeric not null default 0,
+  deposit_percentage numeric not null default 0,
   deposit_amount numeric not null default 0,
   final_balance numeric not null default 0,
   calculated_breakdown jsonb,
@@ -167,6 +177,16 @@ create table if not exists pricing_settings (
   description text,
   updated_at timestamptz default now()
 );
+
+insert into pricing_settings (setting_key, setting_value, description, updated_at)
+values
+  ('sales_tax_percentage', 6, 'Michigan sales tax percentage applied after discounts', now()),
+  ('deposit_percentage', 40, 'Standard deposit percentage applied to the tax-inclusive total', now())
+on conflict (setting_key) do update
+set
+  setting_value = excluded.setting_value,
+  description = excluded.description,
+  updated_at = excluded.updated_at;
 
 create index if not exists idx_quote_requests_status on quote_requests(status);
 create index if not exists idx_quote_requests_event_date on quote_requests(event_date);

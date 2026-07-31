@@ -31,7 +31,10 @@ export function buildAgreementMergeFields(quote: QuoteRequestRow) {
     additional_notes: quote.additional_notes ?? '',
     subtotal: money(quote.subtotal),
     discount_amount: money(quote.discount_amount),
+    pretax_total: money(quote.pretax_total),
+    sales_tax_amount: money(quote.sales_tax_amount),
     total_price: money(quote.total_price),
+    deposit_percentage: String(quote.deposit_percentage ?? ''),
     deposit_amount: money(quote.deposit_amount),
     final_balance: money(quote.final_balance),
   };

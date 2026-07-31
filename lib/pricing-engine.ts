@@ -16,11 +16,118 @@ export const DEFAULT_PRICING: PricingSettings = {
   rush_booking_fee: 250,
   cleaning_fee: 125,
   extra_day_fee: 275,
-  deposit_percentage: 25,
+  sales_tax_percentage: 6,
+  deposit_percentage: 40,
 };
 
 const RUSH_BOOKING_WINDOW_DAYS = 14;
-const roundMoney = (value: number): number => Math.round(value * 100) / 100;
+
+export const roundCurrency = (value: number): number =>
+  Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+
+export type QuoteFinancialInput = {
+  base_price?: number | null;
+  travel_fee?: number | null;
+  utility_fee?: number | null;
+  after_hours_fee?: number | null;
+  cleaning_fee?: number | null;
+  damage_waiver_fee?: number | null;
+  rush_booking_fee?: number | null;
+  discount_amount?: number | null;
+  sales_tax_percentage?: number | null;
+  deposit_percentage?: number | null;
+};
+
+export type QuoteFinancialTotals = {
+  subtotal: number;
+  discount_amount: number;
+  pretax_total: number;
+  taxable_amount: number;
+  tax_rate: number;
+  sales_tax_amount: number;
+  total_price: number;
+  deposit_percentage: number;
+  deposit_amount: number;
+  final_balance: number;
+};
+
+export type StoredFinancialSnapshot = {
+  pretax_total: number;
+  sales_tax_amount: number;
+  total_price: number;
+  deposit_percentage: number;
+  deposit_amount: number;
+  final_balance: number;
+};
+
+function nonNegativeCurrency(value: number | null | undefined): number {
+  const numericValue = Number(value ?? 0);
+  return Number.isFinite(numericValue) ? Math.max(0, roundCurrency(numericValue)) : 0;
+}
+
+function nonNegativePercentage(value: number | null | undefined, fallback: number): number {
+  const numericValue = Number(value ?? fallback);
+  return Number.isFinite(numericValue) ? Math.max(0, numericValue) : fallback;
+}
+
+export function calculateQuoteFinancials(input: QuoteFinancialInput): QuoteFinancialTotals {
+  const subtotal = roundCurrency(
+    nonNegativeCurrency(input.base_price) +
+      nonNegativeCurrency(input.travel_fee) +
+      nonNegativeCurrency(input.utility_fee) +
+      nonNegativeCurrency(input.after_hours_fee) +
+      nonNegativeCurrency(input.cleaning_fee) +
+      nonNegativeCurrency(input.damage_waiver_fee) +
+      nonNegativeCurrency(input.rush_booking_fee)
+  );
+  const discountAmount = nonNegativeCurrency(input.discount_amount);
+  const pretaxTotal = roundCurrency(Math.max(0, subtotal - discountAmount));
+  const taxableAmount = pretaxTotal;
+  const salesTaxPercentage = nonNegativePercentage(
+    input.sales_tax_percentage,
+    DEFAULT_PRICING.sales_tax_percentage
+  );
+  const taxRate = salesTaxPercentage / 100;
+  const salesTaxAmount = roundCurrency(taxableAmount * taxRate);
+  const totalPrice = roundCurrency(pretaxTotal + salesTaxAmount);
+  const depositPercentage = nonNegativePercentage(
+    input.deposit_percentage,
+    DEFAULT_PRICING.deposit_percentage
+  );
+  const depositAmount = roundCurrency((totalPrice * depositPercentage) / 100);
+  const finalBalance = roundCurrency(Math.max(0, totalPrice - depositAmount));
+
+  return {
+    subtotal,
+    discount_amount: discountAmount,
+    pretax_total: pretaxTotal,
+    taxable_amount: taxableAmount,
+    tax_rate: taxRate,
+    sales_tax_amount: salesTaxAmount,
+    total_price: totalPrice,
+    deposit_percentage: depositPercentage,
+    deposit_amount: depositAmount,
+    final_balance: finalBalance,
+  };
+}
+
+export function isFinancialSnapshotConsistent(snapshot: StoredFinancialSnapshot): boolean {
+  const expectedTotal = roundCurrency(
+    Number(snapshot.pretax_total ?? 0) + Number(snapshot.sales_tax_amount ?? 0)
+  );
+  const expectedDeposit = roundCurrency(
+    (Number(snapshot.total_price ?? 0) * Number(snapshot.deposit_percentage ?? 0)) / 100
+  );
+  const expectedBalance = roundCurrency(
+    Math.max(0, Number(snapshot.total_price ?? 0) - Number(snapshot.deposit_amount ?? 0))
+  );
+
+  return (
+    Math.abs(expectedTotal - Number(snapshot.total_price ?? 0)) < 0.005 &&
+    Math.abs(expectedDeposit - Number(snapshot.deposit_amount ?? 0)) < 0.005 &&
+    Math.abs(expectedBalance - Number(snapshot.final_balance ?? 0)) < 0.005
+  );
+}
 
 export function validateQuoteFormData(data: QuoteFormData): Record<string, string[]> {
   const errors: Record<string, string[]> = {};
@@ -64,7 +171,7 @@ export function getGuestTier(guestCount: number): string {
 
 export function calculateTravelFee(distanceMiles: number, settings: PricingSettings = DEFAULT_PRICING): { fee: number; extraMiles: number } {
   const extraMiles = Math.max(0, distanceMiles - settings.included_miles);
-  return { fee: roundMoney(extraMiles * settings.travel_rate_per_mile), extraMiles };
+  return { fee: roundCurrency(extraMiles * settings.travel_rate_per_mile), extraMiles };
 }
 
 export function calculateUtilityFee(hasPower: boolean, hasWater: boolean, settings: PricingSettings = DEFAULT_PRICING): { fee: number; generatorNeeded: boolean; waterNeeded: boolean } {
@@ -111,7 +218,7 @@ export function calculateAfterHoursFee(endTime: string, settings: PricingSetting
   }
 
   const hoursCount = Math.min(4, Math.ceil(afterHoursMinutes / 60));
-  return { fee: roundMoney(hoursCount * settings.after_hours_hourly_rate), hoursCount };
+  return { fee: roundCurrency(hoursCount * settings.after_hours_hourly_rate), hoursCount };
 }
 
 export function calculateRushBookingFee(eventDate: string, now = new Date(), settings: PricingSettings = DEFAULT_PRICING): { fee: number; daysOut: number | null } {
@@ -148,10 +255,18 @@ export function calculateQuotePrice(
     { code: 'rush_booking', label: 'Rush booking', quantity: rushBookingFee > 0 ? 1 : 0, unit_price: rushBookingFee, total: rushBookingFee },
   ];
 
-  const subtotal = roundMoney(basePrice + travelFee + utilityFee + afterHoursFee + cleaningFee + damageWaiverFee + rushBookingFee);
-  const totalPrice = roundMoney(Math.max(0, subtotal));
-  const depositAmount = roundMoney((totalPrice * settings.deposit_percentage) / 100);
-  const finalBalance = roundMoney(Math.max(0, totalPrice - depositAmount));
+  const financials = calculateQuoteFinancials({
+    base_price: basePrice,
+    travel_fee: travelFee,
+    utility_fee: utilityFee,
+    after_hours_fee: afterHoursFee,
+    cleaning_fee: cleaningFee,
+    damage_waiver_fee: damageWaiverFee,
+    rush_booking_fee: rushBookingFee,
+    discount_amount: 0,
+    sales_tax_percentage: settings.sales_tax_percentage,
+    deposit_percentage: settings.deposit_percentage,
+  });
 
   return {
     base_price: basePrice,
@@ -161,10 +276,7 @@ export function calculateQuotePrice(
     cleaning_fee: cleaningFee,
     damage_waiver_fee: damageWaiverFee,
     rush_booking_fee: rushBookingFee,
-    subtotal,
-    total_price: totalPrice,
-    deposit_amount: depositAmount,
-    final_balance: finalBalance,
+    ...financials,
     line_items: lineItems,
     details: {
       guest_tier: getGuestTier(guestCount),
@@ -174,6 +286,7 @@ export function calculateQuotePrice(
       water_needed: waterNeeded,
       after_hours_count: afterHoursCount,
       rush_days_out: daysOut,
+      sales_tax_percentage: settings.sales_tax_percentage,
       deposit_percentage: settings.deposit_percentage,
     },
   };

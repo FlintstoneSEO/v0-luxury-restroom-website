@@ -13,7 +13,7 @@ export interface DefaultPricingConfig {
   extraDayFee: number;
   cleaningFee: number;
   rushBookingFee: number;
-  defaultDepositAmount: number;
+  salesTaxPercentage: number;
   defaultDepositPercentage: number;
 }
 
@@ -32,6 +32,6 @@ export const defaultPricing: DefaultPricingConfig = {
   extraDayFee: 600,
   cleaningFee: 175,
   rushBookingFee: 400,
-  defaultDepositAmount: 1000,
-  defaultDepositPercentage: 0.35,
+  salesTaxPercentage: 6,
+  defaultDepositPercentage: 0.4,
 };

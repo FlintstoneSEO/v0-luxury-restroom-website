@@ -3,10 +3,8 @@ import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation';
 import { QuoteFormData } from '@/lib/types/quote';
-
-function roundMoney(value: number) {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
-}
+import { calculateQuoteFinancials, roundCurrency } from '@/lib/pricing-engine';
+import { financialLockMessage, isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 
 export async function POST(
   request: Request,
@@ -40,7 +38,17 @@ export async function POST(
         has_water,
         additional_notes,
         discount_amount,
-        is_manual_override
+        is_manual_override,
+        status,
+        quote_sent_at,
+        approved_at,
+        customer_response_at,
+        customer_response_type,
+        agreement_status,
+        deposit_status,
+        total_price,
+        deposit_amount,
+        final_balance
       `)
       .eq('id', quoteId)
       .single();
@@ -54,6 +62,29 @@ export async function POST(
         {
           ok: false,
           message: 'This quote has manual override enabled. Submit again with force=true to replace manual pricing with recalculated pricing.',
+        },
+        { status: 409 }
+      );
+    }
+
+    const financiallyLocked = isQuoteFinanciallyLocked(quote);
+    const isExplicitRevision = body?.revise === true;
+
+    if (financiallyLocked && !isExplicitRevision) {
+      return NextResponse.json({ ok: false, message: financialLockMessage() }, { status: 409 });
+    }
+
+    if (
+      isExplicitRevision &&
+      (
+        ['sent', 'signed'].includes(quote.agreement_status ?? '') ||
+        ['invoice_sent', 'pending', 'paid', 'overdue'].includes(quote.deposit_status ?? '')
+      )
+    ) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: 'An agreement or active deposit invoice prevents in-place financial revision. Void the open document or create a replacement quote instead.',
         },
         { status: 409 }
       );
@@ -78,16 +109,16 @@ export async function POST(
     };
 
     const { distanceMiles, priceBreakdown, distanceCalculationStatus } = await buildQuoteCalculation(quoteInput);
-    const discountAmount = Math.max(0, roundMoney(Number(quote.discount_amount ?? 0)));
-    const discountedTotal = roundMoney(Math.max(0, priceBreakdown.subtotal - discountAmount));
-    const depositAmount = roundMoney((discountedTotal * (Number(priceBreakdown.details?.deposit_percentage) || 0)) / 100);
-    const finalBalance = roundMoney(Math.max(0, discountedTotal - depositAmount));
-    const discountedPriceBreakdown = {
+    const discountAmount = Math.max(0, roundCurrency(Number(quote.discount_amount ?? 0)));
+    const financials = calculateQuoteFinancials({
       ...priceBreakdown,
       discount_amount: discountAmount,
-      total_price: discountedTotal,
-      deposit_amount: depositAmount,
-      final_balance: finalBalance,
+      sales_tax_percentage: Number(priceBreakdown.details.sales_tax_percentage),
+      deposit_percentage: priceBreakdown.deposit_percentage,
+    });
+    const discountedPriceBreakdown = {
+      ...priceBreakdown,
+      ...financials,
     };
     const now = new Date().toISOString();
 
@@ -99,17 +130,46 @@ export async function POST(
       cleaning_fee: priceBreakdown.cleaning_fee,
       damage_waiver_fee: priceBreakdown.damage_waiver_fee,
       rush_booking_fee: priceBreakdown.rush_booking_fee,
-      subtotal: priceBreakdown.subtotal,
-      discount_amount: discountAmount,
-      total_price: discountedTotal,
-      deposit_amount: depositAmount,
-      final_balance: finalBalance,
+      ...financials,
       distance_miles: distanceMiles,
       calculated_breakdown: discountedPriceBreakdown,
       needs_manual_distance_review: distanceCalculationStatus === 'fallback',
       is_manual_override: false,
+      ...(isExplicitRevision
+        ? {
+            status: 'draft_quote',
+            selected_quote_option_id: null,
+            quote_sent_at: null,
+            approved_at: null,
+            customer_response_at: null,
+            customer_response_type: null,
+            customer_response: null,
+            agreement_status: 'not_sent',
+            deposit_status: 'due',
+            deposit_due_date: null,
+            deposit_payment_link: null,
+            square_deposit_invoice_id: null,
+            square_deposit_invoice_url: null,
+            stripe_payment_intent_id: null,
+            stripe_checkout_session_id: null,
+          }
+        : {}),
       updated_at: now,
     };
+
+    if (isExplicitRevision) {
+      const { error: tokenExpiryError } = await supabase
+        .from('quote_approval_tokens')
+        .update({ expires_at: now })
+        .eq('quote_request_id', quoteId)
+        .is('used_at', null);
+      if (tokenExpiryError) {
+        return NextResponse.json(
+          { ok: false, message: 'Could not expire the existing customer link, so the revision was not started.' },
+          { status: 500 }
+        );
+      }
+    }
 
     const { data: updatedQuote, error: updateError } = await supabase
       .from('quote_requests')
@@ -121,6 +181,20 @@ export async function POST(
     if (updateError) {
       console.error('[admin/quotes/recalculate] Update error:', updateError);
       return NextResponse.json({ ok: false, message: updateError.message }, { status: 400 });
+    }
+
+    if (isExplicitRevision) {
+      const { error: historyError } = await supabase.from('quote_status_history').insert({
+        quote_request_id: quoteId,
+        old_status: quote.status,
+        new_status: 'draft_quote',
+        changed_at: now,
+        changed_by: 'admin',
+        note: `Financial revision started. Previous total ${quote.total_price ?? 0}; deposit ${quote.deposit_amount ?? 0}; balance ${quote.final_balance ?? 0}.`,
+      });
+      if (historyError) {
+        console.error('[admin/quotes/recalculate] Status history error:', historyError);
+      }
     }
 
     return NextResponse.json({ ok: true, quote: updatedQuote });

@@ -508,7 +508,6 @@ export default function QuoteRequestsDashboard({
                     type="button"
                     role="tab"
                     aria-selected={isActive}
-                    aria-pressed={isActive}
                     aria-controls="pipeline-records-panel"
                     onClick={() => setActivePipelineBucket(bucket.key)}
                     className={`min-w-[220px] rounded-xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 sm:min-w-[245px] lg:min-w-0 ${
@@ -686,14 +685,24 @@ export default function QuoteRequestsDashboard({
                   <p className="text-sm text-amber-800"><strong>Distance Notice:</strong> {getDistanceCalculationMessage(selectedQuote)}</p>
                 )}
                 <p className="text-sm text-[#2d3a47]"><strong>Utility Fee:</strong> {formatCurrency(selectedQuote.utility_fee || 0)}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Total:</strong> {formatCurrency(selectedQuote.total_price || 0)}</p>
+                <p className="text-sm text-[#2d3a47]"><strong>Pre-tax Total:</strong> {formatCurrency(selectedQuote.pretax_total ?? selectedQuote.total_price ?? 0)}</p>
+                {Number(selectedQuote.sales_tax_amount ?? 0) > 0 && (
+                  <p className="text-sm text-[#2d3a47]">
+                    <strong>Michigan Sales Tax ({(Number(selectedQuote.tax_rate ?? 0) * 100).toFixed(0)}%):</strong>{' '}
+                    {formatCurrency(selectedQuote.sales_tax_amount ?? 0)}
+                  </p>
+                )}
+                <p className="text-sm text-[#2d3a47]"><strong>Total{Number(selectedQuote.sales_tax_amount ?? 0) > 0 ? ' Including Tax' : ''}:</strong> {formatCurrency(selectedQuote.total_price || 0)}</p>
               </div>
 
               <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
                 <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Agreement & Deposit</h4>
                 <p className="text-sm text-[#2d3a47]"><strong>Agreement:</strong> {formatAdminStatus(selectedQuote.agreement_status, 'agreement')}</p>
                 <p className="text-sm text-[#2d3a47]"><strong>Deposit:</strong> {formatAdminStatus(selectedQuote.deposit_status, 'deposit')}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Deposit Amount:</strong> {formatCurrency(selectedQuote.deposit_amount || 0)}</p>
+                <p className="text-sm text-[#2d3a47]">
+                  <strong>Deposit Amount{selectedQuote.deposit_percentage != null ? ` (${Number(selectedQuote.deposit_percentage).toFixed(0)}%)` : ''}:</strong>{' '}
+                  {formatCurrency(selectedQuote.deposit_amount || 0)}
+                </p>
               </div>
 
               <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">

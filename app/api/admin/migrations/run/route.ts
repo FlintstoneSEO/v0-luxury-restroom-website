@@ -51,8 +51,20 @@ export async function GET() {
       'alter table quote_requests add column if not exists distance_surcharge numeric not null default 0',
       'alter table quote_requests add column if not exists discount_amount numeric not null default 0',
       'alter table quote_requests add column if not exists subtotal numeric not null default 0',
+      'alter table quote_requests add column if not exists pretax_total numeric not null default 0',
+      'alter table quote_requests add column if not exists taxable_amount numeric not null default 0',
+      'alter table quote_requests add column if not exists tax_rate numeric not null default 0',
+      'alter table quote_requests add column if not exists sales_tax_amount numeric not null default 0',
       'alter table quote_requests add column if not exists total_price numeric not null default 0',
+      'alter table quote_requests add column if not exists deposit_percentage numeric not null default 0',
       'alter table quote_requests add column if not exists final_balance numeric',
+
+      // Quote-option financial snapshot columns
+      'alter table quote_options add column if not exists pretax_total numeric not null default 0',
+      'alter table quote_options add column if not exists taxable_amount numeric not null default 0',
+      'alter table quote_options add column if not exists tax_rate numeric not null default 0',
+      'alter table quote_options add column if not exists sales_tax_amount numeric not null default 0',
+      'alter table quote_options add column if not exists deposit_percentage numeric not null default 0',
       
       // Deposit columns
       'alter table quote_requests add column if not exists deposit_paid_amount numeric',
@@ -120,5 +132,3 @@ export async function GET() {
     }, { status: 500 });
   }
 }
-
-

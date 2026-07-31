@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { calculateQuoteFinancials, DEFAULT_PRICING } from '@/lib/pricing-engine';
 
-const CORE_QUOTE_FIELDS = 'customer_name, phone, email, event_date, event_type, guest_count, event_address, city, state, zip_code, event_start_time, event_end_time, has_power, has_water, additional_notes, distance_miles, base_price, travel_fee, utility_fee, after_hours_fee, cleaning_fee, damage_waiver_fee, rush_booking_fee, subtotal, total_price, discount_amount, deposit_amount, final_balance, quote_expires_at, calculated_breakdown, needs_manual_distance_review, is_manual_override, customer_notes';
+const CORE_QUOTE_FIELDS = 'customer_name, phone, email, event_date, event_type, guest_count, event_address, city, state, zip_code, event_start_time, event_end_time, has_power, has_water, additional_notes, distance_miles, base_price, travel_fee, utility_fee, after_hours_fee, cleaning_fee, damage_waiver_fee, rush_booking_fee, subtotal, discount_amount, pretax_total, taxable_amount, tax_rate, sales_tax_amount, total_price, deposit_percentage, deposit_amount, final_balance, quote_expires_at, calculated_breakdown, needs_manual_distance_review, is_manual_override, customer_notes';
 
 function defaultEventDate() {
   const date = new Date();
@@ -24,6 +25,14 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient();
   const now = new Date().toISOString();
+  const sampleFinancials = calculateQuoteFinancials({
+    base_price: 1200,
+    travel_fee: 75,
+    cleaning_fee: 100,
+    damage_waiver_fee: 50,
+    sales_tax_percentage: DEFAULT_PRICING.sales_tax_percentage,
+    deposit_percentage: DEFAULT_PRICING.deposit_percentage,
+  });
 
   let quotePayload: Record<string, unknown> = {
     customer_name: 'Test Customer',
@@ -49,11 +58,22 @@ export async function POST(request: Request) {
     cleaning_fee: 100,
     damage_waiver_fee: 50,
     rush_booking_fee: 0,
-    subtotal: 1425,
-    discount_amount: 0,
-    total_price: 1425,
-    deposit_amount: 425,
-    final_balance: 1000,
+    ...sampleFinancials,
+    calculated_breakdown: {
+      base_price: 1200,
+      travel_fee: 75,
+      utility_fee: 0,
+      after_hours_fee: 0,
+      cleaning_fee: 100,
+      damage_waiver_fee: 50,
+      rush_booking_fee: 0,
+      ...sampleFinancials,
+      line_items: [],
+      details: {
+        sales_tax_percentage: DEFAULT_PRICING.sales_tax_percentage,
+        deposit_percentage: DEFAULT_PRICING.deposit_percentage,
+      },
+    },
     customer_notes: 'This is a test quote for internal testing only.',
   };
 

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Resend } from 'resend';
 import { calculateQuotePrice, formatCurrency } from '@/lib/pricing-engine';
 import { calculateDistance } from '@/lib/distance-calculator';
+import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
 
 export interface RequestAvailabilityState {
   success: boolean;
@@ -94,13 +95,15 @@ export async function submitRequestAvailability(
     const eventEndTime = endTime || '22:00'; // Default to 10 PM if not specified
     
     // Calculate the quote price
+    const pricingSettings = await getPricingSettings();
     const priceBreakdown = calculateQuotePrice(
       guestCount,
       distanceMiles,
       hasPower,
       hasWater,
       eventEndTime,
-      eventDate
+      eventDate,
+      pricingSettings
     );
 
     const quotePayload = {
@@ -128,7 +131,13 @@ export async function submitRequestAvailability(
       damage_waiver_fee: priceBreakdown.damage_waiver_fee,
       rush_booking_fee: priceBreakdown.rush_booking_fee,
       subtotal: priceBreakdown.subtotal,
+      discount_amount: priceBreakdown.discount_amount,
+      pretax_total: priceBreakdown.pretax_total,
+      taxable_amount: priceBreakdown.taxable_amount,
+      tax_rate: priceBreakdown.tax_rate,
+      sales_tax_amount: priceBreakdown.sales_tax_amount,
       total_price: priceBreakdown.total_price,
+      deposit_percentage: priceBreakdown.deposit_percentage,
       status: "pending_review",
       agreement_status: "not_sent",
       deposit_amount: priceBreakdown.deposit_amount,
@@ -254,12 +263,20 @@ export async function submitRequestAvailability(
                 <td style="padding: 8px; border-bottom: 1px solid #e5e5e5; text-align: right;">${formatCurrency(priceBreakdown.after_hours_fee)}</td>
               </tr>
               ` : ''}
+              <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #e5e5e5;">Service Subtotal</td>
+                <td style="padding: 8px; border-bottom: 1px solid #e5e5e5; text-align: right;">${formatCurrency(priceBreakdown.subtotal)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #e5e5e5;">Michigan Sales Tax (${(priceBreakdown.tax_rate * 100).toFixed(0)}%)</td>
+                <td style="padding: 8px; border-bottom: 1px solid #e5e5e5; text-align: right;">${formatCurrency(priceBreakdown.sales_tax_amount)}</td>
+              </tr>
               <tr style="font-weight: bold; background-color: #fef3c7;">
-                <td style="padding: 8px; border-bottom: 2px solid #b45309;">Total Price</td>
+                <td style="padding: 8px; border-bottom: 2px solid #b45309;">Total Including Sales Tax</td>
                 <td style="padding: 8px; border-bottom: 2px solid #b45309; text-align: right;">${formatCurrency(priceBreakdown.total_price)}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #e5e5e5;">Deposit (25%)</td>
+                <td style="padding: 8px; border-bottom: 1px solid #e5e5e5;">Deposit (${priceBreakdown.deposit_percentage.toFixed(0)}%)</td>
                 <td style="padding: 8px; border-bottom: 1px solid #e5e5e5; text-align: right;">${formatCurrency(priceBreakdown.deposit_amount)}</td>
               </tr>
               <tr>

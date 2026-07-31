@@ -6,7 +6,7 @@ type AdminAuthSuccess = {
   user: {
     id: string;
     email?: string;
-    user_metadata?: Record<string, unknown>;
+    app_metadata?: Record<string, unknown>;
   };
 };
 
@@ -30,7 +30,7 @@ export async function requireAdminUser(): Promise<AdminAuthSuccess | AdminAuthFa
       };
     }
 
-    if (user.user_metadata?.is_admin !== true) {
+    if (user.app_metadata?.is_admin !== true) {
       return {
         ok: false,
         response: NextResponse.json({ ok: false, error: 'Admin access required' }, { status: 403 }),

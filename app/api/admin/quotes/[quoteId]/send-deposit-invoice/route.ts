@@ -3,6 +3,7 @@ import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createSquareDepositInvoice } from '@/lib/integrations/square';
 import type { QuoteRequestRow } from '@/lib/quotes/types';
+import { isFinancialSnapshotConsistent } from '@/lib/pricing-engine';
 
 export async function POST(_request: Request, { params }: { params: Promise<{ quoteId: string }> }) {
   const adminAuth = await requireAdminUser();
@@ -14,6 +15,20 @@ export async function POST(_request: Request, { params }: { params: Promise<{ qu
     if (error || !quote) return NextResponse.json({ message: 'Quote not found' }, { status: 404 });
     if (quote.agreement_status !== 'signed') return NextResponse.json({ message: 'Agreement must be signed before sending a deposit invoice' }, { status: 409 });
     if (quote.deposit_status === 'paid') return NextResponse.json({ message: 'Deposit is already paid' }, { status: 409 });
+    const hasTaxAwareSnapshot = Number(quote.tax_rate ?? 0) > 0;
+    if (hasTaxAwareSnapshot && !isFinancialSnapshotConsistent({
+      pretax_total: Number(quote.pretax_total ?? quote.total_price ?? 0),
+      sales_tax_amount: Number(quote.sales_tax_amount ?? 0),
+      total_price: Number(quote.total_price ?? 0),
+      deposit_percentage: Number(quote.deposit_percentage ?? 0),
+      deposit_amount: Number(quote.deposit_amount ?? 0),
+      final_balance: Number(quote.final_balance ?? 0),
+    })) {
+      return NextResponse.json(
+        { message: 'Quote totals are inconsistent. Review and correct the financial snapshot before sending a deposit invoice.' },
+        { status: 409 }
+      );
+    }
 
     const invoice = await createSquareDepositInvoice(quote as QuoteRequestRow);
     const now = new Date().toISOString();

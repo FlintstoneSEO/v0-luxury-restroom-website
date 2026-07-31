@@ -39,7 +39,7 @@ This phase reads existing status strings for presentation only.
 - Data writes: none beyond the existing logout call and pre-existing settings forms.
 - API behavior changes: none.
 - Customer-visible side effects: none.
-- Auth boundary: unchanged; `middleware.ts` continues to protect admin pages and APIs.
+- Auth boundary: unchanged; `proxy.ts` continues to protect admin pages and APIs.
 - Service-role use: unchanged and server-only.
 
 The shared badge handles unknown status values with a readable title-cased label and a neutral tone instead of hiding the value.

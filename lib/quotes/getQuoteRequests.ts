@@ -43,17 +43,7 @@ export async function getQuoteRequests(): Promise<GetQuoteRequestsResult> {
     if (quoteIds.length > 0) {
       const { data: fetchedOptionRows, error: optionError } = await supabase
         .from('quote_options')
-        .select(`
-          id,
-          quote_request_id,
-          option_label,
-          option_description,
-          status,
-          total_price,
-          is_recommended,
-          created_at,
-          updated_at
-        `)
+        .select('*')
         .in('quote_request_id', quoteIds);
 
       if (optionError) {

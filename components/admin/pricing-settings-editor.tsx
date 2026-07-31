@@ -23,6 +23,7 @@ const FIELDS: Array<{ key: string; label: string; help?: string }> = [
   { key: 'damage_waiver_fee', label: 'Damage Waiver Fee' },
   { key: 'after_hours_hourly_rate', label: 'After Hours Hourly Rate' },
   { key: 'after_hours_cutoff_hour', label: 'After Hours Cutoff Hour' },
+  { key: 'sales_tax_percentage', label: 'Michigan Sales Tax Percentage', help: 'Applied after discounts to new or explicitly revised quotes.' },
   { key: 'deposit_percentage', label: 'Deposit Percentage' },
 ];
 
@@ -67,12 +68,16 @@ export default function PricingSettingsEditor({ initialSettings, initialAddons }
         description="Centralized pricing rules used by the quote calculation helper."
       />
       <div className="rounded-xl border border-[#ded2c4] bg-white p-5 sm:p-6 space-y-6">
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950" role="note">
+          Pricing settings apply to new quotes and explicit financial revisions only. Sent, approved, signed, and paid quotes retain their stored totals.
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           {FIELDS.map((field) => (
             <div key={field.key}>
               <label className="text-sm font-medium text-[#2d3a47]">{field.label}</label>
               <Input type="number" step="0.01" value={values[field.key] ?? 0} onChange={(e) => update(field.key, e.target.value)} />
+              {field.help && <p className="mt-1 text-xs text-muted-foreground">{field.help}</p>}
             </div>
           ))}
         </div>

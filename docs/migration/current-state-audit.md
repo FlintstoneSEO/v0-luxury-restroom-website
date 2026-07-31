@@ -48,7 +48,7 @@ Most public routes are React server components using `next/link`, `next/image`, 
 
 ### Protected admin
 
-`middleware.ts` protects `/admin/:path*` and `/api/admin/:path*` using Supabase SSR cookies and `user_metadata.is_admin === true`. Individual privileged APIs also call `requireAdminUser()`. Service-role operations remain server-only through `lib/supabase/admin.ts`.
+`proxy.ts` protects `/admin/:path*` and `/api/admin/:path*` using Supabase SSR cookies and protected `app_metadata.is_admin === true`. Individual privileged APIs also call `requireAdminUser()`. Service-role operations remain server-only through `lib/supabase/admin.ts`.
 
 The admin pages are dynamic where live data is required. `/admin` explicitly exports `dynamic = 'force-dynamic'` and `revalidate = 0`. Admin metadata is noindex/nofollow.
 
@@ -149,7 +149,7 @@ Important field families:
 
 | Integration | Files | Boundary |
 |---|---|---|
-| Supabase Auth | `middleware.ts`, `lib/supabase/server.ts`, `lib/admin-auth.ts` | Next.js admin only |
+| Supabase Auth | `proxy.ts`, `lib/supabase/server.ts`, `lib/admin-auth.ts` | Next.js admin only |
 | Supabase service role | `lib/supabase/admin.ts`, public/customer/admin server code | Server-only |
 | Resend | server actions and `lib/email/client.ts` | Server-only |
 | SendGrid/Mailgun fallback | `lib/email/client.ts` | Server-only; supported by code but absent from `.env.example` |

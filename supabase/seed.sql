@@ -1,0 +1,2 @@
+-- Intentionally empty. Production quote and pricing data must never be copied
+-- into the local Supabase development stack.

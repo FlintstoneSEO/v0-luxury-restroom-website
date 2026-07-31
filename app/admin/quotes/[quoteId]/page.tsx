@@ -18,19 +18,27 @@ export default async function AdminQuoteDetailPage({ params }: { params: Promise
   const { quoteId } = await params;
   const supabase = await createClient();
 
-  const [{ data: quote, error }, { data: depositSetting }] = await Promise.all([
+  const [{ data: quote, error }, { data: pricingSettings }] = await Promise.all([
     supabase.from('quote_requests').select('*').eq('id', quoteId).single(),
-    supabase.from('pricing_settings').select('setting_value').eq('setting_key', 'deposit_percentage').maybeSingle(),
+    supabase
+      .from('pricing_settings')
+      .select('setting_key, setting_value')
+      .in('setting_key', ['deposit_percentage', 'sales_tax_percentage']),
   ]);
 
   if (error || !quote) notFound();
 
-  const depositPercentage = Number(depositSetting?.setting_value);
+  const pricingByKey = Object.fromEntries(
+    (pricingSettings ?? []).map((setting) => [setting.setting_key, Number(setting.setting_value)])
+  );
+  const depositPercentage = pricingByKey.deposit_percentage;
+  const salesTaxPercentage = pricingByKey.sales_tax_percentage;
 
   return (
     <QuoteDetailEditor
       quote={mapQuoteRequestRow(quote as QuoteRequestRow)}
       depositPercentage={Number.isFinite(depositPercentage) ? depositPercentage : undefined}
+      salesTaxPercentage={Number.isFinite(salesTaxPercentage) ? salesTaxPercentage : undefined}
     />
   );
 }

@@ -6,6 +6,8 @@ import { sendEmail } from '@/lib/email/client';
 import { quoteSentTemplate } from '@/lib/email/templates';
 import { formatLocalDateOnly, parseLocalDateOnly } from '@/lib/date-only';
 import { getCustomerWorkflowOrigin } from '@/lib/app-origins';
+import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
+import { isFinancialSnapshotConsistent } from '@/lib/pricing-engine';
 
 // Statuses that allow sending a quote
 const SENDABLE_STATUSES = [
@@ -65,11 +67,17 @@ export async function POST(
         state,
         zip_code,
         guest_count,
+        subtotal,
+        pretax_total,
+        tax_rate,
+        sales_tax_amount,
         total_price,
         total,
+        deposit_percentage,
         deposit_amount,
         final_balance,
         remaining_balance,
+        quote_sent_at,
         additional_notes,
         status
       `)
@@ -104,6 +112,48 @@ export async function POST(
         { ok: false, message: `Unsupported quote status for sending: ${quote.status}` },
         { status: 400 }
       );
+    }
+
+    const totalPrice = Number(quote.total_price ?? quote.total ?? 0);
+    const depositAmount = Number(quote.deposit_amount ?? 0);
+    const finalBalance = Number(quote.final_balance ?? quote.remaining_balance ?? totalPrice - depositAmount);
+    const financialSnapshot = {
+      pretax_total: Number(quote.pretax_total ?? totalPrice),
+      sales_tax_amount: Number(quote.sales_tax_amount ?? 0),
+      total_price: totalPrice,
+      deposit_percentage: Number(quote.deposit_percentage ?? 0),
+      deposit_amount: depositAmount,
+      final_balance: finalBalance,
+    };
+
+    // Re-sends preserve the original snapshot. A quote that has never been sent
+    // must use the current tax and deposit settings before it can become customer-visible.
+    if (!quote.quote_sent_at) {
+      if (!isFinancialSnapshotConsistent(financialSnapshot)) {
+        return NextResponse.json(
+          { ok: false, message: 'This quote has inconsistent stored totals. Recalculate it before sending.' },
+          { status: 409 }
+        );
+      }
+
+      const pricingSettings = await getPricingSettings();
+      const expectedTaxRate = Number(pricingSettings.sales_tax_percentage) / 100;
+      const actualTaxRate = Number(quote.tax_rate ?? 0);
+      const expectedDepositPercentage = Number(pricingSettings.deposit_percentage);
+      const actualDepositPercentage = Number(quote.deposit_percentage ?? 0);
+
+      if (
+        Math.abs(actualTaxRate - expectedTaxRate) > 0.000001 ||
+        Math.abs(actualDepositPercentage - expectedDepositPercentage) > 0.000001
+      ) {
+        return NextResponse.json(
+          {
+            ok: false,
+            message: `Recalculate this quote before sending so it uses ${pricingSettings.sales_tax_percentage}% Michigan sales tax and a ${pricingSettings.deposit_percentage}% deposit.`,
+          },
+          { status: 409 }
+        );
+      }
     }
 
     // Generate approval token and persist token before sending email.
@@ -159,14 +209,13 @@ export async function POST(
     ].filter(Boolean).join(', ');
 
     const customerName = quote.customer_name || 'Customer';
-    const totalPrice = quote.total_price ?? quote.total ?? 0;
     const formattedEventDate = quote.event_date
       ? formatLocalDateOnly(quote.event_date, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
       : 'TBD';
 
     const { data: quoteOptions } = await supabase
       .from('quote_options')
-      .select('id, option_label, option_description, total_price, is_recommended, status')
+      .select('id, option_label, option_description, subtotal, pretax_total, tax_rate, sales_tax_amount, total_price, is_recommended, status')
       .eq('quote_request_id', quote.id)
       .neq('status', 'deleted')
       .order('is_recommended', { ascending: false })
@@ -178,6 +227,10 @@ export async function POST(
       eventType: quote.event_type || 'TBD',
       guestCount: String(quote.guest_count ?? 'TBD'),
       eventLocation: eventLocation || 'TBD',
+      quoteSubtotal: Number(quote.subtotal ?? totalPrice),
+      quotePretaxTotal: Number(quote.pretax_total ?? totalPrice),
+      quoteTaxRate: Number(quote.tax_rate ?? 0),
+      quoteSalesTaxAmount: Number(quote.sales_tax_amount ?? 0),
       quoteTotal: totalPrice,
       approvalLink,
       customerNotes: quote.additional_notes,

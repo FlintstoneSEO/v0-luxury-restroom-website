@@ -34,6 +34,10 @@ export async function GET(
         state,
         zip_code,
         guest_count,
+        subtotal,
+        pretax_total,
+        tax_rate,
+        sales_tax_amount,
         total_price,
         total,
         additional_notes
@@ -68,7 +72,7 @@ export async function GET(
 
     const { data: quoteOptions } = await supabase
       .from('quote_options')
-      .select('id, option_label, option_description, total_price, is_recommended, status')
+      .select('id, option_label, option_description, subtotal, pretax_total, tax_rate, sales_tax_amount, total_price, is_recommended, status')
       .eq('quote_request_id', quote.id)
       .neq('status', 'deleted')
       .order('is_recommended', { ascending: false })
@@ -80,6 +84,10 @@ export async function GET(
       eventType: quote.event_type || 'TBD',
       guestCount: String(quote.guest_count ?? 'TBD'),
       eventLocation: eventLocation || 'TBD',
+      quoteSubtotal: Number(quote.subtotal ?? quote.total_price ?? quote.total ?? 0),
+      quotePretaxTotal: Number(quote.pretax_total ?? quote.total_price ?? quote.total ?? 0),
+      quoteTaxRate: Number(quote.tax_rate ?? 0),
+      quoteSalesTaxAmount: Number(quote.sales_tax_amount ?? 0),
       quoteTotal: quote.total_price ?? quote.total ?? 0,
       approvalLink: `${customerWorkflowOrigin}/quote/preview-token-not-active`,
       customerNotes: quote.additional_notes,

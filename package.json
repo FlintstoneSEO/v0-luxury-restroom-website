@@ -17,6 +17,10 @@
     "check:web": "corepack pnpm --filter @signature-luxe/web check",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit --incremental false",
+    "test": "vitest run",
+    "test:migration": "vitest run tests/supabase-migration.test.ts",
+    "supabase:validate": "DO_NOT_TRACK=1 supabase --version && vitest run tests/supabase-migration.test.ts",
     "verify:phase5": "node --experimental-strip-types scripts/verify-phase5-customer-workflows.mjs",
     "seo:audit-links": "node --experimental-strip-types scripts/audit-internal-links.ts",
     "seo:audit-content": "node --experimental-strip-types scripts/audit-seo-content.ts",
@@ -81,13 +85,18 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.0",
+    "@electric-sql/pglite": "^0.5.4",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.2.4",
     "postcss": "^8.5",
-    "tailwindcss": "^4.2.0",
+    "supabase": "^2.110.0",
+    "tailwindcss": "^4.3.3",
     "tw-animate-css": "1.3.3",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "vitest": "^4.1.10"
   }
 }

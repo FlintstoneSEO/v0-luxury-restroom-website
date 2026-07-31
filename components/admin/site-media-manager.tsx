@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -65,7 +65,7 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
     return byPage;
   }, [rows]);
 
-  const rowWarnings = (row: SiteMediaRow) => {
+  const rowWarnings = useCallback((row: SiteMediaRow) => {
     const warnings: string[] = [];
     if (!row.image_url) warnings.push('Missing Image');
     if (row.image_url && !row.alt_text?.trim()) warnings.push('Missing Alt Text');
@@ -75,7 +75,7 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
     if (row.page_slug.includes('weddings') && normalized.includes('corporate')) warnings.push('Content mismatch: wedding page mentions corporate');
     if (row.page_slug.includes('corporate') && normalized.includes('wedding')) warnings.push('Content mismatch: corporate page mentions wedding');
     return warnings;
-  };
+  }, [duplicates]);
 
   const pageStats = useMemo(() => {
     const map = new Map<string, { slots: number; issues: number }>();
@@ -86,7 +86,7 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
       map.set(row.page_slug, stats);
     });
     return map;
-  }, [rows]);
+  }, [rows, rowWarnings]);
 
   const pageOptions = useMemo(() => {
     const registrySlugs = SITE_MEDIA_PAGE_REGISTRY.map((item) => item.pageSlug);
@@ -124,7 +124,7 @@ export default function SiteMediaManager({ initialRows }: { initialRows: SiteMed
     if (!search.trim()) return true;
     const haystack = [row.page_slug, row.section_key, row.label, row.alt_text, row.caption, row.image_url, row.storage_path].join(' ').toLowerCase();
     return haystack.includes(search.toLowerCase());
-  }), [rows, selectedPage, issuesOnly, statusFilter, search]);
+  }), [rows, selectedPage, issuesOnly, statusFilter, search, rowWarnings]);
 
   const dirtyIds = useMemo(() => new Set(rows.filter((row) => {
     const original = originalRows.find((item) => item.id === row.id);
