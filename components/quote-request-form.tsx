@@ -17,6 +17,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { CheckCircle, User, Calendar, MapPin, Clock, Zap } from 'lucide-react';
 import { Autocomplete, useJsApiLoader } from '@react-google-maps/api';
 import { EVENT_TYPES } from '@/lib/types/quote';
+import { AvailabilityDatePicker } from '@/components/availability-date-picker';
 
 const initialState: QuoteRequestFormState = {
   success: false,
@@ -176,15 +177,10 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="event_date">Event Date *</FieldLabel>
-            <Input 
-              id="event_date" 
-              name="event_date" 
-              type="date" 
-              required 
+            <AvailabilityDatePicker
+              name="event_date"
+              error={state.errors?.event_date?.[0]}
             />
-            {state.errors?.event_date && (
-              <p className="text-sm text-red-600 mt-1">{state.errors.event_date[0]}</p>
-            )}
           </Field>
           <Field>
             <FieldLabel htmlFor="event_type">Event Type *</FieldLabel>

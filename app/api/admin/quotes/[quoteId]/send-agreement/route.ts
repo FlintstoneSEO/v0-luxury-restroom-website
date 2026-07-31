@@ -3,6 +3,7 @@ import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendDropboxSignAgreement } from '@/lib/integrations/dropbox-sign';
 import type { QuoteRequestRow } from '@/lib/quotes/types';
+import { checkEventDateAvailability } from '@/lib/availability-server';
 
 function isQuoteApproved(quote: QuoteRequestRow) {
   return (
@@ -40,6 +41,23 @@ export async function POST(_request: Request, { params }: { params: Promise<{ qu
 
     if (typedQuote.agreement_status === 'sent' && typedQuote.dropbox_sign_request_id) {
       return NextResponse.json({ message: 'Agreement has already been sent.' }, { status: 409 });
+    }
+
+    if (!typedQuote.is_test_quote) {
+      const availability = await checkEventDateAvailability(
+        supabase,
+        typedQuote.event_date,
+        { excludeQuoteId: typedQuote.id },
+      );
+      if (!availability.available) {
+        return NextResponse.json(
+          {
+            code: 'EVENT_DATE_ALREADY_BOOKED',
+            message: 'Another quote already owns this event date. The agreement was not sent.',
+          },
+          { status: 409 },
+        );
+      }
     }
 
     const result = await sendDropboxSignAgreement(typedQuote);

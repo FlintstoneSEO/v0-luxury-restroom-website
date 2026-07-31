@@ -312,6 +312,19 @@ export async function PATCH(
 
     if (error) {
       console.error('[admin/quotes] PATCH error:', error);
+      if (
+        error.code === '23505' ||
+        (error.code === 'P0001' && error.message.includes('EVENT_DATE_ALREADY_BOOKED'))
+      ) {
+        return NextResponse.json(
+          {
+            ok: false,
+            code: 'EVENT_DATE_ALREADY_BOOKED',
+            error: 'This event date is already reserved by another quote.',
+          },
+          { status: 409 },
+        );
+      }
       return NextResponse.json(
         { ok: false, error: error.message },
         { status: 400 }

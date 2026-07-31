@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import QuoteDetailEditor from '@/components/admin/quote-detail-editor';
 import { mapQuoteRequestRow, QuoteRequestRow } from '@/lib/quotes/types';
+import type { CalendarQuote } from '@/components/admin/booking-calendar';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -28,6 +29,14 @@ export default async function AdminQuoteDetailPage({ params }: { params: Promise
 
   if (error || !quote) notFound();
 
+  const { data: sameDateRows } = await supabase
+    .from('quote_requests')
+    .select(
+      'id, quote_number, event_date, status, is_test_quote, customer_name, event_type, city, state, total_price, created_at',
+    )
+    .eq('event_date', quote.event_date)
+    .order('created_at', { ascending: true });
+
   const pricingByKey = Object.fromEntries(
     (pricingSettings ?? []).map((setting) => [setting.setting_key, Number(setting.setting_value)])
   );
@@ -37,6 +46,7 @@ export default async function AdminQuoteDetailPage({ params }: { params: Promise
   return (
     <QuoteDetailEditor
       quote={mapQuoteRequestRow(quote as QuoteRequestRow)}
+      sameDateQuotes={(sameDateRows ?? []) as CalendarQuote[]}
       depositPercentage={Number.isFinite(depositPercentage) ? depositPercentage : undefined}
       salesTaxPercentage={Number.isFinite(salesTaxPercentage) ? salesTaxPercentage : undefined}
     />

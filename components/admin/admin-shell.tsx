@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   BarChart3,
+  CalendarDays,
   ChevronRight,
   Image as ImageIcon,
   LogOut,
@@ -28,6 +29,7 @@ import { cn } from '@/lib/utils';
 
 const navigation = [
   { href: '/admin', label: 'Dashboard', icon: BarChart3, match: 'quotes' },
+  { href: '/admin/calendar', label: 'Booking Calendar', icon: CalendarDays },
   { href: '/admin/pricing', label: 'Pricing & Settings', icon: SlidersHorizontal },
   { href: '/admin/site-media', label: 'Media', icon: ImageIcon },
   { href: '/admin/distance-settings', label: 'Distance', icon: MapPinned },
@@ -36,6 +38,7 @@ const navigation = [
 const routeLabels: Record<string, string> = {
   admin: 'Dashboard',
   quotes: 'Quotes',
+  calendar: 'Booking Calendar',
   pricing: 'Pricing & Settings',
   'site-media': 'Media',
   settings: 'Pricing & Settings',

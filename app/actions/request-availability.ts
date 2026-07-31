@@ -5,6 +5,16 @@ import { Resend } from 'resend';
 import { calculateQuotePrice, formatCurrency } from '@/lib/pricing-engine';
 import { calculateDistance } from '@/lib/distance-calculator';
 import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
+import { createAdminClient } from '@/lib/supabase/admin';
+import {
+  checkEventDateAvailability,
+  EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+} from '@/lib/availability-server';
+import {
+  getMinimumEventDate,
+  isDateOnlyBefore,
+  isValidDateOnly,
+} from '@/lib/date-only';
 
 export interface RequestAvailabilityState {
   success: boolean;
@@ -61,12 +71,33 @@ export async function submitRequestAvailability(
     if (!eventDate?.trim()) errors.eventDate = ['Event date is required'];
     if (!eventType?.trim()) errors.eventType = ['Event type is required'];
     if (!location?.trim()) errors.location = ['Location is required'];
+    if (eventDate?.trim() && !isValidDateOnly(eventDate)) {
+      errors.eventDate = ['Please select a valid event date'];
+    } else if (
+      eventDate?.trim() &&
+      isDateOnlyBefore(eventDate, getMinimumEventDate())
+    ) {
+      errors.eventDate = ['Please select a date at least 7 days from today'];
+    }
 
     if (Object.keys(errors).length > 0) {
       return {
         success: false,
         message: 'Please fill in all required fields.',
         errors,
+      };
+    }
+
+    const availabilityClient = createAdminClient();
+    const initialAvailability = await checkEventDateAvailability(
+      availabilityClient,
+      eventDate,
+    );
+    if (!initialAvailability.available) {
+      return {
+        success: false,
+        message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+        errors: { eventDate: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
       };
     }
 
@@ -154,7 +185,21 @@ export async function submitRequestAvailability(
       });
     }
 
-    // Create the quote first. This table is the source of truth used by the quote flow.
+    // Recheck immediately before insertion after distance/pricing work. The database
+    // trigger serializes this insert with booking transitions for the same date.
+    const finalAvailability = await checkEventDateAvailability(
+      availabilityClient,
+      eventDate,
+    );
+    if (!finalAvailability.available) {
+      return {
+        success: false,
+        message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+        errors: { eventDate: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
+      };
+    }
+
+    // Create the quote. quote_requests is the sole source of truth.
     const { data: insertedQuote, error: quoteError } = await supabase
       .from('quote_requests')
       .insert([quotePayload])
@@ -169,34 +214,21 @@ export async function submitRequestAvailability(
     }
 
     if (quoteError) {
+      if (
+        quoteError.code === 'P0001' &&
+        quoteError.message.includes('EVENT_DATE_ALREADY_BOOKED')
+      ) {
+        return {
+          success: false,
+          message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
+          errors: { eventDate: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
+        };
+      }
       console.error('[v0] Quote creation error:', quoteError);
       return {
         success: false,
         message: 'Failed to submit request. Please try again.',
       };
-    }
-
-    // Keep the legacy availability table in sync when it exists, but do not block customers on it.
-    const { error: availabilityError } = await supabase
-      .from('availability_requests')
-      .insert([{
-        first_name: firstName.trim(),
-        last_name: lastName.trim(),
-        phone: phone.trim(),
-        email: email.trim().toLowerCase(),
-        event_date: eventDate,
-        event_type: eventType,
-        location: location.trim(),
-        guest_count: guestCount,
-        start_time: startTime || null,
-        end_time: endTime || null,
-        power_available: powerAvailable || null,
-        water_available: waterAvailable || null,
-        details: details?.trim() || null,
-      }]);
-
-    if (availabilityError) {
-      console.error('[v0] Availability request sync error:', availabilityError);
     }
 
     const quoteNumber = insertedQuote?.quote_number || `SL-${new Date().getFullYear()}-PENDING`;

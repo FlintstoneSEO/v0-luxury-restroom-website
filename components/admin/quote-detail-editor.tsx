@@ -37,9 +37,13 @@ import { QuoteRequest, QuoteOption, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES,
 import { calculateQuoteFinancials, DEFAULT_PRICING } from '@/lib/pricing-engine';
 import { isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
+import { SameDateRequestsPanel } from '@/components/admin/same-date-requests-panel';
+import type { CalendarQuote } from '@/components/admin/booking-calendar';
+import { isBookingBlockingStatus, isRealQuote } from '@/lib/availability';
 
 interface QuoteDetailEditorProps {
   quote: QuoteRequest;
+  sameDateQuotes?: CalendarQuote[];
   depositPercentage?: number;
   salesTaxPercentage?: number;
 }
@@ -235,6 +239,7 @@ function getDistanceCalculationMessage(quote: QuoteRequest) {
 
 export default function QuoteDetailEditor({
   quote,
+  sameDateQuotes = [],
   depositPercentage: configuredDepositPercentage,
   salesTaxPercentage: configuredSalesTaxPercentage,
 }: QuoteDetailEditorProps) {
@@ -349,6 +354,12 @@ export default function QuoteDetailEditor({
     : Number.isFinite(configuredSalesTaxPercentage)
       ? Number(configuredSalesTaxPercentage)
       : DEFAULT_PRICING.sales_tax_percentage;
+  const otherBookingOwnsDate = sameDateQuotes.some(
+    (sameDateQuote) =>
+      sameDateQuote.id !== quote.id &&
+      isRealQuote(sameDateQuote) &&
+      isBookingBlockingStatus(sameDateQuote.status),
+  );
 
   // Calculate subtotal, total, deposit, and final balance
   const recalculatePricing = useCallback(() => {
@@ -875,6 +886,10 @@ export default function QuoteDetailEditor({
         </div>
       )}
 
+      {!quote.is_test_quote && sameDateQuotes.length > 0 && (
+        <SameDateRequestsPanel currentQuoteId={quote.id} quotes={sameDateQuotes} />
+      )}
+
       {fallbackDistance && (
         <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 flex gap-3 items-start">
           <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
@@ -1333,6 +1348,11 @@ export default function QuoteDetailEditor({
       {/* Workflow Status */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Workflow Status</h2>
+        {otherBookingOwnsDate && (
+          <p role="alert" className="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm font-semibold text-red-900">
+            Another quote owns this event date. Blocking booking statuses are unavailable until the date is changed to an open date.
+          </p>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Field>
             <FieldLabel htmlFor="status">Quote Status</FieldLabel>
@@ -1342,7 +1362,11 @@ export default function QuoteDetailEditor({
               </SelectTrigger>
               <SelectContent>
                 {QUOTE_STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
+                  <SelectItem
+                    key={s}
+                    value={s}
+                    disabled={otherBookingOwnsDate && isBookingBlockingStatus(s)}
+                  >
                     {s.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
                   </SelectItem>
                 ))}
