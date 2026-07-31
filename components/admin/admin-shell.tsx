@@ -162,7 +162,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6f3ef] text-charcoal">
+    <div className="admin-typography min-h-screen bg-[#f6f3ef] text-charcoal">
       <a
         href="#admin-main"
         className="sr-only fixed left-4 top-4 z-[100] rounded-md bg-navy px-4 py-2 text-sm font-semibold text-white focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
@@ -188,7 +188,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <span className="block truncate font-serif text-lg font-semibold leading-tight text-navy">
                 Signature Luxe
               </span>
-              <span className="block text-[0.68rem] font-bold uppercase tracking-[0.16em] text-gold-text">
+              <span className="block text-sm font-bold uppercase tracking-[0.12em] text-gold-text">
                 Operations
               </span>
             </span>
@@ -249,7 +249,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-[1600px] lg:grid-cols-[15rem_minmax(0,1fr)]">
         <aside className="hidden border-r border-[#d9d1c8] bg-white p-4 lg:block">
           <div className="sticky top-20">
-            <p className="mb-3 px-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="mb-3 px-3 text-sm font-bold uppercase tracking-[0.12em] text-muted-foreground">
               Operations console
             </p>
             <AdminNavigation pathname={pathname} />
