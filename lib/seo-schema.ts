@@ -1,3 +1,5 @@
+import footer from '@/content/site/footer.json'
+
 export const business = {
   name: 'Signature Luxe Events & Amenities',
   url: 'https://www.signatureluxeevents.com',
@@ -7,10 +9,8 @@ export const business = {
   logo: 'https://www.signatureluxeevents.com/images/logo.png',
   priceRange: '$$',
   areaServed: ['Lansing, MI','East Lansing, MI','Okemos, MI','Haslett, MI','Grand Ledge, MI','DeWitt, MI','Holt, MI','Mason, MI','Jackson, MI','Howell, MI','Brighton, MI','Charlotte, MI','Ann Arbor, MI','Flint, MI','Grand Rapids, MI','Battle Creek, MI','Kalamazoo, MI','Mid-Michigan'],
-  sameAs: [
-    process.env.NEXT_PUBLIC_FACEBOOK_URL || 'https://www.facebook.com/signatureluxeevents',
-    process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://www.instagram.com/signatureluxe_events',
-  ].filter(Boolean),
+  // Keep structured data aligned with the public links maintained in the footer.
+  sameAs: footer.socials.map(({ href }) => href).filter(Boolean),
 }
 
 export function websiteJsonLd() {
