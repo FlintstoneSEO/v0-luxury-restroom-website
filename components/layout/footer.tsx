@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Facebook, Instagram, Mail, MapPin, Clock, Phone } from 'lucide-react'
+import { Facebook, Instagram, Mail, MapPin, MapPinned, Clock, Phone } from 'lucide-react'
 import business from '@/content/site/business.json'
 import footer from '@/content/site/footer.json'
 import navigation from '@/content/site/navigation.json'
 
-const socialIcons = { Facebook, Instagram }
+const socialIcons = { Facebook, Instagram, 'Google Business Profile': MapPinned }
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -51,8 +51,9 @@ export function Footer() {
               <h4 className="text-sm font-semibold mb-4">Follow Us</h4>
               <div className="flex gap-4">
                 {footer.socials.map((social) => {
-                  const Icon = socialIcons[social.label as keyof typeof socialIcons]
-                  return <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors">{Icon && <Icon className="h-5 w-5" />}</a>
+                  const Icon = socialIcons[social.label as keyof typeof socialIcons] ?? MapPinned
+                  const description = `View ${business.name} on ${social.label}`
+                  return <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" aria-label={description} title={description} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold hover:text-charcoal transition-colors"><Icon aria-hidden="true" className="h-5 w-5" /></a>
                 })}
               </div>
             </div>
