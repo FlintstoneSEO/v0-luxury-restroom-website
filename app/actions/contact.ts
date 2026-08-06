@@ -61,8 +61,10 @@ export async function submitContactForm(
     if (resend) {
       try {
         await resend.emails.send({
-          from: 'noreply@resend.dev',
-          replyTo: 'info@signatureluxeevents.com',
+          from:
+            process.env.EMAIL_FROM ??
+            'Signature Luxe <notifications@signatureluxeevents.com>',
+          replyTo: email,
           to: 'info@signatureluxeevents.com',
           subject: `Contact Form: ${subject}`,
           html: `
