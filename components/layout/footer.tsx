@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Facebook, Instagram, Mail, MapPin, Clock, Phone } from 'lucide-react'
+import { Facebook, Instagram, Mail, MapPin, MapPinned, Clock, Phone } from 'lucide-react'
 import business from '@/content/site/business.json'
 import footer from '@/content/site/footer.json'
 import navigation from '@/content/site/navigation.json'
 
-const socialIcons = { Facebook, Instagram }
+const socialIcons = { Facebook, Instagram, 'Google Maps': MapPinned }
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
