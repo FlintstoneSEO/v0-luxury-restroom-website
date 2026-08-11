@@ -352,45 +352,54 @@ export default function QuoteRequestForm({ onSuccess }: QuoteRequestFormProps) {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="has_power">
-              Is power available within 100 feet? *
+              Is electrical power available within 100 feet of where the restroom trailer will be placed? *
             </FieldLabel>
-            <input type="hidden" name="has_power" value={hasPower} />
+            <p id="has_power-description" className="text-sm text-muted-foreground">
+              We need access to a standard 120V electrical outlet on a dedicated 20-amp circuit.
+            </p>
+            <input type="hidden" name="has_power" value={hasPower === 'true' ? 'true' : 'false'} />
             <Select 
-              name="has_power" 
               required 
               value={hasPower} 
               onValueChange={setHasPower}
             >
-              <SelectTrigger>
+              <SelectTrigger id="has_power" aria-describedby="has_power-description utilities-note">
                 <SelectValue placeholder="Select option" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="true">Yes</SelectItem>
-                <SelectItem value="false">No (generator required)</SelectItem>
+                <SelectItem value="false">No</SelectItem>
+                <SelectItem value="unsure">Unsure</SelectItem>
               </SelectContent>
             </Select>
           </Field>
           <Field>
             <FieldLabel htmlFor="has_water">
-              Is water available within 100 feet? *
+              Is a water source available within 50 feet of where the restroom trailer will be placed? *
             </FieldLabel>
-            <input type="hidden" name="has_water" value={hasWater} />
+            <p id="has_water-description" className="text-sm text-muted-foreground">
+              A standard outdoor garden-hose spigot from a home, building, or other water supply is typically all we need.
+            </p>
+            <input type="hidden" name="has_water" value={hasWater === 'true' ? 'true' : 'false'} />
             <Select 
-              name="has_water" 
               required 
               value={hasWater} 
               onValueChange={setHasWater}
             >
-              <SelectTrigger>
+              <SelectTrigger id="has_water" aria-describedby="has_water-description utilities-note">
                 <SelectValue placeholder="Select option" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="true">Yes</SelectItem>
-                <SelectItem value="false">No (water service required)</SelectItem>
+                <SelectItem value="false">No</SelectItem>
+                <SelectItem value="unsure">Unsure</SelectItem>
               </SelectContent>
             </Select>
           </Field>
         </div>
+        <p id="utilities-note" className="text-sm text-muted-foreground">
+          Not sure? Select Unsure and our team can help determine what is needed for your location.
+        </p>
         <p className="text-sm text-muted-foreground">
           If utilities are not available on-site, additional fees may apply for generator and/or water service.
         </p>
