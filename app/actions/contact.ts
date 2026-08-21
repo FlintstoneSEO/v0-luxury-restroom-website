@@ -60,10 +60,15 @@ export async function submitContactForm(
     // Send email notification
     if (resend) {
       try {
+        const configuredFromAddress = process.env.EMAIL_FROM?.trim();
+        const fromAddress =
+          !configuredFromAddress ||
+          configuredFromAddress.toLowerCase().includes('notifications@signatureluxeevents.com')
+            ? 'Signature Luxe <info@signatureluxeevents.com>'
+            : configuredFromAddress;
+
         await resend.emails.send({
-          from:
-            process.env.EMAIL_FROM ??
-            'Signature Luxe <notifications@signatureluxeevents.com>',
+          from: fromAddress,
           replyTo: email,
           to: 'info@signatureluxeevents.com',
           subject: `Contact Form: ${subject}`,
