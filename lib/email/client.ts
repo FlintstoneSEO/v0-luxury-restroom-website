@@ -9,7 +9,12 @@ export type EmailMessage = {
 export type SendEmailResult = { sent: boolean; provider: string; id?: string; error?: string };
 
 const provider = (process.env.EMAIL_PROVIDER || '').toLowerCase();
-const fromAddress = process.env.EMAIL_FROM || 'Signature Luxe <info@signatureluxeevents.com>';
+const legacyNotificationAddress = 'notifications@signatureluxeevents.com';
+const configuredFromAddress = process.env.EMAIL_FROM?.trim();
+const fromAddress =
+  !configuredFromAddress || configuredFromAddress.toLowerCase().includes(legacyNotificationAddress)
+    ? 'Signature Luxe <info@signatureluxeevents.com>'
+    : configuredFromAddress;
 
 async function sendWithResend(message: EmailMessage): Promise<SendEmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
