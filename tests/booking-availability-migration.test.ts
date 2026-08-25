@@ -5,7 +5,19 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 const migrationPath = fileURLToPath(
   new URL(
-    '../supabase/migrations/20260731014028_enforce_one_booking_per_day.sql',
+    '../supabase/migrations/20260731020944_enforce_one_booking_per_day.sql',
+    import.meta.url,
+  ),
+);
+const availabilityBlocksMigrationPath = fileURLToPath(
+  new URL(
+    '../supabase/migrations/20260825113949_add_availability_blocks.sql',
+    import.meta.url,
+  ),
+);
+const availabilityBlocksReconciliationPath = fileURLToPath(
+  new URL(
+    '../supabase/migrations/20260825204336_reconcile_availability_blocks.sql',
     import.meta.url,
   ),
 );
@@ -22,6 +34,11 @@ async function createWorkflowSchema(database: PGlite) {
     create role anon;
     create role authenticated;
     create role service_role;
+
+    create schema auth;
+    create table auth.users (
+      id uuid primary key
+    );
 
     create table public.quote_requests (
       id uuid primary key,
@@ -247,6 +264,144 @@ describe('one-booking-per-day migration', () => {
       await expect(db.exec(migrationSql)).rejects.toThrow(
         /duplicate real blocking bookings exist/i,
       );
+    },
+    30_000,
+  );
+});
+
+describe('availability-block migration', () => {
+  it(
+    'captures leads on limited dates while protecting hard commitments and allowing soft holds',
+    async () => {
+      db = new PGlite();
+      await createWorkflowSchema(db);
+      await db.exec(await readFile(migrationPath, 'utf8'));
+      const blocksMigrationSql = await readFile(availabilityBlocksMigrationPath, 'utf8');
+      await db.exec(blocksMigrationSql);
+      await db.exec(await readFile(availabilityBlocksReconciliationPath, 'utf8'));
+
+      await db.exec(`
+        insert into public.availability_blocks (
+          id, title, start_date, end_date, block_type, availability_effect, organization_name
+        ) values (
+          '20000000-0000-0000-0000-000000000001',
+          'Partner weekend',
+          '2026-09-11',
+          '2026-09-13',
+          'partner_booking',
+          'hard_block',
+          'XYZ Tailgating'
+        );
+
+        insert into public.quote_requests (id, quote_number, event_date, status)
+        values (
+          '00000000-0000-0000-0000-000000000010',
+          'LIMITED-LEAD',
+          '2026-09-12',
+          'pending_review'
+        );
+      `);
+
+      await expect(
+        db.exec(`
+          update public.quote_requests
+          set status = 'customer_approved'
+          where id = '00000000-0000-0000-0000-000000000010'
+        `),
+      ).rejects.toThrow(/EVENT_DATE_BLOCKED/);
+
+      await db.exec(`
+        insert into public.availability_blocks (
+          id, title, start_date, end_date, block_type, availability_effect
+        ) values (
+          '20000000-0000-0000-0000-000000000002',
+          'Tentative hold',
+          '2026-10-03',
+          '2026-10-03',
+          'other',
+          'soft_hold'
+        );
+
+        insert into public.quote_requests (id, quote_number, event_date, status)
+        values (
+          '00000000-0000-0000-0000-000000000011',
+          'SOFT-HOLD-LEAD',
+          '2026-10-03',
+          'customer_approved'
+        );
+      `);
+
+      const statuses = await db.query<{ quote_number: string; status: string }>(`
+        select quote_number, status
+        from public.quote_requests
+        where id in (
+          '00000000-0000-0000-0000-000000000010',
+          '00000000-0000-0000-0000-000000000011'
+        )
+        order by quote_number
+      `);
+      expect(statuses.rows).toEqual([
+        { quote_number: 'LIMITED-LEAD', status: 'pending_review' },
+        { quote_number: 'SOFT-HOLD-LEAD', status: 'customer_approved' },
+      ]);
+    },
+    30_000,
+  );
+
+  it(
+    'requires an explicit override for overlapping blocking commitments',
+    async () => {
+      db = new PGlite();
+      await createWorkflowSchema(db);
+      await db.exec(await readFile(migrationPath, 'utf8'));
+      await db.exec(await readFile(availabilityBlocksMigrationPath, 'utf8'));
+      await db.exec(await readFile(availabilityBlocksReconciliationPath, 'utf8'));
+
+      await db.exec(`
+        insert into public.quote_requests (id, quote_number, event_date, status)
+        values (
+          '00000000-0000-0000-0000-000000000012',
+          'CONFIRMED',
+          '2026-11-07',
+          'confirmed'
+        )
+      `);
+
+      await expect(
+        db.exec(`
+          insert into public.availability_blocks (
+            id, title, start_date, end_date, block_type, availability_effect
+          ) values (
+            '20000000-0000-0000-0000-000000000003',
+            'Conflicting block',
+            '2026-11-07',
+            '2026-11-08',
+            'maintenance',
+            'hard_block'
+          )
+        `),
+      ).rejects.toThrow(/BLOCKING_COMMITMENT_CONFLICT/);
+
+      await db.exec(`
+        insert into public.availability_blocks (
+          id, title, start_date, end_date, block_type, availability_effect,
+          conflict_override_at
+        ) values (
+          '20000000-0000-0000-0000-000000000004',
+          'Approved conflict',
+          '2026-11-07',
+          '2026-11-08',
+          'maintenance',
+          'hard_block',
+          now()
+        )
+      `);
+
+      const count = await db.query<{ count: number }>(`
+        select count(*)::int as count
+        from public.availability_blocks
+      `);
+      expect(count.rows[0].count).toBe(1);
     },
     30_000,
   );

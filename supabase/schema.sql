@@ -200,3 +200,43 @@ create index if not exists quote_options_quote_request_id_idx on quote_options(q
 create index if not exists quote_options_status_idx on quote_options(status);
 create index if not exists quote_requests_selected_quote_option_id_idx on quote_requests(selected_quote_option_id);
 alter table quote_options enable row level security;
+
+create table if not exists availability_blocks (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  start_date date not null,
+  end_date date not null,
+  block_type text not null,
+  availability_effect text not null,
+  organization_name text,
+  notes text,
+  status text not null default 'active',
+  created_by uuid references auth.users(id) on delete set null,
+  updated_by uuid references auth.users(id) on delete set null,
+  cancelled_by uuid references auth.users(id) on delete set null,
+  cancelled_at timestamptz,
+  conflict_override_at timestamptz,
+  conflict_override_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint availability_blocks_title_length check (length(btrim(title)) between 1 and 160),
+  constraint availability_blocks_valid_range check (end_date >= start_date),
+  constraint availability_blocks_reasonable_range check ((end_date - start_date) <= 366),
+  constraint availability_blocks_type_check check (block_type in ('partner_booking', 'maintenance', 'owner_unavailable', 'equipment_unavailable', 'other')),
+  constraint availability_blocks_effect_check check (availability_effect in ('hard_block', 'soft_hold')),
+  constraint availability_blocks_status_check check (status in ('active', 'cancelled')),
+  constraint availability_blocks_partner_name_required check (
+    block_type <> 'partner_booking'
+    or length(btrim(coalesce(organization_name, ''))) > 0
+  )
+);
+
+create index if not exists availability_blocks_active_range_idx
+  on availability_blocks (start_date, end_date)
+  where status = 'active';
+create index if not exists availability_blocks_upcoming_idx
+  on availability_blocks (end_date, start_date)
+  where status = 'active';
+alter table availability_blocks enable row level security;
+revoke all on table availability_blocks from anon, authenticated;
+grant select, insert, update, delete on table availability_blocks to service_role;

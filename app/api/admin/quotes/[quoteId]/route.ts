@@ -314,13 +314,19 @@ export async function PATCH(
       console.error('[admin/quotes] PATCH error:', error);
       if (
         error.code === '23505' ||
-        (error.code === 'P0001' && error.message.includes('EVENT_DATE_ALREADY_BOOKED'))
+        (error.code === 'P0001' && (
+          error.message.includes('EVENT_DATE_ALREADY_BOOKED') ||
+          error.message.includes('EVENT_DATE_BLOCKED')
+        ))
       ) {
+        const blockedByCalendar = error.message.includes('EVENT_DATE_BLOCKED');
         return NextResponse.json(
           {
             ok: false,
-            code: 'EVENT_DATE_ALREADY_BOOKED',
-            error: 'This event date is already reserved by another quote.',
+            code: blockedByCalendar ? 'EVENT_DATE_BLOCKED' : 'EVENT_DATE_ALREADY_BOOKED',
+            error: blockedByCalendar
+              ? 'This event date has a blocking calendar commitment.'
+              : 'This event date is already reserved by another quote.',
           },
           { status: 409 },
         );

@@ -9,7 +9,7 @@
     ]
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/next-dev-wasm.mjs",
     "dev:web": "corepack pnpm --filter @signature-luxe/web dev",
     "build": "next build",
     "build:web": "corepack pnpm --filter @signature-luxe/web build",
@@ -87,6 +87,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.4",
+    "@next/swc-wasm-nodejs": "16.2.4",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22",
     "@types/react": "^19",

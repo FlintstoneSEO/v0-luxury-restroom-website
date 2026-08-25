@@ -113,12 +113,14 @@ export async function POST(
       console.error('[quote-respond] Transaction error:', responseError);
       const isDateConflict =
         responseError.code === '23505' ||
-        responseError.message.includes('EVENT_DATE_ALREADY_BOOKED');
+        responseError.message.includes('EVENT_DATE_ALREADY_BOOKED') ||
+        responseError.message.includes('EVENT_DATE_BLOCKED');
       if (isDateConflict) {
+        const blockedByCalendar = responseError.message.includes('EVENT_DATE_BLOCKED');
         return NextResponse.json(
           {
             ok: false,
-            code: 'EVENT_DATE_ALREADY_BOOKED',
+            code: blockedByCalendar ? 'EVENT_DATE_BLOCKED' : 'EVENT_DATE_ALREADY_BOOKED',
             message: 'This event date is no longer available. Please contact Signature Luxe to discuss another date.',
           },
           { status: 409 },
@@ -137,6 +139,7 @@ export async function POST(
     if (!result?.result_ok) {
       const status =
         result?.result_code === 'EVENT_DATE_ALREADY_BOOKED' ||
+        result?.result_code === 'EVENT_DATE_BLOCKED' ||
         result?.result_code === 'TOKEN_ALREADY_USED'
           ? 409
           : result?.result_code === 'QUOTE_NOT_FOUND' ||

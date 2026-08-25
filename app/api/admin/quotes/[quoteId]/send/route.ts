@@ -8,6 +8,7 @@ import { formatLocalDateOnly, parseLocalDateOnly } from '@/lib/date-only';
 import { getCustomerWorkflowOrigin } from '@/lib/app-origins';
 import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
 import { isFinancialSnapshotConsistent } from '@/lib/pricing-engine';
+import { checkEventDateAvailability } from '@/lib/availability-server';
 
 // Statuses that allow sending a quote
 const SENDABLE_STATUSES = [
@@ -47,6 +48,9 @@ export async function POST(
 
   try {
     const supabase = createAdminClient();
+    const requestBody = await request.json().catch(() => ({})) as {
+      confirm_soft_hold?: boolean;
+    };
 
     const customerWorkflowOrigin = getCustomerWorkflowOrigin(request);
 
@@ -111,6 +115,42 @@ export async function POST(
       return NextResponse.json(
         { ok: false, message: `Unsupported quote status for sending: ${quote.status}` },
         { status: 400 }
+      );
+    }
+
+    const availability = await checkEventDateAvailability(
+      supabase,
+      quote.event_date,
+      { excludeQuoteId: quote.id },
+    );
+    if (availability.hardBlocks.length > 0) {
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'EVENT_DATE_BLOCKED',
+          message: 'This date has a blocking calendar commitment. Resolve the block before sending a customer quote.',
+        },
+        { status: 409 },
+      );
+    }
+    if (!availability.available) {
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'EVENT_DATE_ALREADY_BOOKED',
+          message: 'This date is already owned by another confirmed booking.',
+        },
+        { status: 409 },
+      );
+    }
+    if (availability.softHolds.length > 0 && !requestBody.confirm_soft_hold) {
+      return NextResponse.json(
+        {
+          ok: false,
+          code: 'SOFT_HOLD_CONFIRMATION_REQUIRED',
+          message: 'A soft hold exists on this date. Confirm that you want to send the quote anyway.',
+        },
+        { status: 409 },
       );
     }
 

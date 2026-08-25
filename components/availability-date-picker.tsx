@@ -16,9 +16,9 @@ import {
   parseLocalDateOnly,
 } from '@/lib/date-only';
 
-interface BookedDatesResponse {
+interface LimitedDatesResponse {
   ok: boolean;
-  bookedDates?: string[];
+  limitedDates?: string[];
 }
 
 export function AvailabilityDatePicker({
@@ -33,7 +33,7 @@ export function AvailabilityDatePicker({
   const descriptionId = useId();
   const errorId = useId();
   const [value, setValue] = useState('');
-  const [bookedDateValues, setBookedDateValues] = useState<string[]>([]);
+  const [limitedDateValues, setLimitedDateValues] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [open, setOpen] = useState(false);
@@ -42,25 +42,25 @@ export function AvailabilityDatePicker({
     () => parseLocalDateOnly(minimumDateValue),
     [minimumDateValue],
   );
-  const bookedDates = useMemo(
-    () => bookedDateValues.map(parseLocalDateOnly),
-    [bookedDateValues],
+  const limitedDates = useMemo(
+    () => limitedDateValues.map(parseLocalDateOnly),
+    [limitedDateValues],
   );
 
   useEffect(() => {
     const controller = new AbortController();
 
-    async function loadBookedDates() {
+    async function loadLimitedDates() {
       try {
         const response = await fetch('/api/availability/booked-dates', {
           cache: 'no-store',
           signal: controller.signal,
         });
-        const body = (await response.json()) as BookedDatesResponse;
-        if (!response.ok || !body.ok || !Array.isArray(body.bookedDates)) {
+        const body = (await response.json()) as LimitedDatesResponse;
+        if (!response.ok || !body.ok || !Array.isArray(body.limitedDates)) {
           throw new Error('Availability request failed');
         }
-        setBookedDateValues(body.bookedDates);
+        setLimitedDateValues(body.limitedDates);
       } catch (fetchError) {
         if ((fetchError as Error).name !== 'AbortError') setLoadFailed(true);
       } finally {
@@ -68,7 +68,7 @@ export function AvailabilityDatePicker({
       }
     }
 
-    void loadBookedDates();
+    void loadLimitedDates();
     return () => controller.abort();
   }, []);
 
@@ -107,23 +107,28 @@ export function AvailabilityDatePicker({
             mode="single"
             selected={value ? parseLocalDateOnly(value) : undefined}
             defaultMonth={minimumDate}
-            disabled={[{ before: minimumDate }, ...bookedDates]}
-            modifiers={{ booked: bookedDates }}
+            disabled={{ before: minimumDate }}
+            modifiers={{ limited: limitedDates }}
             modifiersClassNames={{
-              booked: 'line-through text-red-700 opacity-70',
+              limited: 'border border-amber-500 bg-amber-50 font-semibold text-amber-950',
             }}
             onSelect={(date) => {
               if (!date) return;
               setValue(formatDateOnlyValue(date));
               setOpen(false);
             }}
-            aria-label="Choose an available event date"
+            aria-label="Choose an event date"
           />
         </PopoverContent>
       </Popover>
       <p id={descriptionId} className="text-sm text-muted-foreground">
-        Select a date at least 7 days from today. Dates shown as unavailable are already booked.
+        Select a date at least 7 days from today. Amber dates have limited availability, but you may still request them.
       </p>
+      {value && limitedDateValues.includes(value) && (
+        <p role="status" className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-950">
+          This date currently has limited availability. You may still submit your event details, and we will confirm availability or alternate options.
+        </p>
+      )}
       {loadFailed && (
         <p role="status" className="text-sm text-amber-800">
           Live availability could not be loaded. You may still choose a date; we will verify it when you submit.
