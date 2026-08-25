@@ -4,7 +4,7 @@ import { PGlite } from '@electric-sql/pglite';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const migrationPath = fileURLToPath(new URL(
-  '../supabase/migrations/20260730193121_add_michigan_sales_tax_and_standard_deposit.sql',
+  '../supabase/migrations/20260731002622_add_michigan_sales_tax_and_standard_deposit.sql',
   import.meta.url,
 ));
 

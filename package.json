@@ -9,9 +9,9 @@
     ]
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/next-dev-wasm.mjs",
     "dev:web": "corepack pnpm --filter @signature-luxe/web dev",
-    "build": "next build",
+    "build": "node scripts/next-build-wasm.mjs",
     "build:web": "corepack pnpm --filter @signature-luxe/web build",
     "build:all": "corepack pnpm build && corepack pnpm build:web",
     "check:web": "corepack pnpm --filter @signature-luxe/web check",
@@ -19,8 +19,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit --incremental false",
     "test": "vitest run",
-    "test:migration": "vitest run tests/supabase-migration.test.ts",
-    "supabase:validate": "DO_NOT_TRACK=1 supabase --version && vitest run tests/supabase-migration.test.ts",
+    "test:migration": "vitest run tests/migration-chain.test.ts tests/supabase-migration.test.ts tests/booking-availability-migration.test.ts",
+    "supabase:validate": "supabase --version && npm run test:migration",
     "verify:phase5": "node --experimental-strip-types scripts/verify-phase5-customer-workflows.mjs",
     "seo:audit-links": "node --experimental-strip-types scripts/audit-internal-links.ts",
     "seo:audit-content": "node --experimental-strip-types scripts/audit-seo-content.ts",
@@ -87,6 +87,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.4",
+    "@next/swc-wasm-nodejs": "16.2.4",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22",
     "@types/react": "^19",

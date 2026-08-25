@@ -26,13 +26,15 @@ import { useRouter } from 'next/navigation';
 import { AdminStatusBadge } from '@/components/admin/admin-status-badge';
 import { formatAdminStatus } from '@/lib/quotes/status';
 import {
-  getAvailabilitySummaries,
-  type SameDateRequestSummary,
+  getCombinedAvailabilitySummaries,
+  type AvailabilityBlock,
+  type AvailabilityDaySummary,
 } from '@/lib/availability';
 import { DashboardBookingSection } from '@/components/admin/booking-calendar';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
+  initialBlocks?: AvailabilityBlock[];
   source: 'supabase' | 'mock';
   error?: string;
 }
@@ -54,6 +56,8 @@ type AvailabilityFilter =
   | 'multiple_requests'
   | 'date_already_booked'
   | 'booked_dates'
+  | 'blocked_dates'
+  | 'soft_holds'
   | 'booking_conflicts';
 
 const pipelineBucketConfig: Array<{
@@ -134,7 +138,7 @@ function DateAvailabilityBadges({
   onFilter,
 }: {
   quoteId: string;
-  summary?: SameDateRequestSummary<QuoteRequest>;
+  summary?: AvailabilityDaySummary<QuoteRequest>;
   onFilter: (filter: AvailabilityFilter) => void;
 }) {
   if (!summary) return null;
@@ -147,10 +151,10 @@ function DateAvailabilityBadges({
     icon: LucideIcon;
   }> = [];
 
-  if (summary.hasBookingConflict) {
+  if (summary.hasBlockingConflict) {
     badges.push({
       key: 'conflict',
-      label: 'Booking conflict',
+      label: 'Commitment conflict',
       filter: 'booking_conflicts',
       className: 'border-red-600 bg-red-100 text-red-900',
       icon: AlertTriangle,
@@ -170,6 +174,26 @@ function DateAvailabilityBadges({
       filter: 'date_already_booked',
       className: 'border-red-500 bg-red-50 text-red-900',
       icon: AlertCircle,
+    });
+  }
+
+  if (!summary.hasBlockingConflict && summary.hardBlocks.length > 0) {
+    badges.push({
+      key: 'blocked',
+      label: 'Request on blocked date',
+      filter: 'blocked_dates',
+      className: 'border-violet-500 bg-violet-100 text-violet-950',
+      icon: CalendarClock,
+    });
+  }
+
+  if (summary.softHolds.length > 0) {
+    badges.push({
+      key: 'soft-hold',
+      label: 'Soft hold on date',
+      filter: 'soft_holds',
+      className: 'border-amber-500 bg-amber-50 text-amber-950',
+      icon: Clock,
     });
   }
 
@@ -202,6 +226,7 @@ function DateAvailabilityBadges({
 
 export default function QuoteRequestsDashboard({
   initialQuotes,
+  initialBlocks = [],
   source,
   error,
 }: QuoteRequestsDashboardProps) {
@@ -284,8 +309,8 @@ export default function QuoteRequestsDashboard({
   }, [initialQuotes]);
 
   const availabilitySummaries = useMemo(
-    () => getAvailabilitySummaries(initialQuotes),
-    [initialQuotes],
+    () => getCombinedAvailabilitySummaries(initialQuotes, initialBlocks),
+    [initialBlocks, initialQuotes],
   );
 
   const filteredQuotes = useMemo(() => {
@@ -311,15 +336,24 @@ export default function QuoteRequestsDashboard({
       ) return false;
       if (
         availabilityFilter === 'date_already_booked' &&
-        (!availability?.bookingOwner || availability.bookingOwner.id === quote.id)
+        ((!availability?.bookingOwner || availability.bookingOwner.id === quote.id) &&
+          !availability?.hardBlocks.length)
       ) return false;
       if (
         availabilityFilter === 'booked_dates' &&
         availability?.bookingOwner?.id !== quote.id
       ) return false;
       if (
+        availabilityFilter === 'blocked_dates' &&
+        !availability?.hardBlocks.length
+      ) return false;
+      if (
+        availabilityFilter === 'soft_holds' &&
+        !availability?.softHolds.length
+      ) return false;
+      if (
         availabilityFilter === 'booking_conflicts' &&
-        !availability?.hasBookingConflict
+        !availability?.hasBlockingConflict
       ) return false;
 
       if (!normalizedSearch) return true;
@@ -459,7 +493,7 @@ export default function QuoteRequestsDashboard({
         ))}
       </div>
 
-      <DashboardBookingSection quotes={initialQuotes} />
+      <DashboardBookingSection quotes={initialQuotes} blocks={initialBlocks} />
 
       {/* Full-width Filters */}
       <section className="bg-white rounded-xl border border-[#8a7a68] p-4 md:p-5 shadow-sm space-y-5" aria-labelledby="quote-filters-heading">
@@ -579,7 +613,9 @@ export default function QuoteRequestsDashboard({
                 <SelectItem value="multiple_requests">Multiple Requests</SelectItem>
                 <SelectItem value="date_already_booked">Date Already Booked</SelectItem>
                 <SelectItem value="booked_dates">Booked Dates</SelectItem>
-                <SelectItem value="booking_conflicts">Booking Conflicts</SelectItem>
+                <SelectItem value="blocked_dates">Blocked Dates</SelectItem>
+                <SelectItem value="soft_holds">Soft Holds</SelectItem>
+                <SelectItem value="booking_conflicts">Commitment Conflicts</SelectItem>
               </SelectContent>
             </Select>
           </label>

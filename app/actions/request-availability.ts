@@ -8,7 +8,6 @@ import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import {
   checkEventDateAvailability,
-  EVENT_DATE_ALREADY_BOOKED_MESSAGE,
 } from '@/lib/availability-server';
 import {
   getMinimumEventDate,
@@ -89,18 +88,6 @@ export async function submitRequestAvailability(
     }
 
     const availabilityClient = createAdminClient();
-    const initialAvailability = await checkEventDateAvailability(
-      availabilityClient,
-      eventDate,
-    );
-    if (!initialAvailability.available) {
-      return {
-        success: false,
-        message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
-        errors: { eventDate: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
-      };
-    }
-
     const supabase = await createClient();
 
     // Parse location for city, state, zip
@@ -191,13 +178,6 @@ export async function submitRequestAvailability(
       availabilityClient,
       eventDate,
     );
-    if (!finalAvailability.available) {
-      return {
-        success: false,
-        message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
-        errors: { eventDate: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
-      };
-    }
 
     // Create the quote. quote_requests is the sole source of truth.
     const { data: insertedQuote, error: quoteError } = await supabase
@@ -214,16 +194,6 @@ export async function submitRequestAvailability(
     }
 
     if (quoteError) {
-      if (
-        quoteError.code === 'P0001' &&
-        quoteError.message.includes('EVENT_DATE_ALREADY_BOOKED')
-      ) {
-        return {
-          success: false,
-          message: EVENT_DATE_ALREADY_BOOKED_MESSAGE,
-          errors: { eventDate: [EVENT_DATE_ALREADY_BOOKED_MESSAGE] },
-        };
-      }
       console.error('[v0] Quote creation error:', quoteError);
       return {
         success: false,
@@ -254,6 +224,7 @@ export async function submitRequestAvailability(
             
             <h3>Event Details</h3>
             <p><strong>Event Date:</strong> ${eventDate}</p>
+            ${finalAvailability.limited ? '<p style="color: #7c3aed;"><strong>REQUEST ON BLOCKED OR LIMITED DATE:</strong> Review calendar commitments before sending this quote.</p>' : ''}
             <p><strong>Event Type:</strong> ${eventType}</p>
             <p><strong>Guest Count:</strong> ${guestCount}</p>
             <p><strong>Start Time:</strong> ${startTime || 'Not specified'}</p>
@@ -330,7 +301,9 @@ export async function submitRequestAvailability(
 
     return {
       success: true,
-      message: 'Request submitted successfully! Your custom quote has been generated.',
+      message: finalAvailability.limited
+        ? "Request submitted! This date has limited availability, so we'll confirm availability or alternate options when we follow up."
+        : 'Request submitted successfully! Your custom quote has been generated.',
       quoteNumber: quoteNumber,
     };
   } catch (error) {

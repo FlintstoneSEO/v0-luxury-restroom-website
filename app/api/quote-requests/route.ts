@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteRequestCreateSchema } from '@/lib/quotes/schema';
 import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation';
+import { checkEventDateAvailability } from '@/lib/availability-server';
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -55,6 +56,10 @@ export async function POST(req: Request) {
     }
 
     const { distanceMiles, priceBreakdown, distanceCalculationStatus } = await buildQuoteCalculation(parsed.data);
+    const availability = await checkEventDateAvailability(
+      supabase,
+      parsed.data.event_date,
+    );
 
     const payload = {
       customer_name: parsed.data.customer_name,
@@ -110,7 +115,13 @@ export async function POST(req: Request) {
       console.log('[api/quote-requests] insert response', { error, inserted: data?.length ?? 0 });
     }
     if (error) return NextResponse.json({ ok: false, message: error.message }, { status: 400 });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      limitedAvailability: availability.limited,
+      message: availability.limited
+        ? "Your request was submitted. This date has limited availability, and we'll confirm availability or alternate options."
+        : 'Your quote request was submitted.',
+    });
   } catch (error) {
     console.error('[quote-requests api] create failed', error);
     return NextResponse.json(

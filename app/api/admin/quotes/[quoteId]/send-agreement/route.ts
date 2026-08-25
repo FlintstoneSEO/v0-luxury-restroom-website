@@ -50,10 +50,13 @@ export async function POST(_request: Request, { params }: { params: Promise<{ qu
         { excludeQuoteId: typedQuote.id },
       );
       if (!availability.available) {
+        const blockedByCalendar = availability.hardBlocks.length > 0;
         return NextResponse.json(
           {
-            code: 'EVENT_DATE_ALREADY_BOOKED',
-            message: 'Another quote already owns this event date. The agreement was not sent.',
+            code: blockedByCalendar ? 'EVENT_DATE_BLOCKED' : 'EVENT_DATE_ALREADY_BOOKED',
+            message: blockedByCalendar
+              ? 'A blocking calendar commitment exists on this date. The agreement was not sent.'
+              : 'Another quote already owns this event date. The agreement was not sent.',
           },
           { status: 409 },
         );

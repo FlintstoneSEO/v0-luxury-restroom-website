@@ -5,7 +5,11 @@ const nonNegativeMoney = z.number().finite().min(0);
 const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Expected YYYY-MM-DD date');
 const timeString = z.string().regex(/^\d{2}:\d{2}$/, 'Expected HH:MM time');
 const optionalDateInput = z.union([dateString, z.literal(''), z.null()]);
-const optionalDateTimeInput = z.union([z.string().datetime(), z.literal(''), z.null()]);
+// Postgres/Supabase serializes timestamptz values with an explicit UTC offset
+// (for example, `2026-08-25T12:00:00.000+00:00`). Accept both those values and
+// the `Z`-terminated ISO strings produced by JavaScript's toISOString().
+const dateTimeString = z.string().datetime({ offset: true });
+const optionalDateTimeInput = z.union([dateTimeString, z.literal(''), z.null()]);
 
 // Schema for creating a new quote request (customer-facing form)
 export const quoteRequestCreateSchema = z.object({
@@ -142,8 +146,8 @@ export const quoteAgreementUpdateSchema = z.object({
   agreement_document_url: z.string().url().optional(),
   signed_document_url: z.string().url().optional(),
   agreement_provider_reference_id: z.string().optional(),
-  agreement_sent_at: z.string().datetime().optional(),
-  agreement_signed_at: z.string().datetime().optional(),
+  agreement_sent_at: dateTimeString.optional(),
+  agreement_signed_at: dateTimeString.optional(),
 });
 
 // Schema for deposit updates
@@ -152,7 +156,7 @@ export const quoteDepositUpdateSchema = z.object({
   deposit_status: z.enum(DEPOSIT_TRACKING_STATUSES),
   deposit_payment_link: z.string().url().optional(),
   deposit_due_date: dateString.optional(),
-  deposit_paid_at: z.string().datetime().optional(),
+  deposit_paid_at: dateTimeString.optional(),
   deposit_paid_amount: nonNegativeMoney.optional(),
   deposit_transaction_reference: z.string().optional(),
   stripe_payment_intent_id: z.string().optional(),
