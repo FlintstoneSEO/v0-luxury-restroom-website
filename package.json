@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "node scripts/next-dev-wasm.mjs",
     "dev:web": "corepack pnpm --filter @signature-luxe/web dev",
-    "build": "next build",
+    "build": "node scripts/next-build-wasm.mjs",
     "build:web": "corepack pnpm --filter @signature-luxe/web build",
     "build:all": "corepack pnpm build && corepack pnpm build:web",
     "check:web": "corepack pnpm --filter @signature-luxe/web check",
