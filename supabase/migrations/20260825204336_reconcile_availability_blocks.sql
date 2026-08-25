@@ -1,5 +1,4 @@
 -- Reconcile the initially deployed availability_blocks migration with the
--- version recorded by the connected production project.
 -- audited admin CRUD, conflict override, and lead-capture implementation.
 
 alter table public.availability_blocks
