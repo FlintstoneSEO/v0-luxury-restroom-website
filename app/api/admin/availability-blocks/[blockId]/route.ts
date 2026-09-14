@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { availabilityBlockUpdateSchema } from '@/lib/availability-blocks/schema';
+import {
+  availabilityBlockUpdateSchema,
+  postgresTimestampSchema,
+} from '@/lib/availability-blocks/schema';
 import { getAvailabilityBlockConflicts } from '@/lib/availability-blocks/server';
 
 const idSchema = z.string().uuid();
-const cancelSchema = z.object({ expected_updated_at: z.string().datetime() });
+const cancelSchema = z.object({ expected_updated_at: postgresTimestampSchema });
 
 export async function PATCH(
   request: Request,
@@ -142,4 +145,3 @@ export async function DELETE(
     return NextResponse.json({ ok: false, code: 'BLOCK_CANCEL_FAILED', message: 'The availability block could not be removed.' }, { status: 500 });
   }
 }
-
