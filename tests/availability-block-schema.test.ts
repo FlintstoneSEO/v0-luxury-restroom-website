@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   availabilityBlockInputSchema,
   availabilityBlockUpdateSchema,
+  postgresTimestampSchema,
 } from '@/lib/availability-blocks/schema';
 
 const validBlock = {
@@ -46,5 +47,18 @@ describe('availability block validation', () => {
       ...validBlock,
       expected_updated_at: '2026-08-25T12:00:00.000Z',
     }).success).toBe(true);
+  });
+
+  it('accepts Supabase/Postgres timestamptz strings without changing precision', () => {
+    const postgresTimestamp = '2026-08-26 16:59:03.741946+00';
+    expect(postgresTimestampSchema.safeParse(postgresTimestamp).success).toBe(true);
+    expect(availabilityBlockUpdateSchema.safeParse({
+      ...validBlock,
+      expected_updated_at: postgresTimestamp,
+    }).success).toBe(true);
+  });
+
+  it('rejects invalid optimistic-concurrency timestamps', () => {
+    expect(postgresTimestampSchema.safeParse('not-a-timestamp').success).toBe(false);
   });
 });
