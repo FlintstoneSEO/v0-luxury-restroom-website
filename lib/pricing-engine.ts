@@ -170,8 +170,12 @@ export function getGuestTier(guestCount: number): string {
 }
 
 export function calculateTravelFee(distanceMiles: number, settings: PricingSettings = DEFAULT_PRICING): { fee: number; extraMiles: number } {
-  const extraMiles = Math.max(0, distanceMiles - settings.included_miles);
-  return { fee: roundCurrency(extraMiles * settings.travel_rate_per_mile), extraMiles };
+  const extraOneWayMiles = Math.max(0, distanceMiles - settings.included_miles);
+  const billableRoundTripMiles = extraOneWayMiles * 2;
+  return {
+    fee: roundCurrency(billableRoundTripMiles * settings.travel_rate_per_mile),
+    extraMiles: billableRoundTripMiles,
+  };
 }
 
 export function calculateUtilityFee(hasPower: boolean, hasWater: boolean, settings: PricingSettings = DEFAULT_PRICING): { fee: number; generatorNeeded: boolean; waterNeeded: boolean } {
