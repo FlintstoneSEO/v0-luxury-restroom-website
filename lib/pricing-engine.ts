@@ -170,8 +170,15 @@ export function getGuestTier(guestCount: number): string {
 }
 
 export function calculateTravelFee(distanceMiles: number, settings: PricingSettings = DEFAULT_PRICING): { fee: number; extraMiles: number } {
-  const extraMiles = Math.max(0, distanceMiles - settings.included_miles);
-  return { fee: roundCurrency(extraMiles * settings.travel_rate_per_mile), extraMiles };
+  // Google Maps returns the one-way driving distance. The included mileage remains
+  // a one-way service radius, while mileage beyond that radius is charged for both
+  // the outbound delivery and return/pickup trip.
+  const extraOneWayMiles = Math.max(0, distanceMiles - settings.included_miles);
+  const billableRoundTripMiles = extraOneWayMiles * 2;
+  return {
+    fee: roundCurrency(billableRoundTripMiles * settings.travel_rate_per_mile),
+    extraMiles: billableRoundTripMiles,
+  };
 }
 
 export function calculateUtilityFee(hasPower: boolean, hasWater: boolean, settings: PricingSettings = DEFAULT_PRICING): { fee: number; generatorNeeded: boolean; waterNeeded: boolean } {
@@ -249,7 +256,7 @@ export function calculateQuotePrice(
 
   const lineItems: QuoteLineItem[] = [
     { code: 'base_rental', label: `Base rental (${getGuestTier(guestCount)})`, quantity: 1, unit_price: basePrice, total: basePrice },
-    { code: 'travel', label: 'Travel', quantity: extraMiles, unit_price: settings.travel_rate_per_mile, total: travelFee },
+    { code: 'travel', label: 'Travel (round trip)', quantity: extraMiles, unit_price: settings.travel_rate_per_mile, total: travelFee },
     { code: 'utilities', label: 'Utilities', quantity: 1, unit_price: utilityFee, total: utilityFee },
     { code: 'after_hours', label: 'After hours', quantity: afterHoursCount, unit_price: settings.after_hours_hourly_rate, total: afterHoursFee },
     { code: 'cleaning', label: 'Cleaning fee', quantity: 1, unit_price: cleaningFee, total: cleaningFee },
