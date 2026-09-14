@@ -8,6 +8,11 @@ import { isValidDateOnly } from '@/lib/date-only';
 
 const dateOnly = z.string().refine(isValidDateOnly, 'Expected a valid YYYY-MM-DD date');
 
+export const postgresTimestampSchema = z.string().refine(
+  (value) => !Number.isNaN(Date.parse(value)),
+  'Expected a valid timestamp',
+);
+
 export const availabilityBlockInputSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(160),
   start_date: dateOnly,
@@ -36,7 +41,7 @@ export const availabilityBlockInputSchema = z.object({
 
 export const availabilityBlockUpdateSchema = availabilityBlockInputSchema.and(
   z.object({
-    expected_updated_at: z.string().datetime(),
+    expected_updated_at: postgresTimestampSchema,
   }),
 );
 
