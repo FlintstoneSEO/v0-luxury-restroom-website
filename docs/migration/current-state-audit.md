@@ -158,7 +158,7 @@ Important field families:
 | Dropbox Sign | send route, webhook, merge fields | Server-only |
 | Square | invoice route and webhook | Server-only |
 | Soro RSS | `lib/soro-blog.ts` | Build/server fetch, hourly revalidation |
-| GTM | `app/layout.tsx`, container `GTM-P5LFZN2` | Public layout |
+| GTM / GA4 | `app/layout.tsx`, container `GTM-P5LFZN2`; GA4 is configured in GTM per `docs/google-analytics.md` | Public layout |
 | Vercel Analytics | `app/layout.tsx` | Production public layout |
 | Vercel deployment | README, `VERCEL_URL`, remote image rules | Current Next deployment |
 
