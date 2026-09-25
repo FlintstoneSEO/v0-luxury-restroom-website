@@ -1,45 +1,44 @@
 # Google Analytics 4
 
-Google Analytics is deployed through the site's existing Google Tag Manager
-container. Do not add a separate `gtag.js` script or a Next.js
-`GoogleAnalytics` component while this configuration is active; doing so can
-send duplicate page views.
+Google Analytics is initialized directly in the root Next.js layout using the
+production GA4 measurement ID `G-WWK23290W0`.
+
+The existing Google Tag Manager container `GTM-P5LFZN2` remains installed for
+other tag-management needs, but it must not also configure or fire the same GA4
+measurement ID. Doing so can create duplicate page views.
 
 ## Production configuration
 
 - Google Tag Manager container: `GTM-P5LFZN2`
 - GA4 web stream measurement ID: `G-WWK23290W0`
-- Installation point: the root Next.js layout (`app/layout.tsx`)
-- Trigger: Initialization - All Pages (or All Pages)
+- GA4 installation point: `app/layout.tsx`
+- GA4 loading method: direct `gtag.js` initialization through `next/script`
 
-In the `GTM-P5LFZN2` workspace, create a **Google tag** whose Tag ID is
-`G-WWK23290W0`, apply the site-wide trigger, test it in Preview mode, and
-publish the container. There should be exactly one site-wide Google tag for
-this measurement ID. Google Tag Manager owns GA4 loading and page-view
-collection; the application must not initialize the same measurement ID
-directly.
+The root layout loads:
 
-The App Router root layout loads GTM once for the entire application. Google's
-tag handles browser-history changes used by Next.js client-side navigation, so
-the application should not send an additional custom `page_view` event unless
-the Google tag is deliberately configured not to send one.
+1. `https://www.googletagmanager.com/gtag/js?id=G-WWK23290W0`
+2. A one-time `gtag('config', 'G-WWK23290W0')` initialization
 
-## Verification after publishing
+The existing GTM container remains unchanged.
 
-1. Open GTM Preview (Tag Assistant) and connect to
-   `https://signatureluxevents.com`.
-2. Confirm that the Google tag for `G-WWK23290W0` fires once on the initial
-   page load.
-3. Navigate between several public pages using site links and confirm that one
-   page view is recorded for each navigation.
-4. In Google Analytics, open **Admin > Data streams** and confirm that
-   `G-WWK23290W0` belongs to the production web stream.
-5. Check **Reports > Realtime** (or DebugView while previewing) for the test
-   session. Reporting can take time outside Realtime and DebugView.
-6. Confirm that no second Google tag, GA4 Configuration tag, direct
-   `gtag('config', ...)` call, or CMS-injected analytics script uses the same
-   measurement ID.
+## Duplicate-tracking guard
 
-Vercel Analytics and Vercel Speed Insights are separate integrations and
-remain enabled in the root layout. They do not replace the GA4 Google tag.
+Do not create a Google tag, GA4 Configuration tag, or custom HTML tag inside
+`GTM-P5LFZN2` that sends data to `G-WWK23290W0` while the direct GA4
+integration is active.
 
+If GA4 is later moved back into GTM, remove the direct `gtag.js` integration
+from `app/layout.tsx` in the same deployment.
+
+## Verification after deployment
+
+1. Deploy the updated `main` branch.
+2. Open `https://signatureluxevents.com`.
+3. Use Google's tag detection or Tag Assistant and confirm
+   `G-WWK23290W0` is detected.
+4. In Google Analytics, open **Reports > Realtime** and verify the test visit.
+5. Navigate between public pages and confirm page views are not duplicated.
+6. Confirm GTM `GTM-P5LFZN2` still loads for any unrelated tags.
+
+Vercel Analytics and Vercel Speed Insights remain enabled separately in the
+root layout.
