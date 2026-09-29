@@ -4,10 +4,11 @@
 
 You are working on the Signature Luxe Events & Amenities platform.
 
-The platform is being separated into two intentional applications:
+The platform has three distinct product surfaces during its migration:
 
-1. A public-facing Astro website managed through CloudCannon.
-2. A protected Next.js admin application for quotes, bookings, pricing, agreements, deposits, media, and operational settings.
+1. A public, indexable Astro marketing website managed through CloudCannon.
+2. A protected, authenticated, noindex Next.js operations application, targeted for `apps/admin`, for quotes, bookings, pricing, agreements, deposits, media, and operational settings. Supabase remains its operational data source.
+3. A customer workflow surface for quote approval and token-based responses. It is neither admin nor ordinary marketing content; preserve its URLs, token semantics, server-side actions, and email links separately during migration.
 
 Your job is to migrate the public site safely, preserve all customer and admin workflows, and improve the admin experience incrementally without breaking production behavior.
 
@@ -31,14 +32,26 @@ Use `.agents/skills/admin-ui-redesign/SKILL.md` for all admin dashboard, quote d
 
 Use any repo-scoped admin workflow or safety skill whenever modifying quote status, customer approval, agreement, deposit, pricing recalculation, distance review, or privileged admin actions.
 
+### Application design routing
+
+- Substantial authenticated admin or operations redesign: start with `.agents/skills/application-redesign/SKILL.md` in audit-first mode, then apply `admin-ui-redesign`. Use `admin-workflow-safety` for any workflow, authorization, or data boundary, including seemingly visual changes that alter available actions or status meaning.
+- Changed admin navigation, route grouping, or screen hierarchy: use `information-architecture`, interpreting its navigation model for role-specific operations; public SEO and conversion assumptions do not apply to admin routes.
+- Implement an approved admin screen specification with `frontend-ui-builder` only after the application redesign gate below is satisfied. Routine isolated fixes may use `admin-ui-redesign` directly while retaining safety analysis where applicable.
+- Review rendered admin work with `responsive-design-review`, `accessibility-audit`, `visual-design-review`, and `website-qa`; use `performance-review` when runtime, payload, or media changes warrant it. Use `anti-template-review` only to detect decorative or generic patterns that impede the admin task. Apply these skills to application tasks and states, not marketing page composition.
+- Use `design-discovery` only for material missing product context and `art-direction-generator` only for a material visual redesign. Adapt both to authenticated users, operational density, and existing workflows.
+- Public marketing design may use `gpt-taste` and existing public design skills; use the application design skills only for genuine interactive application behavior. Customer quote approval and token flows use `admin-workflow-safety` first, plus applicable accessibility, responsive, implementation, and QA skills. Do not route them through marketing art direction or admin dashboard patterns.
+
 ### Skill precedence
 
 When skills conflict:
 
-1. Security, workflow integrity, accessibility, and customer data safety come first.
-2. This `AGENTS.md` architecture and migration plan comes next.
-3. Admin-specific skills govern the admin application.
-4. `gpt-taste` governs public marketing design only where it does not conflict with performance, SEO, accessibility, or CloudCannon editability.
+1. Security, workflow integrity, data integrity, authorization, accessibility, and customer data safety come first.
+2. Signature Luxe `admin-workflow-safety` wins for Supabase service role, authentication, authorization, quote status transitions and calculations, mileage, pricing, customer approval, agreements, deposits, balances, booking capacity, customer-visible email, provider actions, and privileged admin APIs.
+3. This `AGENTS.md` architecture, surface boundaries, and migration plan come next.
+4. General `application-redesign` governs the audit and specification sequence for substantial admin redesigns.
+5. Signature Luxe `admin-ui-redesign` governs admin interaction and presentation within those boundaries.
+6. `information-architecture` governs proposed navigation changes; `frontend-ui-builder` begins only after the implementation gate. Review skills verify the result.
+7. Marketing taste and design skills, including `gpt-taste`, apply to public marketing work only and cannot override operational usability, accessibility, performance, or CloudCannon editability.
 
 ## Target architecture
 
@@ -57,7 +70,7 @@ Primary responsibilities:
 - About and contact pages
 - Gallery and testimonials
 - Public quote-request entry points
-- Public customer quote approval pages only if they can be preserved securely and cleanly
+- Public entry links to the separate customer quote workflow; do not treat token-based approval pages as ordinary marketing content
 - SEO metadata, schema, sitemap, robots, canonicals, internal linking, and image optimization
 
 The public site should be predominantly static and content-driven.
@@ -99,7 +112,7 @@ CloudCannon must not be the source of truth for:
 
 ### Admin application
 
-Keep the protected admin application in Next.js App Router.
+Keep the protected admin application in Next.js App Router during migration and target `apps/admin` only after the migration inventory and build plan justify the move.
 
 Primary responsibilities:
 
@@ -115,6 +128,10 @@ Primary responsibilities:
 - Internal notes
 - Settings
 - Admin-only APIs
+
+### Customer workflow surface
+
+Keep quote approval and change-request pages, approval tokens, agreement signing, deposit actions, and related customer email links on a separately mapped customer workflow surface. Choose its eventual host only after verifying the security and operational boundaries. It must retain server-side validation and privileged transitions, and it must not inherit admin navigation or public marketing CMS behavior.
 
 ### Shared backend
 
@@ -352,6 +369,25 @@ Validation steps:
 
 Then proceed with implementation.
 
+## Substantial admin redesign implementation gate
+
+The pre-build brief above still applies. Before implementing a substantial admin redesign, produce and record all of the following from observed repository and, where available, rendered behavior:
+
+1. Application audit of current architecture, routes, screens, states, data boundaries, and baseline behavior.
+2. Role and permission inventory, including server authorization and direct-access boundaries.
+3. Mapped major workflows, decisions, state transitions, save points, error recovery, and customer-visible effects.
+4. Explicit preservation boundaries for business logic, data meaning, integrations, authentication, and customer links.
+5. Preserve / Improve / Restructure / Replace matrix with rationale and regression risk.
+6. Navigation and information architecture proposal when navigation or routes change; settle those decisions before implementation.
+7. Shared primitive proposal that distinguishes reusable UI mechanics from quote, pricing, and status domain rules.
+8. Selected visual direction and rationale when the request entails a material visual redesign. Explore distinct options in application terms without imposing marketing page composition.
+9. Implementation-ready screen specification covering task hierarchy, data and actions, permissions, loading/empty/error/success states, and customer-visible confirmation behavior.
+10. Responsive behavior specification for dense tables, filters, sidebars, dialogs, and actions at mobile, tablet, and desktop widths.
+11. Accessibility considerations for keyboard order, focus, names, status announcements, validation, contrast, zoom, and touch.
+12. Regression plan for affected roles, APIs, status transitions, calculations, emails, and customer links, with safe test fixtures and rollback steps.
+
+The gate is for substantial redesign, not routine isolated fixes. An audit-only request stops at the audit and specification deliverables. Missing security, data, or workflow facts must remain explicit and cannot be silently assumed. `frontend-ui-builder` is used only after this gate is met. Preserve the existing Next.js implementation and avoid moving files to `apps/admin` until a separate migration phase is authorized and planned.
+
 ## Codex execution plan
 
 ### Phase 0: Discovery and safeguards
@@ -450,7 +486,7 @@ Do not migrate these routes merely for architectural purity.
 
 ### Phase 6: Admin foundation redesign
 
-Use `admin-ui-redesign` and admin workflow safety skills.
+Complete the application redesign gate below, then use `admin-ui-redesign` and admin workflow safety skills.
 
 - Extract reusable admin shell, navigation, page headers, status badges, loading states, empty states, and error states.
 - Improve mobile navigation and keyboard accessibility.

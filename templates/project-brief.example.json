@@ -1,0 +1,18 @@
+{
+  "organization": "Example Organization",
+  "industry": "nonprofit",
+  "geography": "Lansing, Michigan",
+  "primaryAudience": "[NEEDS CLIENT INPUT]",
+  "secondaryAudience": "[NEEDS CLIENT INPUT]",
+  "primaryConversion": "Donate",
+  "secondaryConversion": "Volunteer",
+  "businessGoals": [],
+  "requiredPages": [],
+  "contentReadiness": "partial",
+  "technicalStack": "Astro",
+  "cms": "CloudCannon",
+  "seoPriorities": [],
+  "performanceConstraints": [],
+  "unknowns": [],
+  "assumptions": []
+}

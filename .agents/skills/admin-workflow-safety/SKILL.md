@@ -7,6 +7,8 @@ description: Use when changing admin quote workflow behavior, quote statuses, ag
 
 Use this skill whenever a task changes quote workflow behavior, admin API routes, Supabase access, status transitions, customer-visible emails, agreements, deposits, or pricing calculations.
 
+This Signature Luxe safety skill overrides general application, visual, implementation, and review skills for authentication, authorization, service-role access, quote calculations and statuses, mileage, pricing, approval tokens, agreements, deposits, balances, booking capacity, provider actions, customer-visible email, and privileged APIs. Apply it to the separate customer workflow surface as well as the admin. A substantial redesign still follows `application-redesign` and the root `AGENTS.md` implementation gate, but no design recommendation may change these workflow rules without explicit analysis and authorization.
+
 ## Scope
 
 Use this skill for files under:

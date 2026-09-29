@@ -7,18 +7,6 @@
       "skillPath": "skills/brandkit/SKILL.md",
       "computedHash": "b63012f3c3d21197e0185d3e9cc7ec40c589fb10e0b5a32a561739de31aa3f20"
     },
-    "design-taste-frontend": {
-      "source": "Leonxlnx/taste-skill",
-      "sourceType": "github",
-      "skillPath": "skills/taste-skill/SKILL.md",
-      "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
-    },
-    "design-taste-frontend-v1": {
-      "source": "Leonxlnx/taste-skill",
-      "sourceType": "github",
-      "skillPath": "skills/taste-skill-v1/SKILL.md",
-      "computedHash": "d704ab912c4d0ca954ffa858983da755ae4cd5cad9ba22554db5557382f5bd34"
-    },
     "full-output-enforcement": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
@@ -30,12 +18,6 @@
       "sourceType": "github",
       "skillPath": "skills/gpt-tasteskill/SKILL.md",
       "computedHash": "cc8f0c601d8240a124e1d11634351a2be7b8a72fd807c75e5b6bf7afcd5ddee0"
-    },
-    "high-end-visual-design": {
-      "source": "Leonxlnx/taste-skill",
-      "sourceType": "github",
-      "skillPath": "skills/soft-skill/SKILL.md",
-      "computedHash": "7db385e4c5370e5a7fca9704a1361b056e4504ea6a03924bb86f33a4f00b5c73"
     },
     "image-to-code": {
       "source": "Leonxlnx/taste-skill",
@@ -55,29 +37,110 @@
       "skillPath": "skills/imagegen-frontend-web/SKILL.md",
       "computedHash": "65f5ae59fa317567809438310b1c54f78cd133426deb43e4d3d4ca4c8f541628"
     },
-    "industrial-brutalist-ui": {
-      "source": "Leonxlnx/taste-skill",
-      "sourceType": "github",
-      "skillPath": "skills/brutalist-skill/SKILL.md",
-      "computedHash": "8fc355c4aadb7d29c53ca28bc41be3cd6eea765d121e3737c4dc2d0f90a8effa"
-    },
-    "minimalist-ui": {
-      "source": "Leonxlnx/taste-skill",
-      "sourceType": "github",
-      "skillPath": "skills/minimalist-skill/SKILL.md",
-      "computedHash": "08873a3131d3be27bef9bf3304b310b16b44ca6e3561aebe532797be3443f6bd"
-    },
-    "redesign-existing-projects": {
-      "source": "Leonxlnx/taste-skill",
-      "sourceType": "github",
-      "skillPath": "skills/redesign-skill/SKILL.md",
-      "computedHash": "b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726"
-    },
     "stitch-design-taste": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/stitch-skill/SKILL.md",
       "computedHash": "13322f38406cd3abf16ba45e35bdc9b18002d0153a79b4612b97aefc65d5a335"
+    },
+    "application-redesign": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/application-redesign/SKILL.md",
+      "localPath": ".agents/skills/application-redesign/SKILL.md",
+      "computedHash": "39207aa4d7a7ecda8f8525ea5bf67f45a68a8d878d554f908312a5d749e2093d",
+      "sourceHash": "a4f7424c4d8a1a773a06d526037d631bf1b4bc4dc578ff577ea8e99dd886df63"
+    },
+    "information-architecture": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/information-architecture/SKILL.md",
+      "localPath": ".agents/skills/information-architecture/SKILL.md",
+      "computedHash": "e916cc11c5b5bf0024ad37a6e6f09182bda221f94bed69f50b9fda3daa31738d",
+      "sourceHash": "4dd93ddd4fe06e15e5ce2dc3ae69f83ec3d1943188258005ec7adc85a122bd9b"
+    },
+    "frontend-ui-builder": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/frontend-ui-builder/SKILL.md",
+      "localPath": ".agents/skills/frontend-ui-builder/SKILL.md",
+      "computedHash": "9b4c19a121c82d3ee0e96acea139b8eb47b93ed5f4b857fdead1a714e00412fe",
+      "sourceHash": "f41f9da37df52e086bf12203832f61550bb8692c8673b7db9cc54e2bb0248899"
+    },
+    "responsive-design-review": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/responsive-design-review/SKILL.md",
+      "localPath": ".agents/skills/responsive-design-review/SKILL.md",
+      "computedHash": "aa39020878c5b6460b3cfd1ae95d3ea152ca968bb92dfc4af3f0406d8e655dcb",
+      "sourceHash": "e9856414b3198a44599f7f2ebbf150747af3d31df72df199b626047e9b80940e"
+    },
+    "accessibility-audit": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/accessibility-audit/SKILL.md",
+      "localPath": ".agents/skills/accessibility-audit/SKILL.md",
+      "computedHash": "ec79a4a46eb4f252e461e0f5cb80e78dbf23329126925be51a3153b4074c34b5",
+      "sourceHash": "d291f901ea7c73f524691414d24c803968a2023159e9f79714db79af472d5ee3"
+    },
+    "visual-design-review": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/visual-design-review/SKILL.md",
+      "localPath": ".agents/skills/visual-design-review/SKILL.md",
+      "computedHash": "d1974b0a866ad70097ef0d4c9f776c1262236f9708ee6125859d496c75d553b3",
+      "sourceHash": "fccfda92bc467886497f4d2f4f45548d188dadd3fa86de629811a1e98ee95d85"
+    },
+    "website-qa": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/website-qa/SKILL.md",
+      "localPath": ".agents/skills/website-qa/SKILL.md",
+      "computedHash": "d4627813c2fd5a65ce63dc240f737aaf5b72aae94f67a8f32abb3f49049336d5",
+      "sourceHash": "3d1b71b20d496eded518d3af2bab1c010f8feeff9ccd1e15494c796e0f7902c8"
+    },
+    "performance-review": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/performance-review/SKILL.md",
+      "localPath": ".agents/skills/performance-review/SKILL.md",
+      "computedHash": "51a1a880d14618737066595824b3174ac663d10eaa6aed2fdf75a9fabacad944",
+      "sourceHash": "263dcc6623ab59d78cb36ea41d678e1317d018d2319a27c566f3c95d087ed497"
+    },
+    "anti-template-review": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/anti-template-review/SKILL.md",
+      "localPath": ".agents/skills/anti-template-review/SKILL.md",
+      "computedHash": "80a924d516ef7f59f5986928c11a00a22b038a66367119050d45a6ae1a1abbb6",
+      "sourceHash": "09e6751e089d3097ad5ea42c36f5f6bcc6c8521366fb7d451c77f1eec4dddafd"
+    },
+    "design-discovery": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/design-discovery/SKILL.md",
+      "localPath": ".agents/skills/design-discovery/SKILL.md",
+      "computedHash": "11664830d8847ca07c18f5f5b7ba54f5b64d195ae29b705c98e9419f36952faa",
+      "sourceHash": "316b1cfe8248dab882882de9e5c171c5da964c3b47ea45724ead497aec29ca14"
+    },
+    "art-direction-generator": {
+      "source": "FlintstoneSEO/codex-frontend-design-agent",
+      "sourceType": "github",
+      "sourceCommit": "7f1fc78f703348f9b820e043c644b0b309c95253",
+      "skillPath": "skills/art-direction-generator/SKILL.md",
+      "localPath": ".agents/skills/art-direction-generator/SKILL.md",
+      "computedHash": "3ffb95d5acef1ce8aa8db6e68190dde89c960e49276d61e0eaff7bb20a1442bb",
+      "sourceHash": "9fb65c0f2f4d8c720deb2592fea979ce3093fcb14699e82bb06d15a592b1d71a"
     }
   }
 }
