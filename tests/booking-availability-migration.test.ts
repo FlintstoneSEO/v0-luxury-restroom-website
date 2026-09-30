@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 const migrationPath = fileURLToPath(
   new URL(
-    '../supabase/migrations/20260731014028_enforce_one_booking_per_day.sql',
+    '../supabase/migrations/20260731020944_enforce_one_booking_per_day.sql',
     import.meta.url,
   ),
 );
