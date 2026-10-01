@@ -1,1 +1,3 @@
-export { default, dynamic, revalidate } from './admin/page'
+import { redirect } from 'next/navigation'
+
+export default function Home() { redirect('/admin') }
