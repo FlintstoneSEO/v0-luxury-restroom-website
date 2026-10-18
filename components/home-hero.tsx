@@ -3,7 +3,6 @@ import Link from "next/link"
 import { ArrowRight, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-
 type HomeHeroProps = {
   heroImage: { src: string; alt: string; unoptimized?: boolean }
   content: {
@@ -18,87 +17,22 @@ type HomeHeroProps = {
 
 export function HomeHero({ heroImage, content }: HomeHeroProps) {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden md:items-end">
-      {/* Background Image Container */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 md:inset-x-[-6%] md:inset-y-[-10%]">
-          <Image
-            src={heroImage.src}
-            alt={heroImage.alt}
-            unoptimized={heroImage.unoptimized}
-            fill
-            preload
-            quality={80}
-            sizes="100vw"
-            className="object-cover object-center motion-safe:md:animate-hero-ken-burns motion-reduce:scale-100 motion-reduce:animate-none"
-          />
+    <section className="estate-home-hero" aria-labelledby="home-heading">
+      <div className="estate-home-copy">
+        <p className="estate-kicker">{content.eyebrow}</p>
+        <h1 id="home-heading">{content.heading}</h1>
+        <p className="estate-hero-description">{content.body}</p>
+        <div className="estate-hero-actions">
+          <Button asChild size="lg" className="bg-navy text-white hover:bg-navy/90">
+            <Link href={content.primaryCta.href}>{content.primaryCta.label}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Link>
+          </Button>
+          <Link className="estate-text-link" href={content.secondaryCta.href}>{content.secondaryCta.label}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Link>
         </div>
-
-        {/* Bottom-heavy gradient - keeps top of image visible, darkens bottom for text */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1f2a36]/95 via-[#1f2a36]/50 via-40% to-transparent" />
-        
-        {/* Subtle side vignette for depth */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1f2a36]/30 via-transparent to-[#1f2a36]/30" />
-
-        {/* Static radial glow avoids a large animated blur layer. */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_65%,rgba(222,210,196,0.16),transparent_32%)]" />
+        <p className="estate-location"><MapPin aria-hidden="true" className="h-4 w-4 shrink-0" />{content.location}</p>
       </div>
-
-      {/* Content - elevated on mobile, anchored lower again on desktop */}
-      <div className="relative z-10 w-full">
-        <div className="container mx-auto px-4 pb-16 pt-28 md:pb-28 md:pt-40 lg:px-8">
-          <div className="max-w-2xl motion-safe:animate-hero-enter motion-reduce:animate-none">
-            <span className="mb-4 inline-block rounded-full border border-[#DED2C4]/40 bg-[#DED2C4]/15 px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.2em] text-[#f4ece2] backdrop-blur-sm">
-              {content.eyebrow}
-            </span>
-            
-            <h1 className="text-balance font-serif text-3xl font-semibold leading-tight text-white drop-shadow-lg sm:text-4xl md:text-5xl lg:text-6xl">
-              {content.heading}
-            </h1>
-            
-            <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-white/90 drop-shadow-md md:text-lg">
-              {content.body}
-            </p>
-
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Button
-                asChild
-                size="lg"
-                className="group bg-[#DED2C4] px-8 font-semibold text-[#2D3A47] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#e8dfd4] hover:shadow-[0_14px_26px_rgba(222,210,196,0.35)]"
-              >
-                <Link href={content.primaryCta.href}>
-                  {content.primaryCta.label}
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-white/50 bg-white px-8 font-medium text-[#2D3A47] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-xl"
-              >
-                <Link href={content.secondaryCta.href}>{content.secondaryCta.label}</Link>
-              </Button>
-            </div>
-
-            <p className="mt-6 inline-flex items-center gap-2 text-sm text-white/80">
-              <MapPin className="h-4 w-4 text-[#DED2C4]" />
-              {content.location}
-            </p>
-          </div>
-        </div>
+      <div className="estate-home-image">
+        <Image src={heroImage.src} alt={heroImage.alt} unoptimized={heroImage.unoptimized} fill preload quality={85} sizes="(max-width: 900px) 100vw, 56vw" className="object-cover" />
       </div>
-
-      {/* Scroll indicator */}
-      <a
-        href="#homepage-events"
-        aria-label="Scroll to next section"
-        className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full outline-none transition-transform motion-safe:animate-[bounce-subtle_2s_ease-in-out_infinite] hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#DED2C4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2D3A47] pointer-events-auto motion-reduce:animate-none"
-      >
-        <div className="flex h-12 w-8 justify-center rounded-full border border-white/45 bg-white/10 pt-2 backdrop-blur-sm overflow-hidden">
-          <div className="h-3 w-1.5 rounded-full bg-[#DED2C4] motion-safe:animate-scroll-wheel motion-reduce:animate-none" />
-        </div>
-      </a>
     </section>
   )
 }

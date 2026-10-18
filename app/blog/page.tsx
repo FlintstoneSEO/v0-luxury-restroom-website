@@ -32,7 +32,7 @@ export default async function BlogPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-cream">
+      <main id="public-content" tabIndex={-1} className="estate-public min-h-screen bg-cream">
         <section className="relative overflow-hidden bg-navy py-20 text-white md:py-24">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(210,194,174,0.28),transparent_35%),linear-gradient(135deg,rgba(45,58,71,0.96),rgba(31,41,51,0.98))]" />
           <div className="container relative mx-auto px-4 lg:px-8">

@@ -29,7 +29,7 @@ export default function RequestQuotePage() {
   ] }
 
   return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /><Header />
-    <main>
+    <main id="public-content" tabIndex={-1} className="estate-public">
       <HeroSection
         variant='page'
         eyebrow='Request a Quote'

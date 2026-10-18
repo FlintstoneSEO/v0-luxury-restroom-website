@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { HeroSection } from "@/components/hero-section"
+import { ServiceHero as HeroSection } from "@/components/service-hero"
 import { SectionHeader } from "@/components/section-header"
 import { FeatureGrid } from "@/components/feature-grid"
 import { GalleryGrid } from "@/components/gallery-grid"
@@ -60,7 +60,7 @@ export default async function PrivateEventRestroomTrailersPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public estate-service">
         {/* Hero */}
         <HeroSection
           variant="page"

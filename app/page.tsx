@@ -82,6 +82,8 @@ export default async function HomePage() {
   const eventScenarios = homepageContent.eventScenarios.map((scenario) => ({
     ...homepageMedia[scenario.mediaKey as keyof typeof homepageMedia],
     displayLabel: scenario.label,
+    mediaKey: scenario.mediaKey,
+    href: ({ weddings: '/wedding-restroom-trailer-rentals', private_parties: '/private-event-restroom-trailers', corporate_events: '/corporate-event-restroom-trailers', festivals: '/festival-community-event-restroom-trailers' } as Record<string, string>)[scenario.mediaKey] ?? '/luxury-restroom-trailer-rentals',
   }))
 
   const business = localBusinessJsonLd("Lansing")
@@ -95,59 +97,55 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(video) }} />
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public">
         <HomeHero heroImage={heroImage} content={homepageContent.hero} />
 
-        {/* Event Scenarios Showcase */}
-        <section id="homepage-events" className="scroll-mt-24 py-16 bg-white border-b border-cream">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="text-center mb-10">
-              <span className="text-sm font-semibold uppercase tracking-widest text-navy">
-                Perfect For Any Occasion
-              </span>
-              <h2 className="mt-2 text-2xl font-serif font-semibold text-navy">
-                From Elegant Weddings to Job Sites
-              </h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {eventScenarios.map((scenario, index) => (
-                <div key={index} className="group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer">
-                  <Image
-                    src={scenario.src}
-                    alt={scenario.alt}
-                    unoptimized={scenario.unoptimized}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    quality={78}
-                    sizes="(max-width: 768px) calc(50vw - 24px), (max-width: 1280px) calc(25vw - 24px), 296px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
-                  <div className="absolute bottom-4 left-4">
-                    <span className="px-3 py-1 bg-gold/90 text-navy text-sm font-medium rounded-full">
-                      {scenario.displayLabel}
-                    </span>
-                  </div>
-                </div>
-              ))}
+        <section className="estate-assurance" aria-label="Restroom amenities and service region">
+          <div className="estate-assurance-inner">
+            {features.slice(0, 3).map((feature) => (
+              <div key={feature.title} className="estate-assurance-item">
+                <feature.icon aria-hidden="true" /><span>{feature.title}</span>
+              </div>
+            ))}
+            <div className="estate-assurance-item"><MapPin aria-hidden="true" /><span>Lansing &amp; Mid-Michigan</span></div>
+          </div>
+        </section>
 
-            <div className="col-span-full mt-6 w-full max-w-md mx-auto">
-              <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-gold/30 shadow-md">
-                <Image
-                  src={trailerGalleryImage.src}
-                  alt={trailerGalleryImage.alt}
-                  unoptimized={trailerGalleryImage.unoptimized}
-                  fill
-                  className="object-cover"
-                  quality={78}
-                  sizes="(max-width: 768px) calc(100vw - 32px), 448px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent" />
-                <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-gold text-navy text-xs font-semibold uppercase tracking-wide">
-                  MSU Tailgates
-                </span>
+        {homepageContent.introduction && (
+          <section className="estate-intro">
+            <div className="container mx-auto px-4 lg:px-8 estate-intro-grid">
+              <div className="estate-intro-image">
+                <Image src={homepageContent.introduction.image.src} alt={homepageContent.introduction.image.alt}
+                  fill className="object-cover" sizes="(max-width: 900px) 100vw, 50vw" />
+              </div>
+              <div className="estate-intro-copy">
+                <h2>{homepageContent.introduction.heading}</h2>
+                <p>{homepageContent.introduction.body}</p>
+                <Link className="estate-text-link" href={homepageContent.introduction.cta.href}>
+                  {homepageContent.introduction.cta.label}<ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
               </div>
             </div>
-            </div>
+          </section>
+        )}
+
+        {/* Event Scenarios Showcase */}
+        <section id="homepage-events" className="home-occasions" aria-labelledby="home-occasions-heading">
+          <div className="home-occasions-heading">
+            <h2 id="home-occasions-heading">From Elegant Weddings to Job Sites</h2>
+            <div><p>Find your setting. Explore the possibilities.</p><Link href="/luxury-restroom-trailer-rentals" className="estate-text-link">Explore our trailers<ArrowRight aria-hidden="true" size={18} /></Link></div>
+          </div>
+          <div className="home-occasions-grid">
+            {eventScenarios.map((scenario) => (
+              <Link key={scenario.displayLabel} href={scenario.href} className={`home-occasion home-occasion-${scenario.mediaKey}`}>
+                <div className="home-occasion-image"><Image src={scenario.src} alt={scenario.alt} unoptimized={scenario.unoptimized} fill className="object-cover" quality={78} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 42vw" /></div>
+                <div className="home-occasion-caption"><h3>{scenario.displayLabel}</h3><ArrowRight aria-hidden="true" size={20} /></div>
+              </Link>
+            ))}
+            <Link href="/service-areas/east-lansing-mi" className="home-occasion home-occasion-tailgates">
+              <div className="home-occasion-image"><Image src={trailerGalleryImage.src} alt={trailerGalleryImage.alt} unoptimized={trailerGalleryImage.unoptimized} fill className="object-cover" quality={78} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 34vw" /></div>
+              <div className="home-occasion-caption"><h3>MSU Tailgates</h3><ArrowRight aria-hidden="true" size={20} /></div>
+            </Link>
           </div>
         </section>
 
@@ -172,7 +170,7 @@ export default async function HomePage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <div>
-                <span className="text-sm font-semibold uppercase tracking-widest text-navy">
+                <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                   Take a Tour
                 </span>
                 <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl lg:text-5xl text-balance">

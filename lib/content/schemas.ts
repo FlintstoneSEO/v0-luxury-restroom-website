@@ -15,6 +15,9 @@ export const homepageSchema = z.object({
   slug: z.literal('home'),
   draft: z.boolean().default(false),
   seo: seoSchema,
+  introduction: z.object({
+    heading: z.string().min(1), body: z.string().min(1), image: imageSchema, cta: linkSchema,
+  }).optional(),
   hero: z.object({
     eyebrow: z.string().min(1), heading: z.string().min(1), body: z.string().min(1),
     primaryCta: linkSchema, secondaryCta: linkSchema, location: z.string().min(1),

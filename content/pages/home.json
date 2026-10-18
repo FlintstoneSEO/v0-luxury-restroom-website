@@ -23,6 +23,15 @@
     },
     "location": "Based in Lansing, MI. Serving Mid-Michigan within a 2-hour radius."
   },
+  "introduction": {
+    "heading": "Thoughtful comfort. Beautifully presented.",
+    "body": "Climate-controlled interiors, private flushing stalls, and modern vanity stations for weddings, private events, corporate gatherings, and long-term rentals.",
+    "image": {
+      "src": "/images/3 Station Pro/3Station.jpg",
+      "alt": "Signature Luxe three-station restroom trailer with private entrances and metal stair railings"
+    },
+    "cta": { "label": "Explore the Trailer", "href": "/luxury-restroom-trailer-rentals" }
+  },
   "features": [
     {
       "title": "Climate Controlled",

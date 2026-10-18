@@ -13,7 +13,7 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { HeroSection } from "@/components/hero-section"
+import { ServiceHero as HeroSection } from "@/components/service-hero"
 import { SectionHeader } from "@/components/section-header"
 import { FeatureGrid } from "@/components/feature-grid"
 import { GalleryGrid } from "@/components/gallery-grid"
@@ -49,10 +49,12 @@ export default function WeddingRestroomTrailerRentalsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public estate-service">
         {/* Hero */}
         <HeroSection
           variant="page"
+          imageSrc="/images/Wedding Trailer.png"
+          imageAlt="Restroom trailer setup for an outdoor wedding"
           eyebrow="Weddings"
           title="Wedding Restroom Trailer Rentals for Outdoor Michigan Celebrations"
           description="From barn venues outside Lansing to private estates and backyard wedding weekends across Mid-Michigan, we help couples plan restroom access that feels polished, photo-ready, and comfortable for guests in formal attire."

@@ -40,7 +40,7 @@ export default function FAQPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public">
         {/* Hero */}
         <HeroSection
           variant="page"

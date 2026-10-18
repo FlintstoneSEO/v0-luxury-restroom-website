@@ -85,7 +85,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   return (
     <>
       <Header />
-      <main className="bg-cream">
+      <main id="public-content" tabIndex={-1} className="estate-public bg-cream">
         <article className="container mx-auto max-w-5xl px-4 py-12 lg:px-8 md:py-16">
           <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-gold-text hover:text-navy">
             <ArrowLeft className="h-4 w-4" /> Blog Resources

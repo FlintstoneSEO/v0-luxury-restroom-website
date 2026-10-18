@@ -7,8 +7,8 @@ import ResponsiveImage from './ResponsiveImage.astro';
 const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
 ---
 
-<header class="sticky top-0 z-50 border-b border-white/10 bg-midnight text-white shadow-[0_12px_40px_rgb(4_12_18/0.16)]">
-  <div class="hidden border-b border-white/10 lg:block">
+<header class="estate-web-header sticky top-0 z-50 border-b">
+  <div class="hidden border-b border-white/10 xl:block">
     <div class="content-shell flex min-h-9 items-center justify-between gap-6 text-[0.6875rem] tracking-[0.1em] text-white/65">
       <p
         data-editable="text"
@@ -25,7 +25,7 @@ const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
     </div>
   </div>
 
-  <div class="content-shell grid min-h-20 grid-cols-[auto_1fr_auto] items-center gap-5 lg:min-h-24 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+  <div class="content-shell grid min-h-20 grid-cols-[auto_1fr_auto] items-center gap-5 xl:min-h-24 xl:grid-cols-[auto_minmax(0,1fr)_auto]">
     <a class="relative z-10 inline-flex items-center" href="/" aria-label="Signature Luxe home">
       <ResponsiveImage
         src="/images/logo.png"
@@ -38,7 +38,7 @@ const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
       />
     </a>
 
-    <nav class="hidden justify-self-center lg:block" aria-label="Primary navigation">
+    <nav class="hidden justify-self-center xl:block" aria-label="Primary navigation">
       <ul
         class="flex items-center gap-1"
         data-editable="array"
@@ -82,13 +82,13 @@ const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
       </ul>
     </nav>
 
-    <div class="hidden lg:block">
+    <div class="hidden xl:block">
       <ButtonLink href={navigation.cta.href} label={navigation.cta.label} />
     </div>
 
     <button
       id="menu-open"
-      class="inline-flex h-12 w-12 items-center justify-center justify-self-end border border-white/20 text-white lg:hidden"
+      class="inline-flex h-12 w-12 items-center justify-center justify-self-end border border-white/20 text-white xl:hidden"
       type="button"
       aria-label="Open navigation"
       aria-haspopup="dialog"
@@ -101,7 +101,7 @@ const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
     </button>
   </div>
 
-  <dialog id="mobile-navigation" class="m-0 ml-auto h-dvh max-h-none w-full max-w-md border-0 bg-midnight p-0 text-white backdrop:bg-ink/70">
+  <dialog id="mobile-navigation" aria-label="Site navigation" class="m-0 ml-auto h-dvh max-h-none w-full max-w-md border-0 bg-midnight p-0 text-white backdrop:bg-ink/70">
     <div class="flex min-h-full flex-col">
       <div class="flex min-h-20 items-center justify-between border-b border-white/10 px-5">
         <span class="font-serif text-2xl text-white">Signature Luxe</span>

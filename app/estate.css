@@ -1,0 +1,132 @@
+/* Public-only scope: never apply this design to admin or customer approval UI. */
+:is(.estate-public, .estate-shell, .estate-menu) {
+  --navy: #152a3a; --cream: #f5f1e8; --gold: #b79a64; --gold-text: #715738; --border: #ded8cd;
+  color: var(--navy); font-family: var(--font-sans), Arial, sans-serif; font-size: 1rem; line-height: 1.7;
+}
+.estate-public { background: var(--cream); }
+.estate-public .container, .estate-shell .container { width: 100%; max-width: 1440px; }
+.estate-public :is(h1, h2, h3, h4) { font-family: var(--font-serif), Georgia, serif; font-weight: 500; letter-spacing: -.03em; line-height: 1.08; text-wrap: balance; }
+.estate-public h1 { font-size: clamp(2.65rem, 4.7vw, 4.75rem); }
+.estate-public h2 { line-height: 1.12; }
+.estate-public :is(p, li) { text-wrap: pretty; }
+.estate-public :is(.rounded-xl, .rounded-2xl, .rounded-3xl, [data-slot="card"]) { border-radius: 0; }
+.estate-public :is(.shadow-sm, .shadow-lg, .shadow-xl, .shadow-2xl, [data-slot="card"]) { box-shadow: none; }
+.estate-public [data-slot="card"] { border-color: var(--border); }
+.estate-public section.bg-white { background: #fcfaf6; }
+.estate-public :is(input, textarea, [role="combobox"]) { border-radius: 2px; font-family: inherit; }
+:is(.estate-public, .estate-shell, .estate-menu) [data-slot="button"] {
+  min-height: 3rem; height: auto; border-radius: 0; padding: .85rem 1.35rem; font-size: .8125rem; font-weight: 500;
+  letter-spacing: .07em; line-height: 1.5; white-space: normal; text-align: center; box-shadow: none;
+}
+.estate-public :is(a.bg-gold, [data-slot="button"].bg-gold) { background: var(--navy); color: white; }
+.estate-public .bg-navy :is(a.bg-gold, [data-slot="button"].bg-gold) { background: var(--cream); color: var(--navy); }
+:is(.estate-public, .estate-shell, .estate-menu) :focus-visible { outline: 2px solid #876534; outline-offset: 5px; }
+.estate-public .bg-navy :focus-visible, .estate-footer :focus-visible { outline-color: #e4cfa2; }
+.estate-kicker { margin: 0 0 1.5rem; color: var(--gold-text); font-size: .6875rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 500; }
+.estate-home-hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+.estate-home-copy { padding: clamp(3rem, 5vw, 6rem) clamp(1.5rem, 4vw, 5rem); align-self: center; }
+.estate-home-copy h1 { margin: 0; max-width: 15ch; }
+.estate-hero-description { margin-top: 1.5rem; max-width: 44rem; font-size: clamp(1rem, 1.2vw, 1.125rem); line-height: 1.85; color: #45515a; }
+.estate-home-image { position: relative; min-height: 39rem; }
+.estate-home-image img { object-position: 44% center; }
+.estate-hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 2rem; }
+.estate-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 1.25rem; min-height: 3rem; padding-block: .75rem; border-bottom: 1px solid var(--gold); color: var(--navy); font-size: .75rem; font-weight: 500; letter-spacing: .09em; text-decoration: none; }
+.estate-text-link:hover { color: var(--gold-text); }
+.estate-location { display: flex; align-items: flex-start; gap: .6rem; margin-top: 2rem; color: #54616a; font-size: .75rem; line-height: 1.8; }
+.estate-assurance { background: var(--navy); color: var(--cream); }
+.estate-assurance-inner { max-width: 1440px; margin-inline: auto; padding: 2rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, .9fr); }
+.estate-assurance-item { display: flex; align-items: center; gap: 1rem; padding: .25rem 1.5rem; border-right: 1px solid #ffffff30; }
+.estate-assurance-item svg { width: 2rem; height: 2rem; color: #d2bd95; flex-shrink: 0; stroke-width: 1.25; }
+.estate-assurance-item span { font-size: .875rem; }
+.estate-assurance-item:last-child { border: 0; }
+.estate-assurance-item:last-child span { font-size: .6875rem; letter-spacing: .12em; text-transform: uppercase; }
+.estate-intro { padding-block: clamp(3rem, 6vw, 6rem); }
+.estate-intro-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+.estate-intro-image { position: relative; aspect-ratio: 4/3; }
+.estate-intro-copy h2 { font-size: clamp(2.5rem, 4vw, 4rem); margin-top: 0; }
+.estate-intro-copy p:not(.estate-kicker) { margin-block: 1.5rem; color: #45515a; line-height: 1.85; }
+.estate-page-hero { border-bottom: 1px solid var(--border); background: var(--cream); padding-block: clamp(3.5rem, 6vw, 6rem); }
+.estate-page-hero-grid { max-width: 62rem; }
+.estate-page-hero-grid h1 { margin: 0; }
+.estate-page-hero-split { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.estate-page-hero-image { position: relative; aspect-ratio: 4/3; }
+.estate-service-card { display: flex; flex-direction: column; border-bottom: 1px solid var(--gold); background: transparent; text-decoration: none; }
+.estate-service-card-image { position: relative; aspect-ratio: 4/3; overflow: hidden; background: #e5ded2; }
+.estate-service-card-image img { transition: transform 450ms ease; }
+.estate-service-card:hover img { transform: scale(1.025); }
+.estate-service-card-copy { padding: 1.5rem 0; display: flex; flex: 1; flex-direction: column; }
+.estate-service-card-copy h3 { margin: 0; color: var(--navy); font-size: 2rem; }
+.estate-service-card-copy p { margin-top: .8rem; color: #53606a; line-height: 1.8; flex: 1; }
+.estate-service-card-copy .estate-text-link { margin-top: 1rem; border: 0; align-self: flex-start; }
+.estate-cta-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3rem; align-items: center; }
+.estate-cta-inner h2 { max-width: 52rem; }
+.estate-cta-inner p { max-width: 42rem; }
+.estate-public .blog-content { font-size: 1.0625rem; line-height: 1.9; }
+.estate-public .blog-content img, .estate-public .blog-content blockquote { border-radius: 0; }
+.estate-header { position: sticky; top: 0; z-index: 50; background: var(--cream); border-bottom: 1px solid var(--border); }
+.estate-header-inner { max-width: 1600px; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; min-height: 6.25rem; padding: .5rem clamp(1rem, 2.5vw, 2.5rem); }
+.estate-logo { flex-shrink: 0; display: inline-flex; width: 13rem; }
+.estate-logo img { width: 100%; height: auto; }
+.estate-desktop-nav { display: flex; align-items: center; justify-content: center; gap: clamp(.5rem, 1vw, 1rem); }
+.estate-desktop-nav > a, .estate-nav-disclosure summary { display: flex; align-items: center; min-height: 2.75rem; gap: .3rem; font-size: .6875rem; font-weight: 500; line-height: 1.5; cursor: pointer; text-decoration: none; }
+.estate-nav-disclosure { position: relative; }
+.estate-nav-disclosure summary { list-style: none; }
+.estate-nav-disclosure summary::-webkit-details-marker { display: none; }
+.estate-nav-disclosure[open] summary svg { transform: rotate(180deg); }
+.estate-dropdown { position: absolute; top: 100%; left: 0; width: 18rem; max-width: calc(100vw - 2rem); padding: .5rem; background: var(--cream); border: 1px solid var(--border); box-shadow: 0 12px 25px #152a3a12; }
+.estate-dropdown a { display: block; min-height: 2.75rem; padding: .75rem; font-size: .8125rem; line-height: 1.6; }
+.estate-dropdown a:hover { background: #e9e3d7; }
+.estate-header-actions { display: flex; align-items: center; gap: .5rem; }
+.estate-header-actions .estate-header-cta { font-size: .6875rem; padding-inline: 1rem; white-space: nowrap; }
+.estate-mobile-trigger { display: none; }
+.estate-skip-link { position: absolute; top: .5rem; left: 1rem; transform: translateY(-200%); background: var(--navy); color: white; padding: .75rem 1rem; z-index: 60; }
+.estate-skip-link:focus { transform: none; }
+.estate-footer { background: var(--navy); color: white; }
+.estate-footer h3 { font-size: .75rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #d2bd95; }
+.estate-footer :is(a, p, span, li) { font-size: .8125rem; }
+.estate-footer a { min-height: 2.75rem; display: inline-flex; align-items: center; }
+.estate-menu { background: var(--cream); }
+.estate-public section.bg-navy .uppercase.text-navy { color: #d2bd95; }
+.estate-area-heading { background: var(--cream); border-bottom: 1px solid var(--border); }
+.estate-area-heading > .container { text-align: left; max-width: 1440px; }
+.estate-area-heading :is(h1, p) { color: var(--navy); max-width: 62rem; }
+.estate-area-heading p.uppercase { color: var(--gold-text); }
+.estate-footer a.bg-gold { background: var(--cream); color: var(--navy); border-radius: 0; }
+@media (min-width: 1100px) {
+  .estate-public .container { padding-inline: clamp(2rem, 4vw, 4rem); }
+}
+@media (max-width: 1279px) {
+  .estate-desktop-nav { display: none; } .estate-mobile-trigger { display: block; }
+}
+@media (max-width: 900px) {
+  .estate-home-hero { grid-template-columns: 1fr; }
+  .estate-home-copy { padding: 3rem 1.5rem; }
+  .estate-home-copy h1 { max-width: 21ch; }
+  .estate-home-image { min-height: 0; aspect-ratio: 3/2; }
+  .estate-assurance-inner { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 1.5rem 1rem; }
+  .estate-assurance-item { padding: .5rem; gap: .5rem; }
+  .estate-assurance-item:last-child { grid-column: 1/-1; justify-content: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ffffff30; }
+  .estate-assurance-item:nth-child(3) { border-right: 0; }
+  .estate-intro-grid, .estate-page-hero-split { grid-template-columns: 1fr; gap: 2rem; }
+  .estate-page-hero-image { aspect-ratio: 3/2; }
+  .estate-cta-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+  .estate-cta-inner > a { justify-self: start; }
+}
+@media (max-width: 600px) {
+  .estate-header-inner { min-height: 5rem; gap: .5rem; }
+  .estate-logo { width: 10.5rem; }
+  .estate-header-actions .estate-header-cta { display: none; }
+  .estate-public h1 { font-size: clamp(2.5rem, 8.2vw, 3.25rem); }
+  .estate-home-copy { padding: 2.5rem 1rem; }
+  .estate-kicker { margin-bottom: 1.2rem; }
+  .estate-hero-actions { align-items: flex-start; flex-direction: column; gap: .5rem; }
+  .estate-assurance-inner { grid-template-columns: 1fr; padding: 1rem 1.5rem; }
+  .estate-assurance-item { border: 0; padding: .75rem 0; gap: 1rem; }
+  .estate-assurance-item:not(:last-child) { border-bottom: 1px solid #ffffff25; }
+  .estate-assurance-item:last-child { justify-content: flex-start; margin: 0; border: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.estate-public, .estate-shell, .estate-menu) *, :is(.estate-public, .estate-shell, .estate-menu) *::before, :is(.estate-public, .estate-shell, .estate-menu) *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+  }
+}

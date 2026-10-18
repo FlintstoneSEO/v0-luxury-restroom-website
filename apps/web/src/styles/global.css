@@ -3,14 +3,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-midnight: #132330;
-  --color-navy: #203442;
+  --color-midnight: #152a3a;
+  --color-navy: #152a3a;
   --color-charcoal: #20292f;
   --color-ink: #151b1f;
-  --color-ivory: #f8f5ef;
+  --color-ivory: #f5f1e8;
   --color-parchment: #eee7dc;
   --color-champagne: #d2c2ae;
-  --color-gold: #a17d50;
+  --color-gold: #715738;
   --color-white: #ffffff;
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: "Cormorant Garamond Variable", Iowan Old Style, Baskerville, Georgia, serif;
@@ -43,9 +43,7 @@
     margin: 0;
     min-width: 20rem;
     overflow-x: clip;
-    background:
-      radial-gradient(circle at 85% 0%, rgb(210 194 174 / 0.22), transparent 24rem),
-      var(--color-ivory);
+    background: var(--color-ivory);
     text-rendering: optimizeLegibility;
   }
 
@@ -164,12 +162,12 @@
   }
 
   .button-primary {
-    background: var(--color-champagne);
-    color: var(--color-ink);
+    background: var(--color-midnight);
+    color: var(--color-white);
   }
 
   .button-primary:hover {
-    background: #dfd1bf;
+    background: #263f50;
     transform: translateY(-2px);
   }
 
@@ -201,7 +199,7 @@
     overflow: hidden;
     border: 1px solid rgb(19 35 48 / 0.12);
     background: rgb(255 255 255 / 0.78);
-    box-shadow: var(--shadow-soft);
+    box-shadow: none;
   }
 
   .image-wash {
@@ -235,6 +233,22 @@
     text-decoration-color: currentColor;
   }
 }
+
+/* Shared Signature Estate presentation for every Astro page-builder route. */
+.estate-web-header { background: var(--color-ivory); color: var(--color-midnight); border-color: #ded8cd; }
+.estate-web-header > div:first-child { display: none; }
+.estate-web-header > div :is(nav, summary, a) { color: var(--color-midnight); }
+.estate-web-header > div .bg-midnight { background: var(--color-ivory); border-color: #ded8cd; }
+.estate-web-header > div img { filter: none; }
+.estate-web-header > div .button-primary { background: var(--color-midnight); color: white; }
+.estate-web-header #menu-open { border-color: #b9ad9b; color: var(--color-midnight); }
+.bg-midnight .button-primary { background: var(--color-ivory); color: var(--color-midnight); }
+.estate-web-hero { padding-block: clamp(3.5rem, 6vw, 6rem); border-bottom: 1px solid #ded8cd; background: var(--color-ivory); }
+.estate-web-hero-grid { max-width: 82rem; }
+.estate-web-hero-grid h1 { margin: 1.5rem 0 0; max-width: 62rem; font-family: var(--font-serif); font-weight: 500; font-size: clamp(2.75rem, 4.7vw, 4.75rem); line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
+.estate-web-hero-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3rem; align-items: center; }
+.estate-web-hero-image { aspect-ratio: 4/3; overflow: hidden; }
+@media (max-width: 900px) { .estate-web-hero-split { grid-template-columns: 1fr; gap: 2rem; } }
 
 @media (min-width: 48rem) {
   .content-shell,

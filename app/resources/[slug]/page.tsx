@@ -80,7 +80,7 @@ export default async function ResourceArticlePage({ params }: { params: Promise<
   return (
     <>
       <Header />
-      <main className="bg-cream">
+      <main id="public-content" tabIndex={-1} className="estate-public bg-cream">
         <article className="container mx-auto px-4 lg:px-8 py-12 md:py-16 max-w-5xl">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gold">{resource.category}</p>
           <h1 className="mt-3 text-4xl md:text-5xl font-serif font-semibold text-navy">{resource.title}</h1>

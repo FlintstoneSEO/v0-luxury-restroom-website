@@ -149,7 +149,7 @@ export default async function WeddingsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public">
         {/* Hero */}
         <HeroSection
           variant="page"

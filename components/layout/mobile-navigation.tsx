@@ -2,9 +2,9 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Menu } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import type { NavigationItem } from "@/components/layout/header"
 
 type MobileNavigationProps = {
@@ -16,14 +16,19 @@ type MobileNavigationProps = {
 export function MobileNavigation({ navigation, cta, logo }: MobileNavigationProps) {
   return (
     <Sheet>
-      <div className="xl:hidden">
+      <div className="estate-mobile-trigger">
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" aria-label="Open menu">
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
       </div>
-      <SheetContent side="right" className="w-full max-w-sm bg-white p-0">
+      <SheetContent side="right" className="estate-menu w-full max-w-sm p-0">
+        <SheetTitle className="sr-only">Signature Luxe navigation</SheetTitle>
+        <SheetDescription className="sr-only">Explore trailers, events, service areas, and availability.</SheetDescription>
+        <SheetClose className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center" aria-label="Close menu">
+          <X aria-hidden="true" className="h-5 w-5" />
+        </SheetClose>
         <div className="flex h-full flex-col">
           <div className="flex flex-col items-center justify-center border-b p-6">
             <Image

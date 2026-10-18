@@ -24,7 +24,7 @@ export function CTASection({
       bg: "bg-navy",
       title: "text-white",
       description: "text-white/80",
-      button: "bg-gold text-charcoal hover:bg-gold/90",
+      button: "bg-cream text-navy hover:bg-white",
     },
     cream: {
       bg: "bg-cream",
@@ -45,7 +45,8 @@ export function CTASection({
   return (
     <section className={cn(style.bg, "py-20 md:py-28", className)}>
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="estate-cta-inner">
+          <div>
           <h2
             className={cn(
               "text-3xl font-serif font-semibold tracking-tight md:text-4xl lg:text-5xl text-balance",
@@ -62,7 +63,8 @@ export function CTASection({
           >
             {description}
           </p>
-          <Button asChild size="lg" className={cn("mt-8 text-base px-8", style.button)}>
+          </div>
+          <Button asChild size="lg" className={cn("text-base px-8", style.button)}>
             <Link href={ctaHref}>{ctaText}</Link>
           </Button>
         </div>

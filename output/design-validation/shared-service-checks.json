@@ -1,0 +1,44 @@
+[
+  {
+    "route": "/corporate-event-restroom-trailers",
+    "documentWidth": 1432,
+    "h1": "Corporate Event Restroom Trailer Rentals for Brand-Forward Events",
+    "mainClass": "estate-public",
+    "width": 1440
+  },
+  {
+    "route": "/corporate-event-restroom-trailers",
+    "documentWidth": 382,
+    "h1": "Corporate Event Restroom Trailer Rentals for Brand-Forward Events",
+    "mainClass": "estate-public",
+    "width": 390
+  },
+  {
+    "route": "/festival-community-event-restroom-trailers",
+    "documentWidth": 1432,
+    "h1": "Festival and Community Event Restroom Trailers",
+    "mainClass": "estate-public",
+    "width": 1440
+  },
+  {
+    "route": "/festival-community-event-restroom-trailers",
+    "documentWidth": 382,
+    "h1": "Festival and Community Event Restroom Trailers",
+    "mainClass": "estate-public",
+    "width": 390
+  },
+  {
+    "route": "/luxury-restroom-trailer-features",
+    "documentWidth": 1432,
+    "h1": "Luxury Restroom Trailer Features",
+    "mainClass": "estate-public",
+    "width": 1440
+  },
+  {
+    "route": "/luxury-restroom-trailer-features",
+    "documentWidth": 382,
+    "h1": "Luxury Restroom Trailer Features",
+    "mainClass": "estate-public",
+    "width": 390
+  }
+]

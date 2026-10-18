@@ -31,7 +31,7 @@ export default function ResourcesPage() {
   return (
     <>
       <Header />
-      <main className="bg-cream min-h-screen">
+      <main id="public-content" tabIndex={-1} className="estate-public bg-cream min-h-screen">
         <section className="bg-white py-16 md:py-20 border-b border-border/60">
           <div className="container mx-auto px-4 lg:px-8">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gold">Resource Center</p>

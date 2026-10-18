@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { HeroSection } from "@/components/hero-section"
+import { ServiceHero as HeroSection } from "@/components/service-hero"
 import { SectionHeader } from "@/components/section-header"
 import { FeatureGrid } from "@/components/feature-grid"
 import { GalleryGrid } from "@/components/gallery-grid"
@@ -79,10 +79,12 @@ export default function LuxuryRestroomTrailerRentalsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
       />
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public estate-service">
         {/* Hero */}
         <HeroSection
           variant="page"
+          imageSrc="/images/3 Station Pro/3Station.jpg"
+          imageAlt="Signature Luxe 3 Station Pro restroom trailer"
           eyebrow="Luxury Restroom Trailers"
           title="Luxury Restroom Trailer Rentals in Lansing, MI"
           description="If you are planning an event in Lansing or anywhere in Mid-Michigan, luxury restroom trailer rentals provide a cleaner, more comfortable experience than standard portable toilets."
