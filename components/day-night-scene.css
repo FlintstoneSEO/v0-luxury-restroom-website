@@ -1,0 +1,15 @@
+.estate-public .day-night-scene { padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 4vw, 4rem); background: #152a3a; color: #fff; }
+.day-night-scene > * { max-width: 1360px; margin-inline: auto; }
+.day-night-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
+.day-night-intro h2 { font-size: clamp(2.1rem, 3.6vw, 3.5rem); margin: 0; color: #fff; }
+.day-night-intro p { max-width: 45rem; margin-top: 1rem; line-height: 1.8; color: #e0e6e9; }
+.day-night-controls { display: flex; flex-shrink: 0; gap: .25rem; border: 1px solid #a9b3b9; padding: .25rem; }
+.day-night-controls button { min-height: 48px; padding: .65rem 1rem; color: #fff; font-size: .9375rem; cursor: pointer; }
+.day-night-controls button[aria-pressed="true"] { background: #f5f1e8; color: #152a3a; }
+.day-night-controls button:focus-visible { outline: 2px solid #e4cfa2; outline-offset: 4px; }
+.day-night-images { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #0c1821; }
+.day-night-images img { object-fit: contain; opacity: 0; transition: opacity 240ms ease; }
+.day-night-images img.is-visible { opacity: 1; }
+.day-night-scene figcaption { margin-top: 1rem; min-height: 3.5em; color: #e0e6e9; font-size: .9375rem; line-height: 1.6; }
+@media (max-width: 800px) { .day-night-intro { flex-direction: column; align-items: flex-start; gap: 1.25rem; } }
+@media (prefers-reduced-motion: reduce) { .day-night-images img { transition: none; } }

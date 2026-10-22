@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
+import './resource-library.css'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { Button } from '@/components/ui/button'
 import { getAllResources } from '@/lib/content/resources'
 import { getResourceIndex } from '@/lib/content/index-pages'
 
@@ -31,77 +33,77 @@ export default function ResourcesPage() {
   return (
     <>
       <Header />
-      <main id="public-content" tabIndex={-1} className="estate-public bg-cream min-h-screen">
-        <section className="bg-white py-16 md:py-20 border-b border-border/60">
-          <div className="container mx-auto px-4 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gold">Resource Center</p>
-            <h1 className="mt-3 text-4xl md:text-5xl font-serif font-semibold text-navy">Planning Guides for Better Event Experiences</h1>
-            <p className="mt-5 max-w-3xl text-lg text-muted-foreground">
-              Use these articles to plan restroom capacity, logistics, and guest comfort for weddings, festivals, private events,
-              and long-term projects in Mid-Michigan.
-            </p>
+      <main id="public-content" tabIndex={-1} className="estate-public resource-library bg-cream min-h-screen">
+        <header className="resource-width resource-intro">
+          <h1>Planning Guides for Better Event Experiences</h1>
+          <p>Use these articles to plan restroom capacity, logistics, and guest comfort for weddings, festivals, private events, and long-term projects in Mid-Michigan.</p>
+        </header>
+
+        <section className="resource-width resource-featured" aria-labelledby="featured-heading">
+          <div className="resource-section-heading">
+            <h2 id="featured-heading">Featured Guides</h2>
+            <p>Capacity, setup, and budgeting for your next event.</p>
           </div>
-        </section>
-
-        <section className="py-14 md:py-20">
-          <div className="container mx-auto px-4 lg:px-8 space-y-12">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-serif font-semibold text-navy">Featured Guides</h2>
-              <p className="mt-2 max-w-3xl text-muted-foreground">Start with our most-read planning guides for restroom trailer capacity, setup, and budgeting in Mid-Michigan.</p>
-              <div className="mt-6 grid gap-6 md:grid-cols-2">
-                {featuredResources.map((resource) => (
-                  <article key={resource.slug} className="rounded-2xl bg-white p-6 shadow-sm border border-gold/40">
-                    <p className="text-sm text-muted-foreground">Published {resource.publishDate}</p>
-                    <h3 className="mt-2 text-xl font-semibold text-navy">{resource.title}</h3>
-                    <p className="mt-3 text-muted-foreground">{resource.excerpt}</p>
-                    <Link className="mt-4 inline-block text-navy font-semibold hover:text-navy/80" href={`/resources/${resource.slug}`}>
-                      Read featured guide →
-                    </Link>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-            {Object.entries(groupedResources).map(([category, categoryResources]) => (
-              <div key={category}>
-                <h2 className="text-2xl md:text-3xl font-serif font-semibold text-navy">{category}</h2>
-                <div className="mt-6 grid gap-6 md:grid-cols-2">
-                  {categoryResources.map((resource) => (
-                    <article key={resource.slug} className="rounded-2xl bg-white p-6 shadow-sm border border-border/60">
-                      <p className="text-sm text-muted-foreground">Published {resource.publishDate}</p>
-                      <h3 className="mt-2 text-xl font-semibold text-navy">{resource.title}</h3>
-                      <p className="mt-3 text-muted-foreground">{resource.excerpt}</p>
-                      <Link className="mt-4 inline-block text-navy font-semibold hover:text-navy/80" href={`/resources/${resource.slug}`}>
-                        Read guide →
-                      </Link>
-                    </article>
-                  ))}
+          <div className="resource-featured-layout">
+            {featuredResources.slice(0, 1).map((resource) => (
+              <article className="resource-lead" key={resource.slug}>
+                <div className="resource-lead-image"><Image src={resource.heroImage} alt={resource.heroImageAlt} fill priority sizes="(max-width: 800px) 100vw, 60vw" /></div>
+                <div className="resource-lead-copy">
+                  <span className="resource-category">{resource.category}</span>
+                  <h3><Link href={`/resources/${resource.slug}`}>{resource.title}</Link></h3>
+                  <p>{resource.excerpt}</p>
+                  <div className="resource-meta"><time dateTime={resource.publishDate}>{resource.publishDate}</time><ArrowRight aria-hidden="true" size={20} /></div>
                 </div>
-              </div>
+              </article>
             ))}
-          </div>
-        </section>
-
-        <section className="py-12 bg-white border-y border-border/60">
-          <div className="container mx-auto px-4 lg:px-8">
-            <h2 className="text-2xl font-serif font-semibold text-navy">Popular Service Pages</h2>
-            <div className="mt-4 flex flex-wrap gap-3">
-              {serviceLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="text-navy border border-navy/30 rounded-full px-4 py-2 hover:bg-cream transition-colors">
-                  {link.label}
-                </Link>
+            <div className="resource-reading-list">
+              {featuredResources.slice(1).map((resource) => (
+                <article key={resource.slug}>
+                  <span className="resource-category">{resource.category}</span>
+                  <h3><Link href={`/resources/${resource.slug}`}>{resource.title}</Link></h3>
+                  <p>{resource.excerpt}</p>
+                  <div className="resource-meta"><time dateTime={resource.publishDate}>{resource.publishDate}</time><ArrowRight aria-hidden="true" size={20} /></div>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="py-16">
-          <div className="container mx-auto px-4 lg:px-8 text-center">
-            <h2 className="text-3xl font-serif font-semibold text-navy">Need Help Planning Your Event Setup?</h2>
-            <p className="mt-3 text-muted-foreground">Tell us about your guest count, venue, and event timing to get a customized recommendation.</p>
-            <Button asChild className="mt-6 bg-navy hover:bg-navy/90 text-white">
-              <Link href="/request-quote">Request a Quote</Link>
-            </Button>
+        <div className="resource-browse">
+          <nav className="resource-width resource-topics" aria-label="Browse resource topics">
+            <span>Browse by topic</span>
+            {Object.keys(groupedResources).map((category, index) => <a href={`#resource-topic-${index}`} key={category}>{category}</a>)}
+          </nav>
+          <div className="resource-width">
+            {Object.entries(groupedResources).map(([category, categoryResources], index) => (
+              <section className="resource-topic" id={`resource-topic-${index}`} key={category} aria-labelledby={`resource-heading-${index}`}>
+                <div className="resource-section-heading"><h2 id={`resource-heading-${index}`}>{category}</h2><span>{categoryResources.length} {categoryResources.length === 1 ? 'guide' : 'guides'}</span></div>
+                <div className="resource-articles">
+                  {categoryResources.map((resource) => (
+                    <article className="resource-article" key={resource.slug}>
+                      <div className="resource-thumbnail"><Image src={resource.heroImage} alt={resource.heroImageAlt} fill sizes="(max-width: 600px) 100vw, (max-width: 1000px) 45vw, 30vw" /></div>
+                      <div className="resource-article-copy">
+                        <time dateTime={resource.publishDate}>Published {resource.publishDate}</time>
+                        <h3><Link href={`/resources/${resource.slug}`}>{resource.title}</Link></h3>
+                        <p>{resource.excerpt}</p>
+                        <Link className="resource-read" href={`/resources/${resource.slug}`} aria-label={`Read guide: ${resource.title}`}>Read guide <ArrowRight aria-hidden="true" size={18} /></Link>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </div>
+
+        <section className="resource-width resource-services">
+          <h2>Popular Service Pages</h2>
+          <div>{serviceLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}<ArrowRight aria-hidden="true" size={20} /></Link>)}</div>
+        </section>
+        <section className="resource-help">
+          <div className="resource-width resource-help-inner">
+            <div><h2>Need Help Planning Your Event Setup?</h2><p>Tell us about your guest count, venue, and event timing to get a customized recommendation.</p></div>
+            <Link href="/request-quote">Request a Quote <ArrowRight aria-hidden="true" size={20} /></Link>
           </div>
         </section>
       </main>

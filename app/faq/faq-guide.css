@@ -1,0 +1,41 @@
+.faq-guide { --faq-gutter: clamp(1rem, 4vw, 4rem); }
+.faq-guide-width { width: 100%; max-width: 1400px; margin-inline: auto; padding-inline: var(--faq-gutter); }
+.faq-guide-hero { padding-top: clamp(3rem, 7vw, 6.5rem); background: #f5f1e8; }
+.faq-guide-hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; padding-bottom: 3.5rem; }
+.estate-public .faq-guide-hero h1 { margin: 0; max-width: 14ch; font-size: clamp(3rem, 5.8vw, 5.5rem); }
+.faq-guide-intro p { font-size: 1.125rem; line-height: 1.85; color: #45545e; margin: 0 0 1.5rem; }
+.faq-guide-hero-note { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-block: 1.4rem; border-top: 1px solid #d3c7b2; }
+.faq-guide-hero-note > span { color: #715738; font-size: .875rem; }
+.faq-guide-hero-note a { display: inline-flex; gap: 1rem; align-items: center; min-height: 44px; font-size: .8125rem; font-weight: 600; }
+.faq-guide-body { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: clamp(2rem, 7vw, 7rem); padding-block: clamp(3rem, 6vw, 6rem); scroll-margin-top: 7rem; }
+.faq-guide-sidebar { align-self: start; position: sticky; top: 8rem; }
+.estate-public .faq-guide-sidebar h2 { font-family: var(--font-sans), Arial, sans-serif; font-size: .875rem; font-weight: 600; letter-spacing: 0; margin: 0 0 1rem; }
+.faq-guide-sidebar nav a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1rem; border-bottom: 1px solid #ded8cd; font-size: .875rem; text-decoration: none; }
+.faq-guide-sidebar nav a:hover { color: #715738; }
+.faq-guide-sidebar svg { flex-shrink: 0; }
+.faq-guide-help { padding-top: 2rem; }
+.faq-guide-help p { font-size: .9375rem; margin-bottom: .5rem; }
+.faq-guide-help a { display: flex; align-items: center; gap: .75rem; min-height: 44px; font-size: .8125rem; color: #715738; }
+.faq-guide-group { scroll-margin-top: 8rem; }
+.faq-guide-group + .faq-guide-group { margin-top: 3.5rem; }
+.estate-public .faq-guide-group h2 { font-size: clamp(1.9rem, 3vw, 2.7rem); margin: 0 0 1.5rem; }
+.faq-guide-question { border-bottom: 1px solid #d3c7b2; }
+.faq-guide-question:first-of-type { border-top: 1px solid #d3c7b2; }
+.faq-guide-question summary { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; padding: 1.4rem 0; min-height: 60px; list-style: none; cursor: pointer; font-size: 1.0625rem; font-weight: 500; line-height: 1.6; }
+.faq-guide-question summary::-webkit-details-marker { display: none; }
+.faq-guide-plus { flex-shrink: 0; margin-top: .2rem; color: #715738; }
+.faq-guide-question[open] .faq-guide-plus { transform: rotate(45deg); }
+.faq-guide-question[open] summary { color: #715738; }
+.faq-guide-answer { padding: 0 2.5rem 1.75rem 0; }
+.faq-guide-answer p { margin: 0; line-height: 1.9; color: #45545e; max-width: 72ch; }
+.faq-guide-closing { background: #152a3a; color: #fff; padding-block: clamp(3rem, 6vw, 5rem); }
+.faq-guide-closing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 6rem); }
+.estate-public .faq-guide-closing h2 { color: #fff; font-size: clamp(2rem, 3vw, 3rem); margin: 0; }
+.faq-guide-closing p { color: #e0e6e9; line-height: 1.8; max-width: 48ch; margin-top: 1.25rem; }
+.faq-guide-contact-links { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 1.5rem; }
+.faq-guide-contact-links a { display: inline-flex; gap: .75rem; align-items: center; min-height: 48px; color: #e4cfa2; border-bottom: 1px solid #b79a64; }
+.faq-guide-booking { padding-left: clamp(2rem, 5vw, 5rem); border-left: 1px solid #ffffff40; }
+.faq-guide-booking-link { display: inline-flex; gap: 1.5rem; align-items: center; min-height: 48px; padding: .9rem 1.2rem; background: #f5f1e8; color: #152a3a; margin-top: 1.5rem; font-size: .875rem; }
+.faq-guide-closing :focus-visible { outline-color: #e4cfa2; }
+@media(max-width: 900px) { .faq-guide-hero-grid { grid-template-columns: 1fr; gap: 2rem; } .faq-guide-intro { max-width: 42rem; } .faq-guide-body { grid-template-columns: 1fr; } .faq-guide-sidebar { position: static; } .faq-guide-sidebar nav { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; } .faq-guide-sidebar nav h2 { grid-column: 1 / -1; } .faq-guide-help { display: none; } }
+@media(max-width: 600px) { .faq-guide-hero-note { align-items: flex-start; flex-direction: column; gap: .25rem; } .faq-guide-sidebar nav { grid-template-columns: 1fr; } .faq-guide-question summary { font-size: 1rem; gap: 1rem; } .faq-guide-answer { padding-right: 0; } .faq-guide-closing-grid { grid-template-columns: 1fr; } .faq-guide-booking { border-left: 0; border-top: 1px solid #ffffff40; padding: 2rem 0 0; } }

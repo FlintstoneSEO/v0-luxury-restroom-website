@@ -132,6 +132,30 @@
     ],
     "interiorGallery": [
       {
+        "id": "live-interior-room",
+        "src": "/images/live-events/interior-room.webp",
+        "alt": "Restroom interior with toilet, urinal, sink, mirror and wood-look floor",
+        "category": "Interior"
+      },
+      {
+        "id": "live-interior-vanity",
+        "src": "/images/live-events/interior-vanity.webp",
+        "alt": "Trailer vanity with stainless steel sink, mirror and wall-mounted towel dispenser",
+        "category": "Interior"
+      },
+      {
+        "id": "live-interior-sink",
+        "src": "/images/live-events/interior-sink.webp",
+        "alt": "Close view of the trailer sink, mirror and towel dispenser",
+        "category": "Interior"
+      },
+      {
+        "id": "live-interior-stall",
+        "src": "/images/live-events/interior-stall.webp",
+        "alt": "Private restroom stall with toilet and wood-look flooring",
+        "category": "Interior"
+      },
+      {
         "id": "int1",
         "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03504-zEWBCoaFRmOx3fWQJRxsUNKyS1RLSU.jpg",
         "alt": "Modern vanity station with mirror and succulent decor",

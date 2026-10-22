@@ -1,3 +1,6 @@
+import { DayNightScene } from "@/components/day-night-scene"
+import "./home-refinements.css"
+import { HomeFleet } from "@/components/home-fleet"
 import Link from "next/link"
 import Image from "next/image"
 import {
@@ -9,7 +12,6 @@ import {
   Zap,
   MapPin,
   ArrowRight,
-  Users,
   CheckCircle,
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
@@ -129,38 +131,47 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Event Scenarios Showcase */}
-        <section id="homepage-events" className="home-occasions" aria-labelledby="home-occasions-heading">
-          <div className="home-occasions-heading">
-            <h2 id="home-occasions-heading">From Elegant Weddings to Job Sites</h2>
-            <div><p>Find your setting. Explore the possibilities.</p><Link href="/luxury-restroom-trailer-rentals" className="estate-text-link">Explore our trailers<ArrowRight aria-hidden="true" size={18} /></Link></div>
-          </div>
-          <div className="home-occasions-grid">
-            {eventScenarios.map((scenario) => (
-              <Link key={scenario.displayLabel} href={scenario.href} className={`home-occasion home-occasion-${scenario.mediaKey}`}>
-                <div className="home-occasion-image"><Image src={scenario.src} alt={scenario.alt} unoptimized={scenario.unoptimized} fill className="object-cover" quality={78} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 42vw" /></div>
-                <div className="home-occasion-caption"><h3>{scenario.displayLabel}</h3><ArrowRight aria-hidden="true" size={20} /></div>
-              </Link>
-            ))}
-            <Link href="/service-areas/east-lansing-mi" className="home-occasion home-occasion-tailgates">
-              <div className="home-occasion-image"><Image src={trailerGalleryImage.src} alt={trailerGalleryImage.alt} unoptimized={trailerGalleryImage.unoptimized} fill className="object-cover" quality={78} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 34vw" /></div>
-              <div className="home-occasion-caption"><h3>MSU Tailgates</h3><ArrowRight aria-hidden="true" size={20} /></div>
-            </Link>
-          </div>
-        </section>
+        <HomeFleet />
 
-        {/* Services Section */}
+        {homepageContent.dayNight && <DayNightScene content={homepageContent.dayNight} />}
+
+        {/* Gallery Preview */}
         <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
             <SectionHeader
-              eyebrow="Our Services"
-              title="Restroom Trailer Rentals For Every Occasion"
-              description="From elegant weddings to demanding job sites, we provide premium restroom trailer solutions tailored to your specific needs."
+              eyebrow="Gallery"
+              title="Luxury Details Your Guests Will Appreciate"
+              description="Take a closer look at our climate-controlled restroom trailers, modern interiors, and professional event setups."
             />
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {services.map((service) => (
-                <ServiceCard key={service.title} {...service} />
-              ))}
+            <div className="mt-12">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {galleryImages.slice(0, 3).map((image) => (
+                  <Link
+                    key={image.id}
+                    href="/gallery"
+                    className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      quality={78}
+                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 33vw"
+                    />
+                    {image.category && (
+                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs text-navy">
+                        {image.category}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="mt-10 text-center">
+              <Button asChild className="bg-navy hover:bg-navy/90 text-white">
+                <Link href="/gallery">View Full Gallery</Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -224,199 +235,38 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Trailer Options Showcase */}
-        <section className="py-20 md:py-28 bg-cream">
+        {/* Event Scenarios Showcase */}
+        <section id="homepage-events" className="home-occasions" aria-labelledby="home-occasions-heading">
+          <div className="home-occasions-heading">
+            <h2 id="home-occasions-heading">From Elegant Weddings to Job Sites</h2>
+            <div><p>Find your setting. Explore the possibilities.</p><Link href="/luxury-restroom-trailer-rentals" className="estate-text-link">Explore our trailers<ArrowRight aria-hidden="true" size={18} /></Link></div>
+          </div>
+          <div className="home-occasions-grid">
+            {eventScenarios.map((scenario) => (
+              <Link key={scenario.displayLabel} href={scenario.href} className={`home-occasion home-occasion-${scenario.mediaKey}`}>
+                <div className="home-occasion-image"><Image src={scenario.src} alt={scenario.alt} unoptimized={scenario.unoptimized} fill className="object-cover" quality={78} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 42vw" /></div>
+                <div className="home-occasion-caption"><h3>{scenario.displayLabel}</h3><ArrowRight aria-hidden="true" size={20} /></div>
+              </Link>
+            ))}
+            <Link href="/service-areas/east-lansing-mi" className="home-occasion home-occasion-tailgates">
+              <div className="home-occasion-image"><Image src={homepageContent.tailgateImage?.src ?? trailerGalleryImage.src} alt={homepageContent.tailgateImage?.alt ?? trailerGalleryImage.alt} unoptimized={homepageContent.tailgateImage ? false : trailerGalleryImage.unoptimized} fill className="object-cover" quality={78} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 34vw" /></div>
+              <div className="home-occasion-caption"><h3>MSU Tailgates</h3><ArrowRight aria-hidden="true" size={20} /></div>
+            </Link>
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section className="py-20 md:py-28 bg-white">
           <div className="container mx-auto px-4 lg:px-8">
             <SectionHeader
-              eyebrow="Our Fleet"
-              title="Choose the Perfect Trailer for Your Event"
-              description="We offer 2-station, 3-station, and 4-station configurations to accommodate events of all sizes."
+              eyebrow="Our Services"
+              title="Restroom Trailer Rentals For Every Occasion"
+              description="From elegant weddings to demanding job sites, we provide premium restroom trailer solutions tailored to your specific needs."
             />
-            
-            {/* 2-Station Trailer */}
-            <div className="mt-16">
-              <div className="grid gap-8 lg:grid-cols-2 items-center">
-                <div className="order-1 lg:order-1">
-                  <div className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2Stattion-ZzVBLsh7CDCrCrvb4zy74VpKu6WLfM.jpg"
-                      alt="2-Station trailer exterior"
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      quality={78}
-                      sizes="(max-width: 1024px) calc(100vw - 32px), 50vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
-                    <Link
-                      href="/luxury-restroom-trailer-rentals#interior-details"
-                      className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                    >
-                      View interior &amp; exterior gallery
-                    </Link>
-                  </div>
-                </div>
-                <div className="order-2 lg:order-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
-                    <Users className="h-5 w-5 text-navy" />
-                    <span className="text-base font-medium text-navy">Perfect for 50-100 guests</span>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
-                    2-Station Trailer
-                  </h3>
-                  <p className="mt-4 text-base md:text-lg text-charcoal/80 leading-relaxed">
-                    Our compact 2-station trailer features one women&apos;s room and one men&apos;s room, 
-                    each with private stalls, modern vanities, and climate control. Ideal for 
-                    intimate weddings, small parties, and residential events.
-                  </p>
-                  <ul className="mt-6 grid grid-cols-2 gap-3">
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      1 Women&apos;s Room
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      1 Men&apos;s Room
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      Climate Controlled
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      Fresh Water System
-                    </li>
-                  </ul>
-                  <div className="mt-8">
-                    <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                      <Link href="/luxury-restroom-trailer-rentals#2-station">View Details</Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 3-Station Trailer */}
-            <div className="mt-20">
-              <div className="grid gap-8 lg:grid-cols-2 items-center">
-                <div className="order-2 lg:order-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
-                    <Users className="h-5 w-5 text-navy" />
-                    <span className="text-base font-medium text-navy">Perfect for 75-150 guests</span>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
-                    3-Station Trailer
-                  </h3>
-                  <p className="mt-4 text-base md:text-lg text-charcoal/80 leading-relaxed">
-                    Our versatile 3-station trailer offers the perfect balance of capacity and luxury,
-                    featuring one women&apos;s room and two men&apos;s rooms, or customizable configurations.
-                    Ideal for mid-sized weddings, corporate events, and community gatherings.
-                  </p>
-                  <ul className="mt-6 grid grid-cols-2 gap-3">
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      1 Women&apos;s Room
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      2 Men&apos;s Rooms
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      Climate Controlled
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      Premium Amenities
-                    </li>
-                  </ul>
-                  <div className="mt-8">
-                    <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                      <Link href="/luxury-restroom-trailer-rentals#3-station">View Details</Link>
-                    </Button>
-                  </div>
-                </div>
-                <div className="order-1 lg:order-2">
-                  <div className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
-                    <Image
-                      src="/images/3 Station Pro/3Station.jpg"
-                      alt="3-Station trailer exterior"
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      quality={78}
-                      sizes="(max-width: 1024px) calc(100vw - 32px), 50vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
-                    <Link
-                      href="/luxury-restroom-trailer-rentals#interior-details"
-                      className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                    >
-                      View interior &amp; exterior gallery
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 4-Station Trailer */}
-            <div className="mt-20">
-              <div className="grid gap-8 lg:grid-cols-2 items-center">
-                <div>
-                  <div className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4Stattion-reeAizT4CMrw1A2cNJMJrJzkCyVzvD.jpg"
-                      alt="4-Station trailer exterior"
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      quality={78}
-                      sizes="(max-width: 1024px) calc(100vw - 32px), 50vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
-                    <Link
-                      href="/luxury-restroom-trailer-rentals#interior-details"
-                      className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                    >
-                      View interior &amp; exterior gallery
-                    </Link>
-                  </div>
-                </div>
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-navy/10 rounded-full mb-4">
-                    <Users className="h-5 w-5 text-navy" />
-                    <span className="text-base font-medium text-navy">Perfect for 100-200+ guests</span>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-serif font-semibold text-navy">
-                    4-Station Trailer
-                  </h3>
-                  <p className="mt-4 text-base md:text-lg text-charcoal/80 leading-relaxed">
-                    Our larger 4-station trailer features two women&apos;s rooms and two men&apos;s rooms, 
-                    providing ample capacity for larger events. Each station includes private stalls, 
-                    modern vanities with succulent artwork, and full climate control.
-                  </p>
-                  <ul className="mt-6 grid grid-cols-2 gap-3">
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      2 Women&apos;s Rooms
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      2 Men&apos;s Rooms
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      Climate Controlled
-                    </li>
-                    <li className="flex items-center gap-2 text-base text-charcoal">
-                      <CheckCircle className="h-5 w-5 text-navy shrink-0" />
-                      High Capacity Events
-                    </li>
-                  </ul>
-                  <div className="mt-8">
-                    <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                      <Link href="/luxury-restroom-trailer-rentals#4-station">View Details</Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {services.map((service) => (
+                <ServiceCard key={service.title} {...service} />
+              ))}
             </div>
           </div>
         </section>
@@ -454,11 +304,25 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Process Section */}
+        <section className="py-20 md:py-28 bg-cream">
+          <div className="container mx-auto px-4 lg:px-8">
+            <SectionHeader
+              eyebrow="How It Works"
+              title="Simple Rental Process"
+              description="Getting a luxury restroom trailer for your event is easy. Here&apos;s how it works."
+            />
+            <div className="mt-12">
+              <ProcessSteps steps={processSteps} />
+            </div>
+          </div>
+        </section>
+
         {/* Service Areas Section */}
         <section className="py-20 md:py-28 bg-navy">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl mx-auto text-center">
-              <span className="text-sm font-semibold uppercase tracking-widest text-navy">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gold">
                 Service Areas
               </span>
               <h2 className="mt-2 text-3xl font-serif font-semibold tracking-tight text-white md:text-4xl lg:text-5xl text-balance">
@@ -490,61 +354,6 @@ export default async function HomePage() {
               >
                 <Link href="/service-areas">View All Service Areas</Link>
               </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Gallery Preview */}
-        <section className="py-20 md:py-28 bg-white">
-          <div className="container mx-auto px-4 lg:px-8">
-            <SectionHeader
-              eyebrow="Gallery"
-              title="Luxury Details Your Guests Will Appreciate"
-              description="Take a closer look at our climate-controlled restroom trailers, modern interiors, and professional event setups."
-            />
-            <div className="mt-12">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {galleryImages.slice(0, 3).map((image) => (
-                  <Link
-                    key={image.id}
-                    href="/gallery"
-                    className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
-                  >
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      quality={78}
-                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                      sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 33vw"
-                    />
-                    {image.category && (
-                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs text-navy">
-                        {image.category}
-                      </span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div className="mt-10 text-center">
-              <Button asChild className="bg-navy hover:bg-navy/90 text-white">
-                <Link href="/gallery">View Full Gallery</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Process Section */}
-        <section className="py-20 md:py-28 bg-cream">
-          <div className="container mx-auto px-4 lg:px-8">
-            <SectionHeader
-              eyebrow="How It Works"
-              title="Simple Rental Process"
-              description="Getting a luxury restroom trailer for your event is easy. Here&apos;s how it works."
-            />
-            <div className="mt-12">
-              <ProcessSteps steps={processSteps} />
             </div>
           </div>
         </section>

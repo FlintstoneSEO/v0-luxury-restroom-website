@@ -30,7 +30,10 @@
       "src": "/images/3 Station Pro/3Station.jpg",
       "alt": "Signature Luxe three-station restroom trailer with private entrances and metal stair railings"
     },
-    "cta": { "label": "Explore the Trailer", "href": "/luxury-restroom-trailer-rentals" }
+    "cta": {
+      "label": "Explore the Trailer",
+      "href": "/luxury-restroom-trailer-rentals"
+    }
   },
   "features": [
     {
@@ -137,6 +140,24 @@
   ],
   "galleryImages": [
     {
+      "id": "live-interior-vanity",
+      "src": "/images/live-events/interior-vanity.webp",
+      "alt": "Trailer vanity with stainless steel sink, mirror and wall-mounted towel dispenser",
+      "category": "Interior"
+    },
+    {
+      "id": "live-trailer-night-detail",
+      "src": "/images/live-events/trailer-night-detail.webp",
+      "alt": "Three trailer entrances with exterior lights illuminating the steps and grass at night",
+      "category": "Exterior"
+    },
+    {
+      "id": "live-msu-tailgate",
+      "src": "/images/live-events/msu-tailgate.webp",
+      "alt": "Restroom trailer beside guests and white tents at a Michigan State University tailgate",
+      "category": "Events"
+    },
+    {
       "id": "1",
       "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DSC03647-wvGP4IObLWSxCr7Hvk08PhOzDZzM9p.jpg",
       "alt": "Luxury restroom trailer exterior in Lansing Michigan",
@@ -172,5 +193,25 @@
       "alt": "2-Station interior with tree ring artwork",
       "category": "Interior"
     }
-  ]
+  ],
+  "dayNight": {
+    "heading": "From daylight to lights on",
+    "body": "See the same outdoor event setting during the day and after dark. Switch views to see the trailer’s exterior lighting in use.",
+    "day": {
+      "src": "/images/live-events/event-daylight.webp",
+      "alt": "Restroom trailer beside a white event tent and mature tree in daylight",
+      "label": "Daytime",
+      "caption": "Daytime: the trailer and event tent in their outdoor setting."
+    },
+    "night": {
+      "src": "/images/live-events/event-lights-on.webp",
+      "alt": "The same outdoor event setting at night, with trailer entrance lights and an illuminated tent",
+      "label": "Lights on",
+      "caption": "After dark: entrance lights illuminate the trailer steps and surrounding grass."
+    }
+  },
+  "tailgateImage": {
+    "src": "/images/live-events/msu-tailgate.webp",
+    "alt": "Restroom trailer beside guests and white tents at a Michigan State University tailgate"
+  }
 }

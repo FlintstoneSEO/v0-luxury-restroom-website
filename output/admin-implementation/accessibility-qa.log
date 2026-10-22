@@ -1,0 +1,41 @@
+{
+  "scans": [
+    {
+      "name": "dashboard",
+      "violations": [],
+      "passes": 27,
+      "incomplete": []
+    },
+    {
+      "name": "phone",
+      "violations": [],
+      "passes": 22,
+      "incomplete": [
+        "color-contrast"
+      ]
+    },
+    {
+      "name": "editor",
+      "violations": [],
+      "passes": 20,
+      "incomplete": []
+    },
+    {
+      "name": "calendar",
+      "violations": [],
+      "passes": 19,
+      "incomplete": [
+        "color-contrast"
+      ]
+    },
+    {
+      "name": "phone-workbench",
+      "violations": [],
+      "passes": 22
+    }
+  ],
+  "reflow": {
+    "width": 720,
+    "documentWidth": 720
+  }
+}

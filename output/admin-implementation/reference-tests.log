@@ -1,0 +1,11 @@
+npm notice run signature-luxe-platform@0.1.0 test
+npm notice run vitest run tests/admin-workbench.test.tsx tests/availability.test.ts tests/quote-pricing.test.ts tests/quote-presentation.test.tsx tests/standalone-admin-auth.test.ts
+
+ RUN  v4.1.10 C:/Users/wende/source/repos/v0-luxury-restroom-website
+
+
+ Test Files  5 passed (5)
+      Tests  42 passed (42)
+   Start at  16:02:22
+   Duration  1.71s (transform 823ms, setup 0ms, import 3.18s, tests 102ms, environment 0ms)
+

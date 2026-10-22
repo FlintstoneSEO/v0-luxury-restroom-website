@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet"
@@ -14,6 +15,9 @@ type MobileNavigationProps = {
 }
 
 export function MobileNavigation({ navigation, cta, logo }: MobileNavigationProps) {
+  const pathname = usePathname() ?? "/"
+  const isCurrentPath = (href: string) => href === "/" ? pathname === "/" : href !== "#" && (pathname === href || pathname.startsWith(`${href}/`))
+
   return (
     <Sheet>
       <div className="estate-mobile-trigger">
@@ -52,7 +56,8 @@ export function MobileNavigation({ navigation, cta, logo }: MobileNavigationProp
                       <SheetClose key={child.label} asChild>
                         <Link
                           href={child.href}
-                          className="py-2 text-charcoal transition-colors hover:text-navy"
+                          aria-current={isCurrentPath(child.href) ? "page" : undefined}
+                          className={`estate-mobile-nav-link py-2 text-charcoal transition-colors hover:text-navy${isCurrentPath(child.href) ? " estate-nav-active" : ""}`}
                         >
                           {child.label}
                         </Link>
@@ -64,7 +69,8 @@ export function MobileNavigation({ navigation, cta, logo }: MobileNavigationProp
                 <SheetClose key={item.label} asChild>
                   <Link
                     href={item.href}
-                    className="border-b border-border/50 py-3 text-charcoal transition-colors hover:text-navy"
+                    aria-current={isCurrentPath(item.href) ? "page" : undefined}
+                    className={`estate-mobile-nav-link border-b border-border/50 py-3 text-charcoal transition-colors hover:text-navy${isCurrentPath(item.href) ? " estate-nav-active" : ""}`}
                   >
                     {item.label}
                   </Link>

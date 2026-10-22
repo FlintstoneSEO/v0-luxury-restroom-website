@@ -1,0 +1,31 @@
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+const require = createRequire(import.meta.url);
+const { chromium } = require('C:/Users/wende/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const browser = await chromium.launch({headless:true});
+const page = await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+await page.route('**/api/**',route=>route.fulfill({json:{options:[]}}));
+const scans=[];
+for(const [name,url,width] of [['dashboard','',1440],['phone','',390],['editor','?screen=detail',1440],['calendar','?screen=calendar',390]]) {
+  await page.setViewportSize({width,height:1000});
+  await page.goto('http://127.0.0.1:3011/'+url);
+  await page.locator('#admin-main').waitFor();
+  await page.addScriptTag({path:path.join(process.env.TEMP,'signature-operations-qa/node_modules/axe-core/axe.min.js')});
+  const result=await page.evaluate(async()=>await window.axe.run(document.querySelector('#admin-main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}));
+  scans.push({name,violations:result.violations.map(({id,impact,description,nodes})=>({id,impact,description,nodes:nodes.map(({target,failureSummary})=>({target,failureSummary}))})),passes:result.passes.length,incomplete:result.incomplete.map(({id})=>id)});
+}
+await page.goto('http://127.0.0.1:3011/');
+await page.setViewportSize({width:390,height:844});
+await page.getByRole('combobox',{name:'Pipeline stage'}).selectOption('all');
+await page.getByRole('button',{name:'Inspect Avery Morgan quote',exact:true}).click();
+await page.evaluate(()=>scrollTo(0,0));
+await page.screenshot({path:'output/admin-implementation/phone-workbench.png',fullPage:true});
+await page.addScriptTag({path:path.join(process.env.TEMP,'signature-operations-qa/node_modules/axe-core/axe.min.js')});
+const selected=await page.evaluate(async()=>await window.axe.run(document.querySelector('#admin-main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}));
+scans.push({name:'phone-workbench',violations:selected.violations.map(({id,impact,nodes})=>({id,impact,targets:nodes.map(({target})=>target)})),passes:selected.passes.length});
+await page.setViewportSize({width:720,height:900});
+const reflow=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth}));
+await fs.writeFile('output/admin-implementation/accessibility-checks.json',JSON.stringify({scans,reflow,reducedMotion:true},null,2));
+console.log(JSON.stringify({scans,reflow},null,2));
+await browser.close();

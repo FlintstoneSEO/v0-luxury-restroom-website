@@ -70,6 +70,24 @@
     ],
     "eventGallery": [
       {
+        "id": "live-event-daylight",
+        "src": "/images/live-events/event-daylight.webp",
+        "alt": "Restroom trailer beside a white event tent and mature tree in daylight",
+        "category": "Exterior"
+      },
+      {
+        "id": "live-event-lights-on",
+        "src": "/images/live-events/event-lights-on.webp",
+        "alt": "The same outdoor event setting at night, with trailer entrance lights and an illuminated tent",
+        "category": "Exterior"
+      },
+      {
+        "id": "live-trailer-night-detail",
+        "src": "/images/live-events/trailer-night-detail.webp",
+        "alt": "Three trailer entrances with exterior lights illuminating the steps and grass at night",
+        "category": "Exterior"
+      },
+      {
         "id": "p1",
         "src": "/images/Special Event Trailer.png",
         "alt": "Restroom trailer at private backyard event",

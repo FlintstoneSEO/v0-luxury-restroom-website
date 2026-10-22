@@ -1,0 +1,79 @@
+=== Internal Link Audit ===
+Scanned files: 292
+Unique internal URLs found: 44
+Low-link threshold: <= 2
+
+All internal URLs found (count desc)
+    74  /request-quote
+    35  /luxury-restroom-trailer-rentals
+    24  /wedding-restroom-trailer-rentals
+    21  /private-event-restroom-trailers
+    21  /start-here
+    20  /construction-long-term-restroom-trailer-rentals
+    19  /gallery
+    17  /festival-community-event-restroom-trailers
+    13  /corporate-event-restroom-trailers
+    13  /service-areas
+    12  /
+     9  /resources/restroom-trailer-setup-requirements
+     7  /service-areas/lansing-mi
+     6  /service-areas/east-lansing-mi
+     5  /contact
+     5  /emergency-disaster-relief-restroom-trailers
+     5  /faq
+     5  /resources/how-many-restroom-trailers-for-wedding
+     5  /resources/outdoor-wedding-restroom-planning-michigan
+     4  /admin
+     4  /resources/restroom-trailer-rental-cost-michigan
+     4  /service-areas/dewitt-mi
+     4  /service-areas/okemos-mi
+     3  /admin/calendar
+     3  /blog
+     3  /resources/restroom-trailer-vs-porta-potty
+     3  /service-areas/grand-ledge-mi
+     3  /service-areas/haslett-mi
+     3  /service-areas/jackson-mi
+     2  /luxury-restroom-trailer-features
+     2  /resources
+     2  /resources/festival-restroom-planning-guide
+     1  /admin/distance-settings
+     1  /admin/pricing
+     1  /admin/site-media
+     1  /request-availability
+     1  /resources/construction-restroom-trailer-rental-guide
+     1  /service-areas/ann-arbor-mi
+     1  /service-areas/flint-mi
+     1  /service-areas/grand-rapids-mi
+     1  /service-areas/holt-mi
+     1  /service-areas/howell-mi
+     1  /service-areas/mason-mi
+     1  /special-events
+
+finalRoutes with zero/low internal links
+     2  /luxury-restroom-trailer-features
+     2  /resources
+
+City pages with zero/low internal links
+     0  /service-areas/battle-creek-mi
+     0  /service-areas/brighton-mi
+     0  /service-areas/charlotte-mi
+     0  /service-areas/kalamazoo-mi
+     1  /service-areas/ann-arbor-mi
+     1  /service-areas/flint-mi
+     1  /service-areas/grand-rapids-mi
+     1  /service-areas/holt-mi
+     1  /service-areas/howell-mi
+     1  /service-areas/mason-mi
+
+Resource articles with zero/low internal links
+     1  /resources/construction-restroom-trailer-rental-guide
+     2  /resources/festival-restroom-planning-guide
+
+Legacy URL checks
+     0  /our-restrooms
+     0  /weddings
+     1  /special-events
+     0  /construction-/-long-term
+     0  /disaster-relief-/-government
+
+Audit complete. This report is informational and does not fail builds.

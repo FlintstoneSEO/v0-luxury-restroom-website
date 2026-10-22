@@ -13,7 +13,9 @@ next.user-config.*
 # Common ignores
 node_modules
 .next/
-.next-service-*/
+# Isolated Next.js validation builds must stay out of source discovery.
+.next-*/
 dist/
 .astro/
+.cloudcannon/migration/*.schema.json
 .DS_Store

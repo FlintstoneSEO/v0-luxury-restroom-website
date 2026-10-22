@@ -1,0 +1,153 @@
+{
+  "checks": [
+    {
+      "name": "Existing New Requests default and hidden tests",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 1586px",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 1440px",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 1280px",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 1024px",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 768px",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 390px",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 375px",
+      "result": "PASS"
+    },
+    {
+      "name": "No horizontal page overflow at 320px",
+      "result": "PASS"
+    },
+    {
+      "name": "Mobile selection, detail focus, Back focus and retained search",
+      "result": "PASS"
+    },
+    {
+      "name": "Mobile navigation keyboard Escape and focus return",
+      "result": "PASS"
+    },
+    {
+      "name": "Empty search and reset recovery",
+      "result": "PASS"
+    },
+    {
+      "name": "Distance warning, independent statuses, financial lock and pricing/activity/notes tabs",
+      "result": "PASS"
+    },
+    {
+      "name": "All filters/sorts and explicit test visibility",
+      "result": "PASS"
+    },
+    {
+      "name": "Existing editor retains notes after a simulated save failure and prevents duplicate submit",
+      "result": "PASS"
+    },
+    {
+      "name": "Customer send uses existing confirmation and can cancel without sending",
+      "result": "PASS"
+    },
+    {
+      "name": "Anonymous local admin and API remain protected",
+      "result": "PASS"
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1586,
+      "documentWidth": 1586,
+      "viewportWidth": 1586,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 48,
+      "queueTop": 242.5,
+      "detailVisible": true
+    },
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "viewportWidth": 1440,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 48,
+      "queueTop": 260.5,
+      "detailVisible": true
+    },
+    {
+      "width": 1280,
+      "documentWidth": 1280,
+      "viewportWidth": 1280,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 48,
+      "queueTop": 260.5,
+      "detailVisible": true
+    },
+    {
+      "width": 1024,
+      "documentWidth": 1024,
+      "viewportWidth": 1024,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 38.390625,
+      "queueTop": 345,
+      "detailVisible": false
+    },
+    {
+      "width": 768,
+      "documentWidth": 768,
+      "viewportWidth": 768,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 36,
+      "queueTop": 406,
+      "detailVisible": false
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "viewportWidth": 390,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 36,
+      "queueTop": 355,
+      "detailVisible": false
+    },
+    {
+      "width": 375,
+      "documentWidth": 375,
+      "viewportWidth": 375,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 36,
+      "queueTop": 375,
+      "detailVisible": false
+    },
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "viewportWidth": 320,
+      "font": "Arial, Helvetica, sans-serif",
+      "headingHeight": 36,
+      "queueTop": 423,
+      "detailVisible": false
+    }
+  ],
+  "errors": [],
+  "interceptedFixtureMutations": [
+    {
+      "method": "PATCH",
+      "path": "/api/admin/quotes/fixture-3"
+    }
+  ]
+}

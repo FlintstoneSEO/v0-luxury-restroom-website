@@ -1,3 +1,5 @@
+import { DayNightScene } from "@/components/day-night-scene"
+import { getHomepage } from "@/lib/content/pages"
 import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
@@ -28,6 +30,7 @@ import rawContent from "@/content/service-pages/private-events.json"
 import { defineServicePageData } from "@/lib/content/service-pages"
 
 const content = defineServicePageData(rawContent)
+const dayNight = getHomepage().dayNight
 
 const { title, description, canonical } = content.seo
 
@@ -167,6 +170,8 @@ export default async function PrivateEventRestroomTrailersPage() {
             </div>
           </div>
         </section>
+
+        {dayNight && <DayNightScene content={dayNight} />}
 
         {/* Gallery */}
         <section className="py-20 md:py-28 bg-cream">

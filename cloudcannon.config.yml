@@ -44,6 +44,30 @@ collections_config:
       homepage:
         path: .cloudcannon/schemas/homepage.json
         name: Homepage
+    _inputs:
+      dayNight:
+        type: object
+        label: Daytime and evening photos
+        comment: Shared photo comparison on the homepage and private-event page. Use two views of the same setting.
+      dayNight.body:
+        type: textarea
+        label: Introduction
+      dayNight.day:
+        type: object
+        label: Daytime view
+      dayNight.night:
+        type: object
+        label: Lights-on view
+      dayNight.day.caption:
+        type: text
+        label: Daytime caption
+      dayNight.night.caption:
+        type: text
+        label: Evening caption
+      tailgateImage:
+        type: object
+        label: MSU tailgate photo
+        comment: Photo used for the homepage MSU Tailgates tile. Keep the trailer visible in the image.
     _enabled_editors:
       - data
 

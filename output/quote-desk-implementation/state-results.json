@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Options loading state visible",
+    "Empty options state visible",
+    "Option API failure visibly announced",
+    "Draft survives retrieval errors and tab changes",
+    "Unsaved Back navigation can be cancelled",
+    "ZIP and mileage are keyboard-accessible in More event details"
+  ],
+  "nonGetRequests": 0
+}

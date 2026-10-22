@@ -1,0 +1,82 @@
+[
+  {
+    "source": "C:\\Users\\wende\\Downloads\\PXL_20260912_211636605.MP.jpg",
+    "src": "/images/live-events/event-daylight.webp",
+    "id": "live-event-daylight",
+    "alt": "Restroom trailer beside a white event tent and mature tree in daylight",
+    "category": "Exterior",
+    "width": 1920,
+    "height": 1446,
+    "bytes": 1018116
+  },
+  {
+    "source": "C:\\Users\\wende\\Downloads\\PXL_20260913_040959978.jpg",
+    "src": "/images/live-events/event-lights-on.webp",
+    "id": "live-event-lights-on",
+    "alt": "The same outdoor event setting at night, with trailer entrance lights and an illuminated tent",
+    "category": "Exterior",
+    "width": 1920,
+    "height": 1446,
+    "bytes": 181182
+  },
+  {
+    "source": "C:\\Users\\wende\\Downloads\\PXL_20260913_040801671.jpg",
+    "src": "/images/live-events/trailer-night-detail.webp",
+    "id": "live-trailer-night-detail",
+    "alt": "Three trailer entrances with exterior lights illuminating the steps and grass at night",
+    "category": "Exterior",
+    "width": 1446,
+    "height": 1920,
+    "bytes": 491856
+  },
+  {
+    "source": "C:\\Users\\wende\\Downloads\\PXL_20260926_185454389.MP.jpg",
+    "src": "/images/live-events/msu-tailgate.webp",
+    "id": "live-msu-tailgate",
+    "alt": "Restroom trailer beside guests and white tents at a Michigan State University tailgate",
+    "category": "Events",
+    "width": 1920,
+    "height": 1446,
+    "bytes": 543432
+  },
+  {
+    "source": "C:\\Users\\wende\\Downloads\\Photos-1-001\\PXL_20260611_165740785.jpg",
+    "src": "/images/live-events/interior-room.webp",
+    "id": "live-interior-room",
+    "alt": "Restroom interior with toilet, urinal, sink, mirror and wood-look floor",
+    "category": "Interior",
+    "width": 1446,
+    "height": 1920,
+    "bytes": 166896
+  },
+  {
+    "source": "C:\\Users\\wende\\Downloads\\Photos-1-001\\PXL_20260611_165502756.jpg",
+    "src": "/images/live-events/interior-vanity.webp",
+    "id": "live-interior-vanity",
+    "alt": "Trailer vanity with stainless steel sink, mirror and wall-mounted towel dispenser",
+    "category": "Interior",
+    "width": 1446,
+    "height": 1920,
+    "bytes": 76882
+  },
+  {
+    "source": "C:\\Users\\wende\\Downloads\\Photos-1-001\\PXL_20260611_165517674.MP.jpg",
+    "src": "/images/live-events/interior-sink.webp",
+    "id": "live-interior-sink",
+    "alt": "Close view of the trailer sink, mirror and towel dispenser",
+    "category": "Interior",
+    "width": 1446,
+    "height": 1920,
+    "bytes": 93976
+  },
+  {
+    "source": "C:\\Users\\wende\\Downloads\\Photos-1-001\\PXL_20260611_165523927.jpg",
+    "src": "/images/live-events/interior-stall.webp",
+    "id": "live-interior-stall",
+    "alt": "Private restroom stall with toilet and wood-look flooring",
+    "category": "Interior",
+    "width": 1446,
+    "height": 1920,
+    "bytes": 115954
+  }
+]

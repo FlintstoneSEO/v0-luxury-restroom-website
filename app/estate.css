@@ -23,16 +23,26 @@
 :is(.estate-public, .estate-shell, .estate-menu) :focus-visible { outline: 2px solid #876534; outline-offset: 5px; }
 .estate-public .bg-navy :focus-visible, .estate-footer :focus-visible { outline-color: #e4cfa2; }
 .estate-kicker { margin: 0 0 1.5rem; color: var(--gold-text); font-size: .6875rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 500; }
-.estate-home-hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
-.estate-home-copy { padding: clamp(3rem, 5vw, 6rem) clamp(1.5rem, 4vw, 5rem); align-self: center; }
-.estate-home-copy h1 { margin: 0; max-width: 15ch; }
-.estate-hero-description { margin-top: 1.5rem; max-width: 44rem; font-size: clamp(1rem, 1.2vw, 1.125rem); line-height: 1.85; color: #45515a; }
-.estate-home-image { position: relative; min-height: 39rem; }
-.estate-home-image img { object-position: 44% center; }
+.estate-home-hero { position: relative; display: flex; align-items: center; min-height: clamp(36rem, 58vw, 49rem); overflow: hidden; background: var(--navy); }
+.estate-home-hero::after { position: absolute; inset: 0; content: ""; background: linear-gradient(90deg, rgb(13 29 41 / 94%) 0%, rgb(13 29 41 / 83%) 34%, rgb(13 29 41 / 38%) 62%, rgb(13 29 41 / 8%) 100%); pointer-events: none; }
+.estate-home-copy { position: relative; z-index: 1; width: min(58rem, 62%); padding: clamp(3rem, 6vw, 6.5rem) clamp(1.5rem, 4vw, 5rem); }
+.estate-home-copy h1 { margin: 0; max-width: 15ch; color: #fff; }
+.estate-home-copy .estate-kicker { color: #e4cfa2; }
+.estate-hero-description { margin-top: 1.5rem; max-width: 44rem; font-size: clamp(1rem, 1.2vw, 1.125rem); line-height: 1.85; color: #f1f1ed; }
+.estate-home-image { position: absolute; inset: 0; }
+.estate-home-image img { object-position: 58% 34%; }
 .estate-hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 2rem; }
 .estate-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 1.25rem; min-height: 3rem; padding-block: .75rem; border-bottom: 1px solid var(--gold); color: var(--navy); font-size: .75rem; font-weight: 500; letter-spacing: .09em; text-decoration: none; }
 .estate-text-link:hover { color: var(--gold-text); }
 .estate-location { display: flex; align-items: flex-start; gap: .6rem; margin-top: 2rem; color: #54616a; font-size: .75rem; line-height: 1.8; }
+.estate-home-copy .estate-location { color: #f1f1ed; }
+.estate-home-copy .estate-text-link { color: #fff; }
+.estate-desktop-nav > .estate-nav-active,
+.estate-nav-disclosure > summary[aria-current="page"] { color: var(--gold-text); position: relative; }
+.estate-desktop-nav > .estate-nav-active::after,
+.estate-nav-disclosure > summary[aria-current="page"]::after { position: absolute; right: 0; bottom: .25rem; left: 0; height: 2px; background: var(--gold); content: ""; }
+.estate-dropdown a.estate-nav-active { color: var(--gold-text); font-weight: 600; background: #e9e3d7; }
+.estate-mobile-nav-link.estate-nav-active { color: var(--gold-text); font-weight: 600; box-shadow: inset 3px 0 var(--gold); padding-left: .75rem; }
 .estate-assurance { background: var(--navy); color: var(--cream); }
 .estate-assurance-inner { max-width: 1440px; margin-inline: auto; padding: 2rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, .9fr); }
 .estate-assurance-item { display: flex; align-items: center; gap: 1rem; padding: .25rem 1.5rem; border-right: 1px solid #ffffff30; }
@@ -99,10 +109,10 @@
   .estate-desktop-nav { display: none; } .estate-mobile-trigger { display: block; }
 }
 @media (max-width: 900px) {
-  .estate-home-hero { grid-template-columns: 1fr; }
-  .estate-home-copy { padding: 3rem 1.5rem; }
+  .estate-home-hero { min-height: 42rem; }
+  .estate-home-hero::after { background: linear-gradient(90deg, rgb(13 29 41 / 90%) 0%, rgb(13 29 41 / 70%) 58%, rgb(13 29 41 / 24%) 100%); }
+  .estate-home-copy { width: min(42rem, 78%); padding: 3rem 1.5rem; }
   .estate-home-copy h1 { max-width: 21ch; }
-  .estate-home-image { min-height: 0; aspect-ratio: 3/2; }
   .estate-assurance-inner { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 1.5rem 1rem; }
   .estate-assurance-item { padding: .5rem; gap: .5rem; }
   .estate-assurance-item:last-child { grid-column: 1/-1; justify-content: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ffffff30; }
@@ -117,7 +127,9 @@
   .estate-logo { width: 10.5rem; }
   .estate-header-actions .estate-header-cta { display: none; }
   .estate-public h1 { font-size: clamp(2.5rem, 8.2vw, 3.25rem); }
-  .estate-home-copy { padding: 2.5rem 1rem; }
+  .estate-home-hero { min-height: 40rem; align-items: flex-end; }
+  .estate-home-hero::after { background: linear-gradient(0deg, rgb(13 29 41 / 96%) 0%, rgb(13 29 41 / 84%) 46%, rgb(13 29 41 / 18%) 100%); }
+  .estate-home-copy { width: 100%; padding: 2.5rem 1rem; }
   .estate-kicker { margin-bottom: 1.2rem; }
   .estate-hero-actions { align-items: flex-start; flex-direction: column; gap: .5rem; }
   .estate-assurance-inner { grid-template-columns: 1fr; padding: 1rem 1.5rem; }

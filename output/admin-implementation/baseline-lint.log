@@ -1,0 +1,39 @@
+npm notice run signature-luxe-platform@0.1.0 lint
+npm notice run eslint .
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-area-build\server\chunks\3735.js
+  1:7470  error  Component definition is missing display name  react/display-name
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-area-final\server\chunks\3735.js
+  1:7470  error  Component definition is missing display name  react/display-name
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-area-final\static\chunks\131-a9d903aca9ad73f5.js
+  1:7705  error  Component definition is missing display name  react/display-name
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-build-host\server\chunks\3735.js
+  1:7470  error  Component definition is missing display name  react/display-name
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-build-host\static\chunks\131-a9d903aca9ad73f5.js
+  1:7705  error  Component definition is missing display name  react/display-name
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-preview-host\dev\server\webpack-runtime.js
+  16:12  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-preview-host\dev\static\chunks\fallback\webpack.js
+    17:12  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+   323:13  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+   952:15  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  1115:14  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  1145:16  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  1210:17  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+
+C:\Users\wende\source\repos\v0-luxury-restroom-website\.next-service-preview-host\dev\static\chunks\webpack.js
+    17:12  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+   323:13  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+   952:15  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  1115:14  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  1145:16  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+  1210:17  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+
+✖ 18 problems (18 errors, 0 warnings)
+
