@@ -62,13 +62,9 @@ export async function POST(
 
     const now = new Date().toISOString();
 
-    await supabase.from('quote_link_events').insert({
-      quote_request_id: tokenRecord.quote_request_id,
-      token_id: tokenRecord.id,
-      event_type: 'quote_message_sent',
-    });
-
-    await supabase.from('quote_status_history').insert({
+    // Persist the question before attempting the notification. Never acknowledge
+    // a message that the admin cannot retrieve later.
+    const { error: messageError } = await supabase.from('quote_status_history').insert({
       quote_request_id: tokenRecord.quote_request_id,
       old_status: quote.status,
       new_status: quote.status,
@@ -77,19 +73,45 @@ export async function POST(
       note: `Customer message: ${message}`,
     });
 
+    if (messageError) {
+      console.error('[quote-message] Failed to save customer message', messageError);
+      return NextResponse.json(
+        { ok: false, message: 'Unable to save your message. Please try again.' },
+        { status: 500 }
+      );
+    }
+
+    // Tracking and email are best effort once the message has been saved.
+    try {
+      await supabase.from('quote_link_events').insert({
+        quote_request_id: tokenRecord.quote_request_id,
+        token_id: tokenRecord.id,
+        event_type: 'quote_message_sent',
+      });
+    } catch (trackingError) {
+      console.error('[quote-message] Tracking failed', trackingError);
+    }
+
     const adminQuoteUrl = `${getAdminAppOrigin(request)}/admin/quotes/${quote.id}`;
-    await sendEmail({
-      to: process.env.EMAIL_FROM || 'info@signatureluxeevents.com',
-      subject: `Quote ${quote.quote_number || quote.id.slice(0, 8)}: Customer Message`,
-      html: `
-        <h2>Customer Quote Message</h2>
-        <p><strong>Quote:</strong> ${escapeHtml(quote.quote_number || quote.id)}</p>
-        <p><strong>Customer:</strong> ${escapeHtml(quote.customer_name)} (${escapeHtml(quote.email)})</p>
-        <p><strong>Message:</strong></p>
-        <p>${escapeHtml(message).replace(/\n/g, '<br />')}</p>
-        <p><a href="${escapeHtml(adminQuoteUrl)}">View in Admin Dashboard</a></p>
-      `,
-    });
+    try {
+      const result = await sendEmail({
+        to: process.env.EMAIL_FROM || 'info@signatureluxeevents.com',
+        replyTo: quote.email,
+        subject: `Quote ${quote.quote_number || quote.id.slice(0, 8)}: Customer Message`,
+        html: `
+          <h2>Customer Quote Message</h2>
+          <p><strong>Quote:</strong> ${escapeHtml(quote.quote_number || quote.id)}</p>
+          <p><strong>Customer:</strong> ${escapeHtml(quote.customer_name)} (${escapeHtml(quote.email)})</p>
+          <p><strong>Message:</strong></p>
+          <p>${escapeHtml(message).replace(/\n/g, '<br />')}</p>
+          <p><a href="${escapeHtml(adminQuoteUrl)}">View in Admin Dashboard</a></p>
+        `,
+      });
+
+      if (!result.sent) console.error('[quote-message] Notification failed', result.error);
+    } catch (emailError) {
+      console.error('[quote-message] Notification failed', emailError);
+    }
 
     return NextResponse.json({ ok: true, message: 'Message sent successfully' });
   } catch (error) {

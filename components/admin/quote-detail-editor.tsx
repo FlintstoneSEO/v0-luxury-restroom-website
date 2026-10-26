@@ -1,5 +1,7 @@
 'use client';
 
+import { CustomerContactActions, QuoteCommunications } from '@/components/admin/quote-communications';
+import type { QuoteCommunications as Communications } from '@/lib/quotes/communications';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -47,6 +49,7 @@ import { isBookingBlockingStatus, isRealQuote, type AvailabilityBlock } from '@/
 
 interface QuoteDetailEditorProps {
   quote: QuoteRequest;
+  communications?: Communications;
   sameDateQuotes?: CalendarQuote[];
   sameDateBlocks?: AvailabilityBlock[];
   depositPercentage?: number;
@@ -245,6 +248,7 @@ function getDistanceCalculationMessage(quote: QuoteRequest) {
 
 export default function QuoteDetailEditor({
   quote,
+  communications = { messages: [], error: false },
   sameDateQuotes = [],
   sameDateBlocks = [],
   depositPercentage: configuredDepositPercentage,
@@ -333,7 +337,7 @@ export default function QuoteDetailEditor({
     const warn = (event: BeforeUnloadEvent) => { if (dirtyCount) event.preventDefault(); };
     const guardLink = (event: MouseEvent) => {
       const anchor = (event.target as Element).closest('a[href]');
-      if (!dirtyCount || !anchor || anchor.getAttribute('href')?.startsWith('#')) return;
+      if (!dirtyCount || !anchor || ['#', 'mailto:', 'tel:'].some(prefix => anchor.getAttribute('href')?.startsWith(prefix))) return;
       if (!window.confirm('Discard unsaved quote changes and leave this page?')) { event.preventDefault(); event.stopPropagation(); }
     };
     window.addEventListener('beforeunload', warn);
@@ -932,6 +936,11 @@ export default function QuoteDetailEditor({
           </div>
         </div>
       )}
+
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <CustomerContactActions email={quote.email ?? ''} phone={quote.phone ?? ''} quoteNumber={quote.quote_number || quote.id.slice(0, 8)} />
+        <Button type="button" variant="outline" className="min-h-11" onClick={() => setDeskTab('activity')}>View customer questions{communications.messages.length ? ` (${communications.messages.length})` : ''}</Button>
+      </div>
 
       {/* Messages */}
       {message && (
@@ -1615,6 +1624,7 @@ export default function QuoteDetailEditor({
       </div>
 
 </TabsContent><TabsContent value="activity" forceMount><p className="mb-4 text-sm text-muted-foreground">Request created {formatDateTime(quote.created_at)}</p>      {/* Customer Activity */}
+      <QuoteCommunications communications={communications} customerName={quote.customer_name} email={quote.email ?? ''} quoteNumber={quote.quote_number || quote.id.slice(0, 8)} />
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Customer Activity</h2>
         <div className="space-y-3 text-sm text-[#2d3a47]">
