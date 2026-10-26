@@ -43,11 +43,12 @@ import { isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
 import { SameDateRequestsPanel } from '@/components/admin/same-date-requests-panel';
 import type { CalendarQuote } from '@/components/admin/booking-calendar';
-import { isBookingBlockingStatus, isRealQuote } from '@/lib/availability';
+import { isBookingBlockingStatus, isRealQuote, type AvailabilityBlock } from '@/lib/availability';
 
 interface QuoteDetailEditorProps {
   quote: QuoteRequest;
   sameDateQuotes?: CalendarQuote[];
+  sameDateBlocks?: AvailabilityBlock[];
   depositPercentage?: number;
   salesTaxPercentage?: number;
 }
@@ -245,6 +246,7 @@ function getDistanceCalculationMessage(quote: QuoteRequest) {
 export default function QuoteDetailEditor({
   quote,
   sameDateQuotes = [],
+  sameDateBlocks = [],
   depositPercentage: configuredDepositPercentage,
   salesTaxPercentage: configuredSalesTaxPercentage,
 }: QuoteDetailEditorProps) {
@@ -387,6 +389,8 @@ export default function QuoteDetailEditor({
       isRealQuote(sameDateQuote) &&
       isBookingBlockingStatus(sameDateQuote.status),
   );
+  const hardDateBlocks = sameDateBlocks.filter((block) => block.status === 'active' && block.availability_effect === 'hard_block');
+  const softDateHolds = sameDateBlocks.filter((block) => block.status === 'active' && block.availability_effect === 'soft_hold');
 
   // Calculate subtotal, total, deposit, and final balance
   const recalculatePricing = useCallback(() => {
@@ -539,7 +543,7 @@ export default function QuoteDetailEditor({
     }
   };
 
-  const handleSendQuoteEmail = async () => {
+  const handleSendQuoteEmail = async (confirmSoftHold = false) => {
     if (actionInFlight.current.has('handleSendQuoteEmail')) return;
     actionInFlight.current.add('handleSendQuoteEmail');
     setSendingQuote(true);
@@ -548,6 +552,8 @@ export default function QuoteDetailEditor({
     try {
       const res = await fetch(`/api/admin/quotes/${quote.id}/send`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm_soft_hold: confirmSoftHold }),
       });
 
       const body = await res.json();
@@ -903,6 +909,30 @@ export default function QuoteDetailEditor({
       <div className="desk-masthead"><strong className="desk-number">{quote.quote_number || quote.id.slice(0, 8)}</strong><div className="desk-identity"><strong>{form.customer_name}</strong><span>{form.event_type} · {form.event_date ? new Date(form.event_date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : 'Date not set'} · {form.city}, {form.state}</span></div><div className="desk-total"><span>Total (USD)</span><strong>{formatCurrency(calculatedPricing.total_price)}</strong></div></div>
       <div className="desk-status-strip" aria-label="Saved workflow states">{[{label:'Quote',value:quote.status,Icon:FileText,family:'quote' as const},{label:'Agreement',value:quote.agreement_status,Icon:FileCheck,family:'agreement' as const},{label:'Deposit',value:quote.deposit_status,Icon:WalletCards,family:'deposit' as const}].map(({label,value,Icon,family}) => <div key={label}><Icon aria-hidden="true"/><strong>{label}</strong><span data-status={value}>{formatAdminStatus(value,family)}</span></div>)}</div>
       {quote.is_test_quote && <p role="status" className="desk-test">TEST QUOTE · Actions affect this test record only.{quote.test_source_quote_id && <> Cloned from {quote.test_source_quote_id}.</>}</p>}
+      {!quote.is_test_quote && hardDateBlocks.length > 0 && (
+        <div role="alert" className="rounded-lg border-2 border-violet-500 bg-violet-50 p-4 text-sm text-violet-950">
+          <p className="font-bold uppercase tracking-wide">Request on blocked date</p>
+          <p className="mt-1">{hardDateBlocks.length} active hard block{hardDateBlocks.length === 1 ? '' : 's'} cover this event date. The lead can be reviewed, but it cannot become a committed booking until the block is removed or the event date changes.</p>
+          <a href={`/admin/calendar?date=${quote.event_date}`} className="mt-2 inline-block font-semibold underline">View date in calendar</a>
+        </div>
+      )}
+      {!quote.is_test_quote && hardDateBlocks.length === 0 && softDateHolds.length > 0 && (
+        <div role="status" className="rounded-lg border border-violet-300 bg-violet-50 p-4 text-sm text-violet-950">
+          <p className="font-bold">Soft hold on event date</p>
+          <p className="mt-1">This date has an operational hold. Review it before sending customer-visible documents.</p>
+        </div>
+      )}
+
+      {fallbackDistance && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 flex gap-3 items-start">
+          <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold">Fallback distance calculation</p>
+            <p>{distanceMessage}</p>
+          </div>
+        </div>
+      )}
+
       {/* Messages */}
       {message && (
         <div role={message.type === 'error' ? 'alert' : 'status'}
@@ -1695,8 +1725,10 @@ export default function QuoteDetailEditor({
           onClick={() => setConfirmDialog({
             open: true,
             title: 'Send Quote Email',
-            description: 'This will send an email to the customer with a link to review and approve the quote. The quote status will be updated to "Quote Sent".',
-            action: handleSendQuoteEmail,
+            description: softDateHolds.length > 0
+              ? 'A soft hold exists on this date. Sending is allowed, but confirm the operational hold has been reviewed before this quote goes to the customer.'
+              : 'This will send an email to the customer with a link to review and approve the quote. The quote status will be updated to "Quote Sent".',
+            action: () => handleSendQuoteEmail(softDateHolds.length > 0),
           })}
           disabled={saving || confirming || sendingQuote || !['pending_review', 'new', 'under_review', 'draft_quote', 'change_requested', 'quote_sent'].includes(form.status)}
           className="flex-1 bg-[#2d3a47] hover:bg-[#2d3a47]/90 text-white"
@@ -1870,7 +1902,14 @@ export default function QuoteDetailEditor({
             </DialogClose>
             <Button
               type="button"
-              onClick={handleSendQuoteEmail}
+              onClick={() => setConfirmDialog({
+                open: true,
+                title: 'Send Quote Email',
+                description: softDateHolds.length > 0
+                  ? 'A soft hold exists on this date. Confirm that you reviewed it and still want to send this quote.'
+                  : 'Send this customer-visible quote email now?',
+                action: () => handleSendQuoteEmail(softDateHolds.length > 0),
+              })}
               disabled={sendingQuote}
               className="bg-[#2d3a47] text-white hover:bg-[#2d3a47]/90 focus-visible:ring-[#2d3a47]/50"
             >

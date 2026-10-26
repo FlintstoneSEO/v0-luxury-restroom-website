@@ -140,4 +140,19 @@ describe('historical quote protection', () => {
       base_price: 1850,
     });
   });
+
+  it('accepts Supabase offset timestamps when updating a quote status', () => {
+    const parsed = quoteRequestUpdateSchema.parse({
+      id: '00000000-0000-4000-8000-000000000001',
+      status: 'booked',
+      agreement_status: 'sent',
+      agreement_sent_at: '2026-08-09T18:30:00.000+00:00',
+    });
+
+    expect(parsed).toMatchObject({
+      status: 'booked',
+      agreement_status: 'sent',
+      agreement_sent_at: '2026-08-09T18:30:00.000+00:00',
+    });
+  });
 });

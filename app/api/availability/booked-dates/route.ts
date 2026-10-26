@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getFutureBookedDates } from '@/lib/availability-server';
-import { getLocalTodayDateOnly } from '@/lib/date-only';
+import { addDaysToDateOnly, getLocalTodayDateOnly } from '@/lib/date-only';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -13,13 +13,15 @@ const noStoreHeaders = {
 export async function GET() {
   try {
     const supabase = createAdminClient();
-    const bookedDates = await getFutureBookedDates(
+    const today = getLocalTodayDateOnly();
+    const limitedDates = await getFutureBookedDates(
       supabase,
-      getLocalTodayDateOnly(),
+      today,
+      addDaysToDateOnly(today, 730),
     );
 
     return NextResponse.json(
-      { ok: true, bookedDates },
+      { ok: true, limitedDates },
       { headers: noStoreHeaders },
     );
   } catch (error) {

@@ -38,10 +38,13 @@ export async function POST(_request: Request, { params }: { params: Promise<{ qu
         { excludeQuoteId: quote.id },
       );
       if (!availability.available) {
+        const blockedByCalendar = availability.hardBlocks.length > 0;
         return NextResponse.json(
           {
-            code: 'EVENT_DATE_ALREADY_BOOKED',
-            message: 'Another quote already owns this event date. The deposit invoice was not created.',
+            code: blockedByCalendar ? 'EVENT_DATE_BLOCKED' : 'EVENT_DATE_ALREADY_BOOKED',
+            message: blockedByCalendar
+              ? 'A blocking calendar commitment exists on this date. The deposit invoice was not created.'
+              : 'Another quote already owns this event date. The deposit invoice was not created.',
           },
           { status: 409 },
         );

@@ -1,19 +1,17 @@
 'use client';
 
-import { activeCalendarBlocks, blockedCalendarDates, blocksOnDate, type CalendarBlock } from '@/lib/calendar-blocks';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
-  AlertTriangle,
   ArrowRight,
   CalendarCheck,
+  CalendarPlus,
   Circle,
   Clock3,
-  MapPin,
 } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
@@ -23,13 +21,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  BOOKING_BLOCKING_STATUSES,
-  getAvailabilitySummaries,
-  getSameDateRequestSummary,
+  getCombinedAvailabilitySummaries,
+  getAvailabilityDaySummary,
   isActiveAvailabilityRequest,
   isBookingBlockingStatus,
   isClosedAvailabilityRequest,
   isRealQuote,
+  type AvailabilityBlock,
 } from '@/lib/availability';
 import {
   formatDateOnlyValue,
@@ -38,6 +36,7 @@ import {
   parseLocalDateOnly,
 } from '@/lib/date-only';
 import { formatAdminStatus } from '@/lib/quotes/status';
+import { CalendarDateDetails } from '@/components/admin/calendar-date-details';
 
 export interface CalendarQuote {
   id: string;
@@ -56,19 +55,20 @@ export interface CalendarQuote {
 type ActivityFilter =
   | 'all'
   | 'booked'
-  | 'reserved'
   | 'pending'
   | 'multiple'
   | 'customer_approved'
   | 'agreement'
   | 'deposit_pending'
   | 'deposit_paid'
-  | 'completed';
+  | 'completed'
+  | 'partner_blocks'
+  | 'hard_blocks'
+  | 'soft_holds';
 
 const activityFilters: Array<{ value: ActivityFilter; label: string }> = [
   { value: 'all', label: 'All activity' },
   { value: 'booked', label: 'Booked events' },
-  { value: 'reserved', label: 'Reserved partner dates' },
   { value: 'pending', label: 'Pending requests' },
   { value: 'multiple', label: 'Multiple requests' },
   { value: 'customer_approved', label: 'Customer approved' },
@@ -76,19 +76,13 @@ const activityFilters: Array<{ value: ActivityFilter; label: string }> = [
   { value: 'deposit_pending', label: 'Deposit pending' },
   { value: 'deposit_paid', label: 'Deposit paid' },
   { value: 'completed', label: 'Completed' },
+  { value: 'partner_blocks', label: 'Partner bookings' },
+  { value: 'hard_blocks', label: 'Manual hard blocks' },
+  { value: 'soft_holds', label: 'Soft holds' },
 ];
-
-function formatCurrency(value?: number | null) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(value ?? 0);
-}
 
 function appliesFilter(quote: CalendarQuote, filter: ActivityFilter) {
   if (filter === 'all') return true;
-  if (filter === 'reserved') return false;
   if (filter === 'booked') return isBookingBlockingStatus(quote.status);
   if (filter === 'pending') return isActiveAvailabilityRequest(quote.status);
   if (filter === 'customer_approved') return quote.status === 'customer_approved';
@@ -101,73 +95,57 @@ function appliesFilter(quote: CalendarQuote, filter: ActivityFilter) {
   return true;
 }
 
-function QuoteRow({ quote }: { quote: CalendarQuote }) {
-  return (
-    <Link
-      href={`/admin/quotes/${quote.id}`}
-      className="block rounded-lg border border-[#d9d1c8] bg-white p-3 transition-colors hover:border-navy hover:bg-[#fffaf4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
-    >
-      <span className="flex flex-wrap items-center justify-between gap-2">
-        <span className="font-semibold text-navy">{quote.customer_name}</span>
-        <Badge variant="outline">{formatAdminStatus(quote.status, 'quote')}</Badge>
-      </span>
-      <span className="mt-1 block text-sm text-muted-foreground">
-        #{quote.quote_number || quote.id.slice(0, 8)} · {quote.event_type}
-      </span>
-      <span className="mt-1 flex items-center gap-1.5 text-sm text-charcoal">
-        <MapPin className="size-3.5" aria-hidden="true" />
-        {[quote.city, quote.state].filter(Boolean).join(', ') || 'Location not set'}
-      </span>
-      <span className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-        <span>Created {new Date(quote.created_at).toLocaleDateString()}</span>
-        <strong className="text-charcoal">{formatCurrency(quote.total_price)}</strong>
-      </span>
-    </Link>
-  );
-}
-
-export function ReservedDateCard({ block }: { block: CalendarBlock }) {
-  return <article className="rounded-lg border border-purple-300 bg-purple-50 p-4 text-sm text-purple-950">
-    <h3 className="font-semibold">{block.title}</h3>
-    <p className="mt-1">{block.organization_name || 'Reserved event'} · {block.availability_effect === 'hard_block' ? 'Reserved date' : 'Tentative hold'}</p>
-    <p className="mt-1">{formatLocalDateOnly(block.start_date)}{block.end_date !== block.start_date && ` – ${formatLocalDateOnly(block.end_date)}`}</p>
-  </article>;
-}
-
 export function UpcomingBookedEvents({
   quotes,
   blocks = [],
   limit = 5,
 }: {
   quotes: CalendarQuote[];
-  blocks?: CalendarBlock[];
+  blocks?: AvailabilityBlock[];
   limit?: number;
 }) {
   const today = getLocalTodayDateOnly();
-  const upcoming = quotes
+  const upcomingQuotes = quotes
     .filter(
       (quote) =>
         isRealQuote(quote) &&
         isBookingBlockingStatus(quote.status) &&
         quote.event_date >= today,
     )
-    .sort((a, b) => a.event_date.localeCompare(b.event_date));
-  const upcomingEntries: Array<{date: string; quote?: CalendarQuote; block?: CalendarBlock}> = [
-    ...upcoming.map(quote => ({ date: quote.event_date, quote })),
-    ...activeCalendarBlocks(blocks).filter(block => block.availability_effect === 'hard_block' && block.end_date >= today).map(block => ({ date: block.start_date < today ? today : block.start_date, block })),
-  ].sort((a,b) => a.date.localeCompare(b.date));
+    .map((quote) => ({
+      id: `quote-${quote.id}`,
+      date: quote.event_date,
+      endDate: quote.event_date,
+      title: quote.customer_name,
+      detail: `#${quote.quote_number || quote.id.slice(0, 8)} · ${quote.event_type} · ${[quote.city, quote.state].filter(Boolean).join(', ')}`,
+      label: formatAdminStatus(quote.status, 'quote'),
+      href: `/admin/quotes/${quote.id}`,
+    }));
+  const upcomingBlocks = blocks
+    .filter((block) => block.status === 'active' && block.availability_effect === 'hard_block' && block.end_date >= today)
+    .map((block) => ({
+      id: `block-${block.id}`,
+      date: block.start_date,
+      endDate: block.end_date,
+      title: block.organization_name || block.title,
+      detail: block.title,
+      label: block.block_type === 'partner_booking' ? 'Partner Booking' : block.block_type.replaceAll('_', ' '),
+      href: `/admin/calendar?date=${block.start_date}`,
+    }));
+  const upcoming = [...upcomingQuotes, ...upcomingBlocks]
+    .sort((a, b) => a.date.localeCompare(b.date));
   const nextThirtyDays = new Date();
   nextThirtyDays.setDate(nextThirtyDays.getDate() + 30);
   const nextThirtyDate = formatDateOnlyValue(nextThirtyDays);
-  const inThirtyDays = upcomingEntries.filter(entry => entry.date <= nextThirtyDate).length;
+  const inThirtyDays = upcoming.filter((commitment) => commitment.date <= nextThirtyDate).length;
 
-  if (upcomingEntries.length === 0) {
+  if (upcoming.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-[#c8b9a8] bg-[#faf8f5] p-6 text-center">
         <CalendarCheck className="mx-auto size-7 text-muted-foreground" aria-hidden="true" />
-        <p className="mt-2 font-semibold text-navy">No upcoming booked events</p>
+        <p className="mt-2 font-semibold text-navy">No upcoming commitments</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          Customer-approved bookings and reserved partner dates will appear here.
+          Customer bookings and active hard blocks will appear here.
         </p>
       </div>
     );
@@ -183,19 +161,16 @@ export function UpcomingBookedEvents({
           </span>
         </div>
         <div className="rounded-lg bg-[#f5f1eb] p-3">
-          <span className="block text-2xl font-semibold text-navy">{upcomingEntries.length}</span>
+          <span className="block text-2xl font-semibold text-navy">{upcoming.length}</span>
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Future bookings
+            Future commitments
           </span>
         </div>
       </div>
-      {upcomingEntries.slice(0, limit).map((entry, index) => {
-        if (entry.block) return <ReservedDateCard key={entry.block.id} block={entry.block} />;
-        const quote = entry.quote!;
-        return (
+      {upcoming.slice(0, limit).map((commitment, index) => (
         <Link
-          key={quote.id}
-          href={`/admin/quotes/${quote.id}`}
+          key={commitment.id}
+          href={commitment.href}
           className={`block rounded-xl border p-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy ${
             index === 0
               ? 'border-emerald-500 bg-emerald-50 shadow-sm'
@@ -204,28 +179,30 @@ export function UpcomingBookedEvents({
         >
           {index === 0 && (
             <span className="mb-2 inline-flex rounded-full bg-emerald-700 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
-              Next event
+              Next commitment
             </span>
           )}
           <span className="block font-serif text-lg font-semibold text-navy">
-            {formatLocalDateOnly(quote.event_date, {
+            {formatLocalDateOnly(commitment.date, {
               weekday: 'short',
               month: 'short',
               day: 'numeric',
               year: 'numeric',
             })}
+            {commitment.endDate !== commitment.date
+              ? ` – ${formatLocalDateOnly(commitment.endDate, { month: 'short', day: 'numeric', year: 'numeric' })}`
+              : ''}
           </span>
-          <span className="mt-1 block font-semibold text-charcoal">{quote.customer_name}</span>
+          <span className="mt-1 block font-semibold text-charcoal">{commitment.title}</span>
           <span className="mt-1 block text-sm text-muted-foreground">
-            #{quote.quote_number || quote.id.slice(0, 8)} · {quote.event_type} ·{' '}
-            {[quote.city, quote.state].filter(Boolean).join(', ')}
+            {commitment.detail}
           </span>
           <span className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-navy">
-            {formatAdminStatus(quote.status, 'quote')}
+            {commitment.label}
             <ArrowRight className="size-3.5" aria-hidden="true" />
           </span>
         </Link>
-      ); })}
+      ))}
     </div>
   );
 }
@@ -234,21 +211,29 @@ export function BookingCalendar({
   quotes,
   blocks = [],
   compact = false,
+  initialDate,
+  openInitialDate = false,
 }: {
   quotes: CalendarQuote[];
-  blocks?: CalendarBlock[];
+  blocks?: AvailabilityBlock[];
   compact?: boolean;
+  initialDate?: string;
+  openInitialDate?: boolean;
 }) {
+  const router = useRouter();
   const today = getLocalTodayDateOnly();
-  const [month, setMonth] = useState(() => parseLocalDateOnly(today));
-  const [selectedDate, setSelectedDate] = useState(today);
+  const startingDate = initialDate || today;
+  const [month, setMonth] = useState(() => parseLocalDateOnly(startingDate));
+  const [selectedDate, setSelectedDate] = useState(startingDate);
+  const [detailsOpen, setDetailsOpen] = useState(openInitialDate);
   const [filter, setFilter] = useState<ActivityFilter>('all');
   const [showTests, setShowTests] = useState(false);
 
   const visibleQuotes = useMemo(() => {
+    if (['partner_blocks', 'hard_blocks', 'soft_holds'].includes(filter)) return [];
     const realOrRequested = quotes.filter((quote) => showTests || isRealQuote(quote));
     if (filter === 'multiple') {
-      const summaries = getAvailabilitySummaries(realOrRequested);
+      const summaries = getCombinedAvailabilitySummaries(realOrRequested, []);
       return realOrRequested.filter(
         (quote) => summaries.get(quote.event_date)?.hasMultipleRequests,
       );
@@ -256,24 +241,31 @@ export function BookingCalendar({
     return realOrRequested.filter((quote) => appliesFilter(quote, filter));
   }, [filter, quotes, showTests]);
 
+  const visibleBlocks = useMemo(() => {
+    if (filter === 'all') return blocks.filter((block) => block.status === 'active');
+    if (filter === 'partner_blocks') return blocks.filter((block) => block.status === 'active' && block.block_type === 'partner_booking');
+    if (filter === 'hard_blocks') return blocks.filter((block) => block.status === 'active' && block.availability_effect === 'hard_block' && block.block_type !== 'partner_booking');
+    if (filter === 'soft_holds') return blocks.filter((block) => block.status === 'active' && block.availability_effect === 'soft_hold');
+    return [];
+  }, [blocks, filter]);
+
   const summaries = useMemo(
-    () => getAvailabilitySummaries(visibleQuotes),
-    [visibleQuotes],
+    () => getCombinedAvailabilitySummaries(visibleQuotes, visibleBlocks),
+    [visibleBlocks, visibleQuotes],
   );
   const allVisibleDates = [...summaries.keys()];
   const conflictDates = allVisibleDates
-    .filter((date) => summaries.get(date)?.hasBookingConflict)
+    .filter((date) => summaries.get(date)?.hasBlockingConflict)
     .map(parseLocalDateOnly);
   const multipleDates = allVisibleDates
     .filter(
       (date) =>
-        summaries.get(date)?.hasMultipleRequests &&
-        !summaries.get(date)?.bookingOwner,
+        summaries.get(date)?.state === 'multiple_requests',
     )
     .map(parseLocalDateOnly);
   const bookedDates = allVisibleDates
     .filter((date) =>
-      summaries
+      summaries.get(date)?.state === 'booked' && summaries
         .get(date)
         ?.blockingQuotes.some((quote) =>
           ['deposit_paid', 'booked', 'confirmed'].includes(quote.status),
@@ -283,7 +275,7 @@ export function BookingCalendar({
   const workflowDates = allVisibleDates
     .filter(
       (date) =>
-        Boolean(summaries.get(date)?.bookingOwner) &&
+        summaries.get(date)?.state === 'booked' &&
         !summaries
           .get(date)
           ?.blockingQuotes.some((quote) =>
@@ -293,34 +285,23 @@ export function BookingCalendar({
     .map(parseLocalDateOnly);
   const pendingDates = allVisibleDates
     .filter(
-      (date) =>
-        summaries.get(date)?.activeRequestCount === 1 &&
-        !summaries.get(date)?.bookingOwner,
+      (date) => summaries.get(date)?.state === 'active_request',
     )
     .map(parseLocalDateOnly);
   const completedDates = allVisibleDates
     .filter((date) =>
+      summaries.get(date)?.state === 'booked' &&
       summaries.get(date)?.blockingQuotes.some((quote) => quote.status === 'completed'),
     )
     .map(parseLocalDateOnly);
-  const selectedQuotes = quotes.filter(
-    (quote) =>
-      quote.event_date === selectedDate && (showTests || isRealQuote(quote)),
+  const partnerBlockDates = allVisibleDates.filter((date) => summaries.get(date)?.state === 'partner_block').map(parseLocalDateOnly);
+  const hardBlockDates = allVisibleDates.filter((date) => summaries.get(date)?.state === 'hard_block').map(parseLocalDateOnly);
+  const softHoldDates = allVisibleDates.filter((date) => summaries.get(date)?.state === 'soft_hold').map(parseLocalDateOnly);
+  const selectedSummary = getAvailabilityDaySummary(
+    quotes.filter((quote) => quote.event_date === selectedDate && (showTests || isRealQuote(quote))),
+    blocks,
+    selectedDate,
   );
-  const selectedSummary = getSameDateRequestSummary(selectedQuotes, selectedDate);
-  const selectedBlocks = blocksOnDate(blocks, selectedDate);
-  const selectedHardBlocks = selectedBlocks.filter(block => block.availability_effect === 'hard_block');
-  const hasSelectedConflict = selectedSummary.hasBookingConflict || selectedHardBlocks.length + selectedSummary.blockingBookingCount > 1;
-  const visibleBlocks = ['all', 'reserved', 'booked'].includes(filter) ? activeCalendarBlocks(blocks).filter(block => filter !== 'booked' || block.availability_effect === 'hard_block') : [];
-  const monthStart = formatDateOnlyValue(new Date(month.getFullYear(), month.getMonth(), 1));
-  const monthEnd = formatDateOnlyValue(new Date(month.getFullYear(), month.getMonth() + 1, 0));
-  const reservedDates = blockedCalendarDates(visibleBlocks.filter(block => block.availability_effect === 'hard_block'), monthStart, monthEnd).map(parseLocalDateOnly);
-  const heldDates = blockedCalendarDates(visibleBlocks.filter(block => block.availability_effect !== 'hard_block'), monthStart, monthEnd).map(parseLocalDateOnly);
-  for (const date of reservedDates) {
-    const value = formatDateOnlyValue(date);
-    const count = blocksOnDate(visibleBlocks, value).filter(block => block.availability_effect === 'hard_block').length + (summaries.get(value)?.blockingBookingCount ?? 0);
-    if (count > 1) conflictDates.push(date);
-  }
 
   function dateLabel(date: Date) {
     const dateValue = formatDateOnlyValue(date);
@@ -330,19 +311,15 @@ export function BookingCalendar({
       day: 'numeric',
       year: 'numeric',
     });
-    const dayBlocks = blocksOnDate(visibleBlocks, dateValue);
-    if (dayBlocks.length) return `${formatted}, ${dayBlocks.map(block => `${block.title}, ${block.availability_effect === 'hard_block' ? 'reserved' : 'tentative hold'}`).join('; ')}`;
     if (!summary) return formatted;
-    if (summary.hasBookingConflict) {
-      return `${formatted}, booking conflict, ${summary.blockingBookingCount} blocking bookings`;
-    }
-    if (summary.bookingOwner) {
-      return `${formatted}, booked event, ${summary.activeRequestCount} additional requests`;
-    }
-    if (summary.hasMultipleRequests) {
-      return `${formatted}, ${summary.activeRequestCount} active requests`;
-    }
-    return `${formatted}, one active request`;
+    if (summary.hasBlockingConflict) return `${formatted}, blocking commitment conflict`;
+    if (summary.state === 'booked') return `${formatted}, booked event, ${summary.activeRequestCount} additional requests`;
+    if (summary.state === 'partner_block') return `${formatted}, partner booking block`;
+    if (summary.state === 'hard_block') return `${formatted}, date blocked`;
+    if (summary.state === 'soft_hold') return `${formatted}, soft hold`;
+    if (summary.state === 'multiple_requests') return `${formatted}, ${summary.activeRequestCount} active requests`;
+    if (summary.state === 'active_request') return `${formatted}, one active request`;
+    return `${formatted}, available`;
   }
 
   return (
@@ -364,19 +341,21 @@ export function BookingCalendar({
               </SelectContent>
             </Select>
           </label>
-          <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[#d9d1c8] px-3 text-sm font-semibold text-charcoal">
-            <Checkbox
-              checked={showTests}
-              onCheckedChange={(checked) => setShowTests(checked === true)}
-            />
-            Show test quotes
-          </label>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[#d9d1c8] px-3 text-sm font-semibold text-charcoal">
+              <Checkbox checked={showTests} onCheckedChange={(checked) => setShowTests(checked === true)} />
+              Show test quotes
+            </label>
+            <Button type="button" onClick={() => { setSelectedDate(today); setDetailsOpen(true); }} className="bg-navy text-white hover:bg-navy/90">
+              <CalendarPlus className="size-4" aria-hidden="true" /> Block dates
+            </Button>
+          </div>
         </div>
       )}
 
-      <div className={compact ? '' : 'grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]'}>
+      <div>
         <div className="rounded-xl border border-[#d9d1c8] bg-white p-3 sm:p-5">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="mb-3 flex items-center justify-between gap-3">
             <Button
               type="button"
               variant="outline"
@@ -398,7 +377,16 @@ export function BookingCalendar({
             month={month}
             onMonthChange={setMonth}
             selected={parseLocalDateOnly(selectedDate)}
-            onSelect={(date) => date && setSelectedDate(formatDateOnlyValue(date))}
+            onSelect={(date) => {
+              if (!date) return;
+              const dateValue = formatDateOnlyValue(date);
+              if (compact) {
+                router.push(`/admin/calendar?date=${dateValue}`);
+                return;
+              }
+              setSelectedDate(dateValue);
+              setDetailsOpen(true);
+            }}
             modifiers={{
               conflict: conflictDates,
               multiple: multipleDates,
@@ -406,8 +394,9 @@ export function BookingCalendar({
               workflow: workflowDates,
               pending: pendingDates,
               completed: completedDates,
-              reserved: reservedDates,
-              held: heldDates,
+              partnerBlock: partnerBlockDates,
+              hardBlock: hardBlockDates,
+              softHold: softHoldDates,
             }}
             modifiersClassNames={{
               conflict: 'bg-red-100 text-red-900 font-bold ring-2 ring-red-600',
@@ -416,8 +405,9 @@ export function BookingCalendar({
               workflow: 'bg-blue-100 text-blue-950 font-bold',
               pending: 'bg-slate-100 text-slate-900',
               completed: 'bg-stone-200 text-stone-700',
-              reserved: 'bg-purple-100 text-purple-950 font-bold',
-              held: 'bg-amber-50 text-amber-950 font-bold',
+              partnerBlock: 'bg-violet-200 text-violet-950 font-bold ring-1 ring-violet-500',
+              hardBlock: 'bg-purple-100 text-purple-950 font-bold ring-1 ring-purple-500',
+              softHold: 'bg-violet-50 text-violet-900 font-semibold ring-1 ring-violet-300',
             }}
             labels={{ labelDayButton: dateLabel }}
             className="mx-auto w-full [--cell-size:--spacing(10)] sm:[--cell-size:--spacing(11)]"
@@ -428,10 +418,10 @@ export function BookingCalendar({
               ['bg-blue-700', 'Approved / agreement'],
               ['bg-amber-500', 'Multiple requests'],
               ['bg-slate-500', 'One pending request'],
-              ['bg-red-600', 'Booking conflict'],
+              ['bg-red-600', 'Commitment conflict'],
               ['bg-stone-400', 'Completed / past'],
-              ['bg-purple-600', 'Reserved partner date'],
-              ['bg-amber-700', 'Tentative hold'],
+              ['bg-violet-600', 'Partner / manual block'],
+              ['bg-violet-300', 'Soft hold'],
             ].map(([tone, label]) => (
               <span key={label} className="flex items-center gap-2 text-charcoal">
                 <Circle className={`size-2.5 fill-current ${tone.replace('bg-', 'text-')}`} aria-hidden="true" />
@@ -441,82 +431,20 @@ export function BookingCalendar({
           </div>
         </div>
 
-        {!compact && (
-          <section
-            aria-labelledby="selected-date-heading"
-            className="rounded-xl border border-[#d9d1c8] bg-[#faf8f5] p-4 sm:p-5"
-          >
-            <h2 id="selected-date-heading" className="font-serif text-2xl font-semibold text-navy">
-              {formatLocalDateOnly(selectedDate)}
-            </h2>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Badge variant="outline">
-                {hasSelectedConflict
-                  ? 'Booking conflict'
-                  : selectedHardBlocks.length > 0
-                    ? 'Reserved partner date'
-                  : selectedSummary.bookingOwner
-                    ? 'Date booked'
-                    : 'Available'}
-              </Badge>
-              <Badge variant="outline">
-                {selectedSummary.activeRequestCount} active request
-                {selectedSummary.activeRequestCount === 1 ? '' : 's'}
-              </Badge>
-              <Badge variant="outline">
-                {selectedSummary.blockingBookingCount + selectedHardBlocks.length} blocking booking
-                {selectedSummary.blockingBookingCount + selectedHardBlocks.length === 1 ? '' : 's'}
-              </Badge>
-            </div>
-            {hasSelectedConflict && (
-              <div role="alert" className="mt-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-900">
-                <AlertTriangle className="mr-1 inline size-4" aria-hidden="true" />
-                More than one booking or reservation blocks this date. Resolve this data conflict immediately.
-              </div>
-            )}
-            {selectedBlocks.length > 0 && <section className="mt-4 space-y-3" aria-label="Reserved partner dates">{selectedBlocks.map(block => <ReservedDateCard key={block.id} block={block} />)}</section>}
-            <div className="mt-5 space-y-5">
-              <div>
-                <h3 className="mb-2 font-semibold text-navy">Booked quote owner</h3>
-                {selectedSummary.bookingOwner ? (
-                  <QuoteRow quote={selectedSummary.bookingOwner} />
-                ) : (
-                  <p className="text-sm text-muted-foreground">No quote currently owns this date.</p>
-                )}
-              </div>
-              <div>
-                <h3 className="mb-2 font-semibold text-navy">Pending requests</h3>
-                <div className="space-y-2">
-                  {selectedSummary.activeRequests.length ? (
-                    selectedSummary.activeRequests.map((quote) => (
-                      <QuoteRow key={quote.id} quote={quote} />
-                    ))
-                  ) : (
-                    <p className="text-sm text-muted-foreground">No pending requests.</p>
-                  )}
-                </div>
-              </div>
-              {selectedSummary.closedRequests.length > 0 && (
-                <details>
-                  <summary className="cursor-pointer font-semibold text-navy">
-                    Closed requests ({selectedSummary.closedRequests.length})
-                  </summary>
-                  <div className="mt-2 space-y-2">
-                    {selectedSummary.closedRequests.map((quote) => (
-                      <QuoteRow key={quote.id} quote={quote} />
-                    ))}
-                  </div>
-                </details>
-              )}
-            </div>
-          </section>
-        )}
       </div>
+      {!compact && (
+        <CalendarDateDetails
+          open={detailsOpen}
+          onOpenChange={setDetailsOpen}
+          selectedDate={selectedDate}
+          summary={selectedSummary}
+        />
+      )}
     </div>
   );
 }
 
-export function DashboardBookingSection({ quotes }: { quotes: CalendarQuote[] }) {
+export function DashboardBookingSection({ quotes, blocks = [] }: { quotes: CalendarQuote[]; blocks?: AvailabilityBlock[] }) {
   return (
     <section
       aria-labelledby="upcoming-booked-events-heading"
@@ -528,10 +456,10 @@ export function DashboardBookingSection({ quotes }: { quotes: CalendarQuote[] })
             Booking operations
           </p>
           <h2 id="upcoming-booked-events-heading" className="mt-1 font-serif text-2xl font-semibold text-navy">
-            Upcoming Booked Events
+            Upcoming Commitments
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            One trailer, one reserved event date. Pending requests remain visible alongside bookings.
+            Customer bookings, partner dates, and operational hard blocks in one schedule.
           </p>
         </div>
         <Button asChild variant="outline">
@@ -542,13 +470,13 @@ export function DashboardBookingSection({ quotes }: { quotes: CalendarQuote[] })
         </Button>
       </div>
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
-        <BookingCalendar quotes={quotes} compact />
+        <BookingCalendar quotes={quotes} blocks={blocks} compact />
         <div>
           <div className="mb-3 flex items-center gap-2">
             <Clock3 className="size-4 text-navy" aria-hidden="true" />
-            <h3 className="font-semibold text-navy">Next five events</h3>
+            <h3 className="font-semibold text-navy">Next five commitments</h3>
           </div>
-          <UpcomingBookedEvents quotes={quotes} />
+          <UpcomingBookedEvents quotes={quotes} blocks={blocks} />
         </div>
       </div>
     </section>

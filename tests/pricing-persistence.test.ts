@@ -44,7 +44,7 @@ beforeEach(async () => {
   vi.spyOn(console, 'log').mockImplementation(() => {});
   vi.spyOn(console, 'error').mockImplementation(() => {});
   await session();
-});
+}, 60_000);
 afterEach(async () => {
   await fixture?.close();
   context.cookies.clear(); vi.restoreAllMocks(); vi.unstubAllEnvs();

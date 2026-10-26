@@ -15,3 +15,5 @@ create index if not exists idx_quote_approval_tokens_token_hash
 
 create index if not exists idx_quote_approval_tokens_quote_request_id
   on public.quote_approval_tokens(quote_request_id);
+
+alter table public.quote_approval_tokens enable row level security;

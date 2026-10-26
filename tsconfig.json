@@ -34,17 +34,14 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.d.ts",
-    ".next-calendar-check/types/**/*.ts",
-    ".next-calendar-check/dev/types/**/*.ts",
-    ".next-pricing-fixture/build/types/**/*.ts",
-    ".next-pricing-fixture/build/dev/types/**/*.ts",
-    ".next-msu-webpack/types/**/*.ts",
-    ".next-msu-webpack/dev/types/**/*.ts"
+    "**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
     "apps/web",
-    "apps/admin"
+    "apps/admin",
+    ".next-calendar-check",
+    ".next-pricing-fixture",
+    ".next-msu-webpack"
   ]
 }

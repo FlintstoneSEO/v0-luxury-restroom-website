@@ -1,15 +1,7 @@
 import { addDaysToDateOnly, isValidDateOnly } from '@/lib/date-only';
 
-export interface CalendarBlock {
-  id: string;
-  title: string;
-  start_date: string;
-  end_date: string;
-  block_type: string;
-  availability_effect: string;
-  status: string;
-  organization_name?: string | null;
-}
+export type { AvailabilityBlock as CalendarBlock } from '@/lib/availability';
+import type { AvailabilityBlock as CalendarBlock } from '@/lib/availability';
 export function activeCalendarBlocks(blocks: CalendarBlock[]) {
   return blocks.filter(block => block.status === 'active' && isValidDateOnly(block.start_date) && isValidDateOnly(block.end_date) && block.end_date >= block.start_date);
 }

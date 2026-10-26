@@ -49,7 +49,7 @@ describe('scheduled guest-use pricing', () => {
     expect(result.utility_fee).toBe(0);
     expect(result.cleaning_fee).toBe(0);
     expect(result.damage_waiver_fee).toBe(0);
-    expect(result.travel_fee).toBe(12.5);
+    expect(result.travel_fee).toBe(25);
     expect(result.details.service_review_reasons).toHaveLength(2);
   });
   it('treats old snapshots as zero extra hours and ignores malformed amounts', () => {

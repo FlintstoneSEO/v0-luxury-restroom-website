@@ -1,4 +1,5 @@
 import type { QuoteStatus } from '@/lib/quotes/types';
+import { enumerateDateOnlyRange } from '@/lib/date-only';
 
 export const BOOKING_BLOCKING_STATUSES = [
   'customer_approved',
@@ -37,6 +38,61 @@ export interface AvailabilityQuote {
   status: string;
   is_test_quote?: boolean | null;
   quote_number?: string | null;
+}
+
+export const AVAILABILITY_BLOCK_TYPES = [
+  'partner_booking',
+  'maintenance',
+  'owner_unavailable',
+  'equipment_unavailable',
+  'other',
+] as const;
+
+export const AVAILABILITY_EFFECTS = ['hard_block', 'soft_hold'] as const;
+export const AVAILABILITY_BLOCK_STATUSES = ['active', 'cancelled'] as const;
+
+export type AvailabilityBlockType = (typeof AVAILABILITY_BLOCK_TYPES)[number];
+export type AvailabilityEffect = (typeof AVAILABILITY_EFFECTS)[number];
+export type AvailabilityBlockStatus = (typeof AVAILABILITY_BLOCK_STATUSES)[number];
+
+export interface AvailabilityBlock {
+  id: string;
+  title: string;
+  start_date: string;
+  end_date: string;
+  block_type: AvailabilityBlockType;
+  availability_effect: AvailabilityEffect;
+  organization_name?: string | null;
+  notes?: string | null;
+  status: AvailabilityBlockStatus;
+  created_by?: string | null;
+  updated_by?: string | null;
+  cancelled_by?: string | null;
+  cancelled_at?: string | null;
+  conflict_override_at?: string | null;
+  conflict_override_by?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type AvailabilityDayState =
+  | 'conflict'
+  | 'booked'
+  | 'partner_block'
+  | 'hard_block'
+  | 'soft_hold'
+  | 'multiple_requests'
+  | 'active_request'
+  | 'available';
+
+export interface AvailabilityDaySummary<T extends AvailabilityQuote = AvailabilityQuote> extends SameDateRequestSummary<T> {
+  activeBlocks: AvailabilityBlock[];
+  hardBlocks: AvailabilityBlock[];
+  softHolds: AvailabilityBlock[];
+  partnerBlocks: AvailabilityBlock[];
+  blockingCommitmentCount: number;
+  hasBlockingConflict: boolean;
+  state: AvailabilityDayState;
 }
 
 export interface SameDateRequestSummary<T extends AvailabilityQuote = AvailabilityQuote> {
@@ -125,6 +181,65 @@ export function getAvailabilitySummaries<T extends AvailabilityQuote>(quotes: T[
   }
 
   return summaries;
+}
+
+export function blockCoversDate(block: AvailabilityBlock, eventDate: string) {
+  return block.status === 'active' && block.start_date <= eventDate && block.end_date >= eventDate;
+}
+
+export function getAvailabilityDaySummary<T extends AvailabilityQuote>(
+  quotes: T[],
+  blocks: AvailabilityBlock[],
+  eventDate: string,
+): AvailabilityDaySummary<T> {
+  const quoteSummary = getSameDateRequestSummary(quotes, eventDate);
+  const activeBlocks = blocks.filter((block) => blockCoversDate(block, eventDate));
+  const hardBlocks = activeBlocks.filter((block) => block.availability_effect === 'hard_block');
+  const softHolds = activeBlocks.filter((block) => block.availability_effect === 'soft_hold');
+  const partnerBlocks = activeBlocks.filter((block) => block.block_type === 'partner_booking');
+  const blockingCommitmentCount = quoteSummary.blockingBookingCount + hardBlocks.length;
+  const hasBlockingConflict = blockingCommitmentCount > 1;
+
+  let state: AvailabilityDayState = 'available';
+  if (hasBlockingConflict) state = 'conflict';
+  else if (quoteSummary.bookingOwner) state = 'booked';
+  else if (partnerBlocks.some((block) => block.availability_effect === 'hard_block')) state = 'partner_block';
+  else if (hardBlocks.length > 0) state = 'hard_block';
+  else if (softHolds.length > 0) state = 'soft_hold';
+  else if (quoteSummary.hasMultipleRequests) state = 'multiple_requests';
+  else if (quoteSummary.activeRequestCount === 1) state = 'active_request';
+
+  return {
+    ...quoteSummary,
+    activeBlocks,
+    hardBlocks,
+    softHolds,
+    partnerBlocks,
+    blockingCommitmentCount,
+    hasBlockingConflict,
+    state,
+  };
+}
+
+export function getCombinedAvailabilitySummaries<T extends AvailabilityQuote>(
+  quotes: T[],
+  blocks: AvailabilityBlock[],
+) {
+  const dates = new Set<string>();
+  for (const quote of quotes) {
+    if (quote.event_date) dates.add(quote.event_date);
+  }
+  for (const block of blocks) {
+    if (block.status !== 'active') continue;
+    for (const date of enumerateDateOnlyRange(block.start_date, block.end_date)) dates.add(date);
+  }
+
+  return new Map(
+    [...dates].map((eventDate) => [
+      eventDate,
+      getAvailabilityDaySummary(quotes, blocks, eventDate),
+    ]),
+  );
 }
 
 export function getBookedDateState<T extends AvailabilityQuote>(

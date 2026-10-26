@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   BOOKING_BLOCKING_STATUSES,
+  getAvailabilityDaySummary,
+  getCombinedAvailabilitySummaries,
   getAvailabilitySummaries,
   getBookedDateState,
   isBookingBlockingStatus,
@@ -8,9 +10,27 @@ import {
 } from '@/lib/availability';
 import {
   addDaysToDateOnly,
+  dateOnlyRangesOverlap,
+  enumerateDateOnlyRange,
   getMinimumEventDate,
   isValidDateOnly,
 } from '@/lib/date-only';
+import type { AvailabilityBlock } from '@/lib/availability';
+
+function block(overrides: Partial<AvailabilityBlock> = {}): AvailabilityBlock {
+  return {
+    id: 'block-1',
+    title: 'Tailgate weekend',
+    start_date: '2026-09-11',
+    end_date: '2026-09-13',
+    block_type: 'partner_booking',
+    availability_effect: 'hard_block',
+    status: 'active',
+    created_at: '2026-08-25T12:00:00.000Z',
+    updated_at: '2026-08-25T12:00:00.000Z',
+    ...overrides,
+  };
+}
 
 describe('availability rules', () => {
   it('uses the approved booking-blocking statuses', () => {
@@ -59,6 +79,69 @@ describe('availability rules', () => {
     expect(summaries.get('2026-10-03')?.hasMultipleRequests).toBe(true);
     expect(summaries.get('2026-10-04')?.hasBookingConflict).toBe(true);
   });
+
+  it('expands a partner block across inclusive boundary dates', () => {
+    const summaries = getCombinedAvailabilitySummaries([], [block()]);
+
+    expect([...summaries.keys()]).toEqual([
+      '2026-09-11',
+      '2026-09-12',
+      '2026-09-13',
+    ]);
+    expect(summaries.get('2026-09-11')?.state).toBe('partner_block');
+    expect(summaries.get('2026-09-13')?.state).toBe('partner_block');
+  });
+
+  it('keeps soft holds non-blocking but visible ahead of pending requests', () => {
+    const summary = getAvailabilityDaySummary(
+      [{ id: 'lead', event_date: '2026-09-12', status: 'pending_review' }],
+      [block({ availability_effect: 'soft_hold' })],
+      '2026-09-12',
+    );
+
+    expect(summary.state).toBe('soft_hold');
+    expect(summary.softHolds).toHaveLength(1);
+    expect(summary.hasBlockingConflict).toBe(false);
+    expect(summary.activeRequestCount).toBe(1);
+  });
+
+  it('warns on a pending request and treats a confirmed quote plus hard block as a conflict', () => {
+    const pending = getAvailabilityDaySummary(
+      [{ id: 'lead', event_date: '2026-09-12', status: 'quote_sent' }],
+      [block()],
+      '2026-09-12',
+    );
+    const confirmed = getAvailabilityDaySummary(
+      [{ id: 'booking', event_date: '2026-09-12', status: 'confirmed' }],
+      [block()],
+      '2026-09-12',
+    );
+
+    expect(pending.state).toBe('partner_block');
+    expect(pending.hasBlockingConflict).toBe(false);
+    expect(confirmed.state).toBe('conflict');
+    expect(confirmed.hasBlockingConflict).toBe(true);
+  });
+
+  it('treats overlapping hard blocks as an administrative conflict', () => {
+    const summary = getAvailabilityDaySummary(
+      [],
+      [block(), block({ id: 'block-2', block_type: 'maintenance' })],
+      '2026-09-12',
+    );
+
+    expect(summary.state).toBe('conflict');
+    expect(summary.blockingCommitmentCount).toBe(2);
+  });
+
+  it('ignores cancelled blocks and still summarizes historical dates deterministically', () => {
+    const summary = getAvailabilityDaySummary(
+      [],
+      [block({ status: 'cancelled' })],
+      '2025-09-12',
+    );
+    expect(summary.state).toBe('available');
+  });
 });
 
 describe('date-only rules', () => {
@@ -72,5 +155,15 @@ describe('date-only rules', () => {
     const now = new Date(2026, 6, 30, 23, 30);
     expect(getMinimumEventDate(now)).toBe('2026-08-06');
     expect(addDaysToDateOnly('2026-12-29', 7)).toBe('2027-01-05');
+  });
+
+  it('enumerates inclusive ranges without timezone conversion', () => {
+    expect(enumerateDateOnlyRange('2026-12-31', '2027-01-02')).toEqual([
+      '2026-12-31',
+      '2027-01-01',
+      '2027-01-02',
+    ]);
+    expect(dateOnlyRangesOverlap('2026-09-11', '2026-09-13', '2026-09-13', '2026-09-15')).toBe(true);
+    expect(dateOnlyRangesOverlap('2026-09-11', '2026-09-12', '2026-09-13', '2026-09-15')).toBe(false);
   });
 });

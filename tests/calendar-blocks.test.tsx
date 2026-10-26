@@ -2,10 +2,13 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { activeCalendarBlocks, blockedCalendarDates, blocksOnDate, type CalendarBlock } from '@/lib/calendar-blocks';
+import { getAvailabilityDaySummary } from '@/lib/availability';
 import { UpcomingBookedEvents, BookingCalendar } from '@/components/admin/booking-calendar';
 import { BookingOutlook } from '@/components/admin/booking-outlook';
 
-const reservation: CalendarBlock = { id: 'synthetic-msu', title: 'MSU Tailgate vs Washington', organization_name: 'RevelXP', start_date: '2026-11-14', end_date: '2026-11-14', block_type: 'partner_booking', availability_effect: 'hard_block', status: 'active' };
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }) }));
+
+const reservation: CalendarBlock = { id: 'synthetic-msu', title: 'MSU Tailgate vs Washington', organization_name: 'RevelXP', start_date: '2026-11-14', end_date: '2026-11-14', block_type: 'partner_booking', availability_effect: 'hard_block', status: 'active', created_at: '2026-10-25T12:00:00Z', updated_at: '2026-10-25T12:00:00Z' };
 afterEach(() => vi.useRealTimers());
 describe('reserved partner dates', () => {
   it('includes every day of a range, bounded to the visible month', () => {
@@ -29,8 +32,10 @@ describe('reserved partner dates', () => {
   it('describes a reserved date in the calendar and selected-day detail', () => {
     vi.useFakeTimers(); vi.setSystemTime(new Date('2026-11-14T12:00:00-05:00'));
     const html = renderToStaticMarkup(<BookingCalendar quotes={[]} blocks={[reservation]} />);
-    expect(html).toContain('MSU Tailgate vs Washington'); expect(html).toContain('Reserved partner date');
-    expect(html).toContain('reserved'); expect(html).not.toContain('>Available<');
+    expect(html).toContain('partner booking block');
+    const day = getAvailabilityDaySummary([], [reservation], '2026-11-14');
+    expect(day.partnerBlocks[0].title).toBe(reservation.title);
+    expect(day.blockingCommitmentCount).toBe(1);
   });
   it('shows the partner reservation in the dashboard outlook', () => {
     vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-25T12:00:00-04:00'));
@@ -42,8 +47,8 @@ describe('reserved partner dates', () => {
     const blocks = [reservation, { ...reservation, id: 'other-reservation', title: 'Another reserved event' }];
     const before = JSON.stringify(blocks);
     const html = renderToStaticMarkup(<BookingCalendar quotes={[]} blocks={blocks} />);
-    expect(html).toContain('Booking conflict');
-    expect(html).toContain('More than one booking or reservation blocks this date');
+    expect(html).toContain('blocking commitment conflict');
+    expect(getAvailabilityDaySummary([], blocks, '2026-11-14').hasBlockingConflict).toBe(true);
     expect(JSON.stringify(blocks)).toBe(before);
   });
 });

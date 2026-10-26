@@ -123,6 +123,10 @@ export async function startPricingFixture({ port = 0, dataDir } = {}) {
         }
         return send(200, (await db.query(`select * from quote_requests${clauses.length ? ` where ${clauses.join(' and ')}` : ''} order by created_at`, values)).rows);
       }
+      if (url.pathname === '/rest/v1/availability_blocks') {
+        if (!service) return send(403, { message: 'Service access required' });
+        return send(200, []); // This isolated fixture has no reserved dates.
+      }
       if (url.pathname === '/rest/v1/quote_options') return send(200, []);
       return send(404, { message: 'Unsupported test endpoint', path: url.pathname });
     } catch (error) { return send(500, { message: error.message }); }

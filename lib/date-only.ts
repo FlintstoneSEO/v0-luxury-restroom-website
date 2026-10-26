@@ -38,6 +38,29 @@ export function addDaysToDateOnly(dateString: string, days: number) {
   return formatDateOnlyValue(date);
 }
 
+export function enumerateDateOnlyRange(startDate: string, endDate: string) {
+  if (!isValidDateOnly(startDate) || !isValidDateOnly(endDate) || endDate < startDate) {
+    return [];
+  }
+
+  const dates: string[] = [];
+  let current = startDate;
+  while (current <= endDate) {
+    dates.push(current);
+    current = addDaysToDateOnly(current, 1);
+  }
+  return dates;
+}
+
+export function dateOnlyRangesOverlap(
+  leftStart: string,
+  leftEnd: string,
+  rightStart: string,
+  rightEnd: string,
+) {
+  return leftStart <= rightEnd && leftEnd >= rightStart;
+}
+
 export function getMinimumEventDate(now = new Date(), minimumDaysAhead = 7) {
   return addDaysToDateOnly(getLocalTodayDateOnly(now), minimumDaysAhead);
 }
