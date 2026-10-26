@@ -1,3 +1,4 @@
+import { getQuoteCommunications } from '@/lib/quotes/getQuoteCommunications';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import QuoteDetailEditor from '@/components/admin/quote-detail-editor';
@@ -40,6 +41,8 @@ export default async function AdminQuoteDetailPage({ params }: { params: Promise
     .order('created_at', { ascending: true });
   const sameDateBlocks = await getAvailabilityBlocksForDate(createAdminClient(), quote.event_date).catch(() => []);
 
+  const communications = await getQuoteCommunications(quoteId);
+
   const pricingByKey = Object.fromEntries(
     (pricingSettings ?? []).map((setting) => [setting.setting_key, Number(setting.setting_value)])
   );
@@ -49,6 +52,7 @@ export default async function AdminQuoteDetailPage({ params }: { params: Promise
   return (
     <QuoteDetailEditor
       quote={mapQuoteRequestRow(quote as QuoteRequestRow)}
+      communications={communications}
       sameDateQuotes={(sameDateRows ?? []) as CalendarQuote[]}
       sameDateBlocks={sameDateBlocks}
       depositPercentage={Number.isFinite(depositPercentage) ? depositPercentage : undefined}
