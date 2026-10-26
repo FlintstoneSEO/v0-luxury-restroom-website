@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "isolation": "Loopback-only fixture API and disposable PostgreSQL storage; no hosted environment files or credentials",
+  "validation": [
+    "Real Next server and pricing PUT handler",
+    "Real Supabase client HTTP serialization",
+    "PostgreSQL settings readback",
+    "Fresh server-rendered settings page",
+    "Real public quote POST handler",
+    "Five persisted synthetic quotes use saved rules",
+    "Existing quotes retain their saved totals",
+    "Anonymous, invalid, and failed saves rejected"
+  ],
+  "scenarios": [
+    {
+      "start": "14:00",
+      "end": "22:00",
+      "extraHours": 0,
+      "afterHours": 0,
+      "total": 1245.5
+    },
+    {
+      "start": "12:00",
+      "end": "22:00",
+      "extraHours": 200,
+      "afterHours": 0,
+      "total": 1457.5
+    },
+    {
+      "start": "16:00",
+      "end": "23:00",
+      "extraHours": 0,
+      "afterHours": 75,
+      "total": 1325
+    },
+    {
+      "start": "14:00",
+      "end": "23:00",
+      "extraHours": 100,
+      "afterHours": 75,
+      "total": 1431
+    },
+    {
+      "start": "14:00",
+      "end": "23:00",
+      "extraHours": 125,
+      "afterHours": 80,
+      "total": 1462.8
+    }
+  ],
+  "historicalFixtureUnchanged": true,
+  "limitations": [
+    "Supabase Auth and REST boundary simulated locally; hosted RLS, deployment and provider delivery not tested"
+  ],
+  "browserSave": {
+    "savedRate": 130,
+    "persistedAfterReload": true,
+    "newQuoteExtraHoursFee": 130,
+    "newQuoteTotal": 1468.1,
+    "isolatedDatabaseOnly": true
+  },
+  "storageReopenedAfterServerShutdown": {
+    "passed": true,
+    "hourlyRate": 130,
+    "syntheticRecords": 15
+  }
+}

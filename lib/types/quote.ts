@@ -40,6 +40,21 @@ export interface QuoteFormData {
 }
 
 export interface PricingSettings {
+  event_time_policy_enabled?: number;
+  extra_hours_enabled?: number;
+  included_event_hours?: number;
+  additional_event_hourly_rate?: number;
+  duration_rounding?: number;
+  after_hours_rounding?: number;
+  after_hours_max_hours?: number;
+  stack_hourly_charges?: number;
+  cleaning_included?: number;
+  damage_waiver_included?: number;
+  generator_included?: number;
+  water_included?: number;
+  service_review_guest_threshold?: number;
+  service_review_hour_threshold?: number;
+  rush_booking_window_days?: number;
   base_price_100_guests: number;
   base_price_150_guests: number;
   base_price_200_guests: number;
@@ -59,7 +74,7 @@ export interface PricingSettings {
 }
 
 export interface QuoteLineItem {
-  code: 'base_rental' | 'travel' | 'utilities' | 'after_hours' | 'cleaning' | 'damage_waiver' | 'rush_booking';
+  code: 'base_rental' | 'extra_hours' | 'travel' | 'utilities' | 'after_hours' | 'cleaning' | 'damage_waiver' | 'rush_booking';
   label: string;
   quantity: number;
   unit_price: number;
@@ -68,6 +83,7 @@ export interface QuoteLineItem {
 }
 
 export interface PriceBreakdown {
+  extra_hours_fee?: number;
   base_price: number;
   travel_fee: number;
   utility_fee: number;

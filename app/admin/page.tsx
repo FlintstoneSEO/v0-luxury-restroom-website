@@ -1,3 +1,4 @@
+import { getCalendarBlocks } from '@/lib/quotes/getCalendarBlocks';
 import QuoteRequestsDashboard from '@/components/admin/quote-requests-dashboard';
 import { getQuoteRequests } from '@/lib/quotes/getQuoteRequests';
 
@@ -14,7 +15,7 @@ export const metadata = {
 };
 
 export default async function AdminQuoteRequestsPage() {
-  const { quotes, source, error } = await getQuoteRequests();
+  const [{ quotes, source, error }, { blocks, error: blockError }] = await Promise.all([getQuoteRequests(), getCalendarBlocks()]);
 
-  return <QuoteRequestsDashboard initialQuotes={quotes} source={source} error={error} />;
+  return <QuoteRequestsDashboard initialQuotes={quotes} source={source} error={[error, blockError].filter(Boolean).join(' ') || undefined} blocks={blocks} />;
 }

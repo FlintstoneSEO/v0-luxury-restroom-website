@@ -1,5 +1,6 @@
 'use client';
 
+import type { CalendarBlock } from '@/lib/calendar-blocks';
 import { useMemo, useState, useTransition, useRef } from 'react';
 import Link from 'next/link';
 import { QuoteWorkbench, quoteReviewLabel, needsDistanceReview } from './quote-workbench';
@@ -28,6 +29,7 @@ import {
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
+  blocks?: CalendarBlock[];
   source: 'supabase' | 'mock';
   error?: string;
 }
@@ -166,6 +168,7 @@ function DateAvailabilityBadges({
 
 export default function QuoteRequestsDashboard({
   initialQuotes,
+  blocks = [],
   source,
   error,
 }: QuoteRequestsDashboardProps) {
@@ -535,7 +538,7 @@ export default function QuoteRequestsDashboard({
               </div>
             </details>
             </div>
-            <p className="operations-test-label"><span className="operations-test-indicator" aria-hidden="true" />{testQuoteFilter === 'hide' ? 'Test quotes hidden' : testQuoteFilter === 'only' ? 'Test quotes only' : 'Including test quotes'}</p>
+            <p className="operations-test-label">{testQuoteFilter === 'hide' ? 'Test quotes hidden' : testQuoteFilter === 'only' ? 'Test quotes only' : 'Including test quotes'}</p>
           </div>
           {selectedQuotes.length === 0 ? <div className="p-8 text-center"><ClipboardList className="mx-auto mb-3 size-6" aria-hidden="true" /><h3 className="font-semibold">No quotes match this view</h3><p className="my-3 text-sm text-slate-600">Choose another stage or reset your filters to see all non-test quotes.</p><Button variant="outline" onClick={resetFilters}>Reset filters</Button></div> : <div className="operations-queue-scroll" tabIndex={0} role="region" aria-label="Quote results">
             <table className="operations-table operations-desktop-table"><caption className="sr-only">{selectedPipelineConfig.label}. Select a customer to inspect their quote.</caption><thead><tr><th scope="col">Customer</th><th scope="col">Event</th><th scope="col">Status</th><th scope="col">Total</th><th scope="col">Next step</th></tr></thead>
@@ -552,7 +555,7 @@ export default function QuoteRequestsDashboard({
         </section>
         <div className="operations-workbench">{selectedQuote ? <QuoteWorkbench key={selectedQuote.id} quote={selectedQuote} onBack={backToQueue} /> : <div className="operations-panel p-8 text-sm text-slate-600">Select a quote from the queue to see its event, pricing, activity and notes.</div>}</div>
       </div>
-      <BookingOutlook quotes={initialQuotes} />
+      <BookingOutlook quotes={initialQuotes} blocks={blocks} />
     </div>
   );
 }

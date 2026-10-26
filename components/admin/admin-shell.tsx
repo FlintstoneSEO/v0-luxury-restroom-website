@@ -11,6 +11,8 @@ import {
   LogOut,
   MapPinned,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   SlidersHorizontal,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -60,9 +62,11 @@ function isActiveRoute(pathname: string, item: (typeof navigation)[number]) {
 function AdminNavigation({
   pathname,
   onNavigate,
+  collapsed = false,
 }: {
   pathname: string;
   onNavigate?: () => void;
+  collapsed?: boolean;
 }) {
   return (
     <nav aria-label="Admin navigation" className="space-y-1">
@@ -74,6 +78,7 @@ function AdminNavigation({
             href={item.href}
             aria-current={active ? 'page' : undefined}
             onClick={onNavigate}
+            title={collapsed ? item.label : undefined}
             className={cn(
               'group flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c2a263] focus-visible:ring-offset-2 focus-visible:ring-offset-[#152b3d]',
@@ -83,7 +88,7 @@ function AdminNavigation({
             )}
           >
             <Icon className="size-4 shrink-0" aria-hidden="true" />
-            <span>{item.label}</span>
+            <span className={collapsed ? 'sr-only' : undefined}>{item.label}</span>
           </Link>
         );
 
@@ -144,6 +149,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
 
@@ -165,7 +171,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className={cn("admin-typography min-h-screen bg-[#f6f3ef] text-charcoal", pathname.startsWith("/admin/quotes/") && "quote-desk-route")}>
+    <div data-sidebar-collapsed={sidebarCollapsed} className={cn("admin-typography min-h-screen bg-[#f6f3ef] text-charcoal", pathname.startsWith("/admin/quotes/") && "quote-desk-route")}>
       <a
         href="#admin-main"
         className="sr-only fixed left-4 top-4 z-[100] rounded-md bg-navy px-4 py-2 text-sm font-semibold text-white focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
@@ -243,14 +249,28 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <div className="admin-shell-grid min-h-screen lg:grid">
         <aside className="admin-rail hidden lg:flex">
-          <Link href="/admin" className="admin-wordmark">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!sidebarCollapsed}
+            aria-controls="admin-desktop-navigation"
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="admin-sidebar-toggle min-h-11 text-white hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#c2a263]"
+          >
+            {sidebarCollapsed ? <PanelLeftOpen className="size-5" aria-hidden="true" /> : <PanelLeftClose className="size-5" aria-hidden="true" />}
+            <span className={sidebarCollapsed ? 'sr-only' : undefined}>{sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}</span>
+          </Button>
+          <Link href="/admin" className="admin-wordmark" aria-label="Signature Luxe Operations dashboard">
+            {sidebarCollapsed ? <span className="admin-wordmark-initials font-serif text-xl">SL</span> : <>
             <span className="font-serif text-[1.8rem] leading-tight">Signature Luxe</span>
-            {pathname.startsWith("/admin/quotes/") && <span className="desk-brand-subtitle">EVENTS &amp; AMENITIES</span>}
             <span className="mt-3 block text-xs text-[#dfc591]">Operations</span>
+            </>}
           </Link>
-          <AdminNavigation pathname={pathname} />
-          <Button type="button" variant="ghost" onClick={handleLogout} disabled={isLoggingOut} className="mt-auto min-h-11 justify-start text-white hover:bg-white/10 hover:text-white">
-            <LogOut className="size-4" aria-hidden="true" />{isLoggingOut ? 'Signing out…' : 'Sign out'}
+          <div id="admin-desktop-navigation"><AdminNavigation pathname={pathname} collapsed={sidebarCollapsed} /></div>
+          <Button type="button" variant="ghost" onClick={handleLogout} disabled={isLoggingOut} title={sidebarCollapsed ? 'Sign out' : undefined} className="mt-auto min-h-11 justify-start text-white hover:bg-white/10 hover:text-white">
+            <LogOut className="size-4 shrink-0" aria-hidden="true" /><span className={sidebarCollapsed ? 'sr-only' : undefined}>{isLoggingOut ? 'Signing out…' : 'Sign out'}</span>
           </Button>
         </aside>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { activeCalendarBlocks, blockedCalendarDates, blocksOnDate, type CalendarBlock } from '@/lib/calendar-blocks';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
@@ -55,6 +56,7 @@ export interface CalendarQuote {
 type ActivityFilter =
   | 'all'
   | 'booked'
+  | 'reserved'
   | 'pending'
   | 'multiple'
   | 'customer_approved'
@@ -66,6 +68,7 @@ type ActivityFilter =
 const activityFilters: Array<{ value: ActivityFilter; label: string }> = [
   { value: 'all', label: 'All activity' },
   { value: 'booked', label: 'Booked events' },
+  { value: 'reserved', label: 'Reserved partner dates' },
   { value: 'pending', label: 'Pending requests' },
   { value: 'multiple', label: 'Multiple requests' },
   { value: 'customer_approved', label: 'Customer approved' },
@@ -85,6 +88,7 @@ function formatCurrency(value?: number | null) {
 
 function appliesFilter(quote: CalendarQuote, filter: ActivityFilter) {
   if (filter === 'all') return true;
+  if (filter === 'reserved') return false;
   if (filter === 'booked') return isBookingBlockingStatus(quote.status);
   if (filter === 'pending') return isActiveAvailabilityRequest(quote.status);
   if (filter === 'customer_approved') return quote.status === 'customer_approved';
@@ -122,11 +126,21 @@ function QuoteRow({ quote }: { quote: CalendarQuote }) {
   );
 }
 
+export function ReservedDateCard({ block }: { block: CalendarBlock }) {
+  return <article className="rounded-lg border border-purple-300 bg-purple-50 p-4 text-sm text-purple-950">
+    <h3 className="font-semibold">{block.title}</h3>
+    <p className="mt-1">{block.organization_name || 'Reserved event'} · {block.availability_effect === 'hard_block' ? 'Reserved date' : 'Tentative hold'}</p>
+    <p className="mt-1">{formatLocalDateOnly(block.start_date)}{block.end_date !== block.start_date && ` – ${formatLocalDateOnly(block.end_date)}`}</p>
+  </article>;
+}
+
 export function UpcomingBookedEvents({
   quotes,
+  blocks = [],
   limit = 5,
 }: {
   quotes: CalendarQuote[];
+  blocks?: CalendarBlock[];
   limit?: number;
 }) {
   const today = getLocalTodayDateOnly();
@@ -138,18 +152,22 @@ export function UpcomingBookedEvents({
         quote.event_date >= today,
     )
     .sort((a, b) => a.event_date.localeCompare(b.event_date));
+  const upcomingEntries: Array<{date: string; quote?: CalendarQuote; block?: CalendarBlock}> = [
+    ...upcoming.map(quote => ({ date: quote.event_date, quote })),
+    ...activeCalendarBlocks(blocks).filter(block => block.availability_effect === 'hard_block' && block.end_date >= today).map(block => ({ date: block.start_date < today ? today : block.start_date, block })),
+  ].sort((a,b) => a.date.localeCompare(b.date));
   const nextThirtyDays = new Date();
   nextThirtyDays.setDate(nextThirtyDays.getDate() + 30);
   const nextThirtyDate = formatDateOnlyValue(nextThirtyDays);
-  const inThirtyDays = upcoming.filter((quote) => quote.event_date <= nextThirtyDate).length;
+  const inThirtyDays = upcomingEntries.filter(entry => entry.date <= nextThirtyDate).length;
 
-  if (upcoming.length === 0) {
+  if (upcomingEntries.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-[#c8b9a8] bg-[#faf8f5] p-6 text-center">
         <CalendarCheck className="mx-auto size-7 text-muted-foreground" aria-hidden="true" />
         <p className="mt-2 font-semibold text-navy">No upcoming booked events</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          Customer-approved and later workflow dates will appear here.
+          Customer-approved bookings and reserved partner dates will appear here.
         </p>
       </div>
     );
@@ -165,13 +183,16 @@ export function UpcomingBookedEvents({
           </span>
         </div>
         <div className="rounded-lg bg-[#f5f1eb] p-3">
-          <span className="block text-2xl font-semibold text-navy">{upcoming.length}</span>
+          <span className="block text-2xl font-semibold text-navy">{upcomingEntries.length}</span>
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Future bookings
           </span>
         </div>
       </div>
-      {upcoming.slice(0, limit).map((quote, index) => (
+      {upcomingEntries.slice(0, limit).map((entry, index) => {
+        if (entry.block) return <ReservedDateCard key={entry.block.id} block={entry.block} />;
+        const quote = entry.quote!;
+        return (
         <Link
           key={quote.id}
           href={`/admin/quotes/${quote.id}`}
@@ -204,16 +225,18 @@ export function UpcomingBookedEvents({
             <ArrowRight className="size-3.5" aria-hidden="true" />
           </span>
         </Link>
-      ))}
+      ); })}
     </div>
   );
 }
 
 export function BookingCalendar({
   quotes,
+  blocks = [],
   compact = false,
 }: {
   quotes: CalendarQuote[];
+  blocks?: CalendarBlock[];
   compact?: boolean;
 }) {
   const today = getLocalTodayDateOnly();
@@ -285,6 +308,19 @@ export function BookingCalendar({
       quote.event_date === selectedDate && (showTests || isRealQuote(quote)),
   );
   const selectedSummary = getSameDateRequestSummary(selectedQuotes, selectedDate);
+  const selectedBlocks = blocksOnDate(blocks, selectedDate);
+  const selectedHardBlocks = selectedBlocks.filter(block => block.availability_effect === 'hard_block');
+  const hasSelectedConflict = selectedSummary.hasBookingConflict || selectedHardBlocks.length + selectedSummary.blockingBookingCount > 1;
+  const visibleBlocks = ['all', 'reserved', 'booked'].includes(filter) ? activeCalendarBlocks(blocks).filter(block => filter !== 'booked' || block.availability_effect === 'hard_block') : [];
+  const monthStart = formatDateOnlyValue(new Date(month.getFullYear(), month.getMonth(), 1));
+  const monthEnd = formatDateOnlyValue(new Date(month.getFullYear(), month.getMonth() + 1, 0));
+  const reservedDates = blockedCalendarDates(visibleBlocks.filter(block => block.availability_effect === 'hard_block'), monthStart, monthEnd).map(parseLocalDateOnly);
+  const heldDates = blockedCalendarDates(visibleBlocks.filter(block => block.availability_effect !== 'hard_block'), monthStart, monthEnd).map(parseLocalDateOnly);
+  for (const date of reservedDates) {
+    const value = formatDateOnlyValue(date);
+    const count = blocksOnDate(visibleBlocks, value).filter(block => block.availability_effect === 'hard_block').length + (summaries.get(value)?.blockingBookingCount ?? 0);
+    if (count > 1) conflictDates.push(date);
+  }
 
   function dateLabel(date: Date) {
     const dateValue = formatDateOnlyValue(date);
@@ -294,6 +330,8 @@ export function BookingCalendar({
       day: 'numeric',
       year: 'numeric',
     });
+    const dayBlocks = blocksOnDate(visibleBlocks, dateValue);
+    if (dayBlocks.length) return `${formatted}, ${dayBlocks.map(block => `${block.title}, ${block.availability_effect === 'hard_block' ? 'reserved' : 'tentative hold'}`).join('; ')}`;
     if (!summary) return formatted;
     if (summary.hasBookingConflict) {
       return `${formatted}, booking conflict, ${summary.blockingBookingCount} blocking bookings`;
@@ -308,7 +346,7 @@ export function BookingCalendar({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="admin-booking-calendar space-y-5">
       {!compact && (
         <div className="flex flex-col gap-3 rounded-xl border border-[#d9d1c8] bg-white p-4 sm:flex-row sm:items-end sm:justify-between">
           <label className="space-y-1.5">
@@ -338,7 +376,7 @@ export function BookingCalendar({
 
       <div className={compact ? '' : 'grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]'}>
         <div className="rounded-xl border border-[#d9d1c8] bg-white p-3 sm:p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <Button
               type="button"
               variant="outline"
@@ -368,6 +406,8 @@ export function BookingCalendar({
               workflow: workflowDates,
               pending: pendingDates,
               completed: completedDates,
+              reserved: reservedDates,
+              held: heldDates,
             }}
             modifiersClassNames={{
               conflict: 'bg-red-100 text-red-900 font-bold ring-2 ring-red-600',
@@ -376,6 +416,8 @@ export function BookingCalendar({
               workflow: 'bg-blue-100 text-blue-950 font-bold',
               pending: 'bg-slate-100 text-slate-900',
               completed: 'bg-stone-200 text-stone-700',
+              reserved: 'bg-purple-100 text-purple-950 font-bold',
+              held: 'bg-amber-50 text-amber-950 font-bold',
             }}
             labels={{ labelDayButton: dateLabel }}
             className="mx-auto w-full [--cell-size:--spacing(10)] sm:[--cell-size:--spacing(11)]"
@@ -388,6 +430,8 @@ export function BookingCalendar({
               ['bg-slate-500', 'One pending request'],
               ['bg-red-600', 'Booking conflict'],
               ['bg-stone-400', 'Completed / past'],
+              ['bg-purple-600', 'Reserved partner date'],
+              ['bg-amber-700', 'Tentative hold'],
             ].map(([tone, label]) => (
               <span key={label} className="flex items-center gap-2 text-charcoal">
                 <Circle className={`size-2.5 fill-current ${tone.replace('bg-', 'text-')}`} aria-hidden="true" />
@@ -407,8 +451,10 @@ export function BookingCalendar({
             </h2>
             <div className="mt-3 flex flex-wrap gap-2">
               <Badge variant="outline">
-                {selectedSummary.hasBookingConflict
+                {hasSelectedConflict
                   ? 'Booking conflict'
+                  : selectedHardBlocks.length > 0
+                    ? 'Reserved partner date'
                   : selectedSummary.bookingOwner
                     ? 'Date booked'
                     : 'Available'}
@@ -418,16 +464,17 @@ export function BookingCalendar({
                 {selectedSummary.activeRequestCount === 1 ? '' : 's'}
               </Badge>
               <Badge variant="outline">
-                {selectedSummary.blockingBookingCount} blocking booking
+                {selectedSummary.blockingBookingCount + selectedHardBlocks.length} blocking booking
                 {selectedSummary.blockingBookingCount === 1 ? '' : 's'}
               </Badge>
             </div>
-            {selectedSummary.hasBookingConflict && (
+            {hasSelectedConflict && (
               <div role="alert" className="mt-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-900">
                 <AlertTriangle className="mr-1 inline size-4" aria-hidden="true" />
-                More than one real quote blocks this date. Resolve this data conflict immediately.
+                More than one booking or reservation blocks this date. Resolve this data conflict immediately.
               </div>
             )}
+            {selectedBlocks.length > 0 && <section className="mt-4 space-y-3" aria-label="Reserved partner dates">{selectedBlocks.map(block => <ReservedDateCard key={block.id} block={block} />)}</section>}
             <div className="mt-5 space-y-5">
               <div>
                 <h3 className="mb-2 font-semibold text-navy">Booked quote owner</h3>

@@ -1,3 +1,4 @@
+import { getCalendarBlocks } from '@/lib/quotes/getCalendarBlocks';
 import { createAdminClient } from '@/lib/supabase/admin';
 import {
   BookingCalendar,
@@ -32,17 +33,15 @@ export default async function AdminBookingCalendarPage() {
     .order('event_date', { ascending: true });
 
   const quotes = (data ?? []) as CalendarQuote[];
+  const { blocks, error: blockError } = await getCalendarBlocks();
 
   return (
     <div className="space-y-8">
-      <header className="rounded-2xl border border-navy bg-navy p-6 text-white shadow-lg sm:p-8">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ded2c4]">
-          Operations schedule
-        </p>
+      <header className="admin-calendar-heading">
         <h1 className="mt-2 font-serif text-3xl font-semibold sm:text-4xl">
           Booking Calendar
         </h1>
-        <p className="mt-2 max-w-3xl text-[#ded2c4]">
+        <p className="mt-2 max-w-3xl text-muted-foreground">
           Review booked events, same-date requests, and booking conflicts without introducing hourly or multi-trailer scheduling.
         </p>
       </header>
@@ -53,16 +52,17 @@ export default async function AdminBookingCalendarPage() {
         </p>
       )}
 
-      <BookingCalendar quotes={quotes} />
+      {blockError && <p role="alert" className="text-red-900">{blockError}</p>}
+      <BookingCalendar quotes={quotes} blocks={blocks} />
 
       <section aria-labelledby="all-upcoming-heading" className="rounded-2xl border border-[#d9d1c8] bg-white p-5 sm:p-6">
         <h2 id="all-upcoming-heading" className="font-serif text-2xl font-semibold text-navy">
           Upcoming booked events
         </h2>
         <p className="mb-4 mt-1 text-sm text-muted-foreground">
-          Sorted by event date, excluding test quotes and past events.
+          Customer bookings and reserved partner dates, excluding test quotes and past events.
         </p>
-        <UpcomingBookedEvents quotes={quotes} limit={20} />
+        <UpcomingBookedEvents quotes={quotes} blocks={blocks} limit={20} />
       </section>
     </div>
   );

@@ -1,0 +1,62 @@
+{
+  "isolated": true,
+  "app": "http://127.0.0.1:3106",
+  "database": "Local PGlite PostgreSQL, Supabase-compatible fixture transport",
+  "savedPolicy": {
+    "after_hours_cutoff_hour": 22,
+    "after_hours_hourly_rate": 75,
+    "after_hours_max_hours": 0,
+    "base_price_100_guests": 1175,
+    "base_price_150_guests": 1200,
+    "base_price_200_guests": 1400,
+    "base_price_200_plus": 1600,
+    "cleaning_fee": 0,
+    "damage_waiver_fee": 0,
+    "deposit_percentage": 40,
+    "event_time_policy_enabled": 1,
+    "extra_day_fee": 0,
+    "extra_hours_enabled": 1,
+    "generator_fee": 150,
+    "included_miles": 15,
+    "rush_booking_fee": 250,
+    "sales_tax_percentage": 6,
+    "travel_rate_per_mile": 5,
+    "water_fee": 75
+  },
+  "scenarios": [
+    {
+      "window": "2–10 PM",
+      "extraHours": 0,
+      "afterHours": 0,
+      "total": 1245.5,
+      "deposit": 498.2,
+      "status": "pending_review"
+    },
+    {
+      "window": "Noon–10 PM",
+      "extraHours": 200,
+      "afterHours": 0,
+      "total": 1457.5,
+      "deposit": 583,
+      "status": "pending_review"
+    },
+    {
+      "window": "4–11 PM",
+      "extraHours": 0,
+      "afterHours": 75,
+      "total": 1325,
+      "deposit": 530,
+      "status": "pending_review"
+    },
+    {
+      "window": "2–11 PM",
+      "extraHours": 100,
+      "afterHours": 75,
+      "total": 1431,
+      "deposit": 572.4,
+      "status": "pending_review"
+    }
+  ],
+  "historicalQuoteUnchanged": true,
+  "limitations": "Hosted Supabase Auth/RLS/PostgREST and production provider integrations were not exercised."
+}

@@ -293,6 +293,7 @@ export async function submitQuoteRequest(
             ${data.additional_notes ? `<p><strong>Additional Notes:</strong> ${safeAdditionalNotes}</p>` : ''}
             <hr />
             <h3>Calculated Pricing</h3>
+            ${priceBreakdown.extra_hours_fee ? `<p><strong>Additional Event Hours:</strong> $${priceBreakdown.extra_hours_fee.toFixed(2)}</p>` : ''}
             <p><strong>Base Price:</strong> $${priceBreakdown.base_price.toFixed(2)}</p>
             ${priceBreakdown.travel_fee > 0 ? `<p><strong>Travel Fee:</strong> $${priceBreakdown.travel_fee.toFixed(2)}</p>` : ''}
             ${priceBreakdown.utility_fee > 0 ? `<p><strong>Utility Fee:</strong> $${priceBreakdown.utility_fee.toFixed(2)}</p>` : ''}

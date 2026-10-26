@@ -3,7 +3,7 @@ import { requireAdminUser } from '@/lib/admin-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { quoteRequestUpdateSchema } from '@/lib/quotes/schema';
 import { buildQuoteCalculation, getPricingSettings } from '@/lib/quotes/build-quote-calculation';
-import { calculateQuoteFinancials } from '@/lib/pricing-engine';
+import { calculateQuoteFinancials, getExtraHoursFee } from '@/lib/pricing-engine';
 import { financialLockMessage, isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 import type { QuoteFormData } from '@/lib/types/quote';
 
@@ -271,6 +271,7 @@ export async function PATCH(
     } else if (pricingChanged) {
       const pricingSettings = await getPricingSettings();
       const financials = calculateQuoteFinancials({
+        extra_hours_fee: getExtraHoursFee(currentQuote.calculated_breakdown),
         base_price: Number(payload.base_price ?? currentQuote.base_price ?? 0),
         travel_fee: Number(payload.travel_fee ?? currentQuote.travel_fee ?? 0),
         utility_fee: Number(payload.utility_fee ?? currentQuote.utility_fee ?? 0),

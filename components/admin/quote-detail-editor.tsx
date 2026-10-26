@@ -38,7 +38,7 @@ import { formatAdminStatus } from '@/lib/quotes/status';
 import { FileText, FileCheck, WalletCards } from 'lucide-react';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { QuoteRequest, QuoteOption, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { calculateQuoteFinancials, DEFAULT_PRICING } from '@/lib/pricing-engine';
+import { calculateQuoteFinancials, DEFAULT_PRICING, getExtraHoursFee } from '@/lib/pricing-engine';
 import { isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
 import { SameDateRequestsPanel } from '@/components/admin/same-date-requests-panel';
@@ -165,6 +165,7 @@ function getStoredSalesTaxPercentage(quote: QuoteRequest) {
 }
 
 type PricingInput = {
+  extra_hours_fee?: number;
   base_price: number;
   travel_fee: number;
   utility_fee: number;
@@ -345,6 +346,8 @@ export default function QuoteDetailEditor({
   const [emailPreview, setEmailPreview] = useState<QuoteEmailPreview | null>(null);
   const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
   const [lastSavedRecalculationFields, setLastSavedRecalculationFields] = useState<RecalculationTriggerFields>(() => getRecalculationTriggerFields(quote));
+  const [currentBreakdown, setCurrentBreakdown] = useState(quote.calculated_breakdown);
+  const extraHoursFee = getExtraHoursFee(currentBreakdown);
   const [distanceReviewQuote, setDistanceReviewQuote] = useState<QuoteRequest>(quote);
   const [recalculatingQuote, setRecalculatingQuote] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -388,6 +391,7 @@ export default function QuoteDetailEditor({
   // Calculate subtotal, total, deposit, and final balance
   const recalculatePricing = useCallback(() => {
     return calculatePricingTotals({
+      extra_hours_fee: extraHoursFee,
       base_price: form.base_price,
       travel_fee: form.travel_fee,
       utility_fee: form.utility_fee,
@@ -397,9 +401,10 @@ export default function QuoteDetailEditor({
       rush_booking_fee: form.rush_booking_fee,
       discount_amount: form.discount_amount,
     }, salesTaxPercentage, depositPercentage);
-  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, salesTaxPercentage, depositPercentage]);
+  }, [extraHoursFee, form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, salesTaxPercentage, depositPercentage]);
 
   const applyQuoteToForm = (updatedQuote: QuoteRequest, options?: { markRecalculated?: boolean }) => {
+    setCurrentBreakdown(updatedQuote.calculated_breakdown);
     if (options?.markRecalculated) {
       setLastSavedRecalculationFields(getRecalculationTriggerFields(updatedQuote));
       setDistanceReviewQuote(updatedQuote);
@@ -688,7 +693,7 @@ export default function QuoteDetailEditor({
       cleaning_fee: form.cleaning_fee,
       damage_waiver_fee: form.damage_waiver_fee,
       rush_booking_fee: form.rush_booking_fee,
-      ...calculatePricingTotals(form, salesTaxPercentage, depositPercentage),
+      ...calculatePricingTotals({ ...form, extra_hours_fee: extraHoursFee }, salesTaxPercentage, depositPercentage),
     });
     setOptionDialogOpen(true);
   };
@@ -867,8 +872,9 @@ export default function QuoteDetailEditor({
         final_balance: form.final_balance,
       }
     : recalculatePricing();
+  const optionExtraHoursFee = getExtraHoursFee(optionForm.id ? quoteOptions.find(option => option.id === optionForm.id)?.calculated_breakdown : currentBreakdown);
   const calculatedOptionPricing = calculatePricingTotals(
-    optionForm,
+    { ...optionForm, extra_hours_fee: optionExtraHoursFee },
     salesTaxPercentage,
     depositPercentage,
   );
@@ -1152,6 +1158,7 @@ export default function QuoteDetailEditor({
             />
           </Field>
           <Field>
+            {extraHoursFee > 0 && <p className="mb-3 text-sm">Additional event hours: ${extraHoursFee.toFixed(2)}. This saved charge is included in the total; use Recalculate to update it from event times.</p>}
             <FieldLabel htmlFor="after_hours_fee">After Hours Fee</FieldLabel>
             <Input
               id="after_hours_fee"
@@ -1650,7 +1657,7 @@ export default function QuoteDetailEditor({
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Button>
-</div></TabsContent></Tabs><QuoteDeskSummary quote={quote} form={form} pricing={calculatedPricing} otherBookingOwnsDate={otherBookingOwnsDate} fallbackDistance={fallbackDistance} distanceMessage={distanceMessage} financiallyLocked={financiallyLocked} onReviewPricing={() => setDeskTab('pricing')} /></div><footer className="desk-action-bar"><p role="status">{saving ? 'Saving changes…' : dirtyCount ? `${dirtyCount} unsaved ${dirtyCount === 1 ? 'change' : 'changes'}` : 'All changes saved'}</p><div className="desk-main-actions">        <Button
+</div></TabsContent></Tabs><QuoteDeskSummary quote={{ ...quote, calculated_breakdown: currentBreakdown }} form={form} pricing={calculatedPricing} otherBookingOwnsDate={otherBookingOwnsDate} fallbackDistance={fallbackDistance} distanceMessage={distanceMessage} financiallyLocked={financiallyLocked} onReviewPricing={() => setDeskTab('pricing')} /></div><footer className="desk-action-bar"><p role="status">{saving ? 'Saving changes…' : dirtyCount ? `${dirtyCount} unsaved ${dirtyCount === 1 ? 'change' : 'changes'}` : 'All changes saved'}</p><div className="desk-main-actions">        <Button
           onClick={handleSave}
           disabled={saving || confirming}
           className="flex-1 bg-[#2d3a47] hover:bg-[#2d3a47]/90 text-white"
@@ -1768,6 +1775,7 @@ export default function QuoteDetailEditor({
                 Recommended option
               </label>
             </div>
+            {optionExtraHoursFee > 0 && <p className="md:col-span-2 text-sm">Additional event hours: {formatCurrency(optionExtraHoursFee)}. Included in this option total; use Recalculate to update it from event times.</p>}
             {[
               ['base_price', 'Base Price'],
               ['travel_fee', 'Travel Fee'],
