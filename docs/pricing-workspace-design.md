@@ -76,3 +76,29 @@ Owner must choose package inclusions, partial-hour handling, after-hours cap and
 - Visual review: navy preview header, compact numbered groups, explicit rule units, neutral impact message, readable itemization and single review/save flow. Native controls and Radix dialog retained. No new motion or media payload.
 - Remaining verification boundaries: no full screen-reader or third-party automated WCAG certification; no real email, approval, agreement, payment or booking submission; no live settings persistence test or deployment. API writes and failures were tested with synthetic mocks. Schema remains unchanged; supported settings use existing numeric rows, extra-hour charges use the existing JSON snapshot.
 - Rollback warning: once the owner enables these rules and quotes contain extra_hours_fee in their JSON snapshots, retain the extra-fee readers/financial normalization even if reverting the editor. Existing financial columns retain their original meaning.
+
+## Preview access refinement — 2026-10-25
+Workstream: Pricing preview access (isolated usability fix).
+Application: Next.js admin.
+User workflow being improved: Compare live totals while editing any pricing section.
+Current implementation: Sticky sidebar disabled below 950px height; preview stacks after the entire form below 1000px width.
+Current pain point: Tax and deposit edits require long scrolling to see the preview.
+Proposed change: Viewport-sized sticky desktop preview with independently scrolling details and persistent total/deposit; modal preview from the sticky action bar on narrow screens, returning focus without changing form position.
+Routes affected: /admin/pricing and its /admin/settings redirect.
+Files likely affected: components/admin/pricing-settings-editor.tsx, app/admin/pricing/pricing.css.
+Content or data involved: Existing in-memory draft and synthetic example only.
+Status fields involved: Existing unsaved/save feedback preserved.
+Customer-visible risk: None expected; calculation and persistence handlers unchanged.
+SEO risk: None; existing noindex remains.
+Security risk: None expected; no data/API/auth changes.
+Accessibility considerations: Named dialog, Escape, focus return, labeled inputs, scrollable preview and visible totals.
+Mobile considerations: Persistent preview action opens in place; 320px reflow and touch targets.
+Migration or rollback strategy: Revert these presentation changes; no data migration.
+Validation steps: Typecheck/lint/build plus rendered desktop, short viewport, tablet and phone checks; unsaved tax/deposit preview changes only, no live saves.
+
+Validation for preview access refinement:
+- PASS: TypeScript, targeted ESLint and full source ESLint (generated .next-* excluded). Production webpack build passed, 74 pages; isolated loopback data URL caused expected public-media fallback warnings. No live writes or deployment.
+- PASS: Rendered widths 320, 375, 390, 768, 1024, 1440px; no horizontal document overflow. Short 1024x600 desktop retains a visible preview, scrollable details and visible total/deposit. Phone 320x680 dialog fits the viewport with independently scrolling controls.
+- PASS: Unsaved tax 8% and deposit 50% produced $1,269.00 total / $634.50 deposit for the $1,175 example; Reset restored saved choices. Dialog guest changes also updated totals. No Save action invoked.
+- PASS: Back to settings and Escape close the named dialog; focus returns to its opener. Exact form position before/after open-close matched after disabling inherited marketing smooth scrolling on this pricing screen.
+- Screenshots: output/pricing-preview-access/desktop.png and mobile.png. No full screen-reader certification claimed. Pricing calculation, authorization and persistence handlers are unchanged.

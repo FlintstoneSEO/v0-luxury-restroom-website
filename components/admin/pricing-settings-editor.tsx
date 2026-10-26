@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowDown, ArrowRight, Calculator, Check, Clock3, Info, RotateCcw, Save, SlidersHorizontal, TriangleAlert } from 'lucide-react';
+import { ArrowRight, Calculator, Check, Clock3, Info, RotateCcw, Save, SlidersHorizontal, TriangleAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { calculateQuotePrice, formatCurrency } from '@/lib/pricing-engine';
@@ -30,6 +30,12 @@ export default function PricingSettingsEditor({ initialSettings, loadError }: { 
   const [saved, setSaved] = useState(initialSettings);
   const [draft, setDraft] = useState(() => toDraft(initialSettings));
   const [review, setReview] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const previewTrigger = useRef<HTMLButtonElement | null>(null);
+  function openPreview(event: React.MouseEvent<HTMLButtonElement>) {
+    previewTrigger.current = event.currentTarget;
+    setPreviewOpen(true);
+  }
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [saveError, setSaveError] = useState(false);
@@ -103,24 +109,10 @@ export default function PricingSettingsEditor({ initialSettings, loadError }: { 
   }
   const result = preview.result;
   const reasons = result?.details.service_review_reasons as string[] | undefined;
-  return <div className="pricing-workspace">
-    <header className="pricing-heading"><div><p className="pricing-kicker">BUSINESS CONFIGURATION</p><h1>Pricing &amp; settings</h1><p>Shape your pricing. See exactly how it adds up.</p></div><span className="pricing-state" data-dirty={dirty}><span />{invalid ? 'Needs attention' : dirty ? 'Unsaved changes' : 'Saved pricing'}</span></header>
-    <div className="pricing-impact"><Info aria-hidden="true" /><p>Changes apply to new quotes and explicit financial revisions. Existing sent, approved, signed, and paid quotes keep their saved totals.</p></div>
-    {loadError && <div className="pricing-error" role="alert">{loadError} <Button variant="outline" onClick={() => window.location.reload()}>Reload pricing</Button></div>}
-    {invalid && !loadError && <div className="pricing-error" role="alert"><TriangleAlert size={18} aria-hidden="true"/><span>A pricing setting needs attention before a preview can be calculated. <a href={`#pricing-${Object.keys(errors)[0]}`}>Review the highlighted field</a>.</span></div>}
-    <nav className="pricing-section-nav" aria-label="Pricing sections">{PRICING_SECTIONS.map(section => <a key={section.id} href={`#${section.id}`}>{section.title}</a>)}<a className="pricing-preview-jump" href="#quote-preview"><Calculator size={16} aria-hidden="true"/>Preview quote</a></nav>
-    <div className="pricing-columns">
-      <fieldset className="pricing-editor" disabled={Boolean(loadError) || saving}><legend className="sr-only">Pricing policy</legend>
-        {PRICING_SECTIONS.map((section, index) => <section className="pricing-section" id={section.id} key={section.id} aria-labelledby={`${section.id}-heading`}>
-          <div className="pricing-section-heading"><span className="pricing-section-number">{String(index + 1).padStart(2, '0')}</span><div><h2 id={`${section.id}-heading`}>{section.title}</h2><p>{section.description}</p></div></div>
-          {section.id === 'event-hours' && <div className="pricing-proposal"><Clock3 aria-hidden="true"/><div><strong>Explore the 8-hour proposal</strong><p>8 hours included · $100 per extra hour · $75 per hour after 10 PM.</p><button type="button" onClick={tryProposal}>Try these hourly rules <ArrowRight size={15} aria-hidden="true"/></button></div></div>}
-          <div className="pricing-field-grid">{section.fields.map(fieldControl)}</div>
-          {section.id === 'event-hours' && !values.event_time_policy_enabled && <p className="pricing-rule-note"><Info size={16} aria-hidden="true"/>Extra event hours are off while the current end-time calculation is selected.</p>}
-        </section>)}
-      </fieldset>
-      <aside className="pricing-preview" id="quote-preview" aria-labelledby="preview-heading">
+  function renderPreview(headingId: string) {
+    return <>
         <div className="pricing-preview-title"><span><Calculator size={20} aria-hidden="true"/>QUOTE SANDBOX</span><span>Live preview</span></div>
-        <div className="pricing-preview-body"><h2 id="preview-heading">Try an event</h2><p className="pricing-help">Uses your unsaved choices. No quote is created.</p>
+        <div className="pricing-preview-body"><h2 id={headingId}>Try an event</h2><p className="pricing-help">Uses your unsaved choices. No quote is created.</p>
           <div className="pricing-scenarios" aria-label="Example event windows">{SCENARIOS.map(scenario => <button type="button" key={scenario.label} aria-pressed={sample.start === scenario.start && sample.end === scenario.end} onClick={() => setSample(previous => ({ ...previous, start: scenario.start, end: scenario.end }))}>{scenario.label}</button>)}</div>
           <div className="pricing-sample-grid">
             <label>Guests<input type="number" min="1" step="1" value={sample.guests} onChange={event => setSample({ ...sample, guests: event.target.value })}/></label>
@@ -136,15 +128,37 @@ export default function PricingSettingsEditor({ initialSettings, loadError }: { 
             <dl className="pricing-lines">{result.line_items.filter(item => item.code === 'base_rental' || item.total > 0).map(item => <div key={item.code}><dt>{item.label}{['extra_hours', 'after_hours'].includes(item.code) && <small>{Number(item.quantity.toFixed(2))} {item.quantity === 1 ? 'hr' : 'hrs'} × {formatCurrency(item.unit_price)}</small>}</dt><dd>{formatCurrency(item.total)}</dd></div>)}
               <div className="pricing-subtotal"><dt>Subtotal</dt><dd>{formatCurrency(result.subtotal)}</dd></div><div><dt>Sales tax ({values.sales_tax_percentage}%)</dt><dd>{formatCurrency(result.sales_tax_amount)}</dd></div>
             </dl>
-            <div className="pricing-total"><span>Example total<strong>{formatCurrency(result.total_price)}</strong></span><span>USD</span></div>
-            <dl className="pricing-payment"><div><dt>Deposit · {result.deposit_percentage}%</dt><dd>{formatCurrency(result.deposit_amount)}</dd></div><div><dt>Remaining balance</dt><dd>{formatCurrency(result.final_balance)}</dd></div></dl>
             {reasons && reasons.length > 0 && <div className="pricing-review-notice"><strong><TriangleAlert size={16} aria-hidden="true"/>Service review suggested</strong>{reasons.map(reason => <p key={reason}>{reason}</p>)}<p>Additional service is quoted separately.</p></div>}
           </>}
         </div>
+        {result && !preview.error && !loadError && <div className="pricing-preview-summary" aria-live="polite" aria-atomic="true">
+            <div className="pricing-total"><span>Example total<strong>{formatCurrency(result.total_price)}</strong></span><span>USD</span></div>
+            <dl className="pricing-payment"><div><dt>Deposit · {result.deposit_percentage}%</dt><dd>{formatCurrency(result.deposit_amount)}</dd></div><div><dt>Remaining balance</dt><dd>{formatCurrency(result.final_balance)}</dd></div></dl>
+        </div>}
+    </>;
+  }
+  return <div className="pricing-workspace">
+    <header className="pricing-heading"><div><p className="pricing-kicker">BUSINESS CONFIGURATION</p><h1>Pricing &amp; settings</h1><p>Shape your pricing. See exactly how it adds up.</p></div><span className="pricing-state" data-dirty={dirty}><span />{invalid ? 'Needs attention' : dirty ? 'Unsaved changes' : 'Saved pricing'}</span></header>
+    <div className="pricing-impact"><Info aria-hidden="true" /><p>Changes apply to new quotes and explicit financial revisions. Existing sent, approved, signed, and paid quotes keep their saved totals.</p></div>
+    {loadError && <div className="pricing-error" role="alert">{loadError} <Button variant="outline" onClick={() => window.location.reload()}>Reload pricing</Button></div>}
+    {invalid && !loadError && <div className="pricing-error" role="alert"><TriangleAlert size={18} aria-hidden="true"/><span>A pricing setting needs attention before a preview can be calculated. <a href={`#pricing-${Object.keys(errors)[0]}`}>Review the highlighted field</a>.</span></div>}
+    <nav className="pricing-section-nav" aria-label="Pricing sections">{PRICING_SECTIONS.map(section => <a key={section.id} href={`#${section.id}`}>{section.title}</a>)}<button type="button" className="pricing-preview-jump" onClick={openPreview}><Calculator size={16} aria-hidden="true"/>Preview quote</button></nav>
+    <div className="pricing-columns">
+      <fieldset className="pricing-editor" disabled={Boolean(loadError) || saving}><legend className="sr-only">Pricing policy</legend>
+        {PRICING_SECTIONS.map((section, index) => <section className="pricing-section" id={section.id} key={section.id} aria-labelledby={`${section.id}-heading`}>
+          <div className="pricing-section-heading"><span className="pricing-section-number">{String(index + 1).padStart(2, '0')}</span><div><h2 id={`${section.id}-heading`}>{section.title}</h2><p>{section.description}</p></div></div>
+          {section.id === 'event-hours' && <div className="pricing-proposal"><Clock3 aria-hidden="true"/><div><strong>Explore the 8-hour proposal</strong><p>8 hours included · $100 per extra hour · $75 per hour after 10 PM.</p><button type="button" onClick={tryProposal}>Try these hourly rules <ArrowRight size={15} aria-hidden="true"/></button></div></div>}
+          <div className="pricing-field-grid">{section.fields.map(fieldControl)}</div>
+          {section.id === 'event-hours' && !values.event_time_policy_enabled && <p className="pricing-rule-note"><Info size={16} aria-hidden="true"/>Extra event hours are off while the current end-time calculation is selected.</p>}
+        </section>)}
+      </fieldset>
+      <aside className="pricing-preview" id="quote-preview" aria-labelledby="preview-heading">
+        {renderPreview('preview-heading')}
       </aside>
     </div>
-    <footer className="pricing-savebar"><div><strong><SlidersHorizontal size={17} aria-hidden="true"/>{invalid ? 'Review the highlighted settings' : dirty ? `${changed.length} unsaved ${changed.length === 1 ? 'change' : 'changes'}` : 'Your pricing is up to date'}</strong><p>{dirty ? 'Preview first. Review before saving.' : 'Edit a rate or rule to try a new calculation.'}</p></div><div className="pricing-save-actions"><Button type="button" variant="outline" disabled={!dirty || saving || Boolean(loadError)} onClick={reset}><RotateCcw size={16} aria-hidden="true"/>Reset</Button><Button type="button" disabled={!dirty || saving || Boolean(loadError)} onClick={openReview}><Save size={16} aria-hidden="true"/>Review changes</Button><a href="#quote-preview" aria-label="Jump to quote preview"><ArrowDown size={14} aria-hidden="true"/><span>Preview{result && !loadError && <small>{formatCurrency(result.total_price)}</small>}</span></a></div></footer>
+    <footer className="pricing-savebar"><div><strong><SlidersHorizontal size={17} aria-hidden="true"/>{invalid ? 'Review the highlighted settings' : dirty ? `${changed.length} unsaved ${changed.length === 1 ? 'change' : 'changes'}` : 'Your pricing is up to date'}</strong><p>{dirty ? 'Preview first. Review before saving.' : 'Edit a rate or rule to try a new calculation.'}</p></div><div className="pricing-save-actions"><Button type="button" variant="outline" disabled={!dirty || saving || Boolean(loadError)} onClick={reset}><RotateCcw size={16} aria-hidden="true"/>Reset</Button><Button type="button" disabled={!dirty || saving || Boolean(loadError)} onClick={openReview}><Save size={16} aria-hidden="true"/>Review changes</Button><button type="button" className="pricing-open-preview" onClick={openPreview} aria-label="Open quote preview"><Calculator size={16} aria-hidden="true"/><span>Preview{result && !loadError && <small>{formatCurrency(result.total_price)}</small>}</span></button></div></footer>
     {message && <p className={saveError ? 'pricing-error' : 'pricing-save-message'} role={saveError ? 'alert' : 'status'}>{!saveError && <Check size={17} aria-hidden="true"/>}{message}</p>}
+    <Dialog open={previewOpen} onOpenChange={setPreviewOpen}><DialogContent className="pricing-preview-dialog" onCloseAutoFocus={event => { event.preventDefault(); previewTrigger.current?.focus({ preventScroll: true }); }}><DialogHeader><DialogTitle>Quote preview</DialogTitle><DialogDescription>Try your draft pricing, then return to the setting you were editing.</DialogDescription></DialogHeader><div className="pricing-workspace pricing-preview-modal">{renderPreview('modal-preview-heading')}</div><DialogFooter><Button type="button" variant="outline" onClick={() => setPreviewOpen(false)}>Back to settings</Button></DialogFooter></DialogContent></Dialog>
     <Dialog open={review} onOpenChange={open => { if (!saving) setReview(open); }}><DialogContent className="pricing-review-dialog" showCloseButton={!saving}><DialogHeader><DialogTitle>Review pricing changes</DialogTitle><DialogDescription>These choices affect new quotes and explicit revisions. Existing saved quotes are not automatically repriced.</DialogDescription></DialogHeader><div className="pricing-diff"><table><caption className="sr-only">Current and proposed pricing settings</caption><thead><tr><th scope="col">Setting</th><th scope="col">Current</th><th scope="col">New</th></tr></thead><tbody>{changed.map(field => <tr key={field.key}><th scope="row">{field.label}</th><td>{formatSetting(field, saved[field.key])}</td><td>{formatSetting(field, values[field.key])}</td></tr>)}</tbody></table></div>{saveError && <p className="pricing-error" role="alert">{message}</p>}<DialogFooter><Button variant="outline" disabled={saving} onClick={() => setReview(false)}>Keep editing</Button><Button disabled={saving || invalid} onClick={save}>{saving ? 'Saving…' : 'Save pricing rules'}</Button></DialogFooter></DialogContent></Dialog>
   </div>;
 }
