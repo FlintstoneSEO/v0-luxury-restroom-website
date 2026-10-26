@@ -1,15 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+
+import { useMemo, useState, useTransition, useRef } from 'react';
+import Link from 'next/link';
+import { QuoteWorkbench, quoteReviewLabel, needsDistanceReview } from './quote-workbench';
+import { BookingOutlook } from './booking-outlook';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
 import {
   Select,
   SelectContent,
@@ -20,7 +17,7 @@ import {
 
 import { formatLocalDateOnly, parseLocalDateOnly } from '@/lib/date-only';
 import { QuoteRequest, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { CheckCircle2, Clock, AlertCircle, CreditCard, Calendar, Users, MapPin, Search, SlidersHorizontal, Sparkles, CircleDollarSign, ClipboardList, Send, BadgeCheck, CalendarClock, CalendarCheck, Plus, Mail, SquarePen, FileSignature, Eye, AlertTriangle } from 'lucide-react';
+import { Clock, CalendarClock, CheckCircle2, AlertCircle, CreditCard, Users, SlidersHorizontal, ClipboardList, Send, BadgeCheck, FileSignature, CalendarCheck, Plus, AlertTriangle, RefreshCw, ArrowRight, Search, ChevronRight } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { AdminStatusBadge } from '@/components/admin/admin-status-badge';
@@ -30,7 +27,6 @@ import {
   type AvailabilityBlock,
   type AvailabilityDaySummary,
 } from '@/lib/availability';
-import { DashboardBookingSection } from '@/components/admin/booking-calendar';
 
 interface QuoteRequestsDashboardProps {
   initialQuotes: QuoteRequest[];
@@ -77,14 +73,6 @@ const pipelineBucketConfig: Array<{
   { key: 'closed_lost', label: 'Closed / Lost', description: 'Declined, cancelled, or expired quotes', icon: AlertCircle },
 ];
 
-function getQuoteViewLabel(quote: QuoteRequest) {
-  if (!quote.quote_sent_at) return null;
-  if (!quote.quote_viewed_at) return 'Not Viewed';
-
-  const viewCount = quote.quote_view_count ?? 0;
-  return viewCount > 1 ? `Viewed ${viewCount}x` : 'Viewed';
-}
-
 function formatDate(dateString: string) {
   return formatLocalDateOnly(dateString, {
     month: 'short',
@@ -95,29 +83,6 @@ function formatDate(dateString: string) {
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
-}
-
-function isQuoteSendable(status: string) {
-  return ['pending', 'pending_review', 'new', 'under_review', 'draft_quote', 'change_requested'].includes(status);
-}
-
-function isAgreementSendable(status: string) {
-  return ['quote_sent', 'sent_to_customer', 'customer_approved', 'agreement_pending'].includes(status);
-}
-
-function hasFallbackDistanceCalculation(quote: QuoteRequest) {
-  const details = quote.calculated_breakdown?.details;
-  return quote.needs_manual_distance_review === true || (typeof details === 'object' && details !== null && (details as Record<string, unknown>).distance_calculation_status === 'fallback');
-}
-
-function getDistanceCalculationMessage(quote: QuoteRequest) {
-  const details = quote.calculated_breakdown?.details;
-  if (typeof details === 'object' && details !== null) {
-    const message = (details as Record<string, unknown>).distance_calculation_message;
-    if (typeof message === 'string') return message;
-  }
-
-  return 'Fallback mileage was used. Verify travel fee manually.';
 }
 
 function getPipelineColumn(status: string): PipelineColumn {
@@ -237,28 +202,43 @@ export default function QuoteRequestsDashboard({
   const [agreementFilter, setAgreementFilter] = useState('all');
   const [depositFilter, setDepositFilter] = useState('all');
   const [sortBy, setSortBy] = useState<SortBy>('newest');
-  const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null);
-  const [activePipelineBucket, setActivePipelineBucket] = useState<PipelineBucket>('new_requests');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [focusedDetail, setFocusedDetail] = useState(false);
+  const [refreshing, startRefresh] = useTransition();
+  const queueRef = useRef<HTMLDivElement>(null);
+  const [activePipelineBucket, setActivePipelineBucket] = useState<PipelineBucket>('all');
   const [testQuoteFilter, setTestQuoteFilter] = useState<TestQuoteFilter>('hide');
   const [availabilityFilter, setAvailabilityFilter] = useState<AvailabilityFilter>('all');
   const [creatingTestQuote, setCreatingTestQuote] = useState(false);
+  const [reviewFilter, setReviewFilter] = useState<'all' | 'needs_action' | 'waiting'>('all');
 
-  const handleRowClick = (quoteId: string) => {
-    router.push(`/admin/quotes/${quoteId}`);
+  const handleRefreshDashboard = () => startRefresh(() => router.refresh());
+  const selectQuote = (id: string) => {
+    setSelectedId(id);
+    setFocusedDetail(true);
+    if (window.innerWidth < 1440) requestAnimationFrame(() => {
+      document.getElementById('workbench-heading')?.focus({ preventScroll: true });
+      document.querySelector('.operations-workbench')?.scrollIntoView({ block: 'start' });
+    });
   };
-
-  const openQuoteDrawer = (quote: QuoteRequest) => {
-    setSelectedQuote(quote);
+  const backToQueue = () => {
+    setFocusedDetail(false);
+    requestAnimationFrame(() => {
+      const buttons = queueRef.current?.querySelectorAll<HTMLButtonElement>('[data-quote-id]');
+      Array.from(buttons ?? []).find(button => button.dataset.quoteId === selectedId && button.offsetParent !== null)?.focus();
+    });
   };
-
-  const handleRefreshDashboard = () => {
-    router.refresh();
+  const resetFilters = () => {
+    setSearch(''); setStatusFilter('all'); setEventTypeFilter('all'); setAgreementFilter('all');
+    setDepositFilter('all'); setAvailabilityFilter('all'); setTestQuoteFilter('hide'); setSortBy('newest');
+    setActivePipelineBucket('all'); setReviewFilter('all'); setFocusedDetail(false);
   };
 
   const handleCreateTestQuote = async () => {
     const testRecipientEmail = window.prompt('Send test quote to which email address?');
     if (!testRecipientEmail) return;
 
+    if (creatingTestQuote) return;
     setCreatingTestQuote(true);
     try {
       const res = await fetch('/api/admin/quotes/test', {
@@ -413,120 +393,59 @@ export default function QuoteRequestsDashboard({
   }, [filteredQuotes]);
 
   const selectedPipelineConfig = pipelineBucketConfig.find((bucket) => bucket.key === activePipelineBucket) ?? pipelineBucketConfig[0];
-  const selectedQuotes = activePipelineBucket === 'all' ? filteredQuotes : pipelineColumns[activePipelineBucket];
+  const needsAction = (quote: QuoteRequest) => ['pending', 'pending_review', 'new', 'under_review', 'draft_quote', 'change_requested', 'customer_approved'].includes(quote.status) || (needsDistanceReview(quote) && !['completed', 'cancelled', 'declined', 'expired'].includes(quote.status));
+  const waiting = (quote: QuoteRequest) => ['quote_sent', 'sent_to_customer', 'agreement_pending', 'agreement_sent', 'deposit_pending'].includes(quote.status);
+  const selectedQuotes = (activePipelineBucket === 'all' ? filteredQuotes : pipelineColumns[activePipelineBucket]).filter(quote => reviewFilter === 'all' || (reviewFilter === 'needs_action' ? needsAction(quote) : waiting(quote)));
+  const primaryPipeline = pipelineBucketConfig.filter(bucket => !['all', 'deposit_paid', 'closed_lost'].includes(bucket.key));
 
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('[QuoteRequestsDashboard] counts', {
-      initialQuotes: initialQuotes.length,
-      filteredQuotes: filteredQuotes.length,
-      bucketCounts: {
-        all: filteredQuotes.length,
-        new_requests: pipelineColumns.new_requests.length,
-        under_review: pipelineColumns.under_review.length,
-        quote_sent: pipelineColumns.quote_sent.length,
-        customer_approved: pipelineColumns.customer_approved.length,
-        agreement_sent: pipelineColumns.agreement_sent.length,
-        deposit_paid: pipelineColumns.deposit_paid.length,
-        booked: pipelineColumns.booked.length,
-        closed_lost: pipelineColumns.closed_lost.length,
-      },
-    });
-  }
+  // Resolve against current props/results; never retain a stale record snapshot after refresh.
+  const selectedQuote = selectedQuotes.find(quote => quote.id === selectedId) ?? selectedQuotes[0] ?? null;
 
   return (
-    <div className="space-y-8">
-      {/* Header / Hero */}
-      <div className="rounded-2xl bg-[#2d3a47] text-white shadow-lg border border-[#2d3a47]/80 overflow-hidden">
-        <div className="p-6 md:p-8 space-y-2">
-          <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[#ded2c4] font-semibold">
-            <Sparkles className="h-3.5 w-3.5" />
-            Signature Luxe Admin
-          </p>
-          <h1 className="text-3xl md:text-4xl font-serif font-semibold text-white">
-            Quote &amp; Booking Command Center
-          </h1>
-          <p className="text-[#ded2c4] max-w-3xl">
-            Manage restroom trailer inquiries from quote request to booked event. Quotes moved to Quote Sent leave Under Review and appear in the Quote Sent bucket after refresh.
-          </p>
+    <div className={`space-y-4 ${focusedDetail && selectedQuote ? 'operations-focus-detail' : ''}`}>
+      <header className="operations-header">
+        <h1>Quotes &amp; bookings</h1>
+        <div className="operations-header-tools">
+          <label className="operations-search"><Search aria-hidden="true" className="size-4" /><span className="sr-only">Search all quotes</span><Input placeholder="Search quotes, customers or events…" value={search} onChange={event => setSearch(event.target.value)} /></label>
+          <Button type="button" variant="outline" disabled={refreshing} onClick={handleRefreshDashboard}><RefreshCw className="size-4" aria-hidden="true" />{refreshing ? 'Refreshing…' : 'Refresh'}</Button>
         </div>
-        {source === 'mock' && (
-          <div className="mx-6 md:mx-8 mb-4 p-3 bg-[#ded2c4]/20 border border-[#8a7a68] rounded-lg text-sm text-[#ded2c4]">
-            Using demo quote data because Supabase is not configured.
-          </div>
-        )}
-        {error && (
-          <div className="mx-6 md:mx-8 mb-5 p-3 bg-red-50/95 border border-red-200 rounded-lg text-sm text-red-700">
-            {error}
-          </div>
-        )}
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {[
-          { label: 'Pending Requests', value: summaryCounts.pending, icon: ClipboardList },
-          { label: 'Under Review', value: summaryCounts.underReview, icon: SlidersHorizontal },
-          { label: 'Quotes Sent', value: summaryCounts.quoteSent, icon: Send },
-          { label: 'Customer Approved', value: summaryCounts.approved, icon: BadgeCheck, featured: true },
-          { label: 'Upcoming Events', value: summaryCounts.upcoming, icon: CalendarClock },
-          { label: 'Estimated Pipeline Revenue', value: formatCurrency(summaryCounts.estimatedPipelineRevenue), icon: CircleDollarSign },
-        ].map((metric) => (
-          <div
-            key={metric.label}
-            className={`bg-white rounded-xl border p-4 shadow-sm transition-all ${
-              metric.featured
-                ? 'border-[#2d3a47]/40 ring-1 ring-[#ded2c4] shadow-md'
-                : 'border-[#ded2c4]/45'
-            }`}
-          >
-            <div className="h-1 w-14 rounded-full bg-[#ded2c4] mb-3" />
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-wide text-[#4b5563]">{metric.label}</div>
-                <div className={`mt-1 font-semibold ${metric.featured ? 'text-3xl' : 'text-2xl'} text-[#2d3a47]`}>
-                  {metric.value}
-                </div>
+      </header>
+      <span className="sr-only" role="status">{refreshing ? 'Refreshing quotes' : `${selectedQuotes.length} quotes in ${selectedPipelineConfig.label}`}</span>
+      {source === 'mock' && <p role="status" className="operations-warning">Demo / fallback data. This is not the live quote queue.</p>}
+      {error && <div role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error} <button type="button" className="underline" onClick={handleRefreshDashboard} disabled={refreshing}>Retry</button></div>}
+      <nav className="operations-pipeline" aria-label="Quote pipeline buckets">
+        {primaryPipeline.map(bucket => <button type="button" key={bucket.key} aria-label={bucket.label} aria-pressed={activePipelineBucket === bucket.key} onClick={() => { setActivePipelineBucket(bucket.key); setReviewFilter('all'); setFocusedDetail(false); }}>
+          <span className={`operations-dot stage-${bucket.key}`} aria-hidden="true" /><span>{bucket.key === 'new_requests' ? 'New' : bucket.label}<strong>{bucket.key === 'all' ? filteredQuotes.length : pipelineColumns[bucket.key].length}</strong></span><ChevronRight aria-hidden="true" className="operations-pipeline-chevron size-4" />
+        </button>)}
+      </nav>
+      <label className="operations-pipeline-mobile text-sm font-semibold">
+        Pipeline stage
+        <select className="mt-1 block min-h-11 w-full rounded border border-stone-300 bg-white px-3" value={activePipelineBucket} onChange={event => { setActivePipelineBucket(event.target.value as PipelineBucket); setReviewFilter('all'); setFocusedDetail(false); }}>
+          {pipelineBucketConfig.map(bucket => <option key={bucket.key} value={bucket.key}>{bucket.label} ({bucket.key === 'all' ? filteredQuotes.length : pipelineColumns[bucket.key].length})</option>)}
+        </select>
+      </label>
+      <div className="operations-workspace">
+        <section className="operations-panel operations-queue" aria-labelledby="queue-heading" ref={queueRef}>
+          <div className="operations-toolbar">
+            <div className="flex flex-wrap items-center justify-between gap-2"><h2 id="queue-heading">Quote queue <span className="font-normal text-slate-500">({selectedQuotes.length})</span></h2><span className="operations-active-stage">{activePipelineBucket !== 'all' ? selectedPipelineConfig.label : ''}</span></div>
+            <div className="operations-queue-controls">
+              <div className="operations-segments" aria-label="Quote review views">
+                <button type="button" title="Requests, reviews, approved quotes and active distance flags" aria-pressed={reviewFilter === 'needs_action'} onClick={() => { setActivePipelineBucket('all'); setReviewFilter('needs_action'); }}>Needs action ({filteredQuotes.filter(needsAction).length})</button>
+                <button type="button" title="Waiting on customer response, signature or deposit" aria-pressed={reviewFilter === 'waiting'} onClick={() => { setActivePipelineBucket('all'); setReviewFilter('waiting'); }}>Waiting ({filteredQuotes.filter(waiting).length})</button>
+                <button type="button" aria-label="All Quotes" aria-pressed={activePipelineBucket === 'all' && reviewFilter === 'all'} onClick={() => { setActivePipelineBucket('all'); setReviewFilter('all'); }}>All ({filteredQuotes.length})</button>
               </div>
-              <metric.icon className={`h-5 w-5 ${metric.featured ? 'text-[#2d3a47]' : 'text-[#4b5563]'}`} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <DashboardBookingSection quotes={initialQuotes} blocks={initialBlocks} />
-
-      {/* Full-width Filters */}
-      <section className="bg-white rounded-xl border border-[#8a7a68] p-4 md:p-5 shadow-sm space-y-5" aria-labelledby="quote-filters-heading">
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-          <div>
-            <h2 id="quote-filters-heading" className="text-lg font-serif font-semibold text-[#2d3a47]">Filters</h2>
-            <p className="text-sm text-[#4b5563]">Refine the full dashboard before choosing a pipeline bucket. Test quotes are hidden from metrics by default.</p>
-          </div>
-          <div className="flex items-center gap-3 text-sm font-semibold text-[#2d3a47]">
-            <span className="rounded-full bg-[#f8f4ee] px-2.5 py-1 border border-[#8a7a68]" aria-live="polite">{filteredQuotes.length} filtered quote{filteredQuotes.length === 1 ? '' : 's'}</span>
-            <Button type="button" variant="outline" onClick={handleRefreshDashboard} className="border-[#8a7a68] text-[#2d3a47] hover:bg-[#f8f4ee]">Refresh Dashboard</Button>
-            <Search className="h-5 w-5 text-[#2d3a47]" aria-hidden="true" />
-          </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[minmax(260px,1.4fr)_repeat(6,minmax(150px,1fr))_auto] 2xl:items-end">
-          <label className="block space-y-1.5 sm:col-span-2 lg:col-span-3 2xl:col-span-1">
-            <span className="text-sm font-semibold text-[#2d3a47]">Search</span>
-            <Input
-              placeholder="Name, email, phone, address, city..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border-[#b9aa99] text-[#2d3a47] placeholder:text-[#4b5563]/80 focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2"
-            />
-          </label>
-
+              <label className="operations-search operations-queue-search"><Search aria-hidden="true" className="size-4" /><span className="sr-only">Search quotes</span><Input placeholder="Search quotes…" value={search} onChange={event => setSearch(event.target.value)} /></label>
+            <details className="operations-filters" onKeyDown={event => { if (event.key === 'Escape') { event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus(); } }}><summary><SlidersHorizontal aria-hidden="true" className="size-4" />More filters</summary>
+              <div className="operations-filter-popover">
+              <label className="block text-sm font-semibold">Pipeline stage<select className="mt-1 block min-h-11 w-full rounded border border-stone-300 bg-white px-3" aria-label="Filter pipeline stage" value={activePipelineBucket} onChange={event => { setActivePipelineBucket(event.target.value as PipelineBucket); setReviewFilter('all'); }}>{pipelineBucketConfig.map(bucket => <option key={bucket.key} value={bucket.key}>{bucket.label} ({bucket.key === 'all' ? filteredQuotes.length : pipelineColumns[bucket.key].length})</option>)}</select></label>
+        <div className="operations-filter-grid">
           <label className="block space-y-1.5">
             <span className="text-sm font-semibold text-[#2d3a47]">Quote Status</span>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by quote status">
                 <SelectValue placeholder="Quote Status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-typography">
                 <SelectItem value="all">All Statuses</SelectItem>
                 {QUOTE_STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -543,7 +462,7 @@ export default function QuoteRequestsDashboard({
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by event type">
                 <SelectValue placeholder="Event Type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-typography">
                 <SelectItem value="all">All Event Types</SelectItem>
                 {EVENT_TYPES.map((type) => (
                   <SelectItem key={type} value={type}>
@@ -560,7 +479,7 @@ export default function QuoteRequestsDashboard({
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by agreement status">
                 <SelectValue placeholder="Agreement" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-typography">
                 <SelectItem value="all">All Agreements</SelectItem>
                 {AGREEMENT_TRACKING_STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -577,7 +496,7 @@ export default function QuoteRequestsDashboard({
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by deposit status">
                 <SelectValue placeholder="Deposit" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-typography">
                 <SelectItem value="all">All Deposits</SelectItem>
                 {DEPOSIT_TRACKING_STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -594,7 +513,7 @@ export default function QuoteRequestsDashboard({
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter test quotes">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-typography">
                 <SelectItem value="hide">Hide Test Quotes</SelectItem>
                 <SelectItem value="show">Show Test Quotes</SelectItem>
                 <SelectItem value="only">Test Quotes Only</SelectItem>
@@ -608,7 +527,7 @@ export default function QuoteRequestsDashboard({
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Filter by date availability">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-typography">
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="multiple_requests">Multiple Requests</SelectItem>
                 <SelectItem value="date_already_booked">Date Already Booked</SelectItem>
@@ -626,7 +545,7 @@ export default function QuoteRequestsDashboard({
               <SelectTrigger className="border-[#b9aa99] text-[#2d3a47] focus:ring-2 focus:ring-[#2d3a47] focus:ring-offset-2" aria-label="Sort quotes">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="admin-typography">
                 <SelectItem value="newest">Newest First</SelectItem>
                 <SelectItem value="oldest">Oldest First</SelectItem>
                 <SelectItem value="event_soonest">Event Date (Soonest)</SelectItem>
@@ -648,264 +567,29 @@ export default function QuoteRequestsDashboard({
             {creatingTestQuote ? 'Creating...' : 'Create Test Quote'}
           </Button>
         </div>
-      </section>
-
-      <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
-        <aside className="min-w-0 lg:sticky lg:top-6">
-          <section className="bg-[#f8f4ee] rounded-xl border border-[#8a7a68]/80 p-3 shadow-sm" aria-labelledby="pipeline-tabs-heading">
-            <div className="px-1 pb-3">
-              <h2 id="pipeline-tabs-heading" className="text-lg font-serif font-semibold text-[#2d3a47]">Pipeline Buckets</h2>
-              <p className="text-sm text-[#4b5563]">Counts reflect the active filters.</p>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-x-visible lg:pb-0" role="tablist" aria-label="Quote pipeline buckets">
-              {pipelineBucketConfig.map((bucket) => {
-                const Icon = bucket.icon;
-                const count = bucket.key === 'all' ? filteredQuotes.length : pipelineColumns[bucket.key].length;
-                const isActive = activePipelineBucket === bucket.key;
-
-                return (
-                  <button
-                    key={bucket.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-controls="pipeline-records-panel"
-                    onClick={() => setActivePipelineBucket(bucket.key)}
-                    className={`min-w-[220px] rounded-xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 sm:min-w-[245px] lg:min-w-0 ${
-                      isActive
-                        ? 'bg-[#2d3a47] text-white border-[#2d3a47] shadow-md ring-2 ring-[#ded2c4]'
-                        : 'bg-white text-[#2d3a47] border-[#b9aa99] hover:bg-[#fffaf4] hover:border-[#2d3a47] hover:shadow-sm'
-                    }`}
-                  >
-                    <span className="flex items-start gap-3">
-                      <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${isActive ? 'text-white' : 'text-[#2d3a47]'}`} aria-hidden="true" />
-                      <span className="min-w-0 flex-1">
-                        <span className="flex items-center justify-between gap-3">
-                          <span className="font-semibold leading-tight">{bucket.label}</span>
-                          <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${isActive ? 'bg-white text-[#2d3a47]' : 'bg-[#f8f4ee] text-[#2d3a47] border border-[#8a7a68]'}`} aria-label={`${count} quotes`}>
-                            {count}
-                          </span>
-                        </span>
-                        <span className={`mt-1 block text-xs leading-snug ${isActive ? 'text-white/90' : 'text-[#4b5563]'}`}>
-                          {bucket.description}
-                        </span>
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        </aside>
-
-        <section id="pipeline-records-panel" role="tabpanel" className="min-w-0 bg-white rounded-xl border border-[#8a7a68] shadow-sm overflow-hidden" aria-labelledby="selected-pipeline-heading">
-          <div className="border-b border-[#8a7a68] bg-[#f8f4ee] p-4 md:p-5">
-            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#4b5563]">Selected Bucket</p>
-                <h2 id="selected-pipeline-heading" className="mt-1 text-2xl font-serif font-semibold text-[#2d3a47]">{selectedPipelineConfig.label}</h2>
-                <p className="text-sm text-[#4b5563]">{selectedPipelineConfig.description}</p>
+              <Button type="button" variant="outline" className="mt-3" onClick={resetFilters}>Reset filters</Button>
+              <div className="operations-summary"><span>Estimated pipeline: <strong>{formatCurrency(summaryCounts.estimatedPipelineRevenue)}</strong></span><span>Upcoming events (30 days): <strong>{summaryCounts.upcoming}</strong></span><span>Metrics exclude test quotes · Bucket counts reflect filters</span></div>
               </div>
-              <div className="rounded-xl border border-[#8a7a68] bg-white px-4 py-2 text-[#2d3a47]">
-                <span className="block text-2xl font-semibold leading-none">{selectedQuotes.length}</span>
-                <span className="text-xs font-semibold uppercase tracking-wide">Quote{selectedQuotes.length === 1 ? '' : 's'}</span>
-              </div>
+            </details>
             </div>
+            <p className="operations-test-label">{testQuoteFilter === 'hide' ? 'Test quotes hidden' : testQuoteFilter === 'only' ? 'Test quotes only' : 'Including test quotes'}</p>
           </div>
-
-          {selectedQuotes.length === 0 ? (
-            <div className="p-10 text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f8f4ee] border border-[#8a7a68]">
-                <ClipboardList className="h-6 w-6 text-[#2d3a47]" aria-hidden="true" />
-              </div>
-              <h3 className="text-xl font-serif font-semibold text-[#2d3a47]">No quotes in this bucket</h3>
-              <p className="mt-2 text-sm text-[#4b5563]">Try another pipeline stage or adjust your filters.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-[#8a7a68]/70">
-              {selectedQuotes.map((quote) => {
-                const canSendQuote = isQuoteSendable(quote.status);
-                const canSendAgreement = isAgreementSendable(quote.status);
-                const fallbackDistance = hasFallbackDistanceCalculation(quote);
-                const optionCount = quote.quote_options?.length ?? 0;
-                const selectedOption = quote.quote_options?.find((option) => option.id === quote.selected_quote_option_id || option.status === 'selected');
-                const quoteViewLabel = getQuoteViewLabel(quote);
-                const dateAvailability = availabilitySummaries.get(quote.event_date);
-
-                return (
-                  <article
-                    key={quote.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => handleRowClick(quote.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        handleRowClick(quote.id);
-                      }
-                    }}
-                    className="group cursor-pointer bg-white p-4 transition-colors hover:bg-[#fffaf4] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2d3a47] focus-visible:ring-inset md:p-5"
-                    aria-label={`Open quote ${quote.quote_number || quote.id} for ${quote.customer_name}`}
-                  >
-                    <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">
-                      <div className="min-w-0 space-y-4">
-                        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2"><h3 className="text-lg font-semibold text-[#2d3a47] group-hover:underline group-hover:decoration-[#ded2c4] group-hover:underline-offset-4">{quote.customer_name}</h3>{quote.is_test_quote && <span className="rounded-full border border-amber-500 bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-900">TEST QUOTE</span>}</div>
-                            <p className="mt-1 text-sm font-medium text-[#4b5563]">Quote #{quote.quote_number || quote.id.slice(0, 8)}</p>
-                          </div>
-                          <div className="text-left md:text-right">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-[#4b5563]">Total Price</p>
-                            <p className="text-xl font-semibold text-[#2d3a47]">{formatCurrency(quote.total_price || 0)}</p>
-                          </div>
-                        </div>
-
-                        <div className="grid gap-3 text-sm text-[#2d3a47] md:grid-cols-2 xl:grid-cols-4">
-                          <p className="flex min-w-0 items-center gap-2"><Mail className="h-4 w-4 shrink-0 text-[#2d3a47]" aria-hidden="true" /><span className="truncate">{quote.email}</span></p>
-                          <p className="flex items-center gap-2"><Clock className="h-4 w-4 shrink-0 text-[#2d3a47]" aria-hidden="true" />{quote.phone}</p>
-                          <p className="flex items-center gap-2"><Calendar className="h-4 w-4 shrink-0 text-[#2d3a47]" aria-hidden="true" />{formatDate(quote.event_date)}</p>
-                          <p className="flex items-center gap-2"><Users className="h-4 w-4 shrink-0 text-[#2d3a47]" aria-hidden="true" />{quote.guest_count} guests</p>
-                          <p className="flex items-center gap-2"><Sparkles className="h-4 w-4 shrink-0 text-[#2d3a47]" aria-hidden="true" />{quote.event_type}</p>
-                          <p className="flex min-w-0 items-center gap-2 md:col-span-2 xl:col-span-3"><MapPin className="h-4 w-4 shrink-0 text-[#2d3a47]" aria-hidden="true" /><span className="truncate">{quote.city}, {quote.state}</span></p>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          <AdminStatusBadge status={quote.status} family="quote" prefix="Quote" />
-                          <AdminStatusBadge status={quote.agreement_status} family="agreement" prefix="Agreement" />
-                          <AdminStatusBadge status={quote.deposit_status} family="deposit" prefix="Deposit" />
-                          <DateAvailabilityBadges
-                            quoteId={quote.id}
-                            summary={dateAvailability}
-                            onFilter={setAvailabilityFilter}
-                          />
-                          {quote.is_test_quote && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900 border border-amber-500">TEST QUOTE</span>
-                          )}
-                          {quoteViewLabel && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#2d3a47] border border-[#8a7a68]">
-                              <Eye className="h-3.5 w-3.5" aria-hidden="true" /> Quote Link: {quoteViewLabel}
-                            </span>
-                          )}
-                          {optionCount > 0 && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f8f4ee] px-2.5 py-1 text-xs font-semibold text-[#2d3a47] border border-[#8a7a68]">
-                              {optionCount} Option{optionCount === 1 ? '' : 's'}{selectedOption ? ` · Selected: ${selectedOption.option_label}` : ''}
-                            </span>
-                          )}
-                          {fallbackDistance && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-900 border border-amber-400" title={getDistanceCalculationMessage(quote)}>
-                              <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" /> Distance review needed
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:w-[430px]">
-                        <Button size="sm" variant="outline" className="h-9 border-[#b9aa99] text-[#2d3a47] hover:bg-[#f8f4ee] focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2" aria-label={`View ${quote.customer_name} in side drawer`} onClick={(event) => { event.stopPropagation(); openQuoteDrawer(quote); }}><Eye className="w-3.5 h-3.5" aria-hidden="true" />View</Button>
-                        <Button size="sm" variant="outline" className="h-9 border-[#b9aa99] text-[#2d3a47] hover:bg-[#f8f4ee] focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2" aria-label={`Edit ${quote.customer_name} quote`} onClick={(event) => { event.stopPropagation(); handleRowClick(quote.id); }}><SquarePen className="w-3.5 h-3.5" aria-hidden="true" />Edit</Button>
-                        <Button size="sm" variant="outline" className="h-9 border-[#b9aa99] text-[#2d3a47] hover:bg-[#f8f4ee] focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 disabled:opacity-55" aria-label={`Send quote to ${quote.customer_name}`} disabled={!canSendQuote} onClick={(event) => event.stopPropagation()}><Mail className="w-3.5 h-3.5" aria-hidden="true" />Send Quote</Button>
-                        <Button size="sm" variant="outline" className="h-9 border-[#b9aa99] text-[#2d3a47] hover:bg-[#f8f4ee] focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 disabled:opacity-55" aria-label={`Send agreement to ${quote.customer_name}`} disabled={!canSendAgreement} onClick={(event) => event.stopPropagation()}><FileSignature className="w-3.5 h-3.5" aria-hidden="true" />Agreement</Button>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
+          {selectedQuotes.length === 0 ? <div className="p-8 text-center"><ClipboardList className="mx-auto mb-3 size-6" aria-hidden="true" /><h3 className="font-semibold">No quotes match this view</h3><p className="my-3 text-sm text-slate-600">Choose another stage or reset your filters to see all non-test quotes.</p><Button variant="outline" onClick={resetFilters}>Reset filters</Button></div> : <div className="operations-queue-scroll" tabIndex={0} role="region" aria-label="Quote results">
+            <table className="operations-table operations-desktop-table"><caption className="sr-only">{selectedPipelineConfig.label}. Select a customer to inspect their quote.</caption><thead><tr><th scope="col">Customer</th><th scope="col">Event</th><th scope="col">Status</th><th scope="col">Total</th><th scope="col">Next step</th></tr></thead>
+              <tbody>{selectedQuotes.map(quote => <tr key={quote.id} data-selected={selectedQuote?.id === quote.id}>
+                <td><button type="button" data-quote-id={quote.id} title={quote.quote_number || quote.id} aria-pressed={selectedQuote?.id === quote.id} onClick={() => selectQuote(quote.id)}>{quote.customer_name}</button>{quote.is_test_quote && <small className="font-bold text-amber-800">TEST QUOTE</small>}</td>
+                <td><strong>{formatDate(quote.event_date)}</strong><small>{quote.city} · {quote.event_type}</small><span className="sr-only">{quote.guest_count} guests</span></td>
+                <td><span className="operations-row-status"><span className={`operations-dot stage-${getPipelineColumn(quote.status)}`} aria-hidden="true" />{formatAdminStatus(quote.status, 'quote')}</span><span className="sr-only">Agreement: {formatAdminStatus(quote.agreement_status, 'agreement')}. Deposit: {formatAdminStatus(quote.deposit_status, 'deposit')}.</span>{quote.quote_sent_at && <small className="operations-viewed">{quote.quote_viewed_at ? `Viewed ${quote.quote_view_count ?? 1}x` : 'Not viewed'}</small>}</td>
+                <td className="operations-total">{quote.total_price == null ? 'Not set' : formatCurrency(quote.total_price)}</td>
+                <td><button type="button" className="operations-next-step" onClick={() => selectQuote(quote.id)} aria-label={`${quoteReviewLabel(quote)} for ${quote.customer_name}`}>{quoteReviewLabel(quote)}{needsDistanceReview(quote) && <AlertTriangle aria-label="Distance review needed" className="size-4 shrink-0 text-amber-700" />}<ChevronRight className="size-4 shrink-0" aria-hidden="true" /></button><DateAvailabilityBadges quoteId={quote.id} summary={availabilitySummaries.get(quote.event_date)} onFilter={setAvailabilityFilter} /></td>
+              </tr>)}</tbody>
+            </table>
+            <div className="operations-mobile-list">{selectedQuotes.map(quote => <article key={quote.id} className="operations-mobile-record"><button type="button" data-quote-id={quote.id} onClick={() => selectQuote(quote.id)} aria-label={`Inspect ${quote.customer_name} quote`}><strong>{quote.customer_name}</strong><strong>{quote.total_price == null ? 'Not set' : formatCurrency(quote.total_price)}</strong></button><p>{formatDate(quote.event_date)} · {quote.city} · {quote.event_type}</p><AdminStatusBadge status={quote.status} family="quote" /><p>Agreement: {formatAdminStatus(quote.agreement_status, 'agreement')} · Deposit: {formatAdminStatus(quote.deposit_status, 'deposit')}</p>{quote.is_test_quote && <p className="font-bold">TEST QUOTE</p>}{needsDistanceReview(quote) && <p className="font-semibold text-amber-800">Distance review needed</p>}<DateAvailabilityBadges quoteId={quote.id} summary={availabilitySummaries.get(quote.event_date)} onFilter={setAvailabilityFilter} /><Link className="inline-flex min-h-11 items-center gap-2 text-sm underline" href={`/admin/quotes/${quote.id}`}>{quoteReviewLabel(quote)}<ArrowRight className="size-4" aria-hidden="true" /></Link></article>)}</div>
+          </div>}
         </section>
+        <div className="operations-workbench">{selectedQuote ? <QuoteWorkbench key={selectedQuote.id} quote={selectedQuote} onBack={backToQueue} /> : <div className="operations-panel p-8 text-sm text-slate-600">Select a quote from the queue to see its event, pricing, activity and notes.</div>}</div>
       </div>
-      <Sheet open={Boolean(selectedQuote)} onOpenChange={(open) => !open && setSelectedQuote(null)}>
-        <SheetContent className="w-full sm:max-w-2xl overflow-y-auto bg-[#f8f4ee] border-l border-[#8a7a68]">
-          {selectedQuote && (
-            <div className="space-y-6">
-              <SheetHeader className="text-left">
-                <SheetTitle className="text-2xl font-serif text-[#2d3a47]">
-                  {selectedQuote.customer_name}
-                </SheetTitle>
-                <SheetDescription className="text-[#4b5563]">
-                  Quote details and booking activity timeline.
-                </SheetDescription>
-              </SheetHeader>
-
-              <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Customer Details</h4>
-                <p className="text-sm text-[#2d3a47]"><strong>Email:</strong> {selectedQuote.email}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Phone:</strong> {selectedQuote.phone}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Status:</strong> {formatAdminStatus(selectedQuote.status, 'quote')}</p>
-                {(selectedQuote.quote_options?.length ?? 0) > 0 && (
-                  <p className="text-sm text-[#2d3a47]"><strong>Quote Options:</strong> {selectedQuote.quote_options?.find((option) => option.id === selectedQuote.selected_quote_option_id || option.status === 'selected')?.option_label ?? `${selectedQuote.quote_options?.length} options`}</p>
-                )}
-              </div>
-
-              <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Event Details</h4>
-                <p className="text-sm text-[#2d3a47]"><strong>Event Type:</strong> {selectedQuote.event_type}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Event Date:</strong> {formatDate(selectedQuote.event_date)}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Guest Count:</strong> {selectedQuote.guest_count}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Location:</strong> {selectedQuote.event_address}, {selectedQuote.city}, {selectedQuote.state} {selectedQuote.zip_code}</p>
-              </div>
-
-              <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Quote Breakdown</h4>
-                <p className="text-sm text-[#2d3a47]"><strong>Base Price:</strong> {formatCurrency(selectedQuote.base_price || 0)}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Travel Fee:</strong> {formatCurrency(selectedQuote.travel_fee || 0)}</p>
-                {hasFallbackDistanceCalculation(selectedQuote) && (
-                  <p className="text-sm text-amber-800"><strong>Distance Notice:</strong> {getDistanceCalculationMessage(selectedQuote)}</p>
-                )}
-                <p className="text-sm text-[#2d3a47]"><strong>Utility Fee:</strong> {formatCurrency(selectedQuote.utility_fee || 0)}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Pre-tax Total:</strong> {formatCurrency(selectedQuote.pretax_total ?? selectedQuote.total_price ?? 0)}</p>
-                {Number(selectedQuote.sales_tax_amount ?? 0) > 0 && (
-                  <p className="text-sm text-[#2d3a47]">
-                    <strong>Michigan Sales Tax ({(Number(selectedQuote.tax_rate ?? 0) * 100).toFixed(0)}%):</strong>{' '}
-                    {formatCurrency(selectedQuote.sales_tax_amount ?? 0)}
-                  </p>
-                )}
-                <p className="text-sm text-[#2d3a47]"><strong>Total{Number(selectedQuote.sales_tax_amount ?? 0) > 0 ? ' Including Tax' : ''}:</strong> {formatCurrency(selectedQuote.total_price || 0)}</p>
-              </div>
-
-              <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Agreement & Deposit</h4>
-                <p className="text-sm text-[#2d3a47]"><strong>Agreement:</strong> {formatAdminStatus(selectedQuote.agreement_status, 'agreement')}</p>
-                <p className="text-sm text-[#2d3a47]"><strong>Deposit:</strong> {formatAdminStatus(selectedQuote.deposit_status, 'deposit')}</p>
-                <p className="text-sm text-[#2d3a47]">
-                  <strong>Deposit Amount{selectedQuote.deposit_percentage != null ? ` (${Number(selectedQuote.deposit_percentage).toFixed(0)}%)` : ''}:</strong>{' '}
-                  {formatCurrency(selectedQuote.deposit_amount || 0)}
-                </p>
-              </div>
-
-              <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Internal Notes</h4>
-                <p className="text-sm text-[#2d3a47]/85 whitespace-pre-wrap">{selectedQuote.internal_notes || 'No internal notes yet.'}</p>
-              </div>
-
-              <div className="bg-white border border-[#8a7a68]/60 rounded-xl p-4 space-y-3">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">Timeline / Activity</h4>
-                <ul className="space-y-2 text-sm text-[#2d3a47]">
-                  <li><strong>Created:</strong> {formatDate(selectedQuote.created_at)}</li>
-                  {selectedQuote.updated_at && <li><strong>Last Updated:</strong> {formatDate(selectedQuote.updated_at)}</li>}
-                  {selectedQuote.approved_at && <li><strong>Customer Approved:</strong> {formatDate(selectedQuote.approved_at)}</li>}
-                  {selectedQuote.agreement_sent_at && <li><strong>Agreement Sent:</strong> {formatDate(selectedQuote.agreement_sent_at)}</li>}
-                  {selectedQuote.deposit_paid_at && <li><strong>Deposit Paid:</strong> {formatDate(selectedQuote.deposit_paid_at)}</li>}
-                </ul>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 pb-4">
-                <Button className="bg-[#2d3a47] hover:bg-[#2d3a47]/90 text-white" onClick={() => handleRowClick(selectedQuote.id)}>
-                  Edit Quote
-                </Button>
-                <Button variant="outline" disabled={!isQuoteSendable(selectedQuote.status)}>
-                  Send Quote
-                </Button>
-                <Button variant="outline" disabled={!isAgreementSendable(selectedQuote.status)}>
-                  Send Agreement
-                </Button>
-                <Button variant="outline" onClick={() => setSelectedQuote(null)}>
-                  Close
-                </Button>
-              </div>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
+      <BookingOutlook quotes={initialQuotes} blocks={initialBlocks} />
     </div>
   );
 }

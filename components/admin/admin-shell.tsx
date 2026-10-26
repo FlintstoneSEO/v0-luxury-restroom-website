@@ -1,17 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  BarChart3,
+  House,
   CalendarDays,
   ChevronRight,
   Image as ImageIcon,
   LogOut,
   MapPinned,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   SlidersHorizontal,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const navigation = [
-  { href: '/admin', label: 'Dashboard', icon: BarChart3, match: 'quotes' },
+  { href: '/admin', label: 'Dashboard', icon: House, match: 'quotes' },
   { href: '/admin/calendar', label: 'Booking Calendar', icon: CalendarDays },
   { href: '/admin/pricing', label: 'Pricing & Settings', icon: SlidersHorizontal },
   { href: '/admin/site-media', label: 'Media', icon: ImageIcon },
@@ -54,15 +55,18 @@ function isActiveRoute(pathname: string, item: (typeof navigation)[number]) {
     return pathname === '/admin/pricing' || pathname.startsWith('/admin/pricing/') || pathname === '/admin/settings';
   }
 
+  if (item.href === '/admin/site-media' && pathname === '/admin/homepage-media') return true;
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 
 function AdminNavigation({
   pathname,
   onNavigate,
+  collapsed = false,
 }: {
   pathname: string;
   onNavigate?: () => void;
+  collapsed?: boolean;
 }) {
   return (
     <nav aria-label="Admin navigation" className="space-y-1">
@@ -74,16 +78,17 @@ function AdminNavigation({
             href={item.href}
             aria-current={active ? 'page' : undefined}
             onClick={onNavigate}
+            title={collapsed ? item.label : undefined}
             className={cn(
               'group flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c2a263] focus-visible:ring-offset-2 focus-visible:ring-offset-[#152b3d]',
               active
-                ? 'bg-navy text-white shadow-sm'
-                : 'text-charcoal hover:bg-cream hover:text-navy',
+                ? 'bg-white/10 text-white border-l-2 border-[#c2a263]'
+                : 'text-[#dae1e7] hover:bg-white/10 hover:text-white border-l-2 border-transparent',
             )}
           >
             <Icon className="size-4 shrink-0" aria-hidden="true" />
-            <span>{item.label}</span>
+            <span className={collapsed ? 'sr-only' : undefined}>{item.label}</span>
           </Link>
         );
 
@@ -144,10 +149,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
 
-  if (pathname === '/admin/login') return children;
+  if (pathname === '/admin/login') return <div className="admin-typography">{children}</div>;
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -165,7 +171,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="admin-typography min-h-screen bg-[#f6f3ef] text-charcoal">
+    <div data-sidebar-collapsed={sidebarCollapsed} className={cn("admin-typography min-h-screen bg-[#f6f3ef] text-charcoal", pathname.startsWith("/admin/quotes/") && "quote-desk-route")}>
       <a
         href="#admin-main"
         className="sr-only fixed left-4 top-4 z-[100] rounded-md bg-navy px-4 py-2 text-sm font-semibold text-white focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
@@ -173,20 +179,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         Skip to admin content
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-[#d9d1c8] bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-[#d9d1c8] bg-white lg:hidden">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Link
             href="/admin"
             className="flex min-w-0 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
           >
-            <Image
-              src="/favicon.ico"
-              alt=""
-              width={40}
-              height={40}
-              className="size-10 rounded-lg border border-[#d9d1c8]"
-              priority
-            />
             <span className="min-w-0">
               <span className="block truncate font-serif text-lg font-semibold leading-tight text-navy">
                 Signature Luxe
@@ -223,10 +221,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   <Menu className="size-5" aria-hidden="true" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[min(90vw,22rem)] border-[#d9d1c8] bg-white p-0">
+              <SheetContent side="right" className="admin-typography w-[min(90vw,22rem)] border-[#314658] bg-[#152b3d] p-0 text-white">
                 <SheetHeader className="border-b border-[#e5e0db] p-5 text-left">
-                  <SheetTitle className="font-serif text-xl text-navy">Admin navigation</SheetTitle>
-                  <SheetDescription>Quotes and operational settings</SheetDescription>
+                  <SheetTitle className="font-serif text-xl text-white">Admin navigation</SheetTitle>
+                  <SheetDescription className="text-slate-300">Quotes and operational settings</SheetDescription>
                 </SheetHeader>
                 <div className="flex-1 overflow-y-auto p-4">
                   <AdminNavigation pathname={pathname} onNavigate={() => setMobileOpen(false)} />
@@ -249,18 +247,35 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-[1600px] lg:grid-cols-[15rem_minmax(0,1fr)]">
-        <aside className="hidden border-r border-[#d9d1c8] bg-white p-4 lg:block">
-          <div className="sticky top-20">
-            <p className="mb-3 px-3 text-sm font-bold uppercase tracking-[0.12em] text-muted-foreground">
-              Operations console
-            </p>
-            <AdminNavigation pathname={pathname} />
-          </div>
+      <div className="admin-shell-grid min-h-screen lg:grid">
+        <aside className="admin-rail hidden lg:flex">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!sidebarCollapsed}
+            aria-controls="admin-desktop-navigation"
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="admin-sidebar-toggle min-h-11 text-white hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#c2a263]"
+          >
+            {sidebarCollapsed ? <PanelLeftOpen className="size-5" aria-hidden="true" /> : <PanelLeftClose className="size-5" aria-hidden="true" />}
+            <span className={sidebarCollapsed ? 'sr-only' : undefined}>{sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}</span>
+          </Button>
+          <Link href="/admin" className="admin-wordmark" aria-label="Signature Luxe Operations dashboard">
+            {sidebarCollapsed ? <span className="admin-wordmark-initials font-serif text-xl">SL</span> : <>
+            <span className="font-serif text-[1.8rem] leading-tight">Signature Luxe</span>
+            <span className="mt-3 block text-xs text-[#dfc591]">Operations</span>
+            </>}
+          </Link>
+          <div id="admin-desktop-navigation"><AdminNavigation pathname={pathname} collapsed={sidebarCollapsed} /></div>
+          <Button type="button" variant="ghost" onClick={handleLogout} disabled={isLoggingOut} title={sidebarCollapsed ? 'Sign out' : undefined} className="mt-auto min-h-11 justify-start text-white hover:bg-white/10 hover:text-white">
+            <LogOut className="size-4 shrink-0" aria-hidden="true" /><span className={sidebarCollapsed ? 'sr-only' : undefined}>{isLoggingOut ? 'Signing out…' : 'Sign out'}</span>
+          </Button>
         </aside>
 
-        <main id="admin-main" tabIndex={-1} className="min-w-0 px-4 py-6 focus:outline-none sm:px-6 lg:px-8 lg:py-8">
-          <AdminBreadcrumbs pathname={pathname} />
+        <main id="admin-main" tabIndex={-1} className="admin-content min-w-0 px-4 py-5 focus:outline-none sm:px-6 lg:px-7 lg:py-6">
+          {!pathname.startsWith("/admin/quotes/") && <AdminBreadcrumbs pathname={pathname} />}
           {logoutError && (
             <p role="alert" className="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
               {logoutError}

@@ -15,14 +15,13 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { HeroSection } from "@/components/hero-section"
+import { ServiceHero as HeroSection } from "@/components/service-hero"
 import { SectionHeader } from "@/components/section-header"
-import { FeatureGrid } from "@/components/feature-grid"
+import "./trailer-presentation.css"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { breadcrumbJsonLd, faqJsonLd, localBusinessJsonLd, serviceJsonLd } from "@/lib/seo-schema"
 import rawContent from "@/content/service-pages/luxury-restroom-trailers.json"
 import { defineServicePageData } from "@/lib/content/service-pages"
@@ -79,10 +78,12 @@ export default function LuxuryRestroomTrailerRentalsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
       />
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public estate-service">
         {/* Hero */}
         <HeroSection
           variant="page"
+          imageSrc="/images/3 Station Pro/3Station.jpg"
+          imageAlt="Signature Luxe 3 Station Pro restroom trailer"
           eyebrow="Luxury Restroom Trailers"
           title="Luxury Restroom Trailer Rentals in Lansing, MI"
           description="If you are planning an event in Lansing or anywhere in Mid-Michigan, luxury restroom trailer rentals provide a cleaner, more comfortable experience than standard portable toilets."
@@ -91,82 +92,51 @@ export default function LuxuryRestroomTrailerRentalsPage() {
         />
 
         {/* Features */}
-        <section className="py-20 md:py-28 bg-white">
+        <section className="catalog-features bg-white" aria-labelledby="catalog-features-heading">
           <div className="container mx-auto px-4 lg:px-8">
-            <SectionHeader
-              eyebrow="Features"
-              title="Premium Features & Finishes"
-              description="Every detail is designed for comfort, cleanliness, and a premium guest experience."
-            />
-            <div className="mt-12">
-              <FeatureGrid features={features} columns={3} variant="card" />
+            <div className="catalog-features-layout">
+              <div className="catalog-features-intro">
+                <h2 id="catalog-features-heading">Premium Features &amp; Finishes</h2>
+                <p>Every detail is designed for comfort, cleanliness, and a premium guest experience.</p>
+                {interiorGallery[0] && <figure className="catalog-interior-photo">
+                  <Image src={interiorGallery[0].src} alt={interiorGallery[0].alt} fill sizes="(max-width: 900px) 100vw, 40vw" className="object-cover" />
+                </figure>}
+                <Link href="#interior-details" className="estate-text-link">Step Inside Our Trailers<ArrowRight aria-hidden="true" size={18} /></Link>
+              </div>
+              <div className="catalog-feature-list">
+                {features.map((feature) => {
+                  const Icon = feature.icon
+                  return <div className="catalog-feature" key={feature.title}>
+                    <Icon aria-hidden="true" size={26} strokeWidth={1.5} />
+                    <div><h3>{feature.title}</h3><p>{feature.description}</p></div>
+                  </div>
+                })}
+              </div>
             </div>
           </div>
         </section>
 
         {/* Trailer Options */}
-        <section className="py-20 md:py-28 bg-cream">
+        <section className="catalog-options bg-cream" aria-labelledby="catalog-options-heading">
           <div className="container mx-auto px-4 lg:px-8">
-            <SectionHeader
-              eyebrow="Trailer Options"
-              title="Choose the Right Size for Your Event"
-              description="We offer multiple trailer configurations to match your guest count and space requirements."
-            />
-            <div className="mt-12 grid gap-8 lg:grid-cols-3">
+            <div className="catalog-options-intro">
+              <h2 id="catalog-options-heading">Choose the Right Size for Your Event</h2>
+              <p>We offer multiple trailer configurations to match your guest count and space requirements.</p>
+            </div>
+            <div className="catalog-options-grid">
               {trailerOptions.map((trailer) => (
-                <Card
-                  key={trailer.name}
-                  className={`relative overflow-hidden ${
-                    trailer.popular ? "border-navy border-2" : ""
-                  }`}
-                >
-                  {trailer.popular && (
-                    <div className="absolute top-0 right-0 bg-navy text-white text-xs font-medium px-3 py-1 rounded-bl-lg">
-                      Most Popular
-                    </div>
-                  )}
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center">
-                        <Users className="w-6 h-6 text-navy" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-xl text-navy">
-                          {trailer.name}
-                        </CardTitle>
-                        <p className="text-base text-gold font-semibold">
-                          {trailer.capacity}
-                        </p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-6 leading-relaxed">
-                      {trailer.description}
-                    </p>
-                    <ul className="space-y-3">
-                      {trailer.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <CheckCircle className="h-5 w-5 text-navy mt-0.5 shrink-0" />
-                          <span className="text-base text-charcoal">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      asChild
-                      className={`w-full mt-6 ${
-                        trailer.popular
-                          ? "bg-navy hover:bg-navy/90 text-white"
-                          : "bg-gold/20 text-navy hover:bg-gold/30"
-                      }`}
-                    >
-                      <Link href="/request-quote">
-                        Check Availability
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
+                <article key={trailer.slug} id={trailer.slug.replace(/-trailer$/, "")}
+                  className={`catalog-option scroll-mt-32${trailer.popular ? " catalog-option-popular" : ""}`}
+                  aria-labelledby={`${trailer.slug}-heading`}>
+                  <div className="catalog-option-label">{trailer.popular && <span>Most Popular</span>}</div>
+                  <header>
+                    <h3 id={`${trailer.slug}-heading`}>{trailer.name}</h3>
+                    <p className="catalog-option-capacity"><Users aria-hidden="true" size={20} />{trailer.capacity}</p>
+                  </header>
+                  <p className="catalog-option-description">{trailer.description}</p>
+                  <ul>{trailer.features.map((feature) => <li key={feature}><CheckCircle aria-hidden="true" size={18} /><span>{feature}</span></li>)}</ul>
+                  <Link className="catalog-option-cta" href="/request-quote">Check Availability<ArrowRight aria-hidden="true" size={18} /></Link>
+                </article>
               ))}
             </div>
           </div>

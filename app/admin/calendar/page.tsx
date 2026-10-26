@@ -41,14 +41,14 @@ export default async function AdminBookingCalendarPage({ searchParams }: { searc
 
   return (
     <div className="space-y-8">
-      <header className="rounded-2xl border border-navy bg-navy p-6 text-white shadow-lg sm:p-8">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ded2c4]">
+      <header className="admin-calendar-heading">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
           Operations schedule
         </p>
         <h1 className="mt-2 font-serif text-3xl font-semibold sm:text-4xl">
           Booking Calendar
         </h1>
-        <p className="mt-2 max-w-3xl text-[#ded2c4]">
+        <p className="mt-2 max-w-3xl text-muted-foreground">
           Review customer bookings, partner commitments, operational blocks, and same-date quote activity in one place.
         </p>
       </header>

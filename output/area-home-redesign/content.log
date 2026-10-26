@@ -1,0 +1,3 @@
+npm notice run signature-luxe-platform@0.1.0 content:validate
+npm notice run node scripts/validate-content.mjs
+Validated 59 content files; no duplicate JSON slugs/FAQ or trailer keys, missing local images, or missing structured-image alt text found.

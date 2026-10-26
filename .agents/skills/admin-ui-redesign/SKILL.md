@@ -7,6 +7,8 @@ description: Use when improving or redesigning the admin side of the luxury rest
 
 Use this skill whenever the task involves improving or redesigning the admin side of the luxury restroom trailer website.
 
+For a substantial admin redesign, first complete the `application-redesign` audit and the root `AGENTS.md` implementation gate. This skill supplies Signature Luxe operational UI details after that general application analysis. Use `information-architecture` for changed admin navigation, `frontend-ui-builder` after the gate, and the applicable responsive, accessibility, visual, QA, and performance review skills. If a UI change alters status meaning, available actions, customer-visible behavior, or privileged APIs, `admin-workflow-safety` takes precedence.
+
 ## Scope
 
 Use this skill for changes to:

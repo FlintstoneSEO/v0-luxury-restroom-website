@@ -2,73 +2,24 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowRight, BriefcaseBusiness, Building2, CalendarCheck, ClipboardCheck, GraduationCap, HardHat, Heart, MapPin, PartyPopper, Sparkles, Tent, type LucideIcon } from 'lucide-react'
+import { ArrowRight, ChevronDown, MapPin } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { AreaHero } from '@/components/area-hero'
 import { breadcrumbJsonLd, localBusinessJsonLd } from '@/lib/seo-schema'
 import { cityPages } from '@/lib/seo'
+import { getServiceAreaBySlug, getAllServiceAreas } from '@/lib/content/service-areas'
 
-import { getServiceAreaBySlug } from '@/lib/content/service-areas'
-
-const galleryVisuals = {
-  wedding: { src: '/images/Wedding Trailer.png', alt: 'Wedding restroom trailer rental setup for an outdoor Michigan reception' },
-  privateParty: { src: '/images/Special Event Trailer.png', alt: 'Luxury restroom trailer for a private backyard event in Mid-Michigan' },
-  corporate: { src: '/images/Corporate Event Restroom Trailer', alt: 'Corporate event restroom trailer rental for a Mid-Michigan gathering' },
-  festival: { src: '/images/Festival Restroom Trailer', alt: 'Festival and community event restroom trailer setup in Mid-Michigan' },
-  graduation: { src: '/images/MSU Tailgate Rental Restroom.png', alt: 'Graduation and alumni celebration restroom trailer setup in Mid-Michigan' },
-  construction: { src: '/images/Construction Site Trailer.png', alt: 'Construction and long-term restroom trailer rental setup in Mid-Michigan' },
-  interior: { src: '/images/3 Station Pro/3Station5.jpg', alt: 'Luxury restroom trailer interior with upgraded finishes' },
-  exterior: { src: '/images/3 Station Pro/3Station4.jpg', alt: 'Exterior luxury restroom trailer setup on a Michigan event site' },
-  station3: { src: '/images/3 Station Pro/3Station.jpg', alt: '3 station restroom trailer exterior setup in Mid-Michigan' },
+function occasionFor(title: string) {
+  const text = title.toLowerCase()
+  if (/wedding|reception/.test(text)) return { href: '/wedding-restroom-trailer-rentals', src: '/images/Wedding Trailer.png', alt: 'Restroom trailer in an outdoor wedding setting' }
+  if (/construction|contractor|project|long.term|outage|temporary/.test(text)) return { href: '/construction-long-term-restroom-trailer-rentals', src: '/images/Construction Site Trailer.png', alt: 'Restroom trailer at a construction site' }
+  if (/graduation|alumni|tailgate/.test(text)) return { href: '/private-event-restroom-trailers', src: '/images/MSU Tailgate Rental Restroom.png', alt: 'Restroom trailer for a Michigan game-day gathering' }
+  if (/corporate|company|donor|nonprofit/.test(text)) return { href: '/corporate-event-restroom-trailers', src: '/images/3 Station Pro/3Station.jpg', alt: 'Signature Luxe three-station trailer exterior' }
+  if (/festival|community/.test(text)) return { href: '/festival-community-event-restroom-trailers', src: '/images/Special Event Trailer.png', alt: 'Restroom trailer at an outdoor evening event' }
+  return { href: '/private-event-restroom-trailers', src: '/images/Special Event Trailer.png', alt: 'Restroom trailer for a private evening celebration' }
 }
 
-type VisualCard = {
-  title: string
-  description: string
-  href?: string
-  icon: LucideIcon
-  image: { src: string; alt: string }
-  imageCandidates?: Array<keyof typeof galleryVisuals>
-}
-
-const matchesAnyKeyword = (text: string, keywords: string[]) => keywords.some((keyword) => text.includes(keyword))
-
-const getUseCaseCard = (useCase: string): VisualCard => {
-  const normalized = useCase.toLowerCase()
-
-  if (matchesAnyKeyword(normalized, ['wedding', 'reception', 'wedding weekend'])) return { title: useCase, description: 'Elegant guest restroom support for ceremonies, receptions, and full wedding weekends.', icon: Heart, image: galleryVisuals.wedding, imageCandidates: ['wedding', 'exterior', 'interior'] }
-  if (matchesAnyKeyword(normalized, ['graduation', 'alumni'])) return { title: useCase, description: 'Comfortable amenities for graduation parties, alumni events, and school celebrations.', icon: GraduationCap, image: galleryVisuals.graduation, imageCandidates: ['graduation', 'corporate', 'privateParty'] }
-  if (matchesAnyKeyword(normalized, ['corporate', 'company', 'nonprofit', 'donor'])) return { title: useCase, description: 'Polished trailer presentation for company gatherings, galas, and donor-focused events.', icon: BriefcaseBusiness, image: galleryVisuals.corporate, imageCandidates: ['corporate', 'interior', 'exterior'] }
-  if (matchesAnyKeyword(normalized, ['construction', 'contractor', 'project support', 'public works'])) return { title: useCase, description: 'Reliable trailer placement for active work sites and project-based operations.', icon: HardHat, image: galleryVisuals.construction, imageCandidates: ['construction', 'station3', 'exterior'] }
-  if (matchesAnyKeyword(normalized, ['festival', 'community event'])) return { title: useCase, description: 'Guest-ready facilities for public festivals and neighborhood celebrations.', icon: Tent, image: galleryVisuals.festival, imageCandidates: ['festival', 'exterior', 'station3'] }
-  if (matchesAnyKeyword(normalized, ['private party', 'private celebrations', 'backyard party', 'backyard parties', 'birthday', 'holiday', 'reunion', 'family reunions'])) return { title: useCase, description: 'Refined restroom options for private celebrations and family-hosted gatherings.', icon: PartyPopper, image: galleryVisuals.privateParty, imageCandidates: ['privateParty', 'interior', 'exterior'] }
-  if (matchesAnyKeyword(normalized, ['temporary facility', 'temporary facilities', 'outage', 'long-term support', 'long-term'])) return { title: useCase, description: 'Dependable restroom access during outages and extended temporary operations.', icon: Building2, image: galleryVisuals.exterior, imageCandidates: ['construction', 'exterior', 'station3'] }
-
-  return { title: useCase, description: 'Luxury restroom trailer support tailored to your timeline, guests, and site logistics.', icon: CalendarCheck, image: galleryVisuals.exterior }
-}
-
-const assignDistinctUseCaseImages = (cards: VisualCard[]): VisualCard[] => {
-  const used = new Set<string>()
-  return cards.map((card) => {
-    const candidates = card.imageCandidates?.length ? card.imageCandidates : null
-    if (!candidates) {
-      used.add(card.image.src)
-      return card
-    }
-    const selectedKey = candidates.find((key) => !used.has(galleryVisuals[key].src)) ?? candidates[0]
-    const image = galleryVisuals[selectedKey]
-    used.add(image.src)
-    return { ...card, image }
-  })
-}
-
-const exploreServiceCards: VisualCard[] = [
-  { href: '/request-quote', title: 'Request a Quote', description: 'Share your event details and get a fast, tailored rental plan.', icon: ClipboardCheck, image: galleryVisuals.exterior },
-  { href: '/wedding-restroom-trailer-rentals', title: 'Wedding Restroom Trailers', description: 'Explore premium trailers designed for wedding weekends and receptions.', icon: Heart, image: galleryVisuals.wedding },
-  { href: '/luxury-restroom-trailer-rentals', title: 'Luxury Rental Options', description: 'Compare luxury restroom layouts, finishes, and guest-facing amenities.', icon: Sparkles, image: galleryVisuals.interior },
-  { href: '/construction-long-term-restroom-trailer-rentals', title: 'Construction & Long-Term Rentals', description: 'Flexible solutions for project sites, multi-week schedules, and recurring service.', icon: HardHat, image: galleryVisuals.station3 },
-  { href: '/service-areas', title: 'All Service Areas', description: 'See the Mid-Michigan regions we cover with delivery, setup, and pickup.', icon: MapPin, image: galleryVisuals.exterior },
-]
 const cityMeta: Record<string, { title: string; description: string }> = {
   'lansing-mi': { title: 'Luxury Restroom Trailer Rentals in Lansing, MI', description: 'Rent luxury restroom trailers in Lansing, MI for weddings, private parties, corporate events, construction sites, and outdoor gatherings.' },
   'east-lansing-mi': { title: 'Luxury Restroom Trailer Rentals in East Lansing, MI', description: 'Luxury restroom trailer rentals in East Lansing, MI for MSU tailgates, graduations, weddings, private parties, and outdoor events.' },
@@ -83,106 +34,82 @@ const getCityData = (slug: string) => getServiceAreaBySlug(slug) ?? null
 export function generateStaticParams() { return cityPages.map((c) => ({ citySlug: c.slug })) }
 export async function generateMetadata({ params }: { params: Promise<{ citySlug: string }> }): Promise<Metadata> { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) return {}; const isPriorityCity = data.priority; const meta = cityMeta[data.slug]; const title = meta?.title ?? (isPriorityCity ? `Luxury Restroom Trailer Rentals in ${data.city}, MI | Signature Luxe Events` : `Restroom Trailer Rentals ${data.city}, MI`); const description = meta?.description ?? (isPriorityCity ? `Luxury restroom trailer rentals in ${data.city}, MI for weddings, private events, corporate gatherings, festivals, construction projects, and long-term needs with delivery and setup planning.` : `Luxury restroom trailer rentals for weddings, events, and project sites in ${data.city}, Michigan with delivery, setup, and service planning.`); const canonical = `https://www.signatureluxeevents.com/service-areas/${data.slug}`; return { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, images: [{ url: '/images/Wedding Trailer.png', alt: `Climate-controlled luxury restroom trailer rental in ${data.city}, Michigan` }] }, twitter: { card: 'summary_large_image', title, description, images: ['/images/Wedding Trailer.png'] } } }
 
-export default async function CityPage({ params }: { params: Promise<{ citySlug: string }> }) { const { citySlug } = await params; const data = getCityData(citySlug); if (!data) notFound(); const business = localBusinessJsonLd(data.city); const breadcrumbs = breadcrumbJsonLd([{ name: 'Home', item: '/' }, { name: 'Service Areas', item: '/service-areas' }, { name: `${data.city}, MI`, item: `/service-areas/${data.slug}` }]); const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: data.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
-const useCaseCards = assignDistinctUseCaseImages(data.useCases.map((useCase) => getUseCaseCard(useCase)))
-return <><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} /><script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /><Header />
-<main>
-  <section className='bg-navy py-20 md:py-24'>
-    <div className='container mx-auto px-4 lg:px-8 text-center max-w-4xl'>
-      <p className='text-gold uppercase tracking-[0.2em] text-xs mb-4'>Service Area</p>
-      <h1 className='text-4xl md:text-5xl font-serif font-semibold text-white'>Luxury Restroom Trailer Rentals in {data.city}, MI</h1>
-      <p className='mt-5 text-base md:text-lg leading-relaxed text-white/80'>{data.intro} We also serve {data.nearby}.</p>
-      <Link href='/request-quote' className='inline-block mt-7 bg-gold text-charcoal px-7 py-3 rounded-md font-medium'>Check Availability in {data.city}</Link>
-    </div>
-  </section>
+export default async function CityPage({ params }: { params: Promise<{ citySlug: string }> }) {
+  const { citySlug } = await params
+  const data = getCityData(citySlug)
+  if (!data) notFound()
+  const business = localBusinessJsonLd(data.city)
+  const breadcrumbs = breadcrumbJsonLd([{ name: 'Home', item: '/' }, { name: 'Service Areas', item: '/service-areas' }, { name: `${data.city}, MI`, item: `/service-areas/${data.slug}` }])
+  const faqSchema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: data.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
+  const guide = [
+    { title: `Wedding restroom trailer rentals in ${data.city}`, paragraphs: data.weddingUseCase },
+    { title: 'Private parties & backyard celebrations', paragraphs: data.privateEventUseCase },
+    { title: 'Corporate, festival & community events', paragraphs: data.corporateFestivalUseCase },
+    { title: 'Construction & long-term rentals', paragraphs: data.constructionLongTermUseCase },
+    { title: 'Delivery, power, water & placement', paragraphs: data.setupLogistics },
+    { title: 'Seasonal planning', paragraphs: data.seasonalPlanning },
+  ].filter((item) => item.paragraphs?.length)
+  const nearbyAreas = new Map(getAllServiceAreas().map((area) => [area.city.toLowerCase(), area.slug]))
+  const nearby = data.nearbyCommunities?.length ? data.nearbyCommunities : data.nearby.split(/, | and /)
+  const serviceLinks = [...(data.serviceLinks ?? []),
+    { href: '/special-events', label: 'Special events' },
+    { href: '/emergency-disaster-relief-restroom-trailers', label: 'Disaster relief & government support' },
+    { href: '/service-areas', label: 'All service areas' },
+  ].filter((item, index, items) => items.findIndex((other) => other.href === item.href) === index)
 
-  <section className='bg-white py-12'>
-    <div className='container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-6'>
-      {[{ title: `Restroom Trailer Rentals for ${data.city} Events`, text: data.venueNote }, { title: 'Planning Delivery, Power, Water, and Placement', text: 'Before delivery, we confirm access paths, surface suitability, and utility planning so setup stays smooth and timeline-friendly.' }].map((card) => (
-        <div key={card.title} className='rounded-2xl border border-gold/20 bg-cream p-6 shadow-sm'><h2 className='text-2xl font-semibold text-navy mb-3'>{card.title}</h2><p className='text-base md:text-lg leading-relaxed text-charcoal'>{card.text}</p></div>
-      ))}
-    </div>
-  </section>
+  return <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+    <Header />
+    <main id="public-content" tabIndex={-1} className="estate-public area-public">
+      <AreaHero city={data.city} intro={data.intro} />
+      <div className="area-local-strip"><p><MapPin aria-hidden="true" size={19} />Also serving {data.nearby}.</p><a href="#local-planning">Plan your local rental<ArrowRight aria-hidden="true" size={17} /></a></div>
 
-  <section className='bg-cream py-12'>
-    <div className='container mx-auto px-4 lg:px-8'>
-      <h2 className='text-2xl font-semibold text-navy mb-2'>Restroom Trailer Rentals for Weddings, Events, and Projects in {data.city}</h2><p className='text-base md:text-lg leading-relaxed text-charcoal mb-5'>Popular rental scenarios we support throughout {data.city}, MI and surrounding communities.</p>
-      <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-        {useCaseCards.map((card) => {
-          return (
-            <article key={card.title} className='overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm'>
-              <div className='relative h-36'>
-                <Image src={card.image.src} alt={card.image.alt} fill className='object-cover' sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw' />
-                <div className='absolute inset-0 bg-gradient-to-t from-navy/55 via-navy/10 to-transparent' />
-                <div className='absolute left-4 top-4 inline-flex rounded-xl bg-white p-2.5 shadow-sm'>
-                  <card.icon className='h-5 w-5 text-navy' />
-                </div>
-              </div>
-              <div className='p-4'>
-                <p className='capitalize font-semibold text-navy'>{card.title}</p>
-                <p className='mt-1 text-base md:text-[17px] leading-relaxed text-charcoal/85'>{card.description}</p>
-              </div>
-            </article>
-          )
-        })}
-      </div>
-      <p className='mt-6 text-base md:text-lg leading-relaxed text-charcoal'>Coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p>
-    </div>
-  </section>
+      <section className="area-occasions" aria-labelledby="local-occasions-heading">
+        <div className="area-section-heading"><h2 id="local-occasions-heading">A setting for every occasion.</h2><p>Weddings, events, and projects in {data.city}. Explore the rental that fits your plans.</p></div>
+        <div className="area-occasion-grid">{data.useCases.map((title) => {
+          const occasion = occasionFor(title)
+          return <Link key={title} href={occasion.href} className="area-occasion"><div className="area-occasion-photo"><Image src={occasion.src} alt={occasion.alt} fill sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 25vw" className="object-cover" /></div><h3>{title}<ArrowRight aria-hidden="true" size={19} /></h3></Link>
+        })}</div>
+      </section>
 
-  {data.localOverview && <section className='bg-white py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Local overview</h2><div className='space-y-3'>{data.localOverview.map((item) => <p key={item} className='text-base md:text-lg leading-relaxed text-charcoal'>{item}</p>)}</div></div></section>}
+      <section id="local-planning" className="area-local-planning">
+        <div className="area-planning-overview">
+          <h2>Thoughtfully planned for {data.city}.</h2>
+          <p>{data.venueNote}</p>
+          {data.localOverview?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          <div className="area-interior-photo"><Image src="/images/3 Station Pro/3Station5.jpg" alt="Vanity and sink inside a Signature Luxe restroom trailer" fill sizes="(max-width: 900px) 100vw, 40vw" className="object-cover" /></div>
+        </div>
+        <div className="area-guide">
+          <h2>Your local rental guide</h2>
+          <p>Open the details that matter to your event or project.</p>
+          {guide.map((item) => <details key={item.title}><summary><h3>{item.title}</h3><ChevronDown aria-hidden="true" size={19} /></summary><div>{item.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></details>)}
+          <details><summary><h3>Trailer options available in {data.city}</h3><ChevronDown aria-hidden="true" size={19} /></summary><div><p>Our <Link href="/luxury-restroom-trailer-rentals">luxury restroom trailer lineup</Link> includes 2-station units for intimate weddings and backyard parties, 3-station units for mid-sized weddings, corporate events, and graduation parties, plus 4-station trailers for community gatherings and larger guest counts.</p></div></details>
+          <p className="area-setup-note">Before delivery, we confirm access paths, surface suitability, and utility planning so setup stays smooth and timeline-friendly.</p>
+          <Link href="/request-quote" className="estate-text-link">Talk through your rental<ArrowRight aria-hidden="true" size={18} /></Link>
+        </div>
+      </section>
 
-  {data.weddingUseCase && <section className='bg-white py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Wedding restroom trailer rentals in {data.city}</h2><ul className='list-disc pl-6 space-y-2'>{data.weddingUseCase.map((item) => <li key={item} className='text-base md:text-lg leading-relaxed text-charcoal'>{item}</li>)}</ul></div></section>}
-  {data.privateEventUseCase && <section className='bg-cream py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Private party and backyard restroom trailer rentals</h2><ul className='list-disc pl-6 space-y-2'>{data.privateEventUseCase.map((item) => <li key={item} className='text-base md:text-lg leading-relaxed text-charcoal'>{item}</li>)}</ul></div></section>}
-  {data.corporateFestivalUseCase && <section className='bg-white py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Corporate, festival, and community event restroom support</h2><ul className='list-disc pl-6 space-y-2'>{data.corporateFestivalUseCase.map((item) => <li key={item} className='text-base md:text-lg leading-relaxed text-charcoal'>{item}</li>)}</ul></div></section>}
-  {data.constructionLongTermUseCase && <section className='bg-cream py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Construction and long-term restroom trailer rentals</h2><ul className='list-disc pl-6 space-y-2'>{data.constructionLongTermUseCase.map((item) => <li key={item} className='text-base md:text-lg leading-relaxed text-charcoal'>{item}</li>)}</ul></div></section>}
-  {data.setupLogistics && <section className='bg-white py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Delivery, power, water, placement, and access planning</h2><ul className='list-disc pl-6 space-y-2'>{data.setupLogistics.map((item) => <li key={item} className='text-base md:text-lg leading-relaxed text-charcoal'>{item}</li>)}</ul></div></section>}
-  <section className='bg-cream py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Trailer options available in {data.city}</h2><p className='text-base md:text-lg leading-relaxed text-charcoal'>Our <Link className='text-navy underline underline-offset-2' href='/luxury-restroom-trailer-rentals'>luxury restroom trailer lineup</Link> includes 2-station units for intimate weddings and backyard parties, 3-station units for mid-sized weddings, corporate events, and graduation parties, plus 4-station trailers for community gatherings and larger guest counts.</p></div></section>
-  {data.seasonalPlanning && <section className='bg-cream py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Seasonal planning notes</h2><ul className='list-disc pl-6 space-y-2'>{data.seasonalPlanning.map((item) => <li key={item} className='text-base md:text-lg leading-relaxed text-charcoal'>{item}</li>)}</ul></div></section>}
-  {data.nearbyCommunities && <section className='bg-white py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Nearby communities served</h2><p className='text-base md:text-lg leading-relaxed text-charcoal'>{data.nearbyCommunities.join(', ')}.</p></div></section>}
-  {data.resourceLinks && <section className='bg-cream py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Related resources</h2><div className='grid md:grid-cols-2 gap-3'>{data.resourceLinks.map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-white p-4 text-navy hover:border-gold/50'>{item.label}</Link>)}</div></div></section>}
-  {data.serviceLinks && <section className='bg-white py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Related services</h2><div className='grid md:grid-cols-2 gap-3'>{data.serviceLinks.map((item) => <Link key={item.href} href={item.href} className='rounded-xl border border-gold/20 bg-cream p-4 text-navy hover:border-gold/50'>{item.label}</Link>)}</div></div></section>}
-  <section className='bg-white py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Plan by event type</h2><p className='text-base md:text-lg leading-relaxed text-charcoal'>Explore more planning pages for <Link href='/wedding-restroom-trailer-rentals' className='underline'>weddings</Link>, <Link href='/special-events' className='underline'>special events</Link>, <Link href='/construction-long-term-restroom-trailer-rentals' className='underline'>construction and long-term rentals</Link>, and <Link href='/emergency-disaster-relief-restroom-trailers' className='underline'>disaster relief and government support</Link>. You can also <Link href='/request-quote' className='underline'>check availability</Link> or view all <Link href='/service-areas' className='underline'>service areas</Link>.</p></div></section>
-  {data.trustNote && <section className='bg-cream py-12'><div className='container mx-auto px-4 lg:px-8'><h2 className='text-2xl font-semibold text-navy mb-4'>Trust note</h2><p className='text-base md:text-lg leading-relaxed text-charcoal'>{data.trustNote}</p></div></section>}
+      <section className="area-coverage">
+        <div><MapPin aria-hidden="true" className="area-coverage-pin" /><h2>{data.city} and a little further.</h2><p>Coverage includes {data.nearby} and surrounding Mid-Michigan communities.</p>{data.trustNote && <p>{data.trustNote}</p>}</div>
+        <div className="area-nearby"><h3>Nearby communities served</h3><ul>{nearby.map((name) => {
+          const slug = nearbyAreas.get(name.toLowerCase())
+          return <li key={name}>{slug ? <Link href={`/service-areas/${slug}`}>{name}<ArrowRight aria-hidden="true" size={16} /></Link> : <span>{name}</span>}</li>
+        })}</ul><Link href="/service-areas" className="area-light-link">View all service areas<ArrowRight aria-hidden="true" size={18} /></Link></div>
+      </section>
 
-  <section className='bg-white py-12'>
-    <div className='container mx-auto px-4 lg:px-8'>
-      <h2 className='text-2xl font-semibold text-navy mb-6'>FAQs for {data.city}, MI</h2>
-      <div className='grid md:grid-cols-2 gap-4'>
-        {data.faqs.map((f) => <div key={f.q} className='rounded-xl border border-gold/20 bg-cream p-6'><h3 className='font-semibold text-navy'>{f.q}</h3><p className='mt-2 text-base md:text-lg leading-relaxed text-charcoal'>{f.a}</p></div>)}
-      </div>
-    </div>
-  </section>
-  <section className='bg-navy py-12'>
-    <div className='container mx-auto px-4 lg:px-8 text-center'>
-      <h2 className='text-2xl font-semibold text-white mb-3'>Get a quote for {data.city}, MI</h2>
-      <p className='text-white/80 mb-6'>Tell us your date, guest count, and location to receive a tailored restroom trailer recommendation.</p>
-      <Link href='/request-quote' className='inline-block bg-gold text-charcoal px-7 py-3 rounded-md font-medium'>Request Your Quote</Link>
-    </div>
-  </section>
+      <section className="area-answers">
+        <div className="area-section-heading"><h2>FAQs for {data.city}, MI</h2><p>A few things to know before you book.</p></div>
+        <div className="area-guide">{data.faqs.map((faq) => <details key={faq.q}><summary><h3>{faq.q}</h3><ChevronDown aria-hidden="true" size={19} /></summary><div><p>{faq.a}</p></div></details>)}</div>
+      </section>
 
-  <section className='bg-cream py-12'>
-    <div className='container mx-auto px-4 lg:px-8'>
-      <h2 className='text-2xl font-semibold text-navy mb-5'>Explore More Services</h2>
-      <div className='grid sm:grid-cols-2 lg:grid-cols-5 gap-4'>
-        {exploreServiceCards.map((item) => (
-          <Link key={item.href} href={item.href ?? '/'} className='group overflow-hidden rounded-2xl border border-gold/20 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-gold/45 hover:shadow-md'>
-            <div className='relative h-32'>
-              <Image src={item.image.src} alt={item.image.alt} fill className='object-cover transition duration-300 group-hover:scale-[1.02]' sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw' />
-              <div className='absolute inset-0 bg-gradient-to-t from-navy/50 via-navy/10 to-transparent' />
-              <div className='absolute left-4 top-4 inline-flex rounded-lg bg-white p-2 shadow-sm'>
-                <item.icon className='h-5 w-5 text-navy' />
-              </div>
-            </div>
-            <div className='p-4'>
-              <p className='font-semibold text-navy'>{item.title}</p>
-              <p className='mt-1 text-base md:text-[17px] leading-relaxed text-charcoal/85'>{item.description}</p>
-              <p className='mt-3 inline-flex items-center text-base font-medium text-navy'>View page <ArrowRight className='ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5' /></p>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
-  </section>
-</main><Footer /></>
+      <section className="area-related" aria-label="Service and planning links">
+        <div><h2>Explore the possibilities.</h2><div className="area-link-directory">{serviceLinks.map((item) => <Link key={item.href} href={item.href}>{item.label}<ArrowRight aria-hidden="true" size={17} /></Link>)}</div></div>
+        {!!data.resourceLinks?.length && <div><h2>A little planning goes a long way.</h2><div className="area-link-directory">{data.resourceLinks.map((item) => <Link key={item.href} href={item.href}>{item.label}<ArrowRight aria-hidden="true" size={17} /></Link>)}</div></div>}
+      </section>
+      <section className="area-final"><div><h2>Let’s plan your {data.city} rental.</h2><p>Tell us your date, guest count, and location to receive a tailored restroom trailer recommendation.</p></div><Link href="/request-quote" className="area-button">Request your quote<ArrowRight aria-hidden="true" size={18} /></Link></section>
+    </main>
+    <Footer />
+  </>
 }

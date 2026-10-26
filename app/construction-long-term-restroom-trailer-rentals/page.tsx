@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { HeroSection } from "@/components/hero-section"
+import { ServiceHero as HeroSection } from "@/components/service-hero"
 import { SectionHeader } from "@/components/section-header"
 import { FeatureGrid } from "@/components/feature-grid"
 import { GalleryGrid } from "@/components/gallery-grid"
@@ -53,10 +53,12 @@ export default function ConstructionLongTermRestroomTrailerRentalsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public estate-service">
         {/* Hero */}
         <HeroSection
           variant="page"
+          imageSrc="/images/Construction Site Trailer.png"
+          imageAlt="Restroom trailer setup at a construction site"
           eyebrow="Construction & Long-Term"
           title="Construction and Long-Term Restroom Trailer Rentals in Michigan"
           description="Construction projects and temporary facility disruptions need dependable restroom access for crews and site teams. We support Lansing and Mid-Michigan projects with long-term rental planning and recurring service."

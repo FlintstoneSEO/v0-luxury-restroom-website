@@ -1,0 +1,23 @@
+▲ Next.js 16.2.4 (webpack)
+- Local:         http://localhost:3003
+- Network:       http://10.0.0.146:3003
+- Environments: .env.local
+✓ Ready in 1176ms
+
+  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+  	- include was updated to add '.next-service-operations-preview/types/**/*.ts'
+  	- include was updated to add '.next-service-operations-preview/dev/types/**/*.ts'
+
+
+○ Compiling /admin/login ...
+ GET /admin/login 200 in 15.6s (next.js: 15.3s, proxy.ts: 7ms, application-code: 342ms)
+ GET /admin/login 200 in 583ms (next.js: 152ms, proxy.ts: 6ms, application-code: 424ms)
+ GET /admin/login 200 in 91ms (next.js: 9ms, proxy.ts: 5ms, application-code: 77ms)
+ GET /admin/login 200 in 3.0s (next.js: 2.2s, proxy.ts: 282ms, application-code: 528ms)
+ GET /admin/login 200 in 1594ms (next.js: 1350ms, proxy.ts: 13ms, application-code: 231ms)
+ GET /admin/login 200 in 1076ms (next.js: 785ms, proxy.ts: 9ms, application-code: 282ms)
+ GET /admin/login 500 in 2.9s (next.js: 2.8s, proxy.ts: 25ms, application-code: 117ms)
+○ Compiling / ...
+ GET / 200 in 15.0s (next.js: 13.1s, application-code: 1890ms)

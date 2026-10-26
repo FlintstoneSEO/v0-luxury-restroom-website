@@ -1,0 +1,16 @@
+npm notice run signature-luxe-platform@0.1.0 seo:audit-content
+npm notice run node --experimental-strip-types scripts/audit-seo-content.ts
+=== SEO Content Audit ===
+
+Errors (fix before publishing) (0)
+  (none)
+
+Warnings (improvements) (2)
+  - Resource construction-restroom-trailer-rental-guide metaDescription length 119 (target 120-160)
+  - Resource how-many-restroom-trailers-for-wedding metaDescription length 178 (target 120-160)
+
+Usage:
+  npm run seo:audit-content
+  SEO_AUDIT_STRICT=true npm run seo:audit-content
+
+Audit complete.

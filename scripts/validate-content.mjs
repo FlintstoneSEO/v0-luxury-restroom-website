@@ -67,7 +67,7 @@ for (const file of files) {
     } catch (error) {
       errors.push(`${source}: invalid JSON (${error.message})`)
     }
-  } else if ((extension === '.md' || extension === '.mdx') && !raw.startsWith('---\n')) {
+  } else if ((extension === '.md' || extension === '.mdx') && !/^---\r?\n/.test(raw)) {
     errors.push(`${source}: Markdown content is missing YAML front matter`)
   }
 }

@@ -20,19 +20,19 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "max-w-3xl",
+        "estate-section-heading max-w-4xl",
         align === "center" && "mx-auto text-center",
         className
       )}
     >
       {eyebrow && (
-        <span className="text-sm font-semibold uppercase tracking-widest text-gold-text">
+        <span className="estate-kicker inline-block">
           {eyebrow}
         </span>
       )}
       <h2
         className={cn(
-          "mt-2 text-3xl font-serif font-semibold tracking-tight text-navy md:text-4xl lg:text-5xl text-balance",
+          "mt-2 text-3xl font-serif font-medium tracking-tight text-navy md:text-4xl lg:text-5xl text-balance",
           titleClassName
         )}
       >

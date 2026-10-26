@@ -1,3 +1,5 @@
+import { DayNightScene } from "@/components/day-night-scene"
+import { getHomepage } from "@/lib/content/pages"
 import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
@@ -15,7 +17,7 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { HeroSection } from "@/components/hero-section"
+import { ServiceHero as HeroSection } from "@/components/service-hero"
 import { SectionHeader } from "@/components/section-header"
 import { FeatureGrid } from "@/components/feature-grid"
 import { GalleryGrid } from "@/components/gallery-grid"
@@ -28,6 +30,7 @@ import rawContent from "@/content/service-pages/private-events.json"
 import { defineServicePageData } from "@/lib/content/service-pages"
 
 const content = defineServicePageData(rawContent)
+const dayNight = getHomepage().dayNight
 
 const { title, description, canonical } = content.seo
 
@@ -60,7 +63,7 @@ export default async function PrivateEventRestroomTrailersPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public estate-service">
         {/* Hero */}
         <HeroSection
           variant="page"
@@ -167,6 +170,8 @@ export default async function PrivateEventRestroomTrailersPage() {
             </div>
           </div>
         </section>
+
+        {dayNight && <DayNightScene content={dayNight} />}
 
         {/* Gallery */}
         <section className="py-20 md:py-28 bg-cream">

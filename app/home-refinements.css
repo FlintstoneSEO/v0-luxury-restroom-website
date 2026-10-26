@@ -1,0 +1,32 @@
+/* Homepage-only comparison layout; preserve the shared Signature Estate shell. */
+.estate-public .home-fleet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+  margin-top: 3rem;
+}
+.estate-public .home-fleet-option { min-width: 0; }
+.estate-public .home-fleet-option-layout { display: flex; flex-direction: column; height: 100%; }
+.estate-public .home-fleet-option-layout > div { order: initial; }
+.estate-public .home-fleet-option-layout > div:last-child {
+  display: flex; flex-direction: column; flex: 1; padding-top: 1.5rem;
+  border-bottom: 1px solid var(--gold); padding-bottom: 1.75rem;
+}
+.estate-public .home-fleet-option h3 { font-size: clamp(2rem, 2.8vw, 2.75rem); }
+.estate-public .home-fleet-option p { font-size: 1rem; line-height: 1.8; }
+.estate-public .home-fleet-option ul { grid-template-columns: 1fr; margin-bottom: 1.5rem; }
+.estate-public .home-fleet-option-layout > div:last-child > div:last-child { margin-top: auto; }
+.estate-public .home-fleet-option-layout > div:last-child > div:first-child {
+  align-self: flex-start; background: transparent; padding: 0; border-radius: 0;
+}
+.estate-public .home-fleet-option a { min-height: 44px; }
+@media (max-width: 1099px) {
+  .estate-public .home-fleet-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .estate-public .home-fleet-option-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; }
+  .estate-public .home-fleet-option-layout > div:last-child { padding-top: 0; }
+}
+@media (max-width: 639px) {
+  .estate-public .home-fleet-option-layout { display: flex; gap: 0; }
+  .estate-public .home-fleet-option-layout > div:last-child { padding-top: 1.5rem; }
+  .estate-public .home-fleet-option ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

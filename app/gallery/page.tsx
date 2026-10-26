@@ -27,7 +27,7 @@ export default async function GalleryPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="public-content" tabIndex={-1} className="estate-public">
         <HeroSection
           variant="page"
           eyebrow={content.hero.eyebrow}

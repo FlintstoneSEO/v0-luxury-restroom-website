@@ -1,0 +1,198 @@
+{
+  "base": "http://127.0.0.1:3005",
+  "status": 200,
+  "rows": [
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "h1": 1,
+      "images": [
+        {
+          "loaded": true,
+          "alt": "2-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "3-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "4-Station trailer exterior"
+        }
+      ],
+      "headings": [
+        "Thoughtful comfort. Beautifully presented.",
+        "Choose the Perfect Trailer for Your Event",
+        "Luxury Details Your Guests Will Appreciate",
+        "See Inside Our 3-Station Trailer",
+        "From Elegant Weddings to Job Sites",
+        "Restroom Trailer Rentals For Every Occasion",
+        "Comfort. Cleanliness. Class.",
+        "Simple Rental Process",
+        "Proudly Serving Lansing and Mid-Michigan",
+        "Ready to Reserve a Luxury Restroom Trailer?"
+      ]
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024,
+      "h1": 1,
+      "images": [
+        {
+          "loaded": true,
+          "alt": "2-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "3-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "4-Station trailer exterior"
+        }
+      ],
+      "headings": [
+        "Thoughtful comfort. Beautifully presented.",
+        "Choose the Perfect Trailer for Your Event",
+        "Luxury Details Your Guests Will Appreciate",
+        "See Inside Our 3-Station Trailer",
+        "From Elegant Weddings to Job Sites",
+        "Restroom Trailer Rentals For Every Occasion",
+        "Comfort. Cleanliness. Class.",
+        "Simple Rental Process",
+        "Proudly Serving Lansing and Mid-Michigan",
+        "Ready to Reserve a Luxury Restroom Trailer?"
+      ]
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768,
+      "h1": 1,
+      "images": [
+        {
+          "loaded": true,
+          "alt": "2-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "3-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "4-Station trailer exterior"
+        }
+      ],
+      "headings": [
+        "Thoughtful comfort. Beautifully presented.",
+        "Choose the Perfect Trailer for Your Event",
+        "Luxury Details Your Guests Will Appreciate",
+        "See Inside Our 3-Station Trailer",
+        "From Elegant Weddings to Job Sites",
+        "Restroom Trailer Rentals For Every Occasion",
+        "Comfort. Cleanliness. Class.",
+        "Simple Rental Process",
+        "Proudly Serving Lansing and Mid-Michigan",
+        "Ready to Reserve a Luxury Restroom Trailer?"
+      ]
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "h1": 1,
+      "images": [
+        {
+          "loaded": true,
+          "alt": "2-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "3-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "4-Station trailer exterior"
+        }
+      ],
+      "headings": [
+        "Thoughtful comfort. Beautifully presented.",
+        "Choose the Perfect Trailer for Your Event",
+        "Luxury Details Your Guests Will Appreciate",
+        "See Inside Our 3-Station Trailer",
+        "From Elegant Weddings to Job Sites",
+        "Restroom Trailer Rentals For Every Occasion",
+        "Comfort. Cleanliness. Class.",
+        "Simple Rental Process",
+        "Proudly Serving Lansing and Mid-Michigan",
+        "Ready to Reserve a Luxury Restroom Trailer?"
+      ]
+    },
+    {
+      "width": 375,
+      "scrollWidth": 375,
+      "h1": 1,
+      "images": [
+        {
+          "loaded": true,
+          "alt": "2-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "3-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "4-Station trailer exterior"
+        }
+      ],
+      "headings": [
+        "Thoughtful comfort. Beautifully presented.",
+        "Choose the Perfect Trailer for Your Event",
+        "Luxury Details Your Guests Will Appreciate",
+        "See Inside Our 3-Station Trailer",
+        "From Elegant Weddings to Job Sites",
+        "Restroom Trailer Rentals For Every Occasion",
+        "Comfort. Cleanliness. Class.",
+        "Simple Rental Process",
+        "Proudly Serving Lansing and Mid-Michigan",
+        "Ready to Reserve a Luxury Restroom Trailer?"
+      ]
+    },
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "h1": 1,
+      "images": [
+        {
+          "loaded": true,
+          "alt": "2-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "3-Station trailer exterior"
+        },
+        {
+          "loaded": true,
+          "alt": "4-Station trailer exterior"
+        }
+      ],
+      "headings": [
+        "Thoughtful comfort. Beautifully presented.",
+        "Choose the Perfect Trailer for Your Event",
+        "Luxury Details Your Guests Will Appreciate",
+        "See Inside Our 3-Station Trailer",
+        "From Elegant Weddings to Job Sites",
+        "Restroom Trailer Rentals For Every Occasion",
+        "Comfort. Cleanliness. Class.",
+        "Simple Rental Process",
+        "Proudly Serving Lansing and Mid-Michigan",
+        "Ready to Reserve a Luxury Restroom Trailer?"
+      ]
+    }
+  ],
+  "errors": [],
+  "mobileMenuEscapeFocus": true,
+  "skipLink": true,
+  "reducedMotion": "0s",
+  "fleetAnchors": true,
+  "quoteRedirect": true
+}

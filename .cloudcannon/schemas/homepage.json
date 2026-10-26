@@ -1,3 +1,35 @@
 {
-  "_schema": "homepage"
+  "_schema": "homepage",
+  "introduction": {
+    "heading": "Thoughtful comfort. Beautifully presented.",
+    "body": "Climate-controlled interiors, private flushing stalls, and modern vanity stations for weddings, private events, corporate gatherings, and long-term rentals.",
+    "image": {
+      "src": "/images/3 Station Pro/3Station.jpg",
+      "alt": "Signature Luxe three-station restroom trailer with private entrances and metal stair railings"
+    },
+    "cta": {
+      "label": "Explore the Trailer",
+      "href": "/luxury-restroom-trailer-rentals"
+    }
+  },
+  "dayNight": {
+    "heading": "From daylight to lights on",
+    "body": "See the same outdoor event setting during the day and after dark. Switch views to see the trailer’s exterior lighting in use.",
+    "day": {
+      "src": "/images/live-events/event-daylight.webp",
+      "alt": "Restroom trailer beside a white event tent and mature tree in daylight",
+      "label": "Daytime",
+      "caption": "Daytime: the trailer and event tent in their outdoor setting."
+    },
+    "night": {
+      "src": "/images/live-events/event-lights-on.webp",
+      "alt": "The same outdoor event setting at night, with trailer entrance lights and an illuminated tent",
+      "label": "Lights on",
+      "caption": "After dark: entrance lights illuminate the trailer steps and surrounding grass."
+    }
+  },
+  "tailgateImage": {
+    "src": "/images/live-events/msu-tailgate.webp",
+    "alt": "Restroom trailer beside guests and white tents at a Michigan State University tailgate"
+  }
 }

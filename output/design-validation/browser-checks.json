@@ -1,0 +1,317 @@
+{
+  "homepage": [
+    {
+      "documentWidth": 367,
+      "h1Font": "\"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+      "h1Lines": 3.0000001412850836,
+      "heroColumns": "367.2px",
+      "width": 375
+    },
+    {
+      "documentWidth": 382,
+      "h1Font": "\"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+      "h1Lines": 3.0000001412850836,
+      "heroColumns": "382.4px",
+      "width": 390
+    },
+    {
+      "documentWidth": 760,
+      "h1Font": "\"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+      "h1Lines": 1.999803559085358,
+      "heroColumns": "760px",
+      "width": 768
+    },
+    {
+      "documentWidth": 1016,
+      "h1Font": "\"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+      "h1Lines": 2.9998153658987383,
+      "heroColumns": "457.2px 558.8px",
+      "width": 1024
+    },
+    {
+      "documentWidth": 1432,
+      "h1Font": "\"Cormorant Garamond\", \"Cormorant Garamond Fallback\", Georgia, serif",
+      "h1Lines": 2.999716762819617,
+      "heroColumns": "644.4px 787.6px",
+      "width": 1440
+    }
+  ],
+  "families": [
+    {
+      "route": "/wedding-restroom-trailer-rentals",
+      "documentWidth": 1432,
+      "h1": "Wedding Restroom Trailer Rentals for Outdoor Michigan Celebrations",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Wedding Restroom Trailer Rentals in Lansing & Mid-Michigan | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/wedding-restroom-trailer-rentals",
+      "documentWidth": 382,
+      "h1": "Wedding Restroom Trailer Rentals for Outdoor Michigan Celebrations",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Wedding Restroom Trailer Rentals in Lansing & Mid-Michigan | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/luxury-restroom-trailer-rentals",
+      "documentWidth": 1432,
+      "h1": "Luxury Restroom Trailer Rentals in Lansing, MI",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Luxury Restroom Trailer Rentals in Lansing, MI | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/luxury-restroom-trailer-rentals",
+      "documentWidth": 382,
+      "h1": "Luxury Restroom Trailer Rentals in Lansing, MI",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Luxury Restroom Trailer Rentals in Lansing, MI | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/service-areas",
+      "documentWidth": 1432,
+      "h1": "Luxury Restroom Trailer Rentals Across Lansing and Mid-Michigan",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Service Areas | Luxury Restroom Trailer Rentals Michigan | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/service-areas",
+      "documentWidth": 382,
+      "h1": "Luxury Restroom Trailer Rentals Across Lansing and Mid-Michigan",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Service Areas | Luxury Restroom Trailer Rentals Michigan | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/service-areas/lansing-mi",
+      "documentWidth": 1432,
+      "h1": "Luxury Restroom Trailer Rentals in Lansing, MI",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Luxury Restroom Trailer Rentals in Lansing, MI | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/service-areas/lansing-mi",
+      "documentWidth": 382,
+      "h1": "Luxury Restroom Trailer Rentals in Lansing, MI",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Luxury Restroom Trailer Rentals in Lansing, MI | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/resources",
+      "documentWidth": 1432,
+      "h1": "Planning Guides for Better Event Experiences",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public bg-cream min-h-screen",
+      "title": "Resource Center | Planning Guides for Restroom Trailer Rentals | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/resources",
+      "documentWidth": 382,
+      "h1": "Planning Guides for Better Event Experiences",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public bg-cream min-h-screen",
+      "title": "Resource Center | Planning Guides for Restroom Trailer Rentals | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/resources/restroom-trailer-setup-requirements",
+      "documentWidth": 1432,
+      "h1": "Restroom Trailer Setup Requirements: Power, Water, and Placement",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public bg-cream",
+      "title": "Restroom Trailer Setup Requirements | Power, Water, Placement | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/resources/restroom-trailer-setup-requirements",
+      "documentWidth": 382,
+      "h1": "Restroom Trailer Setup Requirements: Power, Water, and Placement",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public bg-cream",
+      "title": "Restroom Trailer Setup Requirements | Power, Water, Placement | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/blog",
+      "documentWidth": 1432,
+      "h1": "Luxury Restroom Trailer Rental Resources",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public min-h-screen bg-cream",
+      "title": "Luxury Restroom Trailer Rental Resources | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/blog",
+      "documentWidth": 382,
+      "h1": "Luxury Restroom Trailer Rental Resources",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public min-h-screen bg-cream",
+      "title": "Luxury Restroom Trailer Rental Resources | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/blog/wedding-restrooms-guests-appreciate",
+      "documentWidth": 390,
+      "h1Count": 0,
+      "imagesMissingAlt": 0,
+      "title": "Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events",
+      "width": 390
+    },
+    {
+      "route": "/blog/wedding-restrooms-guests-appreciate",
+      "documentWidth": 390,
+      "h1Count": 0,
+      "imagesMissingAlt": 0,
+      "title": "Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events",
+      "width": 390
+    },
+    {
+      "route": "/gallery",
+      "documentWidth": 1432,
+      "h1": "See Our Luxury Restroom Trailers",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Gallery | Signature Luxe Events & Amenities | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/gallery",
+      "documentWidth": 382,
+      "h1": "See Our Luxury Restroom Trailers",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Gallery | Signature Luxe Events & Amenities | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/faq",
+      "documentWidth": 1432,
+      "h1": "Frequently Asked Questions",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "FAQ | Signature Luxe Events & Amenities | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/faq",
+      "documentWidth": 382,
+      "h1": "Frequently Asked Questions",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "FAQ | Signature Luxe Events & Amenities | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/start-here",
+      "documentWidth": 1432,
+      "h1": "Planning Your Restroom Trailer Rental",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Restroom Trailer Rental Planning Guide Lansing MI | Signature Luxe Events & Amenities | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/start-here",
+      "documentWidth": 382,
+      "h1": "Planning Your Restroom Trailer Rental",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Restroom Trailer Rental Planning Guide Lansing MI | Signature Luxe Events & Amenities | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/contact",
+      "documentWidth": 1432,
+      "h1": "Get in Touch",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events",
+      "width": 1440
+    },
+    {
+      "route": "/contact",
+      "documentWidth": 382,
+      "h1": "Get in Touch",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Luxury Restroom Trailer Rentals Lansing MI | Signature Luxe Events",
+      "width": 390
+    },
+    {
+      "route": "/request-quote",
+      "documentWidth": 1432,
+      "h1": "Request a Luxury Restroom Trailer Quote",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Request a Luxury Restroom Trailer Quote | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/request-quote",
+      "documentWidth": 382,
+      "h1": "Request a Luxury Restroom Trailer Quote",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Request a Luxury Restroom Trailer Quote | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 390
+    },
+    {
+      "route": "/request-availability",
+      "documentWidth": 1432,
+      "h1": "Request a Luxury Restroom Trailer Quote",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Request a Luxury Restroom Trailer Quote | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 1440
+    },
+    {
+      "route": "/request-availability",
+      "documentWidth": 382,
+      "h1": "Request a Luxury Restroom Trailer Quote",
+      "h1Count": 1,
+      "imagesMissingAlt": 0,
+      "mainClass": "estate-public",
+      "title": "Request a Luxury Restroom Trailer Quote | Signature Luxe Events | Signature Luxe Events & Amenities",
+      "width": 390
+    }
+  ]
+}

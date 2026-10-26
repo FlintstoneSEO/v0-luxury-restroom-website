@@ -1,0 +1,269 @@
+{
+  "checks": [
+    "Every existing literal field/dialog ID retained",
+    "Shared draft and accurate dirty count survive all tab switches",
+    "Failed save retains draft; duplicate click makes one PATCH",
+    "Successful mocked save clears dirty count",
+    "Preview opens with synthetic content and restores trigger focus on Escape",
+    "Customer send confirmation reviewed and cancelled; no sends executed",
+    "Arrow-key tab navigation works",
+    "Locked quote retains disabled fee inputs and existing reserved status",
+    "All four tabs reflow without horizontal overflow at seven widths, including 320px"
+  ],
+  "widths": [
+    {
+      "width": 320,
+      "scroll": 320,
+      "title": {
+        "x": 22,
+        "y": 154,
+        "width": 276,
+        "height": 40.3125,
+        "top": 154,
+        "right": 298,
+        "bottom": 194.3125,
+        "left": 22
+      }
+    },
+    {
+      "width": 375,
+      "scroll": 375,
+      "title": {
+        "x": 22,
+        "y": 154,
+        "width": 331,
+        "height": 40.3125,
+        "top": 154,
+        "right": 353,
+        "bottom": 194.3125,
+        "left": 22
+      }
+    },
+    {
+      "width": 390,
+      "scroll": 390,
+      "title": {
+        "x": 22,
+        "y": 154,
+        "width": 346,
+        "height": 40.3125,
+        "top": 154,
+        "right": 368,
+        "bottom": 194.3125,
+        "left": 22
+      }
+    },
+    {
+      "width": 768,
+      "scroll": 768,
+      "title": {
+        "x": 30,
+        "y": 144,
+        "width": 708,
+        "height": 51.515625,
+        "top": 144,
+        "right": 738,
+        "bottom": 195.515625,
+        "left": 30
+      }
+    },
+    {
+      "width": 1024,
+      "scroll": 1024,
+      "title": {
+        "x": 271,
+        "y": 73,
+        "width": 722,
+        "height": 51.515625,
+        "top": 73,
+        "right": 993,
+        "bottom": 124.515625,
+        "left": 271
+      }
+    },
+    {
+      "width": 1440,
+      "scroll": 1440,
+      "title": {
+        "x": 271,
+        "y": 73,
+        "width": 1138,
+        "height": 51.515625,
+        "top": 73,
+        "right": 1409,
+        "bottom": 124.515625,
+        "left": 271
+      }
+    },
+    {
+      "width": 1513,
+      "scroll": 1513,
+      "title": {
+        "x": 271,
+        "y": 73,
+        "width": 1211,
+        "height": 51.515625,
+        "top": 73,
+        "right": 1482,
+        "bottom": 124.515625,
+        "left": 271
+      }
+    }
+  ],
+  "axe": [
+    {
+      "name": "desktop-event",
+      "violations": []
+    },
+    {
+      "name": "desktop-pricing",
+      "violations": []
+    },
+    {
+      "name": "desktop-payments",
+      "violations": []
+    },
+    {
+      "name": "desktop-activity",
+      "violations": []
+    },
+    {
+      "name": "preview-dialog",
+      "violations": []
+    },
+    {
+      "name": "phone-event",
+      "violations": []
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/quotes/quote-desk-demo"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/quotes/quote-desk-demo"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/email-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/fixture-10/options"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/quotes/quote-desk-demo/options"
+    }
+  ],
+  "geometry": [
+    {
+      "class": "desk-masthead",
+      "rect": {
+        "x": 261,
+        "y": 131.515625,
+        "width": 1231,
+        "height": 81.390625,
+        "top": 131.515625,
+        "right": 1492,
+        "bottom": 212.90625,
+        "left": 261
+      }
+    },
+    {
+      "class": "desk-status-strip",
+      "rect": {
+        "x": 261,
+        "y": 224.90625,
+        "width": 1231,
+        "height": 58,
+        "top": 224.90625,
+        "right": 1492,
+        "bottom": 282.90625,
+        "left": 261
+      }
+    },
+    {
+      "class": "desk-workspace",
+      "rect": {
+        "x": 261,
+        "y": 294.90625,
+        "width": 1231,
+        "height": 638,
+        "top": 294.90625,
+        "right": 1492,
+        "bottom": 932.90625,
+        "left": 261
+      }
+    },
+    {
+      "class": "flex flex-col gap-2 desk-tabs",
+      "rect": {
+        "x": 261,
+        "y": 294.90625,
+        "width": 825.5625,
+        "height": 638,
+        "top": 294.90625,
+        "right": 1086.5625,
+        "bottom": 932.90625,
+        "left": 261
+      }
+    },
+    {
+      "class": "desk-summary",
+      "rect": {
+        "x": 1102.5625,
+        "y": 294.90625,
+        "width": 389.4375,
+        "height": 628.5,
+        "top": 294.90625,
+        "right": 1492,
+        "bottom": 923.40625,
+        "left": 1102.5625
+      }
+    },
+    {
+      "class": "desk-action-bar",
+      "rect": {
+        "x": 240,
+        "y": 951,
+        "width": 1273,
+        "height": 88,
+        "top": 951,
+        "right": 1513,
+        "bottom": 1039,
+        "left": 240
+      }
+    }
+  ]
+}

@@ -2,6 +2,11 @@ import { z } from 'zod'
 
 export const linkSchema = z.object({ label: z.string().min(1), href: z.string().min(1) })
 export const imageSchema = z.object({ src: z.string().min(1), alt: z.string().min(1) })
+export const dayNightSchema = z.object({
+  heading: z.string().min(1), body: z.string().min(1),
+  day: imageSchema.extend({ label: z.string().min(1), caption: z.string().min(1) }),
+  night: imageSchema.extend({ label: z.string().min(1), caption: z.string().min(1) }),
+})
 export const seoSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
@@ -13,8 +18,13 @@ export const seoSchema = z.object({
 export const homepageSchema = z.object({
   _schema: z.literal('homepage'),
   slug: z.literal('home'),
+  dayNight: dayNightSchema.optional(),
+  tailgateImage: imageSchema.optional(),
   draft: z.boolean().default(false),
   seo: seoSchema,
+  introduction: z.object({
+    heading: z.string().min(1), body: z.string().min(1), image: imageSchema, cta: linkSchema,
+  }).optional(),
   hero: z.object({
     eyebrow: z.string().min(1), heading: z.string().min(1), body: z.string().min(1),
     primaryCta: linkSchema, secondaryCta: linkSchema, location: z.string().min(1),

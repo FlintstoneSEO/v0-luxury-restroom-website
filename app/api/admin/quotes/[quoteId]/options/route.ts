@@ -50,6 +50,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ quo
   const input = validation.data;
   const pricingSettings = await getPricingSettings();
   const pricing = normalizeOptionPricing({
+    calculated_breakdown: quote.calculated_breakdown,
     base_price: input.base_price ?? quote.base_price ?? 0,
     travel_fee: input.travel_fee ?? quote.travel_fee ?? 0,
     utility_fee: input.utility_fee ?? quote.utility_fee ?? 0,

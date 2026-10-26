@@ -1,0 +1,28 @@
+⚠ Blocked cross-origin request to Next.js dev resource /_next/webpack-hmr from "127.0.0.1".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['127.0.0.1'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+⨯ SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>) {
+  page: '/admin/login'
+}
+⚠ Blocked cross-origin request to Next.js dev resource /__nextjs_original-stack-frames from "127.0.0.1".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['127.0.0.1'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+Image with src "https://lmytjyqjgjsqqffsulwz.supabase.co/storage/v1/object/public/site-media/homepage/hero/1778860906741-90aaddb0-504c-4746-a765-7d6002ef4a6f.png?v=1778860907659&v=2026-05-15T16:01:57.922745+00:00" is using quality "85" which is not configured in images.qualities [75, 78, 80]. Please update your config to [75, 78, 80, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities

@@ -121,7 +121,8 @@ export async function submitRequestAvailability(
       hasWater,
       eventEndTime,
       eventDate,
-      pricingSettings
+      pricingSettings,
+      startTime
     );
 
     const quotePayload = {
@@ -248,6 +249,7 @@ export async function submitRequestAvailability(
                 <td style="padding: 8px; border-bottom: 1px solid #e5e5e5;">Base Price (${priceBreakdown.details.guest_tier})</td>
                 <td style="padding: 8px; border-bottom: 1px solid #e5e5e5; text-align: right;">${formatCurrency(priceBreakdown.base_price)}</td>
               </tr>
+              ${priceBreakdown.extra_hours_fee ? `<tr><td style="padding: 8px;">Additional Event Hours</td><td style="padding: 8px; text-align: right;">${formatCurrency(priceBreakdown.extra_hours_fee)}</td></tr>` : ''}
               ${priceBreakdown.travel_fee > 0 ? `
               <tr>
                 <td style="padding: 8px; border-bottom: 1px solid #e5e5e5;">Travel Fee (${priceBreakdown.details.extra_miles} extra miles)</td>

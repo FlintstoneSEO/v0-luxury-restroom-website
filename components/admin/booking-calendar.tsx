@@ -323,7 +323,7 @@ export function BookingCalendar({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="admin-booking-calendar space-y-5">
       {!compact && (
         <div className="flex flex-col gap-3 rounded-xl border border-[#d9d1c8] bg-white p-4 sm:flex-row sm:items-end sm:justify-between">
           <label className="space-y-1.5">

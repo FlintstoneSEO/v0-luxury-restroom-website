@@ -1,3 +1,4 @@
+import { getExtraHoursFee } from '@/lib/pricing-engine';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { hashApprovalToken, isTokenExpired } from '@/lib/quote-approval';
 import QuoteApprovalClient from './quote-approval-client';
@@ -81,6 +82,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
       event_end_time,
       has_power,
       has_water,
+      calculated_breakdown,
       base_price,
       travel_fee,
       utility_fee,
@@ -155,6 +157,7 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
     .order('created_at', { ascending: true });
 
   const publicQuote = { ...quote };
+  delete publicQuote.calculated_breakdown;
   delete publicQuote.quote_viewed_at;
   delete publicQuote.quote_view_count;
 
@@ -171,16 +174,16 @@ export default async function QuoteApprovalPage({ params }: QuoteApprovalPagePro
           </p>
           {hasRushFee && (
             <p className="mt-2 text-sm font-medium">
-              This event qualifies as a rush booking, and a $250 rush booking fee is included in the quote summary.
+              This event qualifies as a rush booking, and a rush booking fee is included in the quote summary.
             </p>
           )}
         </div>
       </div>
       <QuoteApprovalClient
-        quote={publicQuote}
+        quote={{ ...publicQuote, extra_hours_fee: getExtraHoursFee(quote.calculated_breakdown) }}
         token={token}
         alreadyResponded={alreadyResponded}
-        options={options ?? []}
+        options={(options ?? []).map(option => ({ ...option, extra_hours_fee: getExtraHoursFee(option.calculated_breakdown) }))}
         publicSiteOrigin={publicSiteOrigin}
       />
     </div>

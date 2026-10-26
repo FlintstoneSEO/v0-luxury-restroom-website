@@ -1,0 +1,116 @@
+npm notice run signature-luxe-platform@0.1.0 build
+npm notice run next build --webpack
+▲ Next.js 16.2.4 (webpack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 19.7min
+  Running TypeScript ...
+
+  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+  	- include was updated to add '.next-service-quote-desk-complete/types/**/*.ts'
+  	- include was updated to add '.next-service-quote-desk-complete/dev/types/**/*.ts'
+
+  Finished TypeScript in 10.6s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/75) ...
+  Generating static pages using 7 workers (18/75) 
+  Generating static pages using 7 workers (37/75) 
+  Generating static pages using 7 workers (56/75) 
+✓ Generating static pages using 7 workers (75/75) in 1575ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)                                                     Revalidate  Expire
+┌ ○ /                                                                   1h      1y
+├ ○ /_not-found
+├ ƒ /admin
+├ ƒ /admin/calendar
+├ ○ /admin/distance-settings
+├ ○ /admin/homepage-media
+├ ○ /admin/login
+├ ƒ /admin/pricing
+├ ƒ /admin/quotes/[quoteId]
+├ ○ /admin/settings
+├ ƒ /admin/site-media
+├ ƒ /api/admin/homepage-media
+├ ƒ /api/admin/logout
+├ ƒ /api/admin/migrations/run
+├ ƒ /api/admin/pricing
+├ ƒ /api/admin/quotes/[quoteId]
+├ ƒ /api/admin/quotes/[quoteId]/agreement
+├ ƒ /api/admin/quotes/[quoteId]/deposit
+├ ƒ /api/admin/quotes/[quoteId]/email-preview
+├ ƒ /api/admin/quotes/[quoteId]/options
+├ ƒ /api/admin/quotes/[quoteId]/options/[optionId]
+├ ƒ /api/admin/quotes/[quoteId]/options/[optionId]/recalculate
+├ ƒ /api/admin/quotes/[quoteId]/recalculate
+├ ƒ /api/admin/quotes/[quoteId]/send
+├ ƒ /api/admin/quotes/[quoteId]/send-agreement
+├ ƒ /api/admin/quotes/[quoteId]/send-deposit-invoice
+├ ƒ /api/admin/quotes/[quoteId]/send-test
+├ ƒ /api/admin/quotes/test
+├ ƒ /api/admin/site-media
+├ ƒ /api/availability/booked-dates
+├ ƒ /api/quote-requests
+├ ƒ /api/quote/[token]/message
+├ ƒ /api/quote/[token]/respond
+├ ƒ /api/quote/respond
+├ ƒ /api/webhooks/dropbox-sign
+├ ƒ /api/webhooks/square
+├ ○ /apple-icon
+├ ƒ /auth/callback
+├ ○ /blog                                                               1h      1y
+├ ● /blog/[slug]
+├ ○ /construction-long-term
+├ ○ /construction-long-term-restroom-trailer-rentals
+├ ○ /contact
+├ ○ /corporate-event-restroom-trailers
+├ ○ /dewitt-mi
+├ ○ /disaster-relief-government
+├ ○ /east-lansing-mi
+├ ○ /emergency-disaster-relief-restroom-trailers
+├ ○ /faq
+├ ○ /festival-community-event-restroom-trailers
+├ ƒ /gallery
+├ ○ /grand-ledge-mi
+├ ○ /haslett-mi
+├ ○ /icon
+├ ○ /jackson-mi
+├ ○ /lansing-mi
+├ ○ /luxury-restroom-trailer-features
+├ ○ /luxury-restroom-trailer-rentals
+├ ○ /okemos-mi
+├ ○ /our-restrooms
+├ ○ /private-event-restroom-trailers                                    1h      1y
+├ ƒ /quote/[token]
+├ ○ /request-availability
+├ ○ /request-quote
+├ ○ /resources
+├ ● /resources/[slug]
+│ ├ /resources/construction-restroom-trailer-rental-guide
+│ ├ /resources/festival-restroom-planning-guide
+│ ├ /resources/how-many-restroom-trailers-for-wedding
+│ └ [+4 more paths]
+├ ○ /robots.txt
+├ ○ /service-areas
+├ ● /service-areas/[citySlug]
+│ ├ /service-areas/ann-arbor-mi
+│ ├ /service-areas/battle-creek-mi
+│ ├ /service-areas/brighton-mi
+│ └ [+14 more paths]
+├ ○ /sitemap.xml                                                        1h      1y
+├ ○ /special-events
+├ ○ /start-here
+├ ○ /wedding-restroom-trailer-rentals
+└ ƒ /weddings
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

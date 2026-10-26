@@ -1,0 +1,45 @@
+{
+  "scans": [
+    {
+      "name": "dashboard",
+      "violations": [],
+      "passes": 28,
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    {
+      "name": "phone",
+      "violations": [],
+      "passes": 22,
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    {
+      "name": "editor",
+      "violations": [],
+      "passes": 20,
+      "incomplete": []
+    },
+    {
+      "name": "calendar",
+      "violations": [],
+      "passes": 19,
+      "incomplete": [
+        "color-contrast"
+      ]
+    },
+    {
+      "name": "phone-workbench",
+      "violations": [],
+      "passes": 23
+    }
+  ],
+  "reflow": {
+    "width": 720,
+    "documentWidth": 720
+  }
+}

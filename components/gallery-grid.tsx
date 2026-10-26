@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import Image from "next/image"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -31,6 +31,7 @@ export function GalleryGrid({
   className,
 }: GalleryGridProps) {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
+  const opener = useRef<HTMLButtonElement | null>(null)
 
   const columnClasses = {
     2: "grid-cols-1 sm:grid-cols-2",
@@ -45,7 +46,10 @@ export function GalleryGrid({
           <button
             type="button"
             key={image.id}
-            onClick={() => setSelectedImage(image)}
+            onClick={(event) => {
+              opener.current = event.currentTarget
+              setSelectedImage(image)
+            }}
             aria-label={`View larger image: ${image.alt}`}
             className="group relative aspect-[4/3] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-4"
           >
@@ -69,6 +73,10 @@ export function GalleryGrid({
       {/* Lightbox */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
         <DialogContent
+          onCloseAutoFocus={(event) => {
+            event.preventDefault()
+            opener.current?.focus()
+          }}
           showCloseButton={false}
           className="h-[92dvh] w-[calc(100vw-1rem)] max-w-[96rem] gap-0 border-none bg-transparent p-0 shadow-none sm:max-w-[calc(100vw-2rem)]"
         >

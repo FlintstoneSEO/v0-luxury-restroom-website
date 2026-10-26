@@ -1,0 +1,660 @@
+npm notice run signature-luxe-platform@0.1.0 typecheck
+npm notice run tsc --noEmit --incremental false
+app/actions/quote-request.ts(134,32): error TS7006: Parameter 'quote' implicitly has an 'any' type.
+app/admin/distance-settings/page.tsx(48,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/admin/login/page.tsx(26,62): error TS2339: Property 'signInWithPassword' does not exist on type 'SupabaseAuthClient'.
+app/admin/login/page.tsx(41,29): error TS2339: Property 'signOut' does not exist on type 'SupabaseAuthClient'.
+app/admin/login/page.tsx(76,16): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/admin/login/page.tsx(89,16): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/admin/pricing/page.tsx(14,58): error TS7006: Parameter 'row' implicitly has an 'any' type.
+app/admin/pricing/page.tsx(14,115): error TS7006: Parameter 'row' implicitly has an 'any' type.
+app/admin/quotes/[quoteId]/page.tsx(41,34): error TS7006: Parameter 'setting' implicitly has an 'any' type.
+app/api/admin/logout/route.ts(28,23): error TS2339: Property 'signOut' does not exist on type 'SupabaseAuthClient'.
+app/api/admin/quotes/test/route.ts(126,72): error TS7031: Binding element 'id' implicitly has an 'any' type.
+app/api/admin/quotes/test/route.ts(126,76): error TS7031: Binding element 'quote_request_id' implicitly has an 'any' type.
+app/api/admin/quotes/test/route.ts(126,94): error TS7031: Binding element 'created_at' implicitly has an 'any' type.
+app/api/admin/quotes/test/route.ts(126,106): error TS7031: Binding element 'updated_at' implicitly has an 'any' type.
+app/api/quote-requests/route.ts(50,32): error TS7006: Parameter 'quote' implicitly has an 'any' type.
+app/api/quote/[token]/respond/route.ts(91,36): error TS7006: Parameter 'option' implicitly has an 'any' type.
+app/auth/callback/route.ts(28,25): error TS2339: Property 'exchangeCodeForSession' does not exist on type 'SupabaseAuthClient'.
+app/contact/page.tsx(162,26): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/contact/page.tsx(174,26): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/contact/page.tsx(189,24): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/contact/page.tsx(199,24): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/contact/page.tsx(212,24): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+app/quote/[token]/page.tsx(162,87): error TS7006: Parameter 'option' implicitly has an 'any' type.
+apps/admin/app/admin/actions.ts(13,41): error TS2339: Property 'signInWithPassword' does not exist on type 'SupabaseAuthClient'.
+apps/admin/app/admin/actions.ts(17,25): error TS2339: Property 'signOut' does not exist on type 'SupabaseAuthClient'.
+apps/admin/app/admin/actions.ts(27,41): error TS2339: Property 'signOut' does not exist on type 'SupabaseAuthClient'.
+apps/admin/lib/auth-policy.ts(1,31): error TS2305: Module '"@supabase/supabase-js"' has no exported member 'User'.
+apps/admin/lib/auth-policy.ts(10,57): error TS2339: Property 'getUser' does not exist on type 'SupabaseAuthClient'.
+components/admin/admin-shell.tsx(90,30): error TS2322: Type '{ children: Element; asChild: true; key: "/admin" | "/admin/calendar" | "/admin/pricing" | "/admin/site-media" | "/admin/distance-settings"; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/admin/admin-shell.tsx(215,16): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/admin/admin-shell.tsx(228,20): error TS2322: Type '{ children: string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/admin/booking-calendar.tsx(317,16): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/booking-calendar.tsx(320,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/booking-calendar.tsx(322,20): error TS2322: Type '{ children: string; key: ActivityFilter; value: ActivityFilter; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/pricing-settings-form.tsx(150,8): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(928,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(936,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(945,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(960,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(969,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(974,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(976,20): error TS2322: Type '{ children: "Wedding" | "Corporate Event" | "Private Party" | "Outdoor Ceremony" | "Graduation Party" | "Other" | "Festival/Community Event" | "Construction/Long-term" | "Disaster Relief/Government"; key: "Wedding" | ... 7 more ... | "Disaster Relief/Government"; value: "Wedding" | ... 7 more ... | "Disaster Relief/...' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(982,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(991,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1001,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1009,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1017,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1025,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1033,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1042,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1071,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1140,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1150,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1160,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1170,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1180,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1190,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1200,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1210,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1237,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1249,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1358,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1363,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(1365,20): error TS2322: Type '{ children: string; key: "pending_review" | "customer_approved" | "declined" | "expired" | "cancelled" | "pending" | "new" | "under_review" | "draft_quote" | "quote_sent" | "sent_to_customer" | ... 8 more ... | "completed"; value: "pending_review" | ... 18 more ... | "completed"; disabled: boolean; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(1377,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1382,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(1384,20): error TS2322: Type '{ children: string; key: "cancelled" | "not_sent" | "ready_to_send" | "sent" | "signed" | "voided" | "not_started"; value: "cancelled" | "not_sent" | "ready_to_send" | "sent" | "signed" | "voided" | "not_started"; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(1392,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1397,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(1399,20): error TS2322: Type '{ children: string; key: "not_required" | "due" | "paid" | "refunded" | "pending" | "not_requested" | "requested" | "invoice_sent" | "overdue" | "waived"; value: "not_required" | ... 8 more ... | "waived"; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-detail-editor.tsx(1414,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1424,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1434,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1509,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1519,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1528,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1538,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1638,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1648,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1733,14): error TS2322: Type '{ children: string; id: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/admin/quote-detail-editor.tsx(1738,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1749,14): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/admin/quote-detail-editor.tsx(1763,14): error TS2322: Type '{ children: string; id: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/admin/quote-detail-editor.tsx(1770,16): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1774,16): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1802,18): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/admin/quote-detail-editor.tsx(1822,14): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/admin/quote-detail-editor.tsx(1838,14): error TS2322: Type '{ children: string; id: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/admin/quote-detail-editor.tsx(1878,14): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/admin/quote-detail-editor.tsx(1909,14): error TS2559: Type '{ children: string | undefined; }' has no properties in common with type 'IntrinsicAttributes & AlertDialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/admin/quote-detail-editor.tsx(1910,14): error TS2559: Type '{ children: string | undefined; }' has no properties in common with type 'IntrinsicAttributes & AlertDialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/admin/quote-detail-editor.tsx(1913,14): error TS2559: Type '{ children: string; }' has no properties in common with type 'IntrinsicAttributes & AlertDialogCancelProps & RefAttributes<HTMLButtonElement>'.
+components/admin/quote-detail-editor.tsx(1914,14): error TS2322: Type '{ children: string; onClick: () => Promise<void>; }' is not assignable to type 'IntrinsicAttributes & AlertDialogActionProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AlertDialogActionProps & RefAttributes<HTMLButtonElement>'.
+components/admin/quote-requests-dashboard.tsx(492,16): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/quote-requests-dashboard.tsx(495,16): error TS2559: Type '{ children: (Element | Element[])[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(496,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(498,20): error TS2322: Type '{ children: string; key: "pending_review" | "customer_approved" | "declined" | "expired" | "cancelled" | "pending" | "new" | "under_review" | "draft_quote" | "quote_sent" | "sent_to_customer" | ... 8 more ... | "completed"; value: "pending_review" | ... 18 more ... | "completed"; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(509,16): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/quote-requests-dashboard.tsx(512,16): error TS2559: Type '{ children: (Element | Element[])[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(513,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(515,20): error TS2322: Type '{ children: "Wedding" | "Corporate Event" | "Private Party" | "Outdoor Ceremony" | "Graduation Party" | "Other" | "Festival/Community Event" | "Construction/Long-term" | "Disaster Relief/Government"; key: "Wedding" | ... 7 more ... | "Disaster Relief/Government"; value: "Wedding" | ... 7 more ... | "Disaster Relief/...' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(526,16): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/quote-requests-dashboard.tsx(529,16): error TS2559: Type '{ children: (Element | Element[])[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(530,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(532,20): error TS2322: Type '{ children: string; key: "cancelled" | "not_sent" | "ready_to_send" | "sent" | "signed" | "voided" | "not_started"; value: "cancelled" | "not_sent" | "ready_to_send" | "sent" | "signed" | "voided" | "not_started"; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(543,16): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/quote-requests-dashboard.tsx(546,16): error TS2559: Type '{ children: (Element | Element[])[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(547,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(549,20): error TS2322: Type '{ children: string; key: "not_required" | "due" | "paid" | "refunded" | "pending" | "not_requested" | "requested" | "invoice_sent" | "overdue" | "waived"; value: "not_required" | ... 8 more ... | "waived"; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(560,16): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/quote-requests-dashboard.tsx(563,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(564,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(565,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(566,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(574,16): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/quote-requests-dashboard.tsx(577,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(578,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(579,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(580,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(581,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(582,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(590,16): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/admin/quote-requests-dashboard.tsx(593,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(594,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(595,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(596,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(597,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(598,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(599,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(600,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/admin/quote-requests-dashboard.tsx(785,18): error TS2322: Type '{ children: string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/admin/quote-requests-dashboard.tsx(788,18): error TS2322: Type '{ children: string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/availability-date-picker.tsx(83,10): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & PopoverTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & PopoverTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/faq-section.tsx(21,6): error TS2322: Type '{ children: Element[]; type: "single"; collapsible: true; className: string; }' is not assignable to type 'IntrinsicAttributes & ((AccordionSingleProps | AccordionMultipleProps) & RefAttributes<HTMLDivElement>)'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AccordionSingleProps & RefAttributes<HTMLDivElement>'.
+components/faq-section.tsx(27,10): error TS2322: Type '{ children: Element[]; key: number; value: string; className: string; }' is not assignable to type 'IntrinsicAttributes & AccordionItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AccordionItemProps & RefAttributes<HTMLDivElement>'.
+components/faq-section.tsx(32,12): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & AccordionTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AccordionTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/faq-section.tsx(35,12): error TS2322: Type '{ children: string; className: string; }' is not assignable to type 'IntrinsicAttributes & AccordionContentProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AccordionContentProps & RefAttributes<HTMLDivElement>'.
+components/gallery-grid.tsx(75,12): error TS2322: Type '{ children: string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/gallery-grid.tsx(79,14): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/layout/mobile-navigation.tsx(20,10): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/layout/mobile-navigation.tsx(27,10): error TS2322: Type '{ children: string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/layout/mobile-navigation.tsx(28,10): error TS2322: Type '{ children: string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/layout/mobile-navigation.tsx(29,10): error TS2322: Type '{ children: Element; className: string; "aria-label": string; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/layout/mobile-navigation.tsx(52,24): error TS2322: Type '{ children: Element; key: string; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/layout/mobile-navigation.tsx(64,18): error TS2322: Type '{ children: Element; key: string; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/layout/mobile-navigation.tsx(76,14): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/quote-request-form.tsx(40,34): error TS2503: Cannot find namespace 'google'.
+components/quote-request-form.tsx(64,39): error TS7006: Parameter 'component' implicitly has an 'any' type.
+components/quote-request-form.tsx(129,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(141,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(156,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(179,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(186,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(192,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(194,20): error TS2322: Type '{ children: "Wedding" | "Corporate Event" | "Festival/Concert" | "Private Party" | "Construction Site" | "Outdoor Ceremony" | "Graduation Party" | "Other"; key: "Wedding" | ... 6 more ... | "Other"; value: "Wedding" | ... 6 more ... | "Other"; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(207,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(230,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(267,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(281,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(291,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(316,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(328,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(354,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(366,16): error TS2322: Type '{ children: Element; id: string; "aria-describedby": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/quote-request-form.tsx(369,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(370,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(371,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(372,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(377,14): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/quote-request-form.tsx(389,16): error TS2322: Type '{ children: Element; id: string; "aria-describedby": string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/quote-request-form.tsx(392,16): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(393,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(394,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(395,18): error TS2322: Type '{ children: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/quote-request-form.tsx(411,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(214,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(226,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(242,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(255,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(272,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(276,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(281,14): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/request-availability-form.tsx(283,18): error TS2322: Type '{ children: string; key: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/request-availability-form.tsx(297,10): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(308,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(317,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(321,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(329,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(336,14): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/request-availability-form.tsx(338,18): error TS2322: Type '{ children: string; key: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/request-availability-form.tsx(346,12): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/request-availability-form.tsx(353,14): error TS2559: Type '{ children: Element[]; }' has no properties in common with type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/request-availability-form.tsx(355,18): error TS2322: Type '{ children: string; key: string; value: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/request-availability-form.tsx(366,10): error TS2322: Type '{ children: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/ui/accordion.tsx(16,3): error TS2339: Property 'className' does not exist on type 'AccordionItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/accordion.tsx(22,7): error TS2322: Type '{ disabled?: boolean | undefined; value: string; key?: Key | null | undefined; ref?: Ref<HTMLDivElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AccordionItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AccordionItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/accordion.tsx(29,3): error TS2339: Property 'className' does not exist on type 'AccordionTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/accordion.tsx(30,3): error TS2339: Property 'children' does not exist on type 'AccordionTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/accordion.tsx(34,6): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & AccordionHeaderProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AccordionHeaderProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/accordion.tsx(35,8): error TS2322: Type '{ children: any[]; key?: Key | null | undefined; ref?: Ref<HTMLButtonElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AccordionTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AccordionTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/accordion.tsx(51,3): error TS2339: Property 'className' does not exist on type 'AccordionContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/accordion.tsx(52,3): error TS2339: Property 'children' does not exist on type 'AccordionContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/accordion.tsx(56,6): error TS2322: Type '{ children: Element; key?: Key | null | undefined; forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AccordionContentProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & AccordionContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/alert-dialog.tsx(32,3): error TS2339: Property 'className' does not exist on type 'AlertDialogOverlayProps & RefAttributes<HTMLDivElement>'.
+components/ui/alert-dialog.tsx(38,7): error TS2322: Type '{ key?: Key | null | undefined; forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AlertDialogOverlayProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AlertDialogOverlayProps & RefAttributes<HTMLDivElement>'.
+components/ui/alert-dialog.tsx(96,3): error TS2339: Property 'className' does not exist on type 'AlertDialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/alert-dialog.tsx(102,7): error TS2322: Type '{ key?: Key | null | undefined; ref?: Ref<HTMLHeadingElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AlertDialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AlertDialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/alert-dialog.tsx(109,3): error TS2339: Property 'className' does not exist on type 'AlertDialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/alert-dialog.tsx(115,7): error TS2322: Type '{ key?: Key | null | undefined; ref?: Ref<HTMLParagraphElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AlertDialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AlertDialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/alert-dialog.tsx(122,3): error TS2339: Property 'className' does not exist on type 'AlertDialogActionProps & RefAttributes<HTMLButtonElement>'.
+components/ui/alert-dialog.tsx(127,7): error TS2322: Type '{ key?: Key | null | undefined; ref?: Ref<HTMLButtonElement> | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & AlertDialogActionProps & RefAttributes<HTMLButtonElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AlertDialogActionProps & RefAttributes<HTMLButtonElement>'.
+components/ui/alert-dialog.tsx(134,3): error TS2339: Property 'className' does not exist on type 'AlertDialogCancelProps & RefAttributes<HTMLButtonElement>'.
+components/ui/alert-dialog.tsx(139,7): error TS2322: Type '{ key?: Key | null | undefined; ref?: Ref<HTMLButtonElement> | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & AlertDialogCancelProps & RefAttributes<HTMLButtonElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AlertDialogCancelProps & RefAttributes<HTMLButtonElement>'.
+components/ui/avatar.tsx(9,3): error TS2339: Property 'className' does not exist on type 'AvatarProps & RefAttributes<HTMLSpanElement>'.
+components/ui/avatar.tsx(15,7): error TS2322: Type '{ ref?: Ref<HTMLSpanElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AvatarProps & RefAttributes<HTMLSpanElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AvatarProps & RefAttributes<HTMLSpanElement>'.
+components/ui/avatar.tsx(25,3): error TS2339: Property 'className' does not exist on type 'AvatarImageProps & RefAttributes<HTMLImageElement>'.
+components/ui/avatar.tsx(31,7): error TS2322: Type '{ onLoadingStatusChange?: ((status: ImageLoadingStatus) => void) | undefined; ref?: Ref<HTMLImageElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AvatarImageProps & RefAttributes<HTMLImageElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AvatarImageProps & RefAttributes<HTMLImageElement>'.
+components/ui/avatar.tsx(38,3): error TS2339: Property 'className' does not exist on type 'AvatarFallbackProps & RefAttributes<HTMLSpanElement>'.
+components/ui/avatar.tsx(44,7): error TS2322: Type '{ delayMs?: number | undefined; ref?: Ref<HTMLSpanElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & AvatarFallbackProps & RefAttributes<HTMLSpanElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & AvatarFallbackProps & RefAttributes<HTMLSpanElement>'.
+components/ui/button-group.tsx(61,3): error TS2339: Property 'className' does not exist on type 'SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/button-group.tsx(69,7): error TS2322: Type '{ decorative?: boolean | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; orientation: "horizontal" | "vertical"; className: string; }' is not assignable to type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/checkbox.tsx(22,8): error TS2322: Type '{ children: Element; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & CheckboxIndicatorProps & RefAttributes<HTMLSpanElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & CheckboxIndicatorProps & RefAttributes<HTMLSpanElement>'.
+components/ui/context-menu.tsx(57,3): error TS2339: Property 'className' does not exist on type 'ContextMenuSubTriggerProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/context-menu.tsx(59,3): error TS2339: Property 'children' does not exist on type 'ContextMenuSubTriggerProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/context-menu.tsx(65,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & ContextMenuSubTriggerProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ContextMenuSubTriggerProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(81,3): error TS2339: Property 'className' does not exist on type 'ContextMenuSubContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(87,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ContextMenuSubContentProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ContextMenuSubContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(115,3): error TS2339: Property 'className' does not exist on type 'ContextMenuItemProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; variant?: "default" | "destructive" | undefined; }'.
+components/ui/context-menu.tsx(128,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; "data-variant": "default" | "destructive"; className: string; }' is not assignable to type 'IntrinsicAttributes & ContextMenuItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ContextMenuItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(138,3): error TS2339: Property 'className' does not exist on type 'ContextMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(139,3): error TS2339: Property 'children' does not exist on type 'ContextMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(140,3): error TS2339: Property 'checked' does not exist on type 'ContextMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(144,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; checked: any; }' is not assignable to type 'IntrinsicAttributes & ContextMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ContextMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(164,3): error TS2339: Property 'className' does not exist on type 'ContextMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(165,3): error TS2339: Property 'children' does not exist on type 'ContextMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(169,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ContextMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ContextMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(188,3): error TS2339: Property 'className' does not exist on type 'ContextMenuLabelProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/context-menu.tsx(198,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & ContextMenuLabelProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ContextMenuLabelProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(208,3): error TS2339: Property 'className' does not exist on type 'ContextMenuSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/context-menu.tsx(214,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ContextMenuSeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ContextMenuSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/dialog.tsx(34,3): error TS2339: Property 'className' does not exist on type 'DialogOverlayProps & RefAttributes<HTMLDivElement>'.
+components/ui/dialog.tsx(40,7): error TS2322: Type '{ forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogOverlayProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogOverlayProps & RefAttributes<HTMLDivElement>'.
+components/ui/dialog.tsx(70,12): error TS2322: Type '{ children: Element[]; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DialogCloseProps & RefAttributes<HTMLButtonElement>'.
+components/ui/dialog.tsx(107,3): error TS2339: Property 'className' does not exist on type 'DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/dialog.tsx(113,7): error TS2322: Type '{ ref?: Ref<HTMLHeadingElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/dialog.tsx(120,3): error TS2339: Property 'className' does not exist on type 'DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/dialog.tsx(126,7): error TS2322: Type '{ ref?: Ref<HTMLParagraphElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/drawer.tsx(33,3): error TS2339: Property 'className' does not exist on type 'Omit<DialogOverlayProps & RefAttributes<HTMLDivElement>, "ref"> & RefAttributes<HTMLDivElement>'.
+components/ui/drawer.tsx(39,7): error TS2322: Type '{ key?: Key | null | undefined; forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & Omit<DialogOverlayProps & RefAttributes<HTMLDivElement>, "ref"> & RefAttributes<...>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & Omit<DialogOverlayProps & RefAttributes<HTMLDivElement>, "ref"> & RefAttributes<...>'.
+components/ui/drawer.tsx(99,3): error TS2339: Property 'className' does not exist on type 'DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/drawer.tsx(105,7): error TS2322: Type '{ ref?: Ref<HTMLHeadingElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/drawer.tsx(112,3): error TS2339: Property 'className' does not exist on type 'DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/drawer.tsx(118,7): error TS2322: Type '{ ref?: Ref<HTMLParagraphElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/dropdown-menu.tsx(63,3): error TS2339: Property 'className' does not exist on type 'DropdownMenuItemProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; variant?: "default" | "destructive" | undefined; }'.
+components/ui/dropdown-menu.tsx(76,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; "data-variant": "default" | "destructive"; className: string; }' is not assignable to type 'IntrinsicAttributes & DropdownMenuItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DropdownMenuItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(86,3): error TS2339: Property 'className' does not exist on type 'DropdownMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(87,3): error TS2339: Property 'children' does not exist on type 'DropdownMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(88,3): error TS2339: Property 'checked' does not exist on type 'DropdownMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(92,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; checked: any; }' is not assignable to type 'IntrinsicAttributes & DropdownMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DropdownMenuCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(123,3): error TS2339: Property 'className' does not exist on type 'DropdownMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(124,3): error TS2339: Property 'children' does not exist on type 'DropdownMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(128,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DropdownMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DropdownMenuRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(147,3): error TS2339: Property 'className' does not exist on type 'DropdownMenuLabelProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/dropdown-menu.tsx(157,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & DropdownMenuLabelProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DropdownMenuLabelProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(167,3): error TS2339: Property 'className' does not exist on type 'DropdownMenuSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(173,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DropdownMenuSeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DropdownMenuSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(202,3): error TS2339: Property 'className' does not exist on type 'DropdownMenuSubTriggerProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/dropdown-menu.tsx(204,3): error TS2339: Property 'children' does not exist on type 'DropdownMenuSubTriggerProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/dropdown-menu.tsx(210,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & DropdownMenuSubTriggerProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & DropdownMenuSubTriggerProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(226,3): error TS2339: Property 'className' does not exist on type 'DropdownMenuSubContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/dropdown-menu.tsx(232,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DropdownMenuSubContentProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DropdownMenuSubContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/field.tsx(111,3): error TS2339: Property 'className' does not exist on type 'LabelProps & RefAttributes<HTMLLabelElement>'.
+components/ui/field.tsx(117,7): error TS2322: Type '{ ref?: Ref<HTMLLabelElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/ui/field.tsx(173,18): error TS2322: Type '{ className: string; }' is not assignable to type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/form.tsx(91,3): error TS2339: Property 'className' does not exist on type 'LabelProps & RefAttributes<HTMLLabelElement>'.
+components/ui/form.tsx(100,7): error TS2322: Type '{ ref?: Ref<HTMLLabelElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-error": boolean; className: string; htmlFor: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/ui/item.tsx(20,3): error TS2339: Property 'className' does not exist on type 'SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/item.tsx(27,7): error TS2322: Type '{ orientation: "horizontal" | "vertical"; decorative?: boolean | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/label.tsx(9,3): error TS2339: Property 'className' does not exist on type 'LabelProps & RefAttributes<HTMLLabelElement>'.
+components/ui/label.tsx(15,7): error TS2322: Type '{ ref?: Ref<HTMLLabelElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & LabelProps & RefAttributes<HTMLLabelElement>'.
+components/ui/menubar.tsx(10,3): error TS2339: Property 'className' does not exist on type 'MenubarProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(16,7): error TS2322: Type '{ value?: string | undefined; defaultValue?: string | undefined; onValueChange?: ((value: string) => void) | undefined; loop?: any; dir?: any; ref?: Ref<HTMLDivElement> | undefined; key?: Key | ... 1 more ... | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & MenubarProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(52,3): error TS2339: Property 'className' does not exist on type 'MenubarTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/menubar.tsx(58,7): error TS2322: Type '{ ref?: Ref<HTMLButtonElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & MenubarTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/menubar.tsx(92,3): error TS2339: Property 'className' does not exist on type 'MenubarItemProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; variant?: "default" | "destructive" | undefined; }'.
+components/ui/menubar.tsx(105,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; "data-variant": "default" | "destructive"; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & MenubarItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(115,3): error TS2339: Property 'className' does not exist on type 'MenubarCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(116,3): error TS2339: Property 'children' does not exist on type 'MenubarCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(117,3): error TS2339: Property 'checked' does not exist on type 'MenubarCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(121,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; checked: any; }' is not assignable to type 'IntrinsicAttributes & MenubarCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & MenubarCheckboxItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(141,3): error TS2339: Property 'className' does not exist on type 'MenubarRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(142,3): error TS2339: Property 'children' does not exist on type 'MenubarRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(146,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarRadioItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & MenubarRadioItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(165,3): error TS2339: Property 'className' does not exist on type 'MenubarLabelProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/menubar.tsx(175,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarLabelProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & MenubarLabelProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(185,3): error TS2339: Property 'className' does not exist on type 'MenubarSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(191,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarSeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & MenubarSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(220,3): error TS2339: Property 'className' does not exist on type 'MenubarSubTriggerProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/menubar.tsx(222,3): error TS2339: Property 'children' does not exist on type 'MenubarSubTriggerProps & RefAttributes<HTMLDivElement> & { inset?: boolean | undefined; }'.
+components/ui/menubar.tsx(228,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-inset": boolean | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarSubTriggerProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & MenubarSubTriggerProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(244,3): error TS2339: Property 'className' does not exist on type 'MenubarSubContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/menubar.tsx(250,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & MenubarSubContentProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & MenubarSubContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/navigation-menu.tsx(9,3): error TS2339: Property 'className' does not exist on type 'NavigationMenuProps & RefAttributes<HTMLElement> & { viewport?: boolean | undefined; }'.
+components/ui/navigation-menu.tsx(10,3): error TS2339: Property 'children' does not exist on type 'NavigationMenuProps & RefAttributes<HTMLElement> & { viewport?: boolean | undefined; }'.
+components/ui/navigation-menu.tsx(17,6): error TS2322: Type '{ children: any[]; value?: string | undefined; defaultValue?: string | undefined; onValueChange?: ((value: string) => void) | undefined; dir?: Direction | undefined; orientation?: Orientation | undefined; ... 6 more ...; className: string; }' is not assignable to type 'IntrinsicAttributes & NavigationMenuProps & RefAttributes<HTMLElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & NavigationMenuProps & RefAttributes<HTMLElement>'.
+components/ui/navigation-menu.tsx(33,3): error TS2339: Property 'className' does not exist on type 'NavigationMenuListProps & RefAttributes<HTMLUListElement>'.
+components/ui/navigation-menu.tsx(39,7): error TS2322: Type '{ ref?: Ref<HTMLUListElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & NavigationMenuListProps & RefAttributes<HTMLUListElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NavigationMenuListProps & RefAttributes<HTMLUListElement>'.
+components/ui/navigation-menu.tsx(49,3): error TS2339: Property 'className' does not exist on type 'NavigationMenuItemProps & RefAttributes<HTMLLIElement>'.
+components/ui/navigation-menu.tsx(55,7): error TS2322: Type '{ value?: string | undefined; ref?: Ref<HTMLLIElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & NavigationMenuItemProps & RefAttributes<HTMLLIElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NavigationMenuItemProps & RefAttributes<HTMLLIElement>'.
+components/ui/navigation-menu.tsx(66,3): error TS2339: Property 'className' does not exist on type 'NavigationMenuTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/navigation-menu.tsx(67,3): error TS2339: Property 'children' does not exist on type 'NavigationMenuTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/navigation-menu.tsx(71,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLButtonElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & NavigationMenuTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & NavigationMenuTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/navigation-menu.tsx(103,3): error TS2339: Property 'className' does not exist on type 'NavigationMenuViewportProps & RefAttributes<HTMLDivElement>'.
+components/ui/navigation-menu.tsx(112,9): error TS2322: Type '{ forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & NavigationMenuViewportProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & NavigationMenuViewportProps & RefAttributes<HTMLDivElement>'.
+components/ui/navigation-menu.tsx(139,3): error TS2339: Property 'className' does not exist on type 'NavigationMenuIndicatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/navigation-menu.tsx(143,6): error TS2322: Type '{ children: Element; forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & NavigationMenuIndicatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & NavigationMenuIndicatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/progress.tsx(9,3): error TS2339: Property 'className' does not exist on type 'ProgressProps & RefAttributes<HTMLDivElement>'.
+components/ui/progress.tsx(14,6): error TS2322: Type '{ children: Element; max?: number | undefined; getValueLabel?(value: number, max: number): string; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ProgressProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ProgressProps & RefAttributes<HTMLDivElement>'.
+components/ui/progress.tsx(24,9): error TS2322: Type '{ "data-slot": string; className: string; style: { transform: string; }; }' is not assignable to type 'IntrinsicAttributes & ProgressIndicatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ProgressIndicatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/radio-group.tsx(10,3): error TS2339: Property 'className' does not exist on type 'RadioGroupProps & RefAttributes<HTMLDivElement>'.
+components/ui/radio-group.tsx(16,7): error TS2322: Type '{ name?: string | undefined; required?: boolean | undefined; disabled?: any; dir?: any; orientation?: any; loop?: any; defaultValue?: string | undefined; value?: string | null | undefined; onValueChange?: ((value: string) => void) | undefined; ref?: Ref<...> | undefined; key?: Key | ... 1 more ... | undefined; "data...' is not assignable to type 'IntrinsicAttributes & RadioGroupProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & RadioGroupProps & RefAttributes<HTMLDivElement>'.
+components/ui/radio-group.tsx(23,3): error TS2339: Property 'className' does not exist on type 'RadioGroupItemProps & RefAttributes<HTMLButtonElement>'.
+components/ui/radio-group.tsx(27,6): error TS2322: Type '{ children: Element; value: string; key?: Key | null | undefined; checked?: boolean | undefined; required?: boolean | undefined; ref?: Ref<HTMLButtonElement> | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & RadioGroupItemProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & RadioGroupItemProps & RefAttributes<HTMLButtonElement>'.
+components/ui/radio-group.tsx(35,8): error TS2322: Type '{ children: Element; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & RadioGroupIndicatorProps & RefAttributes<HTMLSpanElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & RadioGroupIndicatorProps & RefAttributes<HTMLSpanElement>'.
+components/ui/scroll-area.tsx(9,3): error TS2339: Property 'className' does not exist on type 'ScrollAreaProps & RefAttributes<HTMLDivElement>'.
+components/ui/scroll-area.tsx(10,3): error TS2339: Property 'children' does not exist on type 'ScrollAreaProps & RefAttributes<HTMLDivElement>'.
+components/ui/scroll-area.tsx(14,6): error TS2322: Type '{ children: Element[]; type?: "always" | "auto" | "scroll" | "hover" | undefined; dir?: Direction | undefined; scrollHideDelay?: number | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | ... 1 more ... | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ScrollAreaProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ScrollAreaProps & RefAttributes<HTMLDivElement>'.
+components/ui/scroll-area.tsx(19,8): error TS2322: Type '{ children: any; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ScrollAreaViewportProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ScrollAreaViewportProps & RefAttributes<HTMLDivElement>'.
+components/ui/scroll-area.tsx(52,9): error TS2322: Type '{ "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ScrollAreaThumbProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ScrollAreaThumbProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(28,3): error TS2339: Property 'className' does not exist on type 'SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/ui/select.tsx(30,3): error TS2339: Property 'children' does not exist on type 'SelectTriggerProps & RefAttributes<HTMLButtonElement> & { size?: "default" | "sm" | undefined; }'.
+components/ui/select.tsx(36,6): error TS2322: Type '{ children: any[]; ref?: Ref<HTMLButtonElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-size": "default" | "sm"; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/select.tsx(46,8): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & SelectIconProps & RefAttributes<HTMLSpanElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectIconProps & RefAttributes<HTMLSpanElement>'.
+components/ui/select.tsx(54,3): error TS2339: Property 'className' does not exist on type 'SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(55,3): error TS2339: Property 'children' does not exist on type 'SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(61,8): error TS2322: Type '{ children: Element[]; onCloseAutoFocus?: any; onEscapeKeyDown?: any; onPointerDownOutside?: any; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; position: "item-aligned" | "popper"; }' is not assignable to type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(73,10): error TS2322: Type '{ children: any; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectViewportProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectViewportProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(89,3): error TS2339: Property 'className' does not exist on type 'SelectLabelProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(95,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectLabelProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SelectLabelProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(102,3): error TS2339: Property 'className' does not exist on type 'SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(103,3): error TS2339: Property 'children' does not exist on type 'SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(107,6): error TS2322: Type '{ children: Element[]; value: string; disabled?: boolean | undefined; textValue?: string | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectItemProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(126,3): error TS2339: Property 'className' does not exist on type 'SelectSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(132,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectSeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SelectSeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(139,3): error TS2339: Property 'className' does not exist on type 'SelectScrollUpButtonProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(143,6): error TS2322: Type '{ children: Element; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectScrollUpButtonProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectScrollUpButtonProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(157,3): error TS2339: Property 'className' does not exist on type 'SelectScrollDownButtonProps & RefAttributes<HTMLDivElement>'.
+components/ui/select.tsx(161,6): error TS2322: Type '{ children: Element; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectScrollDownButtonProps & RefAttributes<HTMLDivElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SelectScrollDownButtonProps & RefAttributes<HTMLDivElement>'.
+components/ui/separator.tsx(9,3): error TS2339: Property 'className' does not exist on type 'SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/separator.tsx(19,7): error TS2322: Type '{ ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; decorative: boolean; orientation: "horizontal" | "vertical"; className: string; }' is not assignable to type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/sheet.tsx(31,3): error TS2339: Property 'className' does not exist on type 'DialogOverlayProps & RefAttributes<HTMLDivElement>'.
+components/ui/sheet.tsx(37,7): error TS2322: Type '{ forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogOverlayProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogOverlayProps & RefAttributes<HTMLDivElement>'.
+components/ui/sheet.tsx(100,3): error TS2339: Property 'className' does not exist on type 'DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/sheet.tsx(106,7): error TS2322: Type '{ ref?: Ref<HTMLHeadingElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogTitleProps & RefAttributes<HTMLHeadingElement>'.
+components/ui/sheet.tsx(113,3): error TS2339: Property 'className' does not exist on type 'DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/sheet.tsx(119,7): error TS2322: Type '{ ref?: Ref<HTMLParagraphElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & DialogDescriptionProps & RefAttributes<HTMLParagraphElement>'.
+components/ui/sidebar.tsx(358,3): error TS2339: Property 'className' does not exist on type 'SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/sidebar.tsx(365,7): error TS2322: Type '{ orientation?: "horizontal" | "vertical" | undefined; decorative?: boolean | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; "data-sidebar": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SeparatorProps & RefAttributes<HTMLDivElement>'.
+components/ui/sidebar.tsx(537,8): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & TooltipTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & TooltipTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/slider.tsx(9,3): error TS2339: Property 'className' does not exist on type 'SliderProps & RefAttributes<HTMLSpanElement>'.
+components/ui/slider.tsx(27,6): error TS2322: Type '{ children: (Element | Element[])[]; name?: string | undefined; disabled?: boolean | undefined; orientation?: "horizontal" | "vertical" | undefined; dir?: Direction | undefined; ... 13 more ...; className: string; }' is not assignable to type 'IntrinsicAttributes & SliderProps & RefAttributes<HTMLSpanElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SliderProps & RefAttributes<HTMLSpanElement>'.
+components/ui/slider.tsx(39,8): error TS2322: Type '{ children: Element; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SliderTrackProps & RefAttributes<HTMLSpanElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SliderTrackProps & RefAttributes<HTMLSpanElement>'.
+components/ui/slider.tsx(45,11): error TS2322: Type '{ "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SliderRangeProps & RefAttributes<HTMLSpanElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SliderRangeProps & RefAttributes<HTMLSpanElement>'.
+components/ui/slider.tsx(52,11): error TS2322: Type '{ "data-slot": string; key: number; className: string; }' is not assignable to type 'IntrinsicAttributes & SliderThumbProps & RefAttributes<HTMLSpanElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SliderThumbProps & RefAttributes<HTMLSpanElement>'.
+components/ui/switch.tsx(9,3): error TS2339: Property 'className' does not exist on type 'SwitchProps & RefAttributes<HTMLButtonElement>'.
+components/ui/switch.tsx(13,6): error TS2322: Type '{ children: Element; checked?: boolean | undefined; defaultChecked?: boolean | undefined; required?: boolean | undefined; onCheckedChange?(checked: boolean): void; ref?: Ref<...> | undefined; key?: Key | ... 1 more ... | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SwitchProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & SwitchProps & RefAttributes<HTMLButtonElement>'.
+components/ui/switch.tsx(23,9): error TS2322: Type '{ "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & SwitchThumbProps & RefAttributes<HTMLSpanElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & SwitchThumbProps & RefAttributes<HTMLSpanElement>'.
+components/ui/tabs.tsx(9,3): error TS2339: Property 'className' does not exist on type 'TabsProps & RefAttributes<HTMLDivElement>'.
+components/ui/tabs.tsx(15,7): error TS2322: Type '{ value?: string | undefined; defaultValue?: string | undefined; onValueChange?: ((value: string) => void) | undefined; orientation?: any; dir?: any; activationMode?: "manual" | "automatic" | undefined; ref?: Ref<...> | undefined; key?: Key | ... 1 more ... | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TabsProps & RefAttributes<HTMLDivElement>'.
+components/ui/tabs.tsx(22,3): error TS2339: Property 'className' does not exist on type 'TabsListProps & RefAttributes<HTMLDivElement>'.
+components/ui/tabs.tsx(28,7): error TS2322: Type '{ loop?: any; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsListProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TabsListProps & RefAttributes<HTMLDivElement>'.
+components/ui/tabs.tsx(38,3): error TS2339: Property 'className' does not exist on type 'TabsTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/tabs.tsx(44,7): error TS2322: Type '{ value: string; ref?: Ref<HTMLButtonElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsTriggerProps & RefAttributes<HTMLButtonElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TabsTriggerProps & RefAttributes<HTMLButtonElement>'.
+components/ui/tabs.tsx(54,3): error TS2339: Property 'className' does not exist on type 'TabsContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/tabs.tsx(60,7): error TS2322: Type '{ value: string; forceMount?: true | undefined; ref?: Ref<HTMLDivElement> | undefined; key?: Key | null | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & TabsContentProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TabsContentProps & RefAttributes<HTMLDivElement>'.
+components/ui/toast.tsx(15,6): error TS2339: Property 'className' does not exist on type 'Omit<ToastViewportProps & RefAttributes<HTMLOListElement>, "ref">'.
+components/ui/toast.tsx(18,5): error TS2322: Type '{ label?: string | undefined; key?: Key | null | undefined; hotkey?: string[] | undefined; ref: ForwardedRef<HTMLOListElement>; className: string; }' is not assignable to type 'IntrinsicAttributes & ToastViewportProps & RefAttributes<HTMLOListElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ToastViewportProps & RefAttributes<HTMLOListElement>'.
+components/ui/toast.tsx(47,6): error TS2339: Property 'className' does not exist on type 'Omit<ToastProps & RefAttributes<HTMLLIElement>, "ref"> & VariantProps<(props?: (ConfigVariants<{ variant: { default: string; destructive: string; }; }> & ClassProp) | undefined) => string>'.
+components/ui/toast.tsx(51,7): error TS2322: Type '{ type?: "background" | "foreground" | undefined; key?: Key | null | undefined; open?: boolean | undefined; duration?: number | undefined; onEscapeKeyDown?: any; onPause?: (() => void) | undefined; ... 9 more ...; className: string; }' is not assignable to type 'IntrinsicAttributes & ToastProps & RefAttributes<HTMLLIElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ToastProps & RefAttributes<HTMLLIElement>'.
+components/ui/toast.tsx(61,6): error TS2339: Property 'className' does not exist on type 'Omit<ToastActionProps & RefAttributes<HTMLButtonElement>, "ref">'.
+components/ui/toast.tsx(64,5): error TS2322: Type '{ key?: Key | null | undefined; altText: string; ref: ForwardedRef<HTMLButtonElement>; className: string; }' is not assignable to type 'IntrinsicAttributes & ToastActionProps & RefAttributes<HTMLButtonElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ToastActionProps & RefAttributes<HTMLButtonElement>'.
+components/ui/toast.tsx(76,6): error TS2339: Property 'className' does not exist on type 'Omit<ToastCloseProps & RefAttributes<HTMLButtonElement>, "ref">'.
+components/ui/toast.tsx(77,4): error TS2322: Type '{ children: Element; key?: Key | null | undefined; ref: ForwardedRef<HTMLButtonElement>; className: string; "toast-close": string; }' is not assignable to type 'IntrinsicAttributes & ToastCloseProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ToastCloseProps & RefAttributes<HTMLButtonElement>'.
+components/ui/toast.tsx(94,6): error TS2339: Property 'className' does not exist on type 'Omit<ToastTitleProps & RefAttributes<HTMLDivElement>, "ref">'.
+components/ui/toast.tsx(97,5): error TS2322: Type '{ key?: Key | null | undefined; ref: ForwardedRef<HTMLDivElement>; className: string; }' is not assignable to type 'IntrinsicAttributes & ToastTitleProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ToastTitleProps & RefAttributes<HTMLDivElement>'.
+components/ui/toast.tsx(106,6): error TS2339: Property 'className' does not exist on type 'Omit<ToastDescriptionProps & RefAttributes<HTMLDivElement>, "ref">'.
+components/ui/toast.tsx(109,5): error TS2322: Type '{ key?: Key | null | undefined; ref: ForwardedRef<HTMLDivElement>; className: string; }' is not assignable to type 'IntrinsicAttributes & ToastDescriptionProps & RefAttributes<HTMLDivElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ToastDescriptionProps & RefAttributes<HTMLDivElement>'.
+components/ui/toaster.tsx(20,12): error TS2322: Type '{ children: (Element | ToastActionElement | undefined)[]; variant?: "default" | "destructive" | null | undefined; type?: "background" | "foreground" | undefined; ... 12 more ...; forceMount?: true | undefined; }' is not assignable to type 'IntrinsicAttributes & Omit<ToastProps & RefAttributes<HTMLLIElement>, "ref"> & VariantProps<(props?: (ConfigVariants<{ variant: { ...; }; }> & ClassProp) | undefined) => string> & RefAttributes<...>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & Omit<ToastProps & RefAttributes<HTMLLIElement>, "ref"> & VariantProps<(props?: (ConfigVariants<{ variant: { ...; }; }> & ClassProp) | undefined) => string> & RefAttributes<...>'.
+components/ui/toaster.tsx(22,26): error TS2559: Type '{ children: string | number | bigint | true | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>; }' has no properties in common with type 'IntrinsicAttributes & Omit<ToastTitleProps & RefAttributes<HTMLDivElement>, "ref"> & RefAttributes<...>'.
+components/ui/toaster.tsx(24,18): error TS2559: Type '{ children: string | number | bigint | true | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>; }' has no properties in common with type 'IntrinsicAttributes & Omit<ToastDescriptionProps & RefAttributes<HTMLDivElement>, "ref"> & RefAttributes<...>'.
+components/ui/toggle-group.tsx(18,3): error TS2339: Property 'className' does not exist on type '((ToggleGroupSingleProps | ToggleGroupMultipleProps) & RefAttributes<HTMLDivElement>) & VariantProps<...>'.
+components/ui/toggle-group.tsx(21,3): error TS2339: Property 'children' does not exist on type '((ToggleGroupSingleProps | ToggleGroupMultipleProps) & RefAttributes<HTMLDivElement>) & VariantProps<...>'.
+components/ui/toggle-group.tsx(26,6): error TS2322: Type '{ children: Element; type: "single"; value?: string | undefined; defaultValue?: string | undefined; onValueChange?(value: string): void; disabled?: boolean | undefined; ... 9 more ...; className: string; } | { ...; }' is not assignable to type 'IntrinsicAttributes & ((ToggleGroupSingleProps | ToggleGroupMultipleProps) & RefAttributes<HTMLDivElement>)'.
+  Type '{ children: Element; type: "single"; value?: string | undefined; defaultValue?: string | undefined; onValueChange?(value: string): void; disabled?: boolean | undefined; rovingFocus?: boolean | undefined; ... 8 more ...; className: string; }' is not assignable to type 'IntrinsicAttributes & ((ToggleGroupSingleProps | ToggleGroupMultipleProps) & RefAttributes<HTMLDivElement>)'.
+    Property 'children' does not exist on type 'IntrinsicAttributes & ToggleGroupSingleProps & RefAttributes<HTMLDivElement>'.
+components/ui/toggle-group.tsx(44,3): error TS2339: Property 'className' does not exist on type 'ToggleGroupItemProps & RefAttributes<HTMLButtonElement> & VariantProps<(props?: (ConfigVariants<{ variant: { default: string; outline: string; }; size: { ...; }; }> & ClassProp) | undefined) => string>'.
+components/ui/toggle-group.tsx(45,3): error TS2339: Property 'children' does not exist on type 'ToggleGroupItemProps & RefAttributes<HTMLButtonElement> & VariantProps<(props?: (ConfigVariants<{ variant: { default: string; outline: string; }; size: { ...; }; }> & ClassProp) | undefined) => string>'.
+components/ui/toggle-group.tsx(54,6): error TS2322: Type '{ children: any; value: string; key?: Key | null | undefined; ref?: Ref<HTMLButtonElement> | undefined; "data-slot": string; "data-variant": "default" | "outline" | null | undefined; "data-size": "default" | ... 3 more ... | undefined; className: string; }' is not assignable to type 'IntrinsicAttributes & ToggleGroupItemProps & RefAttributes<HTMLButtonElement>'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & ToggleGroupItemProps & RefAttributes<HTMLButtonElement>'.
+components/ui/toggle.tsx(32,3): error TS2339: Property 'className' does not exist on type 'ToggleProps & RefAttributes<HTMLButtonElement> & VariantProps<(props?: (ConfigVariants<{ variant: { default: string; outline: string; }; size: { default: string; sm: string; lg: string; }; }> & ClassProp) | undefined) => string>'.
+components/ui/toggle.tsx(41,7): error TS2322: Type '{ pressed?: boolean | undefined; defaultPressed?: boolean | undefined; onPressedChange?(pressed: boolean): void; ref?: Ref<HTMLButtonElement> | undefined; key?: Key | ... 1 more ... | undefined; "data-slot": string; className: string; }' is not assignable to type 'IntrinsicAttributes & ToggleProps & RefAttributes<HTMLButtonElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & ToggleProps & RefAttributes<HTMLButtonElement>'.
+components/ui/tooltip.tsx(55,33): error TS2322: Type '{ className: string; }' is not assignable to type 'IntrinsicAttributes & TooltipArrowProps & RefAttributes<SVGSVGElement>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TooltipArrowProps & RefAttributes<SVGSVGElement>'.
+lib/admin-auth.ts(24,29): error TS2339: Property 'getUser' does not exist on type 'SupabaseAuthClient'.
+lib/availability-server.ts(54,40): error TS7006: Parameter 'row' implicitly has an 'any' type.
+lib/quotes/getQuoteRequests.ts(39,45): error TS7006: Parameter 'quote' implicitly has an 'any' type.
+proxy.ts(79,27): error TS2339: Property 'getUser' does not exist on type 'SupabaseAuthClient'.
+tests/standalone-admin-auth.test.ts(46,19): error TS7006: Parameter '_name' implicitly has an 'any' type.
+tests/standalone-admin-auth.test.ts(46,26): error TS7006: Parameter 'claim' implicitly has an 'any' type.
+tests/standalone-admin-auth.test.ts(46,33): error TS7006: Parameter 'status' implicitly has an 'any' type.
+tests/standalone-admin-auth.test.ts(98,196): error TS7006: Parameter 'value' implicitly has an 'any' type.

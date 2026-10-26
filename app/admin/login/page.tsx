@@ -52,9 +52,9 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-navy/5 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#f6f3ef] px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-gold/20">
+        <div className="bg-white rounded-lg p-6 sm:p-8 border border-[#d4d9e1]">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-serif font-bold text-navy mb-2">
               Admin Portal

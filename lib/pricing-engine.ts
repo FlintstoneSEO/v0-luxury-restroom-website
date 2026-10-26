@@ -2,6 +2,21 @@ import { parseLocalDateOnly } from './date-only';
 import { PriceBreakdown, PricingSettings, QuoteFormData, QuoteLineItem } from './types/quote';
 
 export const DEFAULT_PRICING: PricingSettings = {
+  event_time_policy_enabled: 0,
+  extra_hours_enabled: 0,
+  included_event_hours: 8,
+  additional_event_hourly_rate: 100,
+  duration_rounding: 1,
+  after_hours_rounding: 1,
+  after_hours_max_hours: 4,
+  stack_hourly_charges: 1,
+  cleaning_included: 0,
+  damage_waiver_included: 0,
+  generator_included: 0,
+  water_included: 0,
+  service_review_guest_threshold: 0,
+  service_review_hour_threshold: 0,
+  rush_booking_window_days: 14,
   base_price_100_guests: 650,
   base_price_150_guests: 750,
   base_price_200_guests: 900,
@@ -20,12 +35,11 @@ export const DEFAULT_PRICING: PricingSettings = {
   deposit_percentage: 40,
 };
 
-const RUSH_BOOKING_WINDOW_DAYS = 14;
-
 export const roundCurrency = (value: number): number =>
   Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 
 export type QuoteFinancialInput = {
+  extra_hours_fee?: number | null;
   base_price?: number | null;
   travel_fee?: number | null;
   utility_fee?: number | null;
@@ -72,7 +86,8 @@ function nonNegativePercentage(value: number | null | undefined, fallback: numbe
 
 export function calculateQuoteFinancials(input: QuoteFinancialInput): QuoteFinancialTotals {
   const subtotal = roundCurrency(
-    nonNegativeCurrency(input.base_price) +
+    nonNegativeCurrency(input.extra_hours_fee) +
+      nonNegativeCurrency(input.base_price) +
       nonNegativeCurrency(input.travel_fee) +
       nonNegativeCurrency(input.utility_fee) +
       nonNegativeCurrency(input.after_hours_fee) +
@@ -181,7 +196,7 @@ export function calculateTravelFee(distanceMiles: number, settings: PricingSetti
 export function calculateUtilityFee(hasPower: boolean, hasWater: boolean, settings: PricingSettings = DEFAULT_PRICING): { fee: number; generatorNeeded: boolean; waterNeeded: boolean } {
   const generatorNeeded = !hasPower;
   const waterNeeded = !hasWater;
-  const fee = (generatorNeeded ? settings.generator_fee : 0) + (waterNeeded ? settings.water_fee : 0);
+  const fee = (generatorNeeded && !settings.generator_included ? settings.generator_fee : 0) + (waterNeeded && !settings.water_included ? settings.water_fee : 0);
   return { fee, generatorNeeded, waterNeeded };
 }
 
@@ -221,7 +236,9 @@ export function calculateAfterHoursFee(endTime: string, settings: PricingSetting
     return { fee: 0, hoursCount: 0 };
   }
 
-  const hoursCount = Math.min(4, Math.ceil(afterHoursMinutes / 60));
+  const rounded = settings.after_hours_rounding === 0 ? afterHoursMinutes / 60 : Math.ceil(afterHoursMinutes / 60);
+  const cap = settings.after_hours_max_hours ?? 4;
+  const hoursCount = cap > 0 ? Math.min(cap, rounded) : rounded;
   return { fee: roundCurrency(hoursCount * settings.after_hours_hourly_rate), hoursCount };
 }
 
@@ -231,7 +248,69 @@ export function calculateRushBookingFee(eventDate: string, now = new Date(), set
   const eventOrdinal = Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
   const todayOrdinal = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const daysOut = Math.round((eventOrdinal - todayOrdinal) / (1000 * 60 * 60 * 24));
-  return { fee: daysOut <= RUSH_BOOKING_WINDOW_DAYS ? settings.rush_booking_fee : 0, daysOut };
+  return { fee: daysOut <= (settings.rush_booking_window_days ?? 14) ? settings.rush_booking_fee : 0, daysOut };
+}
+
+/** Extra event hours live in the existing immutable JSON snapshot, not a fee column. */
+export function getExtraHoursFee(breakdown: unknown): number {
+  if (!breakdown || typeof breakdown !== 'object') return 0;
+  return nonNegativeCurrency(Number((breakdown as Record<string, unknown>).extra_hours_fee ?? 0));
+}
+
+export function getStoredServiceReviewReasons(breakdown: unknown): string[] {
+  if (!breakdown || typeof breakdown !== 'object') return [];
+  const details = (breakdown as { details?: { service_review_reasons?: unknown } }).details;
+  return Array.isArray(details?.service_review_reasons) ? details.service_review_reasons.filter((value): value is string => typeof value === 'string') : [];
+}
+
+export function getServiceReviewReasons(guests: number, hours: number | null, settings: PricingSettings): string[] {
+  const reasons: string[] = [];
+  if ((settings.service_review_guest_threshold ?? 0) > 0 && guests > settings.service_review_guest_threshold!) reasons.push(`More than ${settings.service_review_guest_threshold} guests: review pumping and water service.`);
+  if ((settings.service_review_hour_threshold ?? 0) > 0 && hours !== null && hours > settings.service_review_hour_threshold!) reasons.push(`More than ${settings.service_review_hour_threshold} event hours: review pumping and water service.`);
+  return reasons;
+}
+
+export function eventTimeMinutes(time: string): number {
+  if (!/^(?:[01]\d|2[0-3]):[0-5]\d(?::00)?$/.test(time)) throw new Error('Enter valid event start and end times.');
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
+export function calculateEventTimeCharges(start: string | undefined, end: string, settings: PricingSettings) {
+  let eventHours: number | null = null;
+  let startMinutes = 0;
+  let endMinutes = 0;
+  if (start) {
+    try {
+      startMinutes = eventTimeMinutes(start);
+      endMinutes = eventTimeMinutes(end);
+      if (endMinutes < startMinutes) endMinutes += 1440;
+      eventHours = (endMinutes - startMinutes) / 60;
+    } catch (error) {
+      // Historical end-time quotes did not require a parseable start time.
+      if (settings.event_time_policy_enabled) throw error;
+    }
+  }
+  if (!settings.event_time_policy_enabled) {
+    const legacy = calculateAfterHoursFee(end, settings);
+    return { eventHours, afterHoursFee: legacy.fee, afterHoursCount: legacy.hoursCount, extraHoursFee: 0, extraHoursCount: 0 };
+  }
+  if (eventHours === null || eventHours <= 0) throw new Error('Scheduled-use pricing needs different start and end times. Multi-day events require a separate quote.');
+  const roundHours = (hours: number, rounding: number | undefined) => rounding === 0 ? hours : Math.ceil(hours);
+  const extraHoursCount = settings.extra_hours_enabled ? roundHours(Math.max(0, eventHours - (settings.included_event_hours ?? 8)), settings.duration_rounding) : 0;
+  // Late-night service continues through the end of an overnight event. A late start
+  // never charges time before guests arrive. An earlier end explicitly means next day.
+  const lateHours = Math.max(0, endMinutes - Math.max(startMinutes, settings.after_hours_cutoff_hour * 60)) / 60;
+  let afterHoursCount = roundHours(lateHours, settings.after_hours_rounding);
+  const cap = settings.after_hours_max_hours ?? 4;
+  if (cap > 0) afterHoursCount = Math.min(cap, afterHoursCount);
+  let extraHoursFee = roundCurrency(extraHoursCount * (settings.additional_event_hourly_rate ?? 100));
+  let afterHoursFee = roundCurrency(afterHoursCount * settings.after_hours_hourly_rate);
+  if (settings.stack_hourly_charges === 0) {
+    if (extraHoursFee >= afterHoursFee) afterHoursFee = 0;
+    else extraHoursFee = 0;
+  }
+  return { eventHours, extraHoursCount, afterHoursCount, extraHoursFee, afterHoursFee };
 }
 
 export function calculateQuotePrice(
@@ -241,18 +320,21 @@ export function calculateQuotePrice(
   hasWater: boolean,
   endTime: string,
   eventDate: string,
-  settings: PricingSettings = DEFAULT_PRICING
+  settings: PricingSettings = DEFAULT_PRICING,
+  startTime?: string
 ): PriceBreakdown {
   const basePrice = getBasePrice(guestCount, settings);
   const { fee: travelFee, extraMiles } = calculateTravelFee(distanceMiles, settings);
   const { fee: utilityFee, generatorNeeded, waterNeeded } = calculateUtilityFee(hasPower, hasWater, settings);
-  const { fee: afterHoursFee, hoursCount: afterHoursCount } = calculateAfterHoursFee(endTime, settings);
+  const timeCharges = calculateEventTimeCharges(startTime, endTime, settings);
+  const { afterHoursFee, afterHoursCount, extraHoursFee } = timeCharges;
   const { fee: rushBookingFee, daysOut } = calculateRushBookingFee(eventDate, new Date(), settings);
-  const cleaningFee = settings.cleaning_fee;
-  const damageWaiverFee = settings.damage_waiver_fee;
+  const cleaningFee = settings.cleaning_included ? 0 : settings.cleaning_fee;
+  const damageWaiverFee = settings.damage_waiver_included ? 0 : settings.damage_waiver_fee;
 
   const lineItems: QuoteLineItem[] = [
     { code: 'base_rental', label: `Base rental (${getGuestTier(guestCount)})`, quantity: 1, unit_price: basePrice, total: basePrice },
+    { code: 'extra_hours', label: 'Additional event hours', quantity: timeCharges.extraHoursCount, unit_price: settings.additional_event_hourly_rate ?? 100, total: extraHoursFee },
     { code: 'travel', label: 'Travel', quantity: extraMiles, unit_price: settings.travel_rate_per_mile, total: travelFee },
     { code: 'utilities', label: 'Utilities', quantity: 1, unit_price: utilityFee, total: utilityFee },
     { code: 'after_hours', label: 'After hours', quantity: afterHoursCount, unit_price: settings.after_hours_hourly_rate, total: afterHoursFee },
@@ -262,6 +344,7 @@ export function calculateQuotePrice(
   ];
 
   const financials = calculateQuoteFinancials({
+    extra_hours_fee: extraHoursFee,
     base_price: basePrice,
     travel_fee: travelFee,
     utility_fee: utilityFee,
@@ -275,6 +358,7 @@ export function calculateQuotePrice(
   });
 
   return {
+    extra_hours_fee: extraHoursFee,
     base_price: basePrice,
     travel_fee: travelFee,
     utility_fee: utilityFee,
@@ -285,6 +369,10 @@ export function calculateQuotePrice(
     ...financials,
     line_items: lineItems,
     details: {
+      event_hours: timeCharges.eventHours,
+      extra_hours_count: timeCharges.extraHoursCount,
+      time_policy: settings.event_time_policy_enabled ? 'scheduled_use' : 'legacy_end_time',
+      service_review_reasons: getServiceReviewReasons(guestCount, timeCharges.eventHours, settings),
       guest_tier: getGuestTier(guestCount),
       distance_miles: distanceMiles,
       extra_miles: extraMiles,

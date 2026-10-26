@@ -30,12 +30,12 @@ export function ServiceCard({
     <Link
       href={href}
       className={cn(
-        "group flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-border/50",
+        "estate-service-card group",
         className
       )}
     >
       {/* Image Placeholder */}
-      <div className="relative aspect-[16/10] bg-gradient-to-br from-gold/20 to-navy/10 overflow-hidden">
+      <div className="estate-service-card-image">
         {imageSrc ? (
           <Image
             src={imageSrc}
@@ -61,16 +61,16 @@ export function ServiceCard({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-6">
+      <div className="estate-service-card-copy">
         <h3 className="text-xl font-serif font-semibold text-navy group-hover:text-navy/80 transition-colors">
           {title}
         </h3>
         <p className="mt-2 text-muted-foreground text-base md:text-[17px] leading-relaxed flex-1">
           {description}
         </p>
-        <div className="mt-4 flex items-center gap-2 text-base font-medium text-navy group-hover:gap-3 transition-all">
+        <div className="estate-text-link">
           Learn More
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight aria-hidden="true" className="w-4 h-4" />
         </div>
       </div>
     </Link>

@@ -6,6 +6,7 @@ export default defineConfig([
   globalIgnores([
     'apps/web/dist/**',
     'apps/web/.astro/**',
+    'apps/admin/**',
     'coverage/**',
     'supabase/.temp/**',
   ]),

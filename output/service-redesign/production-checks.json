@@ -1,0 +1,45 @@
+{
+  "rows": [
+    {
+      "route": "corporate-event-restroom-trailers",
+      "status": 200,
+      "h1": 1
+    },
+    {
+      "route": "festival-community-event-restroom-trailers",
+      "status": 200,
+      "h1": 1
+    },
+    {
+      "route": "luxury-restroom-trailer-features",
+      "status": 200,
+      "h1": 1
+    },
+    {
+      "route": "wedding-restroom-trailer-rentals",
+      "status": 200,
+      "h1": 1
+    },
+    {
+      "route": "private-event-restroom-trailers",
+      "status": 200,
+      "h1": 1
+    },
+    {
+      "route": "luxury-restroom-trailer-rentals",
+      "status": 200,
+      "h1": 1
+    },
+    {
+      "route": "construction-long-term-restroom-trailer-rentals",
+      "status": 200,
+      "h1": 1
+    },
+    {
+      "route": "emergency-disaster-relief-restroom-trailers",
+      "status": 200,
+      "h1": 1
+    }
+  ],
+  "errors": []
+}

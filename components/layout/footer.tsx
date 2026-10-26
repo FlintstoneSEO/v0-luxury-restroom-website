@@ -18,7 +18,7 @@ export function Footer() {
   const eventTypes = footer.groups[1]
 
   return (
-    <footer className="bg-navy text-white">
+    <footer className="estate-shell estate-footer bg-navy text-white">
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-1">

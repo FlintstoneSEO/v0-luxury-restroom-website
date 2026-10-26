@@ -1,0 +1,92 @@
+/* Service-page presentation only. Content and operational surfaces stay independent. */
+.estate-service { --service-gutter: clamp(1.25rem, 4.5vw, 5rem); }
+.estate-service ::selection { background: #d8c5a2; color: #152a3a; }
+.service-hero { display: grid; grid-template-columns: 1.08fr 1fr; max-width: 1600px; margin-inline: auto; }
+.service-hero-copy { padding: 2.5rem var(--service-gutter) 3.5rem; align-self: center; }
+.service-breadcrumb { display: flex; flex-wrap: wrap; gap: .7rem; margin-bottom: 2.5rem; color: #59646b; font-size: .75rem; }
+.service-breadcrumb a { text-decoration: underline; text-underline-offset: .25rem; }
+.estate-service .service-hero h1 { font-size: clamp(2.8rem, 4.2vw, 4.5rem); line-height: 1.02; margin: 0; letter-spacing: -.035em; }
+.service-hero-description { max-width: 62ch; font-size: 1rem; line-height: 1.85; color: #45545e; margin-top: 1.75rem; }
+.service-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: 2rem; }
+.service-button { display: inline-flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding: 1rem 1.4rem; min-height: 3.25rem; background: #152a3a; color: #fff; font-size: .8125rem; font-weight: 500; text-decoration: none; transition: background 180ms ease-out; }
+.service-button svg { flex-shrink: 0; }
+.service-button:hover { background: #304b5d; }
+.service-hero-location { padding-top: 1.75rem; margin-top: 2rem; border-top: 1px solid var(--border); font-size: .75rem; color: #59646b; }
+.service-hero-photo { position: relative; margin: 0; min-height: 39rem; background: #e2dbcf; }
+.service-hero-photo img { object-position: center; }
+.service-hero-photo figcaption { position: absolute; bottom: 0; left: 0; right: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; padding: 1rem 1.5rem; background: #152a3a; color: #f5f1e8; font-size: .75rem; }
+.service-hero-photo figcaption > span { font-family: var(--font-serif), Georgia, serif; font-size: 1.35rem; }
+.service-hero-photo figcaption a { display: inline-flex; gap: .8rem; align-items: center; min-height: 2.75rem; }
+.service-amenities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 1.5rem var(--service-gutter); background: #e9e3d7; border-bottom: 1px solid #d8d0c0; }
+.service-amenities > span { display: flex; align-items: center; justify-content: center; gap: .85rem; padding: .5rem 1rem; font-size: .8125rem; }
+.service-amenities > span + span { border-left: 1px solid #c7bcaa; }
+.service-amenities svg { width: 1.4rem; height: 1.4rem; stroke-width: 1.3; flex-shrink: 0; color: #715738; }
+.service-story, .service-editorial, .service-planning, .service-faq, .service-final { padding: clamp(3.5rem, 7vw, 7rem) var(--service-gutter); }
+.service-story { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; max-width: 1440px; margin-inline: auto; }
+.estate-service :is(.service-story h2, .service-planning h2, .service-faq h2, .service-final h2) { font-size: clamp(2.2rem, 3.5vw, 3.6rem); }
+.service-story p, .service-editorial p { font-size: 1rem; line-height: 1.9; color: #45545e; margin-top: 1.25rem; max-width: 70ch; }
+.service-story-lead > a { margin-top: 1.5rem; }
+.service-story-photo { position: relative; aspect-ratio: 1; background: #e2dbcf; }
+.service-editorial { background: #fcfaf6; padding-top: 0; padding-bottom: 0; }
+.service-editorial-item { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(2rem, 6vw, 6rem); padding-block: 3.5rem; border-top: 1px solid var(--border); max-width: 1280px; margin-inline: auto; }
+.service-editorial-item h2 { font-size: clamp(1.9rem, 2.7vw, 2.8rem); max-width: 23ch; }
+.service-editorial-item p:first-child { margin-top: 0; }
+.service-planning { background: #152a3a; color: #f5f1e8; display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(2rem, 6vw, 6rem); }
+.service-planning-heading { align-self: start; position: sticky; top: 9rem; }
+.service-planning-heading p { margin-top: 1.5rem; max-width: 44ch; color: #d4dbde; line-height: 1.85; }
+.service-resource-list > a { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding-block: 1.5rem; border-bottom: 1px solid #ffffff35; }
+.service-resource-list > a:first-child { padding-top: 0; }
+.service-resource-list h3 { font-size: 1.7rem; }
+.service-resource-list p { margin-top: .5rem; color: #d4dbde; font-size: .875rem; line-height: 1.75; }
+.service-resource-list svg { flex-shrink: 0; color: #d8c5a2; transition: transform 180ms ease-out; }
+.service-resource-list a:hover svg { transform: translateX(.25rem); }
+.service-faq { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(2rem, 6vw, 6rem); }
+.service-faq > div > p { margin-top: 1rem; color: #45545e; }
+.service-faq .estate-text-link { margin-top: 1.5rem; }
+.service-faq details { border-bottom: 1px solid #c9beac; }
+.service-faq summary { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding-block: 1.5rem; font-weight: 500; cursor: pointer; list-style: none; line-height: 1.6; }
+.service-faq summary::-webkit-details-marker { display: none; }
+.service-faq summary > span { font-size: 1.5rem; font-weight: 400; color: #715738; }
+.service-faq details[open] summary > span { transform: rotate(45deg); }
+.service-faq details p { padding-bottom: 1.75rem; line-height: 1.9; color: #45545e; }
+.service-final { display: flex; align-items: center; justify-content: space-between; gap: 3rem; background: #e9e3d7; }
+.service-final h2 { max-width: 25ch; }
+.service-final p { max-width: 65ch; margin-top: 1rem; color: #45545e; }
+.service-final > a { flex-shrink: 0; }
+/* Existing service-specific content keeps its data and component behavior. */
+.estate-service > section:not(.service-hero):not(.service-editorial) { padding-block: clamp(3.5rem, 7vw, 7rem); }
+.estate-service .estate-section-heading { text-align: left; margin-left: 0; max-width: 58rem; }
+.estate-service .estate-kicker, .estate-service section > .container > div > span.uppercase, .estate-service section .grid > div > span.uppercase { display: none; }
+.estate-service [data-slot="card"] { background: transparent; border-width: 1px 0 0; padding-top: 1rem; gap: .5rem; }
+.estate-service [data-slot="card-header"], .estate-service [data-slot="card-content"] { padding-inline: 0; }
+.estate-service [data-slot="card-title"] { font-size: 1.7rem; line-height: 1.2; }
+.estate-service [data-slot="accordion-item"] { background: transparent; border-width: 0 0 1px; padding-inline: 0; }
+.estate-service [data-slot="accordion-trigger"] { min-height: 4rem; font-size: 1rem; line-height: 1.6; }
+.estate-service section .bg-gold\/20 { background: transparent; }
+.estate-service .service-planning :focus-visible { outline-color: #e4cfa2; }
+@media (min-width: 1600px) { .service-amenities, .service-editorial, .service-planning, .service-faq, .service-final { padding-inline: max(var(--service-gutter), calc((100vw - 1280px) / 2)); } }
+@media (max-width: 1100px) { .service-hero-copy { padding-inline: 2rem; } .estate-service .service-hero h1 { font-size: 3rem; } }
+@media (max-width: 900px) {
+  .service-hero { grid-template-columns: 1fr; }
+  .service-hero-copy { padding: 2rem var(--service-gutter) 3rem; }
+  .service-breadcrumb { margin-bottom: 2rem; }
+  .service-hero-photo { min-height: 0; aspect-ratio: 3/2; }
+  .service-story, .service-editorial-item, .service-planning, .service-faq { grid-template-columns: 1fr; gap: 2rem; }
+  .service-story-photo { aspect-ratio: 4/3; }
+  .service-editorial-item h2 { max-width: 32ch; }
+  .service-planning-heading { position: static; }
+  .service-final { align-items: flex-start; flex-direction: column; gap: 2rem; }
+  .service-amenities { padding-inline: 1rem; }
+  .service-amenities > span { font-size: .75rem; padding-inline: .75rem; }
+}
+@media (max-width: 600px) {
+  .estate-service .service-hero h1 { font-size: clamp(2.5rem, 9vw, 3.4rem); }
+  .service-hero-photo { aspect-ratio: 1; }
+  .service-hero-actions { gap: .75rem 1.5rem; }
+  .service-amenities { grid-template-columns: 1fr; padding: 1rem var(--service-gutter); }
+  .service-amenities > span { justify-content: flex-start; padding: .75rem 0; }
+  .service-amenities > span + span { border-left: 0; border-top: 1px solid #c7bcaa; }
+  .service-breadcrumb { font-size: .6875rem; }
+  .service-faq summary { font-size: .9375rem; }
+  .service-editorial-item { padding-block: 2.5rem; }
+}

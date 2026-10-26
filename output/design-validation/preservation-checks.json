@@ -1,0 +1,31 @@
+{
+  "publicHeaderConsumers": 24,
+  "missingPublicScope": [],
+  "protectedChanges": [],
+  "publicTemplates": [
+    "app/blog/page.tsx",
+    "app/blog/[slug]/page.tsx",
+    "app/construction-long-term/page.tsx",
+    "app/construction-long-term-restroom-trailer-rentals/page.tsx",
+    "app/contact/page.tsx",
+    "app/disaster-relief-government/page.tsx",
+    "app/emergency-disaster-relief-restroom-trailers/page.tsx",
+    "app/faq/page.tsx",
+    "app/gallery/page.tsx",
+    "app/luxury-restroom-trailer-rentals/page.tsx",
+    "app/our-restrooms/page.tsx",
+    "app/page.tsx",
+    "app/private-event-restroom-trailers/page.tsx",
+    "app/request-availability/page.tsx",
+    "app/request-quote/page.tsx",
+    "app/resources/page.tsx",
+    "app/resources/[slug]/page.tsx",
+    "app/service-areas/page.tsx",
+    "app/service-areas/[citySlug]/page.tsx",
+    "app/special-events/page.tsx",
+    "app/start-here/page.tsx",
+    "app/wedding-restroom-trailer-rentals/page.tsx",
+    "app/weddings/page.tsx",
+    "components/service-page-template.tsx"
+  ]
+}

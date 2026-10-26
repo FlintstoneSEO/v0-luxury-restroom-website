@@ -33,8 +33,8 @@ export function FeatureGrid({
       <div className={cn("grid gap-6", columnClasses[columns], className)}>
         {features.map((feature, index) => (
           <div key={index} className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
-              <feature.icon className="w-6 h-6 text-navy" />
+            <div className="w-10 h-10 bg-transparent flex items-center justify-center shrink-0">
+              <feature.icon aria-hidden="true" className="w-6 h-6 text-navy" />
             </div>
             <span className="text-sm font-medium text-charcoal">
               {feature.title}
@@ -51,10 +51,10 @@ export function FeatureGrid({
         {features.map((feature, index) => (
           <div
             key={index}
-            className="bg-white rounded-xl p-6 shadow-sm border border-border/50"
+            className="border-t border-gold/40 py-6"
           >
-            <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4">
-              <feature.icon className="w-7 h-7 text-navy" />
+            <div className="w-12 h-12 bg-transparent flex items-center justify-center mb-4">
+              <feature.icon aria-hidden="true" className="w-7 h-7 text-navy" />
             </div>
             <h3 className="text-lg font-semibold text-navy">{feature.title}</h3>
             {feature.description && (
@@ -72,8 +72,8 @@ export function FeatureGrid({
     <div className={cn("grid gap-8", columnClasses[columns], className)}>
       {features.map((feature, index) => (
         <div key={index} className="text-center">
-          <div className="w-14 h-14 mx-auto rounded-full bg-gold/20 flex items-center justify-center mb-4">
-              <feature.icon className="w-8 h-8 text-navy" />
+          <div className="w-14 h-14 mx-auto bg-transparent flex items-center justify-center mb-4">
+              <feature.icon aria-hidden="true" className="w-8 h-8 text-navy" />
           </div>
           <h3 className="text-lg font-semibold text-navy">{feature.title}</h3>
           {feature.description && (

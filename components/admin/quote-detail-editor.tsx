@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,9 +32,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { QuoteDeskSummary } from '@/components/admin/quote-desk-summary';
+import { formatAdminStatus } from '@/lib/quotes/status';
+import { FileText, FileCheck, WalletCards } from 'lucide-react';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { QuoteRequest, QuoteOption, QUOTE_STATUSES, AGREEMENT_TRACKING_STATUSES, DEPOSIT_TRACKING_STATUSES, EVENT_TYPES } from '@/lib/quotes/types';
-import { calculateQuoteFinancials, DEFAULT_PRICING } from '@/lib/pricing-engine';
+import { calculateQuoteFinancials, DEFAULT_PRICING, getExtraHoursFee } from '@/lib/pricing-engine';
 import { isQuoteFinanciallyLocked } from '@/lib/quotes/financial-lock';
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft, Send, FileSignature, CreditCard, RotateCcw, AlertTriangle, Eye, Plus, Copy, Pencil, Trash2, Star } from 'lucide-react';
 import { SameDateRequestsPanel } from '@/components/admin/same-date-requests-panel';
@@ -162,6 +166,7 @@ function getStoredSalesTaxPercentage(quote: QuoteRequest) {
 }
 
 type PricingInput = {
+  extra_hours_fee?: number;
   base_price: number;
   travel_fee: number;
   utility_fee: number;
@@ -315,6 +320,26 @@ export default function QuoteDetailEditor({
     deposit_transaction_reference: quote.deposit_transaction_reference ?? '',
   });
 
+  const [deskTab, setDeskTab] = useState('event');
+  const [savedForm, setSavedForm] = useState(form);
+  const saveInFlight = useRef(false);
+  const dialogReturnFocus = useRef<HTMLElement | null>(null);
+  const previewTitleRef = useRef<HTMLHeadingElement | null>(null);
+  const confirmInFlight = useRef(false);
+  const actionInFlight = useRef(new Set<string>());
+  const [confirming, setConfirming] = useState(false);
+  const dirtyCount = (Object.keys(form) as (keyof typeof form)[]).filter(key => form[key] !== savedForm[key]).length;
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => { if (dirtyCount) event.preventDefault(); };
+    const guardLink = (event: MouseEvent) => {
+      const anchor = (event.target as Element).closest('a[href]');
+      if (!dirtyCount || !anchor || anchor.getAttribute('href')?.startsWith('#')) return;
+      if (!window.confirm('Discard unsaved quote changes and leave this page?')) { event.preventDefault(); event.stopPropagation(); }
+    };
+    window.addEventListener('beforeunload', warn);
+    document.addEventListener('click', guardLink, true);
+    return () => { window.removeEventListener('beforeunload', warn); document.removeEventListener('click', guardLink, true); };
+  }, [dirtyCount]);
   const [saving, setSaving] = useState(false);
   const [sendingQuote, setSendingQuote] = useState(false);
   const [sendingAgreement, setSendingAgreement] = useState(false);
@@ -323,11 +348,13 @@ export default function QuoteDetailEditor({
   const [emailPreview, setEmailPreview] = useState<QuoteEmailPreview | null>(null);
   const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
   const [lastSavedRecalculationFields, setLastSavedRecalculationFields] = useState<RecalculationTriggerFields>(() => getRecalculationTriggerFields(quote));
+  const [currentBreakdown, setCurrentBreakdown] = useState(quote.calculated_breakdown);
+  const extraHoursFee = getExtraHoursFee(currentBreakdown);
   const [distanceReviewQuote, setDistanceReviewQuote] = useState<QuoteRequest>(quote);
   const [recalculatingQuote, setRecalculatingQuote] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [quoteOptions, setQuoteOptions] = useState<QuoteOption[]>(quote.quote_options ?? []);
-  const [loadingOptions, setLoadingOptions] = useState(false);
+  const [loadingOptions, setLoadingOptions] = useState(true);
   const [savingOption, setSavingOption] = useState(false);
   const [recalculatingOptionId, setRecalculatingOptionId] = useState<string | null>(null);
   const [optionDialogOpen, setOptionDialogOpen] = useState(false);
@@ -368,6 +395,7 @@ export default function QuoteDetailEditor({
   // Calculate subtotal, total, deposit, and final balance
   const recalculatePricing = useCallback(() => {
     return calculatePricingTotals({
+      extra_hours_fee: extraHoursFee,
       base_price: form.base_price,
       travel_fee: form.travel_fee,
       utility_fee: form.utility_fee,
@@ -377,15 +405,16 @@ export default function QuoteDetailEditor({
       rush_booking_fee: form.rush_booking_fee,
       discount_amount: form.discount_amount,
     }, salesTaxPercentage, depositPercentage);
-  }, [form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, salesTaxPercentage, depositPercentage]);
+  }, [extraHoursFee, form.base_price, form.travel_fee, form.utility_fee, form.after_hours_fee, form.cleaning_fee, form.damage_waiver_fee, form.rush_booking_fee, form.discount_amount, salesTaxPercentage, depositPercentage]);
 
   const applyQuoteToForm = (updatedQuote: QuoteRequest, options?: { markRecalculated?: boolean }) => {
+    setCurrentBreakdown(updatedQuote.calculated_breakdown);
     if (options?.markRecalculated) {
       setLastSavedRecalculationFields(getRecalculationTriggerFields(updatedQuote));
       setDistanceReviewQuote(updatedQuote);
     }
-    setForm(prev => ({
-      ...prev,
+    const nextForm = {
+      ...form,
       customer_name: updatedQuote.customer_name ?? '',
       email: updatedQuote.email ?? '',
       phone: updatedQuote.phone ?? '',
@@ -440,7 +469,9 @@ export default function QuoteDetailEditor({
       deposit_paid_at: updatedQuote.deposit_paid_at ?? '',
       deposit_paid_amount: updatedQuote.deposit_paid_amount ?? 0,
       deposit_transaction_reference: updatedQuote.deposit_transaction_reference ?? '',
-    }));
+    };
+    setForm(nextForm);
+    setSavedForm(nextForm);
   };
 
   const saveQuote = async () => {
@@ -457,6 +488,8 @@ export default function QuoteDetailEditor({
   };
 
   const handleSave = async () => {
+    if (saveInFlight.current) return;
+    saveInFlight.current = true;
     setSaving(true);
     setMessage(null);
 
@@ -471,11 +504,13 @@ export default function QuoteDetailEditor({
         text: error instanceof Error ? error.message : 'Failed to save quote changes.',
       });
     } finally {
+      saveInFlight.current = false;
       setSaving(false);
     }
   };
 
   const handleBackToDashboard = () => {
+    if (dirtyCount && !window.confirm('Discard unsaved quote changes and return to quotes?')) return;
     router.push('/admin');
     router.refresh();
   };
@@ -509,6 +544,8 @@ export default function QuoteDetailEditor({
   };
 
   const handleSendQuoteEmail = async (confirmSoftHold = false) => {
+    if (actionInFlight.current.has('handleSendQuoteEmail')) return;
+    actionInFlight.current.add('handleSendQuoteEmail');
     setSendingQuote(true);
     setMessage(null);
 
@@ -532,11 +569,14 @@ export default function QuoteDetailEditor({
         text: error instanceof Error ? error.message : 'Failed to send quote email.',
       });
     } finally {
+      actionInFlight.current.delete('handleSendQuoteEmail');
       setSendingQuote(false);
     }
   };
 
   const handleSaveAndRecalculatePricing = async () => {
+    if (actionInFlight.current.has('handleSaveAndRecalculatePricing')) return;
+    actionInFlight.current.add('handleSaveAndRecalculatePricing');
     setRecalculatingQuote(true);
     setMessage(null);
 
@@ -565,11 +605,14 @@ export default function QuoteDetailEditor({
         text: error instanceof Error ? error.message : 'Failed to save and recalculate pricing.',
       });
     } finally {
+      actionInFlight.current.delete('handleSaveAndRecalculatePricing');
       setRecalculatingQuote(false);
     }
   };
 
   const handlePreviewQuoteEmail = async () => {
+    if (actionInFlight.current.has('handlePreviewQuoteEmail')) return;
+    actionInFlight.current.add('handlePreviewQuoteEmail');
     setPreviewingQuoteEmail(true);
     setMessage(null);
 
@@ -594,6 +637,7 @@ export default function QuoteDetailEditor({
         text: error instanceof Error ? error.message : 'Failed to load quote email preview.',
       });
     } finally {
+      actionInFlight.current.delete('handlePreviewQuoteEmail');
       setPreviewingQuoteEmail(false);
     }
   };
@@ -655,7 +699,7 @@ export default function QuoteDetailEditor({
       cleaning_fee: form.cleaning_fee,
       damage_waiver_fee: form.damage_waiver_fee,
       rush_booking_fee: form.rush_booking_fee,
-      ...calculatePricingTotals(form, salesTaxPercentage, depositPercentage),
+      ...calculatePricingTotals({ ...form, extra_hours_fee: extraHoursFee }, salesTaxPercentage, depositPercentage),
     });
     setOptionDialogOpen(true);
   };
@@ -742,6 +786,8 @@ export default function QuoteDetailEditor({
 
 
   const handleSendAgreement = async () => {
+    if (actionInFlight.current.has('handleSendAgreement')) return;
+    actionInFlight.current.add('handleSendAgreement');
     setSendingAgreement(true);
     setMessage(null);
     try {
@@ -754,11 +800,14 @@ export default function QuoteDetailEditor({
     } catch (error) {
       setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to send agreement.' });
     } finally {
+      actionInFlight.current.delete('handleSendAgreement');
       setSendingAgreement(false);
     }
   };
 
   const handleSendDepositInvoice = async () => {
+    if (actionInFlight.current.has('handleSendDepositInvoice')) return;
+    actionInFlight.current.add('handleSendDepositInvoice');
     setSendingDepositInvoice(true);
     setMessage(null);
     try {
@@ -771,6 +820,7 @@ export default function QuoteDetailEditor({
     } catch (error) {
       setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Failed to send deposit invoice.' });
     } finally {
+      actionInFlight.current.delete('handleSendDepositInvoice');
       setSendingDepositInvoice(false);
     }
   };
@@ -828,8 +878,9 @@ export default function QuoteDetailEditor({
         final_balance: form.final_balance,
       }
     : recalculatePricing();
+  const optionExtraHoursFee = getExtraHoursFee(optionForm.id ? quoteOptions.find(option => option.id === optionForm.id)?.calculated_breakdown : currentBreakdown);
   const calculatedOptionPricing = calculatePricingTotals(
-    optionForm,
+    { ...optionForm, extra_hours_fee: optionExtraHoursFee },
     salesTaxPercentage,
     depositPercentage,
   );
@@ -848,54 +899,16 @@ export default function QuoteDetailEditor({
     form.has_water !== lastSavedRecalculationFields.has_water;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <button type="button" onClick={handleBackToDashboard} className="flex items-center gap-2 text-[#2d3a47] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d3a47] focus-visible:ring-offset-2 rounded">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
-        </button>
-      </div>
-
-      <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-3xl font-serif font-bold text-[#2d3a47] mb-1">{quote.customer_name}</h1>
-              {fallbackDistance && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-800" title={distanceMessage}>
-                  <AlertTriangle className="h-3.5 w-3.5" />
-                  Distance review needed
-                </span>
-              )}
-            </div>
-            <p className="text-muted-foreground">
-              {quote.email} | {quote.phone}
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Quote #{quote.quote_number || quote.id.slice(0, 8)} | Created {new Date(quote.created_at).toLocaleDateString()}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-3xl font-bold text-[#2d3a47]">
-              {formatCurrency(calculatedPricing.total_price)}
-            </p>
-            <p className="text-sm text-muted-foreground">Total Quote</p>
-          </div>
-        </div>
-      </div>
-
-      {quote.is_test_quote && (
-        <div className="rounded-lg border-2 border-amber-500 bg-amber-100 p-4 text-sm text-amber-950">
-          <p className="font-bold">TEST QUOTE</p>
-          <p>Customer actions on this page affect only this test quote{quote.test_source_quote_id ? ` cloned from ${quote.test_source_quote_id}` : ''}. They do not update a source real quote.</p>
-        </div>
-      )}
-
-      {!quote.is_test_quote && sameDateQuotes.length > 0 && (
-        <SameDateRequestsPanel currentQuoteId={quote.id} quotes={sameDateQuotes} />
-      )}
-
+    <div className="quote-desk" onClickCapture={(event) => {
+      const target = event.target as Element;
+      const button = target.closest('button');
+      if (button && !target.closest('[role="dialog"], [role="alertdialog"]')) dialogReturnFocus.current = button;
+    }}>
+      <button type="button" onClick={handleBackToDashboard} className="desk-back"><ArrowLeft aria-hidden="true" size={17} />Back to quotes</button>
+      <h1 className="desk-title">Quote Desk</h1>
+      <div className="desk-masthead"><strong className="desk-number">{quote.quote_number || quote.id.slice(0, 8)}</strong><div className="desk-identity"><strong>{form.customer_name}</strong><span>{form.event_type} · {form.event_date ? new Date(form.event_date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : 'Date not set'} · {form.city}, {form.state}</span></div><div className="desk-total"><span>Total (USD)</span><strong>{formatCurrency(calculatedPricing.total_price)}</strong></div></div>
+      <div className="desk-status-strip" aria-label="Saved workflow states">{[{label:'Quote',value:quote.status,Icon:FileText,family:'quote' as const},{label:'Agreement',value:quote.agreement_status,Icon:FileCheck,family:'agreement' as const},{label:'Deposit',value:quote.deposit_status,Icon:WalletCards,family:'deposit' as const}].map(({label,value,Icon,family}) => <div key={label}><Icon aria-hidden="true"/><strong>{label}</strong><span data-status={value}>{formatAdminStatus(value,family)}</span></div>)}</div>
+      {quote.is_test_quote && <p role="status" className="desk-test">TEST QUOTE · Actions affect this test record only.{quote.test_source_quote_id && <> Cloned from {quote.test_source_quote_id}.</>}</p>}
       {!quote.is_test_quote && hardDateBlocks.length > 0 && (
         <div role="alert" className="rounded-lg border-2 border-violet-500 bg-violet-50 p-4 text-sm text-violet-950">
           <p className="font-bold uppercase tracking-wide">Request on blocked date</p>
@@ -922,7 +935,7 @@ export default function QuoteDetailEditor({
 
       {/* Messages */}
       {message && (
-        <div
+        <div role={message.type === 'error' ? 'alert' : 'status'}
           className={`p-4 rounded-lg flex gap-3 items-start ${
             message.type === 'success'
               ? 'bg-[#2d3a47]/5 border border-[#2d3a47]/20'
@@ -940,7 +953,7 @@ export default function QuoteDetailEditor({
         </div>
       )}
 
-      {/* Customer Information */}
+<div className="desk-workspace"><Tabs inert={saving || recalculatingQuote || sendingQuote || sendingAgreement || sendingDepositInvoice} aria-busy={saving || recalculatingQuote} value={deskTab} onValueChange={setDeskTab} className="desk-tabs"><TabsList aria-label="Quote workspace"><TabsTrigger value="event">Event</TabsTrigger><TabsTrigger value="pricing">Pricing &amp; options</TabsTrigger><TabsTrigger value="payments">Agreements &amp; payments</TabsTrigger><TabsTrigger value="activity">Activity &amp; notes</TabsTrigger></TabsList><TabsContent value="event" forceMount>      {/* Customer Information */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Customer Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -974,40 +987,7 @@ export default function QuoteDetailEditor({
 
       {/* Event Details */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
-        <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Event Details</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Field>
-            <FieldLabel htmlFor="event_date">Event Date</FieldLabel>
-            <Input
-              id="event_date"
-              type="date"
-              value={form.event_date}
-              onChange={(e) => setForm({ ...form, event_date: e.target.value })}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="event_type">Event Type</FieldLabel>
-            <Select value={form.event_type} onValueChange={(v) => setForm({ ...form, event_type: v })}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {EVENT_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="guest_count">Guest Count</FieldLabel>
-            <Input
-              id="guest_count"
-              type="number"
-              value={form.guest_count}
-              onChange={(e) => setForm({ ...form, guest_count: parseInt(e.target.value) || 0 })}
-            />
-          </Field>
-          <Field>
+<details className="desk-additional"><summary>More event details</summary><div className="grid grid-cols-1 sm:grid-cols-2 gap-4">          <Field>
             <FieldLabel htmlFor="distance_miles">Distance (miles)</FieldLabel>
             <Input
               id="distance_miles"
@@ -1016,40 +996,64 @@ export default function QuoteDetailEditor({
               value={form.distance_miles}
               onChange={(e) => setForm({ ...form, distance_miles: parseFloat(e.target.value) || 0 })}
             />
-          </Field>
-          <Field className="md:col-span-2">
-            <FieldLabel htmlFor="event_address">Event Address</FieldLabel>
-            <Input
-              id="event_address"
-              value={form.event_address}
-              onChange={(e) => setForm({ ...form, event_address: e.target.value })}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="city">City</FieldLabel>
-            <Input
-              id="city"
-              value={form.city}
-              onChange={(e) => setForm({ ...form, city: e.target.value })}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="state">State</FieldLabel>
-            <Input
-              id="state"
-              value={form.state}
-              onChange={(e) => setForm({ ...form, state: e.target.value })}
-            />
-          </Field>
-          <Field>
+          </Field>          <Field>
             <FieldLabel htmlFor="zip_code">ZIP Code</FieldLabel>
             <Input
               id="zip_code"
               value={form.zip_code}
               onChange={(e) => setForm({ ...form, zip_code: e.target.value })}
             />
-          </Field>
-          <Field>
+          </Field></div>{!quote.is_test_quote && sameDateQuotes.length > 0 && <SameDateRequestsPanel currentQuoteId={quote.id} quotes={sameDateQuotes} />}</details>        <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Event Details</h2>
+        <div className="desk-event-grid"><div className="desk-event-row desk-event-row-0"><Field>
+            <FieldLabel htmlFor="event_date">Event Date</FieldLabel>
+            <Input
+              id="event_date"
+              type="date"
+              value={form.event_date}
+              onChange={(e) => setForm({ ...form, event_date: e.target.value })}
+            />
+          </Field><Field>
+            <FieldLabel htmlFor="event_type">Event Type</FieldLabel>
+            <Select value={form.event_type} onValueChange={(v) => setForm({ ...form, event_type: v })}>
+              <SelectTrigger id="event_type" aria-label="Event type">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {EVENT_TYPES.map((type) => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field><Field>
+            <FieldLabel htmlFor="guest_count">Guest Count</FieldLabel>
+            <Input
+              id="guest_count"
+              type="number"
+              value={form.guest_count}
+              onChange={(e) => setForm({ ...form, guest_count: parseInt(e.target.value) || 0 })}
+            />
+          </Field></div><div className="desk-event-row desk-event-row-1"><Field className="desk-address">
+            <FieldLabel htmlFor="event_address">Event Address</FieldLabel>
+            <Input
+              id="event_address"
+              value={form.event_address}
+              onChange={(e) => setForm({ ...form, event_address: e.target.value })}
+            />
+          </Field><Field>
+            <FieldLabel htmlFor="city">City</FieldLabel>
+            <Input
+              id="city"
+              value={form.city}
+              onChange={(e) => setForm({ ...form, city: e.target.value })}
+            />
+          </Field><Field>
+            <FieldLabel htmlFor="state">State</FieldLabel>
+            <Input
+              id="state"
+              value={form.state}
+              onChange={(e) => setForm({ ...form, state: e.target.value })}
+            />
+          </Field></div><div className="desk-event-row desk-event-row-2"><Field>
             <FieldLabel htmlFor="event_start_time">Start Time</FieldLabel>
             <Input
               id="event_start_time"
@@ -1057,8 +1061,7 @@ export default function QuoteDetailEditor({
               value={form.event_start_time}
               onChange={(e) => setForm({ ...form, event_start_time: e.target.value })}
             />
-          </Field>
-          <Field>
+          </Field><Field>
             <FieldLabel htmlFor="event_end_time">End Time</FieldLabel>
             <Input
               id="event_end_time"
@@ -1066,8 +1069,7 @@ export default function QuoteDetailEditor({
               value={form.event_end_time}
               onChange={(e) => setForm({ ...form, event_end_time: e.target.value })}
             />
-          </Field>
-          <Field className="flex items-center gap-2 md:col-span-2">
+          </Field><Field className="desk-utilities">
             <div className="flex items-center gap-4 mt-6">
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -1086,9 +1088,8 @@ export default function QuoteDetailEditor({
                 <label htmlFor="has_water" className="text-sm">Water Available</label>
               </div>
             </div>
-          </Field>
-          <Field className="md:col-span-2 lg:col-span-4">
-            <FieldLabel htmlFor="additional_notes">Additional Notes (from customer)</FieldLabel>
+          </Field></div><Field className="desk-event-notes">
+            <FieldLabel htmlFor="additional_notes">Customer event notes (submitted by customer)</FieldLabel>
             <Textarea
               id="additional_notes"
               value={form.additional_notes}
@@ -1099,7 +1100,7 @@ export default function QuoteDetailEditor({
         </div>
       </div>
 
-      {/* Pricing */}
+</TabsContent><TabsContent value="pricing" forceMount>      {/* Pricing */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#2d3a47]">Pricing</h2>
@@ -1187,6 +1188,7 @@ export default function QuoteDetailEditor({
             />
           </Field>
           <Field>
+            {extraHoursFee > 0 && <p className="mb-3 text-sm">Additional event hours: ${extraHoursFee.toFixed(2)}. This saved charge is included in the total; use Recalculate to update it from event times.</p>}
             <FieldLabel htmlFor="after_hours_fee">After Hours Fee</FieldLabel>
             <Input
               id="after_hours_fee"
@@ -1365,7 +1367,7 @@ export default function QuoteDetailEditor({
         )}
       </div>
 
-      {/* Workflow Status */}
+</TabsContent><TabsContent value="payments" forceMount>      {/* Workflow Status */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Workflow Status</h2>
         {otherBookingOwnsDate && (
@@ -1377,7 +1379,7 @@ export default function QuoteDetailEditor({
           <Field>
             <FieldLabel htmlFor="status">Quote Status</FieldLabel>
             <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v as typeof form.status })}>
-              <SelectTrigger>
+              <SelectTrigger id="status" aria-label="Quote status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -1396,7 +1398,7 @@ export default function QuoteDetailEditor({
           <Field>
             <FieldLabel htmlFor="agreement_status">Agreement Status</FieldLabel>
             <Select value={form.agreement_status} onValueChange={(v) => setForm({ ...form, agreement_status: v as typeof form.agreement_status })}>
-              <SelectTrigger>
+              <SelectTrigger id="agreement_status" aria-label="Agreement status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -1411,7 +1413,7 @@ export default function QuoteDetailEditor({
           <Field>
             <FieldLabel htmlFor="deposit_status">Deposit Status</FieldLabel>
             <Select value={form.deposit_status} onValueChange={(v) => setForm({ ...form, deposit_status: v as typeof form.deposit_status })}>
-              <SelectTrigger>
+              <SelectTrigger id="deposit_status" aria-label="Deposit status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -1612,7 +1614,7 @@ export default function QuoteDetailEditor({
         </div>
       </div>
 
-      {/* Customer Activity */}
+</TabsContent><TabsContent value="activity" forceMount><p className="mb-4 text-sm text-muted-foreground">Request created {formatDateTime(quote.created_at)}</p>      {/* Customer Activity */}
       <div className="bg-white rounded-lg border border-[#ded2c4]/30 p-6">
         <h2 className="text-xl font-semibold text-[#2d3a47] mb-4">Customer Activity</h2>
         <div className="space-y-3 text-sm text-[#2d3a47]">
@@ -1677,11 +1679,17 @@ export default function QuoteDetailEditor({
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <Button
+<div className="flex flex-wrap gap-3">        <Button type="button" variant="outline" onClick={() => setTestQuoteDialogOpen(true)} className="flex-1 border-amber-300 text-amber-900 hover:bg-amber-50">
+          <Send className="w-4 h-4 mr-2" />
+          Send Test Quote
+        </Button>
+        <Button type="button" variant="outline" onClick={handleBackToDashboard} className="flex-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Button>
+</div></TabsContent></Tabs><QuoteDeskSummary quote={{ ...quote, calculated_breakdown: currentBreakdown }} form={form} pricing={calculatedPricing} otherBookingOwnsDate={otherBookingOwnsDate} fallbackDistance={fallbackDistance} distanceMessage={distanceMessage} financiallyLocked={financiallyLocked} onReviewPricing={() => setDeskTab('pricing')} /></div><footer className="desk-action-bar"><p role="status">{saving ? 'Saving changes…' : dirtyCount ? `${dirtyCount} unsaved ${dirtyCount === 1 ? 'change' : 'changes'}` : 'All changes saved'}</p><div className="desk-main-actions">        <Button
           onClick={handleSave}
-          disabled={saving}
+          disabled={saving || confirming}
           className="flex-1 bg-[#2d3a47] hover:bg-[#2d3a47]/90 text-white"
         >
           {saving ? (
@@ -1697,7 +1705,7 @@ export default function QuoteDetailEditor({
           type="button"
           variant="outline"
           onClick={handlePreviewQuoteEmail}
-          disabled={previewingQuoteEmail}
+          disabled={previewingQuoteEmail || saving || confirming}
           className="flex-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20 focus-visible:ring-[#2d3a47]/50"
         >
           {previewingQuoteEmail ? (
@@ -1722,7 +1730,7 @@ export default function QuoteDetailEditor({
               : 'This will send an email to the customer with a link to review and approve the quote. The quote status will be updated to "Quote Sent".',
             action: () => handleSendQuoteEmail(softDateHolds.length > 0),
           })}
-          disabled={sendingQuote || !['pending_review', 'new', 'under_review', 'draft_quote', 'change_requested', 'quote_sent'].includes(form.status)}
+          disabled={saving || confirming || sendingQuote || !['pending_review', 'new', 'under_review', 'draft_quote', 'change_requested', 'quote_sent'].includes(form.status)}
           className="flex-1 bg-[#2d3a47] hover:bg-[#2d3a47]/90 text-white"
         >
           {sendingQuote ? (
@@ -1737,19 +1745,8 @@ export default function QuoteDetailEditor({
             </>
           )}
         </Button>
-        <Button type="button" variant="outline" onClick={() => setTestQuoteDialogOpen(true)} className="flex-1 border-amber-300 text-amber-900 hover:bg-amber-50">
-          <Send className="w-4 h-4 mr-2" />
-          Send Test Quote
-        </Button>
-        <Button type="button" variant="outline" onClick={handleBackToDashboard} className="flex-1 border-[#ded2c4]/70 text-[#2d3a47] hover:bg-[#ded2c4]/20">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
-        </Button>
-      </div>
-
-
-      <Dialog open={testQuoteDialogOpen} onOpenChange={setTestQuoteDialogOpen}>
-        <DialogContent aria-describedby="send-test-quote-description">
+<small>{dirtyCount ? 'Preview and sends use saved data. Save changes first.' : 'Preview and confirm before sending'}</small></div></footer>      <Dialog open={testQuoteDialogOpen} onOpenChange={setTestQuoteDialogOpen}>
+        <DialogContent onCloseAutoFocus={(event) => { event.preventDefault(); dialogReturnFocus.current?.focus(); }} aria-describedby="send-test-quote-description">
           <DialogHeader>
             <DialogTitle>Send Test Quote</DialogTitle>
             <DialogDescription id="send-test-quote-description">
@@ -1779,7 +1776,7 @@ export default function QuoteDetailEditor({
 
       {/* Quote Option Editor Dialog */}
       <Dialog open={optionDialogOpen} onOpenChange={setOptionDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl" aria-describedby="quote-option-editor-description">
+        <DialogContent onCloseAutoFocus={(event) => { event.preventDefault(); dialogReturnFocus.current?.focus(); }} className="max-h-[90vh] overflow-y-auto sm:max-w-3xl" aria-describedby="quote-option-editor-description">
           <DialogHeader>
             <DialogTitle>{optionForm.id ? 'Edit Quote Option' : 'Add Quote Option'}</DialogTitle>
             <DialogDescription id="quote-option-editor-description">
@@ -1810,6 +1807,7 @@ export default function QuoteDetailEditor({
                 Recommended option
               </label>
             </div>
+            {optionExtraHoursFee > 0 && <p className="md:col-span-2 text-sm">Additional event hours: {formatCurrency(optionExtraHoursFee)}. Included in this option total; use Recalculate to update it from event times.</p>}
             {[
               ['base_price', 'Base Price'],
               ['travel_fee', 'Travel Fee'],
@@ -1854,9 +1852,9 @@ export default function QuoteDetailEditor({
 
       {/* Email Preview Dialog */}
       <Dialog open={emailPreviewOpen} onOpenChange={setEmailPreviewOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-5xl" aria-describedby="quote-email-preview-description">
+        <DialogContent onOpenAutoFocus={(event) => { event.preventDefault(); previewTitleRef.current?.focus(); }} onCloseAutoFocus={(event) => { event.preventDefault(); dialogReturnFocus.current?.focus(); }} className="max-h-[90vh] overflow-y-auto sm:max-w-5xl" aria-describedby="quote-email-preview-description">
           <DialogHeader>
-            <DialogTitle>Quote Email Preview</DialogTitle>
+            <DialogTitle ref={previewTitleRef} tabIndex={-1}>Quote Email Preview</DialogTitle>
             <DialogDescription id="quote-email-preview-description">
               Review the customer email content before sending. Previewing does not create an approval token or send email.
             </DialogDescription>
@@ -1932,20 +1930,23 @@ export default function QuoteDetailEditor({
       </Dialog>
 
       {/* Confirmation Dialog */}
-      <AlertDialog open={confirmDialog?.open} onOpenChange={(open) => !open && setConfirmDialog(null)}>
-        <AlertDialogContent>
+      <AlertDialog open={confirmDialog?.open} onOpenChange={(open) => !open && !confirmInFlight.current && setConfirmDialog(null)}>
+        <AlertDialogContent onCloseAutoFocus={(event) => { event.preventDefault(); dialogReturnFocus.current?.focus(); }}>
           <AlertDialogHeader>
             <AlertDialogTitle>{confirmDialog?.title}</AlertDialogTitle>
-            <AlertDialogDescription>{confirmDialog?.description}</AlertDialogDescription>
+            <AlertDialogDescription>{confirmDialog?.description}{dirtyCount > 0 && ' Unsaved edits are not included in provider actions. Cancel and save first to include them.'}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={confirming}>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={async () => {
-                if (confirmDialog?.action) {
-                  await confirmDialog.action();
-                }
-                setConfirmDialog(null);
+              disabled={confirming}
+              onClick={async (event) => {
+                event.preventDefault();
+                if (confirmInFlight.current) return;
+                confirmInFlight.current = true;
+                setConfirming(true);
+                try { await confirmDialog?.action(); setConfirmDialog(null); }
+                finally { confirmInFlight.current = false; setConfirming(false); }
               }}
             >
               Confirm

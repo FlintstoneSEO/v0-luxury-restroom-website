@@ -38,6 +38,10 @@
   ],
   "exclude": [
     "node_modules",
-    "apps/web"
+    "apps/web",
+    "apps/admin",
+    ".next-calendar-check",
+    ".next-pricing-fixture",
+    ".next-msu-webpack"
   ]
 }

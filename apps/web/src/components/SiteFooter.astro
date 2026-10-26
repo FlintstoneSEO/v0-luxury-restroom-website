@@ -90,7 +90,7 @@ const telephoneHref = `tel:${business.phone.replace(/[^\d+]/g, '')}`;
   <div class="border-t border-white/10 bg-ink/35">
     <div class="content-shell flex flex-col gap-3 py-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
       <p>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
-      <p>Luxury restroom trailer rentals in Mid-Michigan</p>
+      <p>Luxury restroom trailer rentals in Mid-Michigan · <a class="underline underline-offset-4" href={footer.credit.href}>Design by {footer.credit.label}</a></p>
     </div>
   </div>
 </footer>
