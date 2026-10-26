@@ -37,4 +37,13 @@ describe('reserved partner dates', () => {
     const html = renderToStaticMarkup(<BookingOutlook quotes={[]} blocks={[reservation]} />);
     expect(html).toContain('MSU Tailgate vs Washington'); expect(html).toContain('Nov 14, 2026');
   });
+  it('flags overlapping reservations without changing either record', () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date('2026-11-14T12:00:00-05:00'));
+    const blocks = [reservation, { ...reservation, id: 'other-reservation', title: 'Another reserved event' }];
+    const before = JSON.stringify(blocks);
+    const html = renderToStaticMarkup(<BookingCalendar quotes={[]} blocks={blocks} />);
+    expect(html).toContain('Booking conflict');
+    expect(html).toContain('More than one booking or reservation blocks this date');
+    expect(JSON.stringify(blocks)).toBe(before);
+  });
 });

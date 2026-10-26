@@ -465,7 +465,7 @@ export function BookingCalendar({
               </Badge>
               <Badge variant="outline">
                 {selectedSummary.blockingBookingCount + selectedHardBlocks.length} blocking booking
-                {selectedSummary.blockingBookingCount === 1 ? '' : 's'}
+                {selectedSummary.blockingBookingCount + selectedHardBlocks.length === 1 ? '' : 's'}
               </Badge>
             </div>
             {hasSelectedConflict && (
