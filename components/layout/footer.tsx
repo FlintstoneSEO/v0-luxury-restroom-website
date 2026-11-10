@@ -37,7 +37,7 @@ export function Footer() {
 
           <div>
             <h3 className="text-lg font-semibold mb-6">{quickLinks.heading}</h3>
-            <ul className="space-y-3">{quickLinks.links.map((link) => <li key={link.label}><Link href={link.href} className="text-white/80 text-base hover:text-gold transition-colors">{link.label}</Link></li>)}</ul>
+            <ul className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 lg:grid-cols-1">{quickLinks.links.map((link) => <li key={link.label}><Link href={link.href} className="text-white/80 text-base hover:text-gold transition-colors">{link.label}</Link></li>)}</ul>
           </div>
 
           <div>

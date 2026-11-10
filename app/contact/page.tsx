@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { submitContactForm, ContactFormState } from "@/app/actions/contact"
+import footer from "@/content/site/footer.json"
 
 const initialState: ContactFormState = {
   success: false,
@@ -104,9 +105,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold text-navy">Business Hours</h3>
                       <div className="text-muted-foreground space-y-1 mt-1">
-                        <p>Monday - Friday: 9:00 am - 5:00 pm</p>
-                        <p>Saturday: 8:00 am - 3:00 pm</p>
-                        <p>Sunday: Closed</p>
+                        {footer.hours.map((hours) => <p key={hours}>{hours}</p>)}
                       </div>
                     </div>
                   </div>
