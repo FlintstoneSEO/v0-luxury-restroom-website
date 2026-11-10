@@ -2,6 +2,7 @@
 
 import { CalendarDays, Clock3, List, TriangleAlert, LockKeyhole } from 'lucide-react';
 import type { QuoteRequest } from '@/lib/quotes/types';
+import { getExtraHoursFee, getStoredServiceReviewReasons } from '@/lib/pricing-engine';
 import { isBookingBlockingStatus } from '@/lib/availability';
 
 type DeskFees = Required<Pick<QuoteRequest, 'base_price' | 'travel_fee' | 'utility_fee' | 'after_hours_fee' | 'cleaning_fee' | 'damage_waiver_fee' | 'rush_booking_fee'>>;
@@ -23,7 +24,7 @@ export function QuoteDeskSummary({ quote, form, pricing, otherBookingOwnsDate, f
   const inactive = ['cancelled', 'declined', 'expired'].includes(quote.status);
   const reservationTitle = quote.is_test_quote ? 'Test quote · No real reservation' : otherBookingOwnsDate ? 'Date already reserved' : reserved ? 'Reserved date' : inactive ? 'No reservation from this quote' : 'Request only · Date not reserved';
   const reservationText = quote.is_test_quote ? 'Test records do not reserve real booking dates.' : otherBookingOwnsDate ? 'Another booking holds this date. Review same-date requests before proceeding.' : reserved ? 'The saved quote status reserves this day under the existing booking rules.' : 'Pending requests do not reserve dates. Availability follows saved booking statuses.';
-  const feeRows: [string, number][] = [['Base rental', form.base_price], ['Travel', form.travel_fee], ['Utility setup', form.utility_fee], ['After hours', form.after_hours_fee], ['Cleaning', form.cleaning_fee], ['Damage waiver', form.damage_waiver_fee], ['Rush booking', form.rush_booking_fee]];
+  const feeRows: [string, number][] = [['Base rental', form.base_price], ['Additional event hours', getExtraHoursFee(quote.calculated_breakdown)], ['Travel', form.travel_fee], ['Utility setup', form.utility_fee], ['After hours', form.after_hours_fee], ['Cleaning', form.cleaning_fee], ['Damage waiver', form.damage_waiver_fee], ['Rush booking', form.rush_booking_fee]];
   const latest = [
     { label: 'Request received', at: quote.created_at },
     { label: 'Quote email sent', at: quote.quote_sent_at },
@@ -45,6 +46,7 @@ export function QuoteDeskSummary({ quote, form, pricing, otherBookingOwnsDate, f
     <dl className="desk-deposit"><div><dt>Deposit ({pricing.deposit_percentage}%)</dt><dd>{money(pricing.deposit_amount)}</dd></div><div><dt>Balance due</dt><dd>{money(pricing.final_balance)}</dd></div></dl>
     <div className="desk-reservation" data-reserved={reserved}><CalendarDays aria-hidden="true"/><div><strong>{reservationTitle}</strong><p>{reservationText}</p></div></div>
     <button className="desk-next" type="button" onClick={onReviewPricing}><List aria-hidden="true"/><span>Pricing &amp; options<strong>{financiallyLocked ? 'Review saved pricing' : 'Next: review pricing'}</strong></span></button>
+    {getStoredServiceReviewReasons(quote.calculated_breakdown).map(reason => <p className="desk-lock" key={reason}><TriangleAlert aria-hidden="true"/>{reason}</p>)}
     {fallbackDistance && <div className="desk-distance"><TriangleAlert aria-hidden="true"/><div><strong>Distance review needed</strong><p>{distanceMessage}</p></div></div>}
     {form.is_manual_override && <p className="desk-lock"><TriangleAlert aria-hidden="true"/>Manual pricing override is active.</p>}
     {financiallyLocked && <p className="desk-lock"><LockKeyhole aria-hidden="true"/>Pricing is locked. Use the existing revision flow in Pricing &amp; options.</p>}

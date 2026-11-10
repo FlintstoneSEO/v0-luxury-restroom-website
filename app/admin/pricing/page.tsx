@@ -1,18 +1,14 @@
 import { createClient } from '@/lib/supabase/server';
 import PricingSettingsEditor from '@/components/admin/pricing-settings-editor';
-import { DEFAULT_PRICING } from '@/lib/pricing-engine';
+import { mergePricingSettings } from '@/lib/pricing/settings';
+import './pricing.css';
 
-export const metadata = {
-  title: 'Pricing Settings',
-  description: 'Manage centralized pricing rules for quote calculations',
-};
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const metadata = { title: 'Pricing & Settings', description: 'Configure pricing rules and preview example quotes' };
 
 export default async function AdminPricingPage() {
   const supabase = await createClient();
-  const { data } = await supabase.from('pricing_settings').select('setting_key, setting_value');
-
-  const fromDb = Object.fromEntries((data ?? []).filter((row) => row.setting_key !== 'optional_addons_json').map((row) => [row.setting_key, Number(row.setting_value)]));
-  const merged = { ...DEFAULT_PRICING, ...fromDb };
-
-  return <PricingSettingsEditor initialSettings={merged} initialAddons="[]" />;
+  const { data, error } = await supabase.from('pricing_settings').select('setting_key, setting_value');
+  return <PricingSettingsEditor initialSettings={mergePricingSettings(data ?? [])} loadError={error ? 'Saved pricing could not be loaded. Reload the page before editing.' : undefined} />;
 }

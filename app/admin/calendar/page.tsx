@@ -35,14 +35,11 @@ export default async function AdminBookingCalendarPage() {
 
   return (
     <div className="space-y-8">
-      <header className="rounded-2xl border border-navy bg-navy p-6 text-white shadow-lg sm:p-8">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ded2c4]">
-          Operations schedule
-        </p>
+      <header className="admin-calendar-heading">
         <h1 className="mt-2 font-serif text-3xl font-semibold sm:text-4xl">
           Booking Calendar
         </h1>
-        <p className="mt-2 max-w-3xl text-[#ded2c4]">
+        <p className="mt-2 max-w-3xl text-muted-foreground">
           Review booked events, same-date requests, and booking conflicts without introducing hourly or multi-trailer scheduling.
         </p>
       </header>

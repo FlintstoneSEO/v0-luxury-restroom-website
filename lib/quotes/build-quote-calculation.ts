@@ -158,7 +158,8 @@ export async function buildQuoteCalculation(data: QuoteFormData): Promise<QuoteC
     data.has_water,
     data.event_end_time,
     data.event_date,
-    pricingSettings
+    pricingSettings,
+    data.event_start_time
   )
 
   if (distance.status === 'fallback') {

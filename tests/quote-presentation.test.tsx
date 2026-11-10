@@ -66,6 +66,12 @@ describe('quote email presentation', () => {
 });
 
 describe('customer quote presentation', () => {
+  it('itemizes a saved extra-hours charge without recalculating historical prices', () => {
+    const html = renderToStaticMarkup(<QuoteApprovalClient quote={{ ...quote, extra_hours_fee: 100 }} token="synthetic-token" alreadyResponded={false} options={[]} publicSiteOrigin="https://example.com" />);
+    expect(html).toContain('Additional Event Hours');
+    expect(html).toContain('$100.00');
+    expect(html).toContain('$1,961.00');
+  });
   it('shows the persisted tax, tax-inclusive total, deposit, and balance', () => {
     const html = renderToStaticMarkup(
       <QuoteApprovalClient

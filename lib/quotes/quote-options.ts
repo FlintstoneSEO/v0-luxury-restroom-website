@@ -2,6 +2,7 @@ import { buildQuoteCalculation } from '@/lib/quotes/build-quote-calculation';
 import { getPricingSettings } from '@/lib/quotes/build-quote-calculation';
 import {
   calculateQuoteFinancials,
+  getExtraHoursFee,
   DEFAULT_PRICING,
   QuoteFinancialInput,
 } from '@/lib/pricing-engine';
@@ -30,11 +31,14 @@ const MONEY_FIELDS = [
 type MoneyField = (typeof MONEY_FIELDS)[number];
 
 type OptionPricingInput = Partial<Record<MoneyField, number | null>> & {
+  extra_hours_fee?: number | null;
+  calculated_breakdown?: unknown;
   sales_tax_percentage?: number | null;
 };
 
 export function normalizeOptionPricing(input: OptionPricingInput) {
   const serviceFields: QuoteFinancialInput = {
+    extra_hours_fee: input.extra_hours_fee ?? getExtraHoursFee(input.calculated_breakdown),
     base_price: input.base_price,
     travel_fee: input.travel_fee,
     utility_fee: input.utility_fee,

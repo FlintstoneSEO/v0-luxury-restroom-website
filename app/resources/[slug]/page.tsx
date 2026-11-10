@@ -95,7 +95,7 @@ export default async function ResourceArticlePage({ params }: { params: Promise<
               <nav aria-label="Table of contents">
                 <h2>In this guide</h2>
                 <ol>{resource.sections.map(section => <li key={section.heading}><a href={`#${sectionHeadingToId(section.heading)}`}>{section.heading}</a></li>)}</ol>
-                {resource.faqs?.length > 0 && <a className="story-faq-jump" href="#article-questions">Frequently Asked Questions</a>}
+                {resource.faqs && resource.faqs.length > 0 && <a className="story-faq-jump" href="#article-questions">Frequently Asked Questions</a>}
               </nav>
               <Link className="story-sidebar-link" href="/start-here">Start planning your event <ArrowRight size={18} aria-hidden="true" /></Link>
             </aside>
@@ -111,7 +111,7 @@ export default async function ResourceArticlePage({ params }: { params: Promise<
                 <p>Use our quick planning guide, then request a tailored recommendation for your event.</p>
                 <div><Link href="/start-here">Start Here <ArrowRight size={17} aria-hidden="true" /></Link><Link href="/request-quote">Request a Quote <ArrowRight size={17} aria-hidden="true" /></Link></div>
               </section>
-              {resource.faqs?.length > 0 && (
+              {resource.faqs && resource.faqs.length > 0 && (
                 <section className="story-questions" id="article-questions">
                   <h2>Frequently Asked Questions</h2>
                   {resource.faqs.map(faq => <details key={faq.question}><summary>{faq.question}<Plus size={20} aria-hidden="true" /></summary><p>{faq.answer}</p></details>)}

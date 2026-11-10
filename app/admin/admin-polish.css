@@ -1,0 +1,102 @@
+/* Presentation refinements shared by the existing operations screens. */
+.admin-typography {
+  --admin-ink: #102442;
+  --admin-muted: #526171;
+  --admin-border: #d4d9e1;
+  --admin-focus: #896422;
+}
+.admin-typography :where(input, textarea) { caret-color: var(--admin-ink); }
+.admin-typography ::selection { background: #e8dcc3; color: var(--admin-ink); }
+.admin-typography :where(button,a,input,select,textarea,summary,[tabindex]):focus-visible { outline-color: var(--admin-focus); }
+.admin-typography :where(h1,h2,h3) { overflow-wrap: break-word; }
+.admin-typography .operations-header h1 { white-space: normal; letter-spacing: -.03em; }
+.admin-typography :is(.operations-toolbar,.operations-outlook) h2 { font-family: Arial,Helvetica,sans-serif; font-size: 20px; letter-spacing: -.02em; line-height: 1.35; }
+.admin-typography .operations-detail h2 { font-family: Arial,Helvetica,sans-serif; font-size: 20px; }
+.admin-typography .operations-detail > div:first-of-type > div:first-child > p:first-of-type { font-family: Arial,Helvetica,sans-serif; }
+.admin-page-heading h1, .admin-calendar-heading h1 { font-size: clamp(26px,2.5vw,36px); line-height: 1.2; letter-spacing: -.03em; }
+.admin-calendar-heading { padding-block: 0 8px; }
+.admin-calendar-heading > p { font-size: 14px; line-height: 1.7; }
+/* Keep the same navigation identity and selected state on quote detail routes. */
+.quote-desk-route .admin-rail { padding: 44px 14px 24px; gap: 30px; background: #152b3d; }
+.quote-desk-route .admin-wordmark > span:first-child { font-variant: small-caps; font-size: 29px; letter-spacing: -1px; }
+.quote-desk-route .admin-wordmark > span:last-child { margin-top: 12px; }
+.quote-desk-route .admin-wordmark > span:last-child::before { width: 26px; height: 1px; margin-bottom: 10px; }
+.quote-desk-route .admin-rail nav a { margin-bottom: 0; font-size: 15px; }
+.quote-desk-route .admin-rail nav a[aria-current=page] { background: #294358; font-weight: 600; border-left-color: #c2a263; }
+.quote-desk-route .admin-rail nav svg { width: 21px; height: 21px; margin-right: 0; }
+.quote-desk-route .admin-rail > button:last-child { border-top: 1px solid #3b4d5d; }
+.operations-panel { border-color: var(--admin-border); }
+.operations-segments button, .operations-filters > summary { min-height: 44px; }
+.operations-test-label { font-size: 12px; color: var(--admin-muted); }
+.operations-viewed { font-size: 12px !important; }
+.operations-milestones li, .operations-detail-actions + p, .operations-detail > p.rounded { font-size: 12px; line-height: 1.5; }
+.operations-milestones { gap: 4px; margin-bottom: 12px; }
+.operations-states > div { padding: 8px; gap: 6px; font-size: 12px; }
+.operations-contact-details summary { position: static; width: fit-content; padding-block: 8px; font-size: 12px; min-height: 36px; }
+.operations-note-preview a { min-height: 44px; }
+.operations-outlook { padding: 16px 18px; }
+.operations-outlook-content { margin-top: 10px; }
+.operations-mobile-record > button { align-items: baseline; }
+.operations-mobile-record > button > strong:first-child { min-width: 0; overflow-wrap: anywhere; }
+.operations-mobile-record > button > strong:last-child { flex-shrink: 0; }
+.admin-typography .desk-title { font-size: clamp(28px,2.6vw,36px); letter-spacing: -.03em; margin-block: 0 8px; }
+.desk-back { min-height: 44px !important; }
+.desk-number { font-family: Arial,Helvetica,sans-serif; font-size: 23px; letter-spacing: -.02em; }
+.desk-identity { min-width: 0; overflow-wrap: anywhere; }
+.desk-tabs input,.desk-tabs [role=combobox] { min-height: 44px; height: auto; }
+.desk-tabs textarea { box-shadow: none; }
+.desk-tabs .desk-additional { float: none; margin: 0 0 12px; }
+.desk-additional summary { min-height: 44px; padding-block: 12px; }
+.desk-distance p, .desk-main-actions small { font-size: 12px; line-height: 1.5; }
+.desk-status-strip > div { min-width: 0; flex-wrap: wrap; gap: 10px; padding-inline: 16px; }
+.desk-status-strip span { overflow-wrap: anywhere; }
+.desk-action-bar { left: var(--admin-sidebar-width, 248px); gap: 16px; box-shadow: none; }
+.desk-action-bar > p { min-width: 0; padding-right: 16px; }
+.desk-main-actions { gap: 10px; }
+.desk-main-actions > button { width: auto; min-width: 150px; min-height: 44px; }
+@media(max-width:1023px) { .desk-action-bar { left: 0; } }
+@media(max-width:767px) {
+  .operations-filters .operations-filter-popover { top: 156px; }
+  .operations-search input,.desk-tabs input,.desk-tabs textarea,.desk-tabs [role=combobox] { font-size: 16px; }
+  .operations-queue-controls { gap: 8px; }
+  .operations-queue-search { flex-basis: 100%; }
+  .operations-filters { width: 100%; }
+  .operations-filter-popover { position: static; margin-top: 10px; max-height: 60vh; }
+  .operations-mobile-record { padding-block: 12px; }
+  .desk-main-actions > button { min-width: 0; width: 0; }
+  .desk-action-bar { padding-bottom: max(18px,env(safe-area-inset-bottom)); }
+  .quote-desk-route .admin-content { padding-bottom: 190px; }
+  .desk-status-strip > div { padding-inline: 0; }
+}
+/* Compact checkbox glyphs live inside full-sized label targets. */
+.admin-typography [role=checkbox], .admin-typography input[type=checkbox] { min-height: 20px; height: 20px; width: 20px; flex-shrink: 0; }
+.admin-typography label:has([role=checkbox]), .admin-typography label:has(input[type=checkbox]) { min-height: 44px; }
+@media(max-width:767px) { .admin-typography input:not([type=checkbox]), .admin-typography textarea { font-size: 16px; } }
+.admin-typography [role=switch] { min-height: 24px; height: 24px; flex-shrink: 0; }
+.admin-typography label:has([role=switch]) { min-height: 44px; }
+.admin-media-summary { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 16px; padding: 18px; border: 1px solid var(--admin-border); border-radius: 7px; background: white; }
+.admin-media-summary dt { font-size: 12px; line-height: 1.5; color: var(--admin-muted); }
+.admin-media-summary dd { margin: 4px 0 0; font-size: 20px; line-height: 1.3; font-weight: 600; }
+@media(max-width:1100px) { .admin-media-summary { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media(max-width:480px) { .admin-media-summary { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+/* Seven calendar columns must shrink within narrow admin viewports. */
+.admin-typography .rdp-root { min-width: 0; max-width: 100%; }
+.admin-typography .rdp-root [data-day] { min-width: 0; }
+@media(max-width:480px) { .admin-typography .rdp-root { padding-inline: 0; --cell-size: 30px; } }
+.admin-booking-calendar, .admin-booking-calendar > div, .admin-booking-calendar > div > div { min-width: 0; }
+.admin-booking-calendar .rdp-month_grid { table-layout: fixed; }
+.admin-booking-calendar .rdp-week > td { flex: 1 1 0; width: 0; min-width: 0; aspect-ratio: auto; }
+.admin-booking-calendar .rdp-week [data-day] { width: 100%; min-width: 0; height: 44px; aspect-ratio: auto; padding-inline: 0; }
+/* A compact desktop rail keeps navigation and the quote action bar aligned. */
+.admin-sidebar-toggle { justify-content: flex-start; width: 100%; }
+@media(min-width:1024px) {
+  .admin-typography { --admin-sidebar-width: 248px; }
+  .admin-typography[data-sidebar-collapsed=true] { --admin-sidebar-width: 80px; }
+  .admin-typography .admin-shell-grid { grid-template-columns: var(--admin-sidebar-width) minmax(0,1fr); }
+  .admin-typography[data-sidebar-collapsed=true] .admin-rail { padding-inline: 12px; }
+  .admin-typography[data-sidebar-collapsed=true] .admin-rail nav a,
+  .admin-typography[data-sidebar-collapsed=true] .admin-rail > button { justify-content: center; padding-inline: 0; }
+  .admin-typography[data-sidebar-collapsed=true] .admin-wordmark { text-align: center; padding-inline: 0; }
+  .admin-typography[data-sidebar-collapsed=true] .admin-wordmark .admin-wordmark-initials { font-size: 22px; letter-spacing: 0; }
+  .admin-typography[data-sidebar-collapsed=true] .admin-wordmark-initials::before { display: none; }
+}

@@ -308,7 +308,7 @@ export function BookingCalendar({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="admin-booking-calendar space-y-5">
       {!compact && (
         <div className="flex flex-col gap-3 rounded-xl border border-[#d9d1c8] bg-white p-4 sm:flex-row sm:items-end sm:justify-between">
           <label className="space-y-1.5">
@@ -338,7 +338,7 @@ export function BookingCalendar({
 
       <div className={compact ? '' : 'grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]'}>
         <div className="rounded-xl border border-[#d9d1c8] bg-white p-3 sm:p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <Button
               type="button"
               variant="outline"

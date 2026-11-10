@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle, XCircle, MessageSquare, Loader2, Calendar, MapPin, Users, Clock } from 'lucide-react';
 
 interface Quote {
+  extra_hours_fee?: number;
   id: string;
   quote_number?: string;
   customer_name: string;
@@ -45,6 +46,7 @@ interface Quote {
 }
 
 interface QuoteOption {
+  extra_hours_fee?: number;
   id: string;
   option_label: string;
   option_description?: string | null;
@@ -223,6 +225,7 @@ export default function QuoteApprovalClient({
   const singleQuoteOption: QuoteOption = {
     id: quote.id,
     option_label: 'Quote Summary',
+    extra_hours_fee: quote.extra_hours_fee,
     option_description: null,
     is_recommended: false,
     status: quote.status,
@@ -374,6 +377,7 @@ export default function QuoteApprovalClient({
 
                       <div className="mt-4 space-y-2 text-sm">
                         {option.base_price > 0 && <PriceRow label="Base Rental" amount={option.base_price} />}
+                        {!!option.extra_hours_fee && <PriceRow label="Additional Event Hours" amount={option.extra_hours_fee} />}
                         {option.travel_fee > 0 && <PriceRow label="Travel Fee" amount={option.travel_fee} />}
                         {option.utility_fee > 0 && <PriceRow label="Utility Fee (Generator/Water)" amount={option.utility_fee} />}
                         {option.after_hours_fee > 0 && <PriceRow label="After Hours Fee" amount={option.after_hours_fee} />}
