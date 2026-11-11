@@ -162,6 +162,7 @@ export async function POST(
     try {
       await sendEmail({
         to: process.env.EMAIL_FROM || 'info@signatureluxeevents.com',
+        replyTo: quote.email,
         subject: `Quote ${quote.quote_number || quote.id.slice(0, 8)}: Customer ${statusDisplay}`,
         html: `
           <h2>Customer Quote Response</h2>
